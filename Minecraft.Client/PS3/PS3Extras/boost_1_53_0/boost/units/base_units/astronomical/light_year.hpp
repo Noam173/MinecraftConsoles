@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,25 +11,35 @@
 #ifndef BOOST_UNIT_SYSTEMS_ASTRONOMICAL_LIGHT_YEAR_HPP_INCLUDED
 #define BOOST_UNIT_SYSTEMS_ASTRONOMICAL_LIGHT_YEAR_HPP_INCLUDED
 
+#include <boost/units/base_units/astronomical/light_second.hpp>
+#include <boost/units/scale.hpp>
 #include <boost/units/scaled_base_unit.hpp>
 #include <boost/units/static_rational.hpp>
-#include <boost/units/scale.hpp>
-#include <boost/units/base_units/astronomical/light_second.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units {
+namespace units
+{
 
-namespace astronomical {
+namespace astronomical
+{
 
-typedef scaled_base_unit<boost::units::astronomical::light_second_base_unit, scale<31557600, static_rational<1> > > light_year_base_unit;
+typedef scaled_base_unit<boost::units::astronomical::light_second_base_unit, scale<31557600, static_rational<1>>> light_year_base_unit;
 
 } // namespace astronomical
 
-template<>
-struct base_unit_info<astronomical::light_year_base_unit> {
-    static const char* name()   { return("light year"); }
-    static const char* symbol() { return("ly"); }
+template <>
+struct base_unit_info<astronomical::light_year_base_unit>
+{
+    static const char *name()
+    {
+        return ("light year");
+    }
+    static const char *symbol()
+    {
+        return ("ly");
+    }
 };
 
 } // namespace units

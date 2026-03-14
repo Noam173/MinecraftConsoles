@@ -13,63 +13,64 @@
 
 #include <boost/spirit/home/classic/namespace.hpp>
 
-namespace boost { namespace spirit {
+namespace boost
+{
+namespace spirit
+{
 
 BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
 
 #if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
 #pragma warning(push)
-#pragma warning(disable:4512) //assignment operator could not be generated
+#pragma warning(disable : 4512) // assignment operator could not be generated
 #endif
 
-    ///////////////////////////////////////////////////////////////////////////
-    //  Summary:
-    //  A semantic action policy holder. This holder stores a reference to ref.
-    //  act methods are feed with ref and the parse result.
-    //
-    //  (This doc uses convention available in actors.hpp)
-    //
-    //  Constructor:
-    //      ...(T& ref_);
-    //      where ref_ is stored.
-    //
-    //  Action calls:
-    //      act(ref, value);
-    //      act(ref, first,last);
-    //
-    //  () operators: both
-    //
-    ///////////////////////////////////////////////////////////////////////////
-    template<
-        typename T,
-        typename ActionT
-    >
-    class ref_value_actor : public ActionT
+///////////////////////////////////////////////////////////////////////////
+//  Summary:
+//  A semantic action policy holder. This holder stores a reference to ref.
+//  act methods are feed with ref and the parse result.
+//
+//  (This doc uses convention available in actors.hpp)
+//
+//  Constructor:
+//      ...(T& ref_);
+//      where ref_ is stored.
+//
+//  Action calls:
+//      act(ref, value);
+//      act(ref, first,last);
+//
+//  () operators: both
+//
+///////////////////////////////////////////////////////////////////////////
+template <
+    typename T,
+    typename ActionT>
+class ref_value_actor : public ActionT
+{
+  private:
+    T &ref;
+
+  public:
+    explicit ref_value_actor(T &ref_)
+        : ref(ref_)
     {
-    private:
-        T& ref;
-    public:
-        explicit
-        ref_value_actor(T& ref_)
-        : ref(ref_){}
+    }
 
+    template <typename T2>
+    void operator()(T2 const &val_) const
+    {
+        this->act(ref, val_); // defined in ActionT
+    }
 
-        template<typename T2>
-        void operator()(T2 const& val_) const
-        {
-            this->act(ref,val_); // defined in ActionT
-        }
-
-
-        template<typename IteratorT>
-        void operator()(
-            IteratorT const& first_,
-            IteratorT const& last_
-            ) const
-        {
-            this->act(ref,first_,last_); // defined in ActionT
-        }
-    };
+    template <typename IteratorT>
+    void operator()(
+        IteratorT const &first_,
+        IteratorT const &last_) const
+    {
+        this->act(ref, first_, last_); // defined in ActionT
+    }
+};
 
 BOOST_SPIRIT_CLASSIC_NAMESPACE_END
 
@@ -77,6 +78,7 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_END
 #pragma warning(pop)
 #endif
 
-}}
+} // namespace spirit
+} // namespace boost
 
 #endif

@@ -3,7 +3,7 @@
 
 class BatModel : public Model
 {
-private:
+  private:
     ModelPart *head;
     ModelPart *body;
     ModelPart *rightWing;
@@ -11,8 +11,8 @@ private:
     ModelPart *rightWingTip;
     ModelPart *leftWingTip;
 
-public:    
-	BatModel();
+  public:
+    BatModel();
 
     int modelVersion();
 

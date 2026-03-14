@@ -9,8 +9,8 @@
 #ifndef BOOST_PROTO_FUNCTIONAL_HPP_EAN_11_27_2010
 #define BOOST_PROTO_FUNCTIONAL_HPP_EAN_11_27_2010
 
-#include <boost/proto/functional/std.hpp>
 #include <boost/proto/functional/fusion.hpp>
 #include <boost/proto/functional/range.hpp>
+#include <boost/proto/functional/std.hpp>
 
 #endif

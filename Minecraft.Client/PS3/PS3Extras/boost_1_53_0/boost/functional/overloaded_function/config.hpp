@@ -23,8 +23,8 @@ When specified by the user, this macro must be a non-negative integer number.
 @See @RefSect{getting_started, Getting Started},
 @RefClass{boost::overloaded_function}.
 */
-#ifndef BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_ARITY_MAX 
-#   define BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_ARITY_MAX 5
+#ifndef BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_ARITY_MAX
+#define BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_ARITY_MAX 5
 #endif
 
 /**
@@ -40,11 +40,10 @@ order to define an overload).
 @RefClass{boost::overloaded_function}.
 */
 #ifndef BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX
-#   define BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX 5
+#define BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX 5
 #endif
 #if BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX < 2
-#   error "maximum overload macro cannot be less than 2"
+#error "maximum overload macro cannot be less than 2"
 #endif
 
 #endif // #include guard
-

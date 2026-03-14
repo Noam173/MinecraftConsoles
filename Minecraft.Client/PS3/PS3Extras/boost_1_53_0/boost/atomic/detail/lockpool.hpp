@@ -16,27 +16,29 @@
 #pragma once
 #endif
 
-namespace boost {
-namespace atomics {
-namespace detail {
+namespace boost
+{
+namespace atomics
+{
+namespace detail
+{
 
 #ifndef BOOST_ATOMIC_FLAG_LOCK_FREE
 
 class lockpool
 {
-public:
+  public:
     typedef mutex lock_type;
     class scoped_lock
     {
-    private:
-        lock_type& mtx_;
+      private:
+        lock_type &mtx_;
 
-        scoped_lock(scoped_lock const&) /* = delete */;
-        scoped_lock& operator=(scoped_lock const&) /* = delete */;
+        scoped_lock(scoped_lock const &) /* = delete */;
+        scoped_lock &operator=(scoped_lock const &) /* = delete */;
 
-    public:
-        explicit
-        scoped_lock(const volatile void * addr) : mtx_(get_lock_for(addr))
+      public:
+        explicit scoped_lock(const volatile void *addr) : mtx_(get_lock_for(addr))
         {
             mtx_.lock();
         }
@@ -46,28 +48,27 @@ public:
         }
     };
 
-private:
-    static BOOST_ATOMIC_DECL lock_type& get_lock_for(const volatile void * addr);
+  private:
+    static BOOST_ATOMIC_DECL lock_type &get_lock_for(const volatile void *addr);
 };
 
 #else
 
 class lockpool
 {
-public:
+  public:
     typedef atomic_flag lock_type;
 
     class scoped_lock
     {
-    private:
-        atomic_flag& flag_;
+      private:
+        atomic_flag &flag_;
 
         scoped_lock(const scoped_lock &) /* = delete */;
-        scoped_lock& operator=(const scoped_lock &) /* = delete */;
+        scoped_lock &operator=(const scoped_lock &) /* = delete */;
 
-    public:
-        explicit
-        scoped_lock(const volatile void * addr) : flag_(get_lock_for(addr))
+      public:
+        explicit scoped_lock(const volatile void *addr) : flag_(get_lock_for(addr))
         {
             for (; flag_.test_and_set(memory_order_acquire);)
             {
@@ -83,14 +84,14 @@ public:
         }
     };
 
-private:
-    static BOOST_ATOMIC_DECL lock_type& get_lock_for(const volatile void * addr);
+  private:
+    static BOOST_ATOMIC_DECL lock_type &get_lock_for(const volatile void *addr);
 };
 
 #endif
 
-}
-}
-}
+} // namespace detail
+} // namespace atomics
+} // namespace boost
 
 #endif

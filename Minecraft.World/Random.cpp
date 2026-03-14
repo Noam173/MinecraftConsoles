@@ -1,21 +1,21 @@
-#include "stdafx.h"
 #include "Random.h"
 #include "System.h"
+#include "stdafx.h"
 
 Random::Random()
 {
-	// 4J - jave now uses the system nanosecond counter added to a "seedUniquifier" to get an initial seed. Our nanosecond timer is actually only millisecond accuate, so
-	// use QueryPerformanceCounter here instead
-	int64_t seed;
-	QueryPerformanceCounter((LARGE_INTEGER *)&seed);
-	seed += 8682522807148012LL;
+    // 4J - jave now uses the system nanosecond counter added to a "seedUniquifier" to get an initial seed. Our nanosecond timer is actually only millisecond accuate, so
+    // use QueryPerformanceCounter here instead
+    int64_t seed;
+    QueryPerformanceCounter((LARGE_INTEGER *)&seed);
+    seed += 8682522807148012LL;
 
-	setSeed(seed);
+    setSeed(seed);
 }
 
 Random::Random(int64_t seed)
 {
-	setSeed(seed);
+    setSeed(seed);
 }
 
 void Random::setSeed(int64_t s)
@@ -32,36 +32,35 @@ int Random::next(int bits)
 
 void Random::nextBytes(byte *bytes, unsigned int count)
 {
-	for(unsigned int i = 0; i < count; i++ )
-	{
-		bytes[i] = static_cast<byte>(next(8));
-	}
+    for (unsigned int i = 0; i < count; i++)
+    {
+        bytes[i] = static_cast<byte>(next(8));
+    }
 }
 
 double Random::nextDouble()
 {
 
-    return ((static_cast<int64_t>(next(26)) << 27) + next(27))
-        / static_cast<double>(1LL << 53);
+    return ((static_cast<int64_t>(next(26)) << 27) + next(27)) / static_cast<double>(1LL << 53);
 }
 
 double Random::nextGaussian()
 {
     if (haveNextNextGaussian)
-	{
+    {
         haveNextNextGaussian = false;
         return nextNextGaussian;
     }
-	else
-	{
+    else
+    {
         double v1, v2, s;
         do
-		{
-            v1 = 2 * nextDouble() - 1;   // between -1.0 and 1.0
-            v2 = 2 * nextDouble() - 1;   // between -1.0 and 1.0
+        {
+            v1 = 2 * nextDouble() - 1; // between -1.0 and 1.0
+            v2 = 2 * nextDouble() - 1; // between -1.0 and 1.0
             s = v1 * v1 + v2 * v2;
         } while (s >= 1 || s == 0);
-        double multiplier = sqrt(-2 * log(s)/s);
+        double multiplier = sqrt(-2 * log(s) / s);
         nextNextGaussian = v2 * multiplier;
         haveNextNextGaussian = true;
         return v1 * multiplier;
@@ -70,37 +69,38 @@ double Random::nextGaussian()
 
 int Random::nextInt()
 {
-	return next(32);
+    return next(32);
 }
 
 int Random::nextInt(int n)
 {
-    assert (n>0);
+    assert(n > 0);
 
-
-    if ((n & -n) == n)  // i.e., n is a power of 2
+    if ((n & -n) == n) // i.e., n is a power of 2
+    {
         return static_cast<int>((static_cast<int64_t>(next(31)) * n) >> 31); // 4J Stu - Made int64_t instead of long
+    }
 
     int bits, val;
     do
-	{
+    {
         bits = next(31);
         val = bits % n;
-    } while(bits - val + (n-1) < 0);
+    } while (bits - val + (n - 1) < 0);
     return val;
 }
 
 float Random::nextFloat()
 {
-	return next(24) / static_cast<float>(1 << 24);
+    return next(24) / static_cast<float>(1 << 24);
 }
 
 int64_t Random::nextLong()
 {
-	return (static_cast<int64_t>(next(32)) << 32) + next(32);
+    return (static_cast<int64_t>(next(32)) << 32) + next(32);
 }
 
 bool Random::nextBoolean()
 {
-	return next(1) != 0;
+    return next(1) != 0;
 }

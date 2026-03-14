@@ -43,52 +43,59 @@
 #include <boost/static_assert.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
-#include <boost/spirit/home/classic/namespace.hpp>
-#include <boost/spirit/home/classic/meta/as_parser.hpp>
-#include <boost/spirit/home/classic/core/parser.hpp>
-#include <boost/spirit/home/classic/utility/impl/regex.ipp>
 #include <boost/detail/iterator.hpp> // for boost::detail::iterator_traits
+#include <boost/spirit/home/classic/core/parser.hpp>
+#include <boost/spirit/home/classic/meta/as_parser.hpp>
+#include <boost/spirit/home/classic/namespace.hpp>
+#include <boost/spirit/home/classic/utility/impl/regex.ipp>
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace spirit {
+namespace boost
+{
+namespace spirit
+{
 
 BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
 
 ///////////////////////////////////////////////////////////////////////////////
 // rxstrlit class
 template <typename CharT = char>
-struct rxstrlit : public parser<rxstrlit<CharT> > {
+struct rxstrlit : public parser<rxstrlit<CharT>>
+{
 
     typedef rxstrlit self_t;
 
     rxstrlit(CharT const *first, CharT const *last)
-    : rx(first, last) {}
+        : rx(first, last)
+    {
+    }
     rxstrlit(CharT const *first)
-    : rx(first) {}
+        : rx(first)
+    {
+    }
 
     template <typename ScannerT>
     typename parser_result<self_t, ScannerT>::type
-    parse(ScannerT const& scan) const
+    parse(ScannerT const &scan) const
     {
-    //  Due to limitations in the boost::regex library the iterators wrapped in
-    //  the ScannerT object should be at least bidirectional iterators. Plain
-    //  forward iterators do not work here.
+        //  Due to limitations in the boost::regex library the iterators wrapped in
+        //  the ScannerT object should be at least bidirectional iterators. Plain
+        //  forward iterators do not work here.
         typedef typename ScannerT::iterator_t iterator_t;
         typedef
             typename boost::detail::iterator_traits<iterator_t>::iterator_category
-            iterator_category;
+                iterator_category;
 
         BOOST_STATIC_ASSERT((
             boost::is_convertible<iterator_category,
-                std::bidirectional_iterator_tag>::value
-        ));
+                                  std::bidirectional_iterator_tag>::value));
 
         typedef typename parser_result<self_t, ScannerT>::type result_t;
         return impl::contiguous_parser_parse<result_t>(rx, scan, scan);
     }
 
-private:
-    impl::rx_parser<CharT> rx;   // contains the boost regular expression parser
+  private:
+    impl::rx_parser<CharT> rx; // contains the boost regular expression parser
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,17 +103,22 @@ private:
 template <typename CharT>
 inline rxstrlit<CharT>
 regex_p(CharT const *first)
-{ return rxstrlit<CharT>(first); }
+{
+    return rxstrlit<CharT>(first);
+}
 
 //////////////////////////////////
 template <typename CharT>
 inline rxstrlit<CharT>
 regex_p(CharT const *first, CharT const *last)
-{ return rxstrlit<CharT>(first, last); }
+{
+    return rxstrlit<CharT>(first, last);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 BOOST_SPIRIT_CLASSIC_NAMESPACE_END
 
-}} // namespace BOOST_SPIRIT_CLASSIC_NS
+} // namespace spirit
+} // namespace boost
 
 #endif // BOOST_SPIRIT_REGEX_HPP

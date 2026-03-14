@@ -10,58 +10,64 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
 #include <boost/xpressive/detail/core/state.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // charset_matcher
-    //
-    template<typename Traits, typename ICase, typename CharSet>
-    struct charset_matcher
-      : quant_style_fixed_width<1>
+///////////////////////////////////////////////////////////////////////////////
+// charset_matcher
+//
+template <typename Traits, typename ICase, typename CharSet>
+struct charset_matcher
+    : quant_style_fixed_width<1>
+{
+    typedef typename Traits::char_type char_type;
+    typedef Traits traits_type;
+    typedef ICase icase_type;
+
+    charset_matcher(CharSet const &charset = CharSet())
+        : charset_(charset)
     {
-        typedef typename Traits::char_type char_type;
-        typedef Traits traits_type;
-        typedef ICase icase_type;
+    }
 
-        charset_matcher(CharSet const &charset = CharSet())
-          : charset_(charset)
+    void inverse()
+    {
+        this->charset_.inverse();
+    }
+
+    template <typename BidiIter, typename Next>
+    bool match(match_state<BidiIter> &state, Next const &next) const
+    {
+        if (state.eos() || !this->charset_.test(*state.cur_, traits_cast<Traits>(state), icase_type()))
         {
-        }
-
-        void inverse()
-        {
-            this->charset_.inverse();
-        }
-
-        template<typename BidiIter, typename Next>
-        bool match(match_state<BidiIter> &state, Next const &next) const
-        {
-            if(state.eos() || !this->charset_.test(*state.cur_, traits_cast<Traits>(state), icase_type()))
-            {
-                return false;
-            }
-
-            ++state.cur_;
-            if(next.match(state))
-            {
-                return true;
-            }
-
-            --state.cur_;
             return false;
         }
 
-        CharSet charset_;
-    };
+        ++state.cur_;
+        if (next.match(state))
+        {
+            return true;
+        }
 
-}}}
+        --state.cur_;
+        return false;
+    }
+
+    CharSet charset_;
+};
+
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

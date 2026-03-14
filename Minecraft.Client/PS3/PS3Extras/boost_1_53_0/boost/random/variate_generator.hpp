@@ -19,11 +19,13 @@
 
 #include <boost/random/detail/disable_warnings.hpp>
 
-namespace boost {
+namespace boost
+{
 
 /// \cond hide_private_members
 
-namespace random {
+namespace random
+{
 
 ///\endcond
 
@@ -47,12 +49,13 @@ namespace random {
  * is constant. No function described in this section except
  * the constructor throws an exception.
  */
-template<class Engine, class Distribution>
+template <class Engine, class Distribution>
 class variate_generator
 {
-private:
+  private:
     typedef boost::random::detail::ptr_helper<Engine> helper_type;
-public:
+
+  public:
     typedef typename helper_type::value_type engine_value_type;
     typedef Engine engine_type;
     typedef Distribution distribution_type;
@@ -67,46 +70,72 @@ public:
      * Distribution throws.
      */
     variate_generator(Engine e, Distribution d)
-      : _eng(e), _dist(d) { }
+        : _eng(e), _dist(d)
+    {
+    }
 
     /** Returns: distribution()(engine()) */
-    result_type operator()() { return _dist(engine()); }
+    result_type operator()()
+    {
+        return _dist(engine());
+    }
     /**
      * Returns: distribution()(engine(), value).
      */
-    template<class T>
-    result_type operator()(const T& value) { return _dist(engine(), value); }
+    template <class T>
+    result_type operator()(const T &value)
+    {
+        return _dist(engine(), value);
+    }
 
     /**
      * Returns: A reference to the associated uniform random number generator.
      */
-    engine_value_type& engine() { return helper_type::ref(_eng); }
+    engine_value_type &engine()
+    {
+        return helper_type::ref(_eng);
+    }
     /**
      * Returns: A reference to the associated uniform random number generator.
      */
-    const engine_value_type& engine() const { return helper_type::ref(_eng); }
+    const engine_value_type &engine() const
+    {
+        return helper_type::ref(_eng);
+    }
 
     /** Returns: A reference to the associated \random_distribution. */
-    distribution_type& distribution() { return _dist; }
+    distribution_type &distribution()
+    {
+        return _dist;
+    }
     /**
      * Returns: A reference to the associated random distribution.
      */
-    const distribution_type& distribution() const { return _dist; }
+    const distribution_type &distribution() const
+    {
+        return _dist;
+    }
 
     /**
      * Precondition: distribution().min() is well-formed
      *
      * Returns: distribution().min()
      */
-    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION () const { return (distribution().min)(); }
+    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return (distribution().min)();
+    }
     /**
      * Precondition: distribution().max() is well-formed
      *
      * Returns: distribution().max()
      */
-    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION () const { return (distribution().max)(); }
+    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return (distribution().max)();
+    }
 
-private:
+  private:
     Engine _eng;
     distribution_type _dist;
 };

@@ -10,22 +10,23 @@ Copyright (c) 2010-2010: Joachim Faulhaber
 
 #include <boost/icl/concept/interval.hpp>
 
-namespace boost{ namespace icl
+namespace boost
+{
+namespace icl
 {
 
-/// Comparison functor on intervals implementing an overlap free less 
+/// Comparison functor on intervals implementing an overlap free less
 template <class IntervalT>
-struct exclusive_less_than 
+struct exclusive_less_than
 {
     /** Operator <tt>operator()</tt> implements a strict weak ordering on intervals. */
-    bool operator()(const IntervalT& left, const IntervalT& right)const
-    { 
-        return icl::non_empty::exclusive_less(left, right); 
+    bool operator()(const IntervalT &left, const IntervalT &right) const
+    {
+        return icl::non_empty::exclusive_less(left, right);
     }
 };
 
-}} // namespace boost icl
+} // namespace icl
+} // namespace boost
 
 #endif
-
-

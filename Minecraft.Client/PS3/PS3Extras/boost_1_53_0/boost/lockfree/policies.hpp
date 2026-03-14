@@ -9,18 +9,29 @@
 #ifndef BOOST_LOCKFREE_POLICIES_HPP_INCLUDED
 #define BOOST_LOCKFREE_POLICIES_HPP_INCLUDED
 
-#include <boost/parameter.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/size_t.hpp>
 #include <boost/mpl/void.hpp>
+#include <boost/parameter.hpp>
 
-namespace boost {
-namespace lockfree {
+namespace boost
+{
+namespace lockfree
+{
 
 #ifndef BOOST_DOXYGEN_INVOKED
-namespace tag { struct allocator ; }
-namespace tag { struct fixed_sized; }
-namespace tag { struct capacity; }
+namespace tag
+{
+struct allocator;
+}
+namespace tag
+{
+struct fixed_sized;
+}
+namespace tag
+{
+struct capacity;
+}
 
 #endif
 
@@ -32,28 +43,27 @@ namespace tag { struct capacity; }
  *  This implies that a data structure is bounded.
  * */
 template <bool IsFixedSized>
-struct fixed_sized:
-    boost::parameter::template_keyword<tag::fixed_sized, boost::mpl::bool_<IsFixedSized> >
-{};
+struct fixed_sized : boost::parameter::template_keyword<tag::fixed_sized, boost::mpl::bool_<IsFixedSized>>
+{
+};
 
 /** Sets the \b capacity of a data structure at compile-time.
  *
  * This implies that a data structure is bounded and fixed-sized.
  * */
 template <size_t Size>
-struct capacity:
-    boost::parameter::template_keyword<tag::capacity, boost::mpl::size_t<Size> >
-{};
+struct capacity : boost::parameter::template_keyword<tag::capacity, boost::mpl::size_t<Size>>
+{
+};
 
 /** Defines the \b allocator type of a data structure.
  * */
 template <class Alloc>
-struct allocator:
-    boost::parameter::template_keyword<tag::allocator, Alloc>
-{};
+struct allocator : boost::parameter::template_keyword<tag::allocator, Alloc>
+{
+};
 
-}
-}
+} // namespace lockfree
+} // namespace boost
 
 #endif /* BOOST_LOCKFREE_POLICIES_HPP_INCLUDED */
-

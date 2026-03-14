@@ -14,16 +14,15 @@
 #ifndef BOOST_GEOMETRY_CORE_MUTABLE_RANGE_HPP
 #define BOOST_GEOMETRY_CORE_MUTABLE_RANGE_HPP
 
-
 #include <cstddef>
 
-#include <boost/type_traits/remove_reference.hpp>
 #include <boost/range.hpp>
+#include <boost/type_traits/remove_reference.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 namespace traits
 {
@@ -36,9 +35,8 @@ namespace traits
 template <typename Range>
 struct rvalue_type
 {
-    typedef typename boost::remove_reference<Range>::type& type;
+    typedef typename boost::remove_reference<Range>::type &type;
 };
-
 
 /*!
 \brief Traits class to clear a geometry
@@ -53,7 +51,6 @@ struct clear
     }
 };
 
-
 /*!
 \brief Traits class to append a point to a range (ring, linestring, multi*)
 \ingroup mutable_range
@@ -61,18 +58,15 @@ struct clear
 template <typename Range>
 struct push_back
 {
-    typedef typename boost::range_value
-        <
-            typename boost::remove_reference<Range>::type
-        >::type item_type;
+    typedef typename boost::range_value<
+        typename boost::remove_reference<Range>::type>::type item_type;
 
     static inline void apply(typename rvalue_type<Range>::type range,
-                 item_type const& item)
+                             item_type const &item)
     {
         range.push_back(item);
     }
 };
-
 
 /*!
 \brief Traits class to append a point to a range (ring, linestring, multi*)
@@ -82,17 +76,15 @@ template <typename Range>
 struct resize
 {
     static inline void apply(typename rvalue_type<Range>::type range,
-                std::size_t new_size)
+                             std::size_t new_size)
     {
         range.resize(new_size);
     }
 };
 
-
 } // namespace traits
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_CORE_MUTABLE_RANGE_HPP

@@ -9,16 +9,16 @@
 #ifndef BOOST_RANGE_ALGORITHM_SORT_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_SORT_HPP_INCLUDED
 
+#include <algorithm>
 #include <boost/concept_check.hpp>
 #include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/concepts.hpp>
-#include <algorithm>
+#include <boost/range/end.hpp>
 
 namespace boost
 {
-    namespace range
-    {
+namespace range
+{
 
 /// \brief template function sort
 ///
@@ -26,43 +26,43 @@ namespace boost
 ///
 /// \pre RandomAccessRange is a model of the RandomAccessRangeConcept
 /// \pre BinaryPredicate is a model of the BinaryPredicateConcept
-template<class RandomAccessRange>
-inline RandomAccessRange& sort(RandomAccessRange& rng)
+template <class RandomAccessRange>
+inline RandomAccessRange &sort(RandomAccessRange &rng)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( RandomAccessRangeConcept<RandomAccessRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((RandomAccessRangeConcept<RandomAccessRange>));
     std::sort(boost::begin(rng), boost::end(rng));
     return rng;
 }
 
 /// \overload
-template<class RandomAccessRange>
-inline const RandomAccessRange& sort(const RandomAccessRange& rng)
+template <class RandomAccessRange>
+inline const RandomAccessRange &sort(const RandomAccessRange &rng)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( RandomAccessRangeConcept<const RandomAccessRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((RandomAccessRangeConcept<const RandomAccessRange>));
     std::sort(boost::begin(rng), boost::end(rng));
     return rng;
 }
 
 /// \overload
-template<class RandomAccessRange, class BinaryPredicate>
-inline RandomAccessRange& sort(RandomAccessRange& rng, BinaryPredicate pred)
+template <class RandomAccessRange, class BinaryPredicate>
+inline RandomAccessRange &sort(RandomAccessRange &rng, BinaryPredicate pred)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( RandomAccessRangeConcept<RandomAccessRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((RandomAccessRangeConcept<RandomAccessRange>));
     std::sort(boost::begin(rng), boost::end(rng), pred);
     return rng;
 }
 
 /// \overload
-template<class RandomAccessRange, class BinaryPredicate>
-inline const RandomAccessRange& sort(const RandomAccessRange& rng, BinaryPredicate pred)
+template <class RandomAccessRange, class BinaryPredicate>
+inline const RandomAccessRange &sort(const RandomAccessRange &rng, BinaryPredicate pred)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( RandomAccessRangeConcept<const RandomAccessRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((RandomAccessRangeConcept<const RandomAccessRange>));
     std::sort(boost::begin(rng), boost::end(rng), pred);
     return rng;
 }
 
-    } // namespace range
-    using range::sort;
+} // namespace range
+using range::sort;
 } // namespace boost
 
 #endif // include guard

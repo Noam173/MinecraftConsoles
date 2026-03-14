@@ -18,11 +18,16 @@
 
 #include <boost/geometry/strategies/tags.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
-namespace strategy { namespace area { namespace services
+namespace strategy
+{
+namespace area
+{
+namespace services
 {
 
 /*!
@@ -34,17 +39,15 @@ namespace strategy { namespace area { namespace services
 template <typename Tag, typename PointOfSegment>
 struct default_strategy
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE
-            , (types<PointOfSegment>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE, (types<PointOfSegment>));
 };
 
+} // namespace services
+} // namespace area
+} // namespace strategy
 
-}}} // namespace strategy::area::services
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_AREA_HPP

@@ -7,30 +7,32 @@
 #if !defined(BOOST_FUSION_SIZE_IMPL_09242011_1744)
 #define BOOST_FUSION_SIZE_IMPL_09242011_1744
 
-#include <tuple>
 #include <boost/mpl/int.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <tuple>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct std_tuple_tag;
+namespace fusion
+{
+struct std_tuple_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct size_impl;
+
+template <>
+struct size_impl<std_tuple_tag>
+{
+    template <typename Sequence>
+    struct apply : mpl::int_<std::tuple_size<
+                       typename remove_const<Sequence>::type>::value>
     {
-        template<typename T>
-        struct size_impl;
-
-        template <>
-        struct size_impl<std_tuple_tag>
-        {
-            template <typename Sequence>
-            struct apply :
-                mpl::int_<std::tuple_size<
-                    typename remove_const<Sequence>::type>::value
-                >
-            {};
-        };
-    }
-}}
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

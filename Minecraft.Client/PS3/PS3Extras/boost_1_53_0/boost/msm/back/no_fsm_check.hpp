@@ -15,23 +15,28 @@
 
 #include <boost/msm/back/metafunctions.hpp>
 
-namespace boost { namespace msm { namespace back
+namespace boost
 {
-    struct no_fsm_check
+namespace msm
+{
+namespace back
+{
+struct no_fsm_check
+{
+    typedef int fsm_check;
+    // no fsm structure checking
+    template <class Fsm>
+    static void check_orthogonality()
     {
-        typedef int fsm_check;
-        // no fsm structure checking
-        template <class Fsm>
-        static void check_orthogonality()
-        {
-        }
-        template <class Fsm>
-        static void check_unreachable_states()
-        {
-        }
-    };
+    }
+    template <class Fsm>
+    static void check_unreachable_states()
+    {
+    }
+};
 
-} } }//boost::msm::back
+} // namespace back
+} // namespace msm
+} // namespace boost
 
-
-#endif //BOOST_MSM_BACK_NO_FSM_CHECK_H
+#endif // BOOST_MSM_BACK_NO_FSM_CHECK_H

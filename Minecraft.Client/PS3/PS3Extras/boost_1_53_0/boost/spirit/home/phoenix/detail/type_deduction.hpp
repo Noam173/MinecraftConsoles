@@ -175,323 +175,270 @@
     result types.
 
 ==============================================================================*/
-#include <boost/mpl/vector/vector20.hpp>
+#include <boost/mpl/and.hpp>
 #include <boost/mpl/at.hpp>
+#include <boost/mpl/identity.hpp>
 #include <boost/mpl/not.hpp>
 #include <boost/mpl/or.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/mpl/identity.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-#include <boost/type_traits/add_reference.hpp>
-#include <boost/type_traits/remove_cv.hpp>
-#include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/is_reference.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/is_array.hpp>
-#include <boost/type_traits/is_pointer.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/static_assert.hpp>
+#include <boost/mpl/vector/vector20.hpp>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/spirit/home/phoenix/detail/local_reference.hpp>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/add_reference.hpp>
+#include <boost/type_traits/is_array.hpp>
+#include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/is_pointer.hpp>
+#include <boost/type_traits/is_reference.hpp>
+#include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_cv.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+#include <boost/utility/enable_if.hpp>
 
 namespace boost
 {
-    struct error_cant_deduce_type {};
-}
-
-namespace boost { namespace type_deduction_detail
+struct error_cant_deduce_type
 {
-    typedef char(&bool_value_type)[1];
-    typedef char(&int_value_type)[2];
-    typedef char(&uint_value_type)[3];
-    typedef char(&double_value_type)[4];
+};
+} // namespace boost
 
-    typedef char(&bool_reference_type)[5];
-    typedef char(&int_reference_type)[6];
-    typedef char(&uint_reference_type)[7];
-    typedef char(&double_reference_type)[8];
+namespace boost
+{
+namespace type_deduction_detail
+{
+typedef char (&bool_value_type)[1];
+typedef char (&int_value_type)[2];
+typedef char (&uint_value_type)[3];
+typedef char (&double_value_type)[4];
 
-    typedef char(&x_value_type)[9];
-    typedef char(&x_reference_type)[10];
-    typedef char(&x_const_pointer_type)[11];
-    typedef char(&x_pointer_type)[12];
+typedef char (&bool_reference_type)[5];
+typedef char (&int_reference_type)[6];
+typedef char (&uint_reference_type)[7];
+typedef char (&double_reference_type)[8];
 
-    typedef char(&y_value_type)[13];
-    typedef char(&y_reference_type)[14];
-    typedef char(&y_const_pointer_type)[15];
-    typedef char(&y_pointer_type)[16];
+typedef char (&x_value_type)[9];
+typedef char (&x_reference_type)[10];
+typedef char (&x_const_pointer_type)[11];
+typedef char (&x_pointer_type)[12];
 
-    typedef char(&container_reference_type)[17];
-    typedef char(&container_const_reference_type)[18];
-    typedef char(&container_mapped_type)[19];
+typedef char (&y_value_type)[13];
+typedef char (&y_reference_type)[14];
+typedef char (&y_const_pointer_type)[15];
+typedef char (&y_pointer_type)[16];
 
-    typedef char(&cant_deduce_type)[20];
+typedef char (&container_reference_type)[17];
+typedef char (&container_const_reference_type)[18];
+typedef char (&container_mapped_type)[19];
 
-    template <typename T, typename Plain = typename remove_cv<T>::type>
-    struct is_basic
-        : mpl::or_<
-            is_same<Plain, bool>
-          , is_same<Plain, int>
-          , is_same<Plain, unsigned>
-          , is_same<Plain, double>
-        > {};
+typedef char (&cant_deduce_type)[20];
 
-    template <typename C>
-    struct reference_type
-    {
-        typedef typename C::reference type;
-    };
+template <typename T, typename Plain = typename remove_cv<T>::type>
+struct is_basic
+    : mpl::or_<
+          is_same<Plain, bool>, is_same<Plain, int>, is_same<Plain, unsigned>, is_same<Plain, double>>
+{
+};
 
-    template <typename T>
-    struct reference_type<T const>
-        : reference_type<T> {};
+template <typename C>
+struct reference_type
+{
+    typedef typename C::reference type;
+};
 
-    template <typename T, std::size_t N>
-    struct reference_type<T[N]>
-    {
-        typedef T& type;
-    };
+template <typename T>
+struct reference_type<T const>
+    : reference_type<T>
+{
+};
 
-    template <typename T>
-    struct reference_type<T*>
-    {
-        typedef T& type;
-    };
+template <typename T, std::size_t N>
+struct reference_type<T[N]>
+{
+    typedef T &type;
+};
 
-    template <typename T>
-    struct reference_type<T* const>
-    {
-        typedef T const& type;
-    };
+template <typename T>
+struct reference_type<T *>
+{
+    typedef T &type;
+};
 
-    template <typename C>
-    struct const_reference_type
-    {
-        typedef typename C::const_reference type;
-    };
+template <typename T>
+struct reference_type<T *const>
+{
+    typedef T const &type;
+};
 
-    template <typename C>
-    struct mapped_type
-    {
-        typedef typename C::mapped_type type;
-    };
+template <typename C>
+struct const_reference_type
+{
+    typedef typename C::const_reference type;
+};
 
-    struct asymmetric;
+template <typename C>
+struct mapped_type
+{
+    typedef typename C::mapped_type type;
+};
 
-    template <typename X, typename Y>
-    cant_deduce_type
-    test(...); // The black hole !!!
+struct asymmetric;
 
-    template <typename X, typename Y>
-    bool_value_type
-    test(bool const&);
+template <typename X, typename Y>
+cant_deduce_type
+test(...); // The black hole !!!
 
-    template <typename X, typename Y>
-    int_value_type
-    test(int const&);
+template <typename X, typename Y>
+bool_value_type
+test(bool const &);
 
-    template <typename X, typename Y>
-    uint_value_type
-    test(unsigned const&);
+template <typename X, typename Y>
+int_value_type
+test(int const &);
 
-    template <typename X, typename Y>
-    double_value_type
-    test(double const&);
+template <typename X, typename Y>
+uint_value_type
+test(unsigned const &);
 
-    template <typename X, typename Y>
-    bool_reference_type
-    test(bool&);
+template <typename X, typename Y>
+double_value_type
+test(double const &);
 
-    template <typename X, typename Y>
-    int_reference_type
-    test(int&);
+template <typename X, typename Y>
+bool_reference_type
+test(bool &);
 
-    template <typename X, typename Y>
-    uint_reference_type
-    test(unsigned&);
+template <typename X, typename Y>
+int_reference_type
+test(int &);
 
-    template <typename X, typename Y>
-    double_reference_type
-    test(double&);
+template <typename X, typename Y>
+uint_reference_type
+test(unsigned &);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        mpl::or_<is_basic<X>, is_const<X> >
-      , x_value_type
-    >::type
-    test(X const&);
+template <typename X, typename Y>
+double_reference_type
+test(double &);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        is_basic<X>
-      , x_reference_type
-    >::type
-    test(X&);
+template <typename X, typename Y>
+typename disable_if<
+    mpl::or_<is_basic<X>, is_const<X>>, x_value_type>::type
+test(X const &);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        mpl::or_<
-            is_basic<X>
-          , is_const<X>
-        >
-      , x_const_pointer_type
-    >::type
-    test(X const*);
+template <typename X, typename Y>
+typename disable_if<
+    is_basic<X>, x_reference_type>::type
+test(X &);
 
-    template <typename X, typename Y>
-    x_pointer_type
-    test(X*);
+template <typename X, typename Y>
+typename disable_if<
+    mpl::or_<
+        is_basic<X>, is_const<X>>,
+    x_const_pointer_type>::type
+test(X const *);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        mpl::or_<
-            is_basic<Y>
-          , is_same<Y, asymmetric>
-          , is_const<Y>
-          , is_same<X, Y>
-        >
-      , y_value_type
-    >::type
-    test(Y const&);
+template <typename X, typename Y>
+x_pointer_type
+test(X *);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        mpl::or_<
-            is_basic<Y>
-          , is_same<Y, asymmetric>
-          , is_same<X, Y>
-        >
-      , y_reference_type
-    >::type
-    test(Y&);
+template <typename X, typename Y>
+typename disable_if<
+    mpl::or_<
+        is_basic<Y>, is_same<Y, asymmetric>, is_const<Y>, is_same<X, Y>>,
+    y_value_type>::type
+test(Y const &);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        mpl::or_<
-            is_same<Y, asymmetric>
-          , is_const<Y>
-          , is_same<X, Y>
-        >
-      , y_const_pointer_type
-    >::type
-    test(Y const*);
+template <typename X, typename Y>
+typename disable_if<
+    mpl::or_<
+        is_basic<Y>, is_same<Y, asymmetric>, is_same<X, Y>>,
+    y_reference_type>::type
+test(Y &);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        mpl::or_<
-            is_same<Y, asymmetric>
-          , is_same<X, Y>
-        >
-      , y_pointer_type
-    >::type
-    test(Y*);
+template <typename X, typename Y>
+typename disable_if<
+    mpl::or_<
+        is_same<Y, asymmetric>, is_const<Y>, is_same<X, Y>>,
+    y_const_pointer_type>::type
+test(Y const *);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        mpl::or_<
-            is_basic<typename X::value_type>
-          , is_same<typename add_reference<X>::type, typename X::reference>
-        >
-      , container_reference_type
-    >::type
+template <typename X, typename Y>
+typename disable_if<
+    mpl::or_<
+        is_same<Y, asymmetric>, is_same<X, Y>>,
+    y_pointer_type>::type
+test(Y *);
+
+template <typename X, typename Y>
+typename disable_if<
+    mpl::or_<
+        is_basic<typename X::value_type>, is_same<typename add_reference<X>::type, typename X::reference>>,
+    container_reference_type>::type
     test(typename X::reference);
 
-    template <typename X, typename Y, typename Z>
-    typename enable_if<
-        mpl::and_<
-            mpl::or_<is_array<X>, is_pointer<X> >
-          , mpl::not_<is_basic<Z> >
-          , mpl::not_<is_same<X, Z> >
-        >
-      , container_reference_type
-    >::type
-    test(Z&);
+template <typename X, typename Y, typename Z>
+typename enable_if<
+    mpl::and_<
+        mpl::or_<is_array<X>, is_pointer<X>>, mpl::not_<is_basic<Z>>, mpl::not_<is_same<X, Z>>>,
+    container_reference_type>::type
+test(Z &);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        mpl::or_<
-            is_basic<typename X::value_type>
-          , is_same<typename add_reference<X>::type, typename X::const_reference>
-        >
-      , container_const_reference_type
-    >::type
+template <typename X, typename Y>
+typename disable_if<
+    mpl::or_<
+        is_basic<typename X::value_type>, is_same<typename add_reference<X>::type, typename X::const_reference>>,
+    container_const_reference_type>::type
     test(typename X::const_reference);
 
-    template <typename X, typename Y>
-    typename disable_if<
-        is_basic<typename X::mapped_type>
-      , container_mapped_type
-    >::type
+template <typename X, typename Y>
+typename disable_if<
+    is_basic<typename X::mapped_type>, container_mapped_type>::type
     test(typename X::mapped_type);
 
-    template <typename X, typename Y>
-    struct base_result_of
-    {
-        typedef typename phoenix::detail::unwrap_local_reference<X>::type x_type_;
-        typedef typename phoenix::detail::unwrap_local_reference<Y>::type y_type_;
-        typedef typename remove_reference<x_type_>::type x_type;
-        typedef typename remove_reference<y_type_>::type y_type;
+template <typename X, typename Y>
+struct base_result_of
+{
+    typedef typename phoenix::detail::unwrap_local_reference<X>::type x_type_;
+    typedef typename phoenix::detail::unwrap_local_reference<Y>::type y_type_;
+    typedef typename remove_reference<x_type_>::type x_type;
+    typedef typename remove_reference<y_type_>::type y_type;
 
-        typedef mpl::vector20<
-            mpl::identity<bool>
-          , mpl::identity<int>
-          , mpl::identity<unsigned>
-          , mpl::identity<double>
-          , mpl::identity<bool&>
-          , mpl::identity<int&>
-          , mpl::identity<unsigned&>
-          , mpl::identity<double&>
-          , mpl::identity<x_type>
-          , mpl::identity<x_type&>
-          , mpl::identity<x_type const*>
-          , mpl::identity<x_type*>
-          , mpl::identity<y_type>
-          , mpl::identity<y_type&>
-          , mpl::identity<y_type const*>
-          , mpl::identity<y_type*>
-          , reference_type<x_type>
-          , const_reference_type<x_type>
-          , mapped_type<x_type>
-          , mpl::identity<error_cant_deduce_type>
-        >
+    typedef mpl::vector20<
+        mpl::identity<bool>, mpl::identity<int>, mpl::identity<unsigned>, mpl::identity<double>, mpl::identity<bool &>, mpl::identity<int &>, mpl::identity<unsigned &>, mpl::identity<double &>, mpl::identity<x_type>, mpl::identity<x_type &>, mpl::identity<x_type const *>, mpl::identity<x_type *>, mpl::identity<y_type>, mpl::identity<y_type &>, mpl::identity<y_type const *>, mpl::identity<y_type *>, reference_type<x_type>, const_reference_type<x_type>, mapped_type<x_type>, mpl::identity<error_cant_deduce_type>>
         types;
+};
+
+} // namespace type_deduction_detail
+} // namespace boost
+
+#define BOOST_RESULT_OF_COMMON(expr, name, Y, SYMMETRY)                              \
+    struct name                                                                      \
+    {                                                                                \
+        typedef type_deduction_detail::base_result_of<X, Y> base_type;               \
+        static typename base_type::x_type x;                                         \
+        static typename base_type::y_type y;                                         \
+                                                                                     \
+        BOOST_STATIC_CONSTANT(int,                                                   \
+                              size = sizeof(                                         \
+                                  type_deduction_detail::test<                       \
+                                      typename base_type::x_type, SYMMETRY>(expr))); \
+                                                                                     \
+        BOOST_STATIC_CONSTANT(int, index = (size / sizeof(char)) - 1);               \
+                                                                                     \
+        typedef typename mpl::at_c<                                                  \
+            typename base_type::types, index>::type id;                              \
+        typedef typename id::type type;                                              \
     };
 
-}} // namespace boost::type_deduction_detail
+#define BOOST_UNARY_RESULT_OF(expr, name) \
+    template <typename X>                 \
+    BOOST_RESULT_OF_COMMON(expr, name,    \
+                           type_deduction_detail::asymmetric, type_deduction_detail::asymmetric)
 
-#define BOOST_RESULT_OF_COMMON(expr, name, Y, SYMMETRY)                         \
-    struct name                                                                 \
-    {                                                                           \
-        typedef type_deduction_detail::base_result_of<X, Y> base_type;          \
-        static typename base_type::x_type x;                                    \
-        static typename base_type::y_type y;                                    \
-                                                                                \
-        BOOST_STATIC_CONSTANT(int,                                              \
-            size = sizeof(                                                      \
-                type_deduction_detail::test<                                    \
-                    typename base_type::x_type                                  \
-                  , SYMMETRY                                                    \
-                >(expr)                                                         \
-            ));                                                                 \
-                                                                                \
-        BOOST_STATIC_CONSTANT(int, index = (size / sizeof(char)) - 1);          \
-                                                                                \
-        typedef typename mpl::at_c<                                             \
-            typename base_type::types, index>::type id;                         \
-        typedef typename id::type type;                                         \
-    };
-
-#define BOOST_UNARY_RESULT_OF(expr, name)                                       \
-    template <typename X>                                                       \
-    BOOST_RESULT_OF_COMMON(expr, name,                                          \
-        type_deduction_detail::asymmetric, type_deduction_detail::asymmetric)
-
-#define BOOST_BINARY_RESULT_OF(expr, name)                                      \
-    template <typename X, typename Y>                                           \
+#define BOOST_BINARY_RESULT_OF(expr, name) \
+    template <typename X, typename Y>      \
     BOOST_RESULT_OF_COMMON(expr, name, Y, typename base_type::y_type)
 
-#define BOOST_ASYMMETRIC_BINARY_RESULT_OF(expr, name)                           \
-    template <typename X, typename Y>                                           \
+#define BOOST_ASYMMETRIC_BINARY_RESULT_OF(expr, name) \
+    template <typename X, typename Y>                 \
     BOOST_RESULT_OF_COMMON(expr, name, Y, type_deduction_detail::asymmetric)
 
 #endif

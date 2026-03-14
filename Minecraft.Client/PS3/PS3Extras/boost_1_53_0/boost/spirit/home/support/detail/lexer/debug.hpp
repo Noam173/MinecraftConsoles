@@ -6,114 +6,116 @@
 #ifndef BOOST_LEXER_DEBUG_HPP
 #define BOOST_LEXER_DEBUG_HPP
 
-#include <map>
-#include <ostream>
 #include "rules.hpp"
 #include "size_t.hpp"
 #include "state_machine.hpp"
 #include "string_token.hpp"
+#include <map>
+#include <ostream>
 #include <vector>
 
 namespace boost
 {
 namespace lexer
 {
-template<typename CharT>
+template <typename CharT>
 class basic_debug
 {
-public:
+  public:
     typedef std::basic_ostream<CharT> ostream;
     typedef std::basic_string<CharT> string;
     typedef std::vector<std::size_t> size_t_vector;
 
-    static void escape_control_chars (const string &in_, string &out_)
+    static void escape_control_chars(const string &in_, string &out_)
     {
-        const CharT *ptr_ = in_.c_str ();
-        std::size_t size_ = in_.size ();
+        const CharT *ptr_ = in_.c_str();
+        std::size_t size_ = in_.size();
 
 #if defined _MSC_VER && _MSC_VER <= 1200
-        out_.erase ();
+        out_.erase();
 #else
-        out_.clear ();
+        out_.clear();
 #endif
 
         while (size_)
         {
-            basic_string_token<CharT>::escape_char (*ptr_, out_);
+            basic_string_token<CharT>::escape_char(*ptr_, out_);
             ++ptr_;
             --size_;
         }
     }
 
-    static void dump (const basic_state_machine<CharT> &state_machine_,
-        basic_rules<CharT> &rules_, ostream &stream_)
+    static void dump(const basic_state_machine<CharT> &state_machine_,
+                     basic_rules<CharT> &rules_, ostream &stream_)
     {
         typename basic_state_machine<CharT>::iterator iter_ =
-            state_machine_.begin ();
+            state_machine_.begin();
         typename basic_state_machine<CharT>::iterator end_ =
-            state_machine_.end ();
+            state_machine_.end();
 
-        for (std::size_t dfa_ = 0, dfas_ = state_machine_.size ();
-            dfa_ < dfas_; ++dfa_)
+        for (std::size_t dfa_ = 0, dfas_ = state_machine_.size();
+             dfa_ < dfas_; ++dfa_)
         {
-            lexer_state (stream_);
-            stream_ << rules_.state (dfa_) << std::endl << std::endl;
+            lexer_state(stream_);
+            stream_ << rules_.state(dfa_) << std::endl
+                    << std::endl;
 
-            dump_ex (iter_, stream_);
+            dump_ex(iter_, stream_);
         }
     }
 
-    static void dump (const basic_state_machine<CharT> &state_machine_,
-        ostream &stream_)
+    static void dump(const basic_state_machine<CharT> &state_machine_,
+                     ostream &stream_)
     {
         typename basic_state_machine<CharT>::iterator iter_ =
-            state_machine_.begin ();
+            state_machine_.begin();
         typename basic_state_machine<CharT>::iterator end_ =
-            state_machine_.end ();
+            state_machine_.end();
 
-        for (std::size_t dfa_ = 0, dfas_ = state_machine_.size ();
-            dfa_ < dfas_; ++dfa_)
+        for (std::size_t dfa_ = 0, dfas_ = state_machine_.size();
+             dfa_ < dfas_; ++dfa_)
         {
-            lexer_state (stream_);
-            stream_ << dfa_ << std::endl << std::endl;
+            lexer_state(stream_);
+            stream_ << dfa_ << std::endl
+                    << std::endl;
 
-            dump_ex (iter_, stream_);
+            dump_ex(iter_, stream_);
         }
     }
 
-protected:
+  protected:
     typedef std::basic_stringstream<CharT> stringstream;
 
-    static void dump_ex (typename basic_state_machine<CharT>::iterator &iter_,
-        ostream &stream_)
+    static void dump_ex(typename basic_state_machine<CharT>::iterator &iter_,
+                        ostream &stream_)
     {
         const std::size_t states_ = iter_->states;
 
         for (std::size_t i_ = 0; i_ < states_; ++i_)
         {
-            state (stream_);
+            state(stream_);
             stream_ << i_ << std::endl;
 
             if (iter_->end_state)
             {
-                end_state (stream_);
+                end_state(stream_);
                 stream_ << iter_->id;
-                unique_id (stream_);
+                unique_id(stream_);
                 stream_ << iter_->unique_id;
-                dfa (stream_);
+                dfa(stream_);
                 stream_ << iter_->goto_dfa;
                 stream_ << std::endl;
             }
 
             if (iter_->bol_index != npos)
             {
-                bol (stream_);
+                bol(stream_);
                 stream_ << iter_->bol_index << std::endl;
             }
 
             if (iter_->eol_index != npos)
             {
-                eol (stream_);
+                eol(stream_);
                 stream_ << iter_->eol_index << std::endl;
             }
 
@@ -128,25 +130,25 @@ protected:
             {
                 std::size_t goto_state_ = iter_->goto_state;
 
-                if (iter_->token.any ())
+                if (iter_->token.any())
                 {
-                    any (stream_);
+                    any(stream_);
                 }
                 else
                 {
-                    open_bracket (stream_);
+                    open_bracket(stream_);
 
                     if (iter_->token._negated)
                     {
-                        negated (stream_);
+                        negated(stream_);
                     }
 
                     string charset_;
                     CharT c_ = 0;
 
-                    escape_control_chars (iter_->token._charset,
-                        charset_);
-                    c_ = *charset_.c_str ();
+                    escape_control_chars(iter_->token._charset,
+                                         charset_);
+                    c_ = *charset_.c_str();
 
                     if (!iter_->token._negated &&
                         (c_ == '^' || c_ == ']'))
@@ -155,7 +157,7 @@ protected:
                     }
 
                     stream_ << charset_;
-                    close_bracket (stream_);
+                    close_bracket(stream_);
                 }
 
                 stream_ << goto_state_ << std::endl;
@@ -166,112 +168,112 @@ protected:
         }
     }
 
-    static void lexer_state (std::ostream &stream_)
+    static void lexer_state(std::ostream &stream_)
     {
         stream_ << "Lexer state: ";
     }
 
-    static void lexer_state (std::wostream &stream_)
+    static void lexer_state(std::wostream &stream_)
     {
         stream_ << L"Lexer state: ";
     }
 
-    static void state (std::ostream &stream_)
+    static void state(std::ostream &stream_)
     {
         stream_ << "State: ";
     }
 
-    static void state (std::wostream &stream_)
+    static void state(std::wostream &stream_)
     {
         stream_ << L"State: ";
     }
 
-    static void bol (std::ostream &stream_)
+    static void bol(std::ostream &stream_)
     {
         stream_ << "  BOL -> ";
     }
 
-    static void bol (std::wostream &stream_)
+    static void bol(std::wostream &stream_)
     {
         stream_ << L"  BOL -> ";
     }
 
-    static void eol (std::ostream &stream_)
+    static void eol(std::ostream &stream_)
     {
         stream_ << "  EOL -> ";
     }
 
-    static void eol (std::wostream &stream_)
+    static void eol(std::wostream &stream_)
     {
         stream_ << L"  EOL -> ";
     }
 
-    static void end_state (std::ostream &stream_)
+    static void end_state(std::ostream &stream_)
     {
         stream_ << "  END STATE, Id = ";
     }
 
-    static void end_state (std::wostream &stream_)
+    static void end_state(std::wostream &stream_)
     {
         stream_ << L"  END STATE, Id = ";
     }
 
-    static void unique_id (std::ostream &stream_)
+    static void unique_id(std::ostream &stream_)
     {
         stream_ << ", Unique Id = ";
     }
 
-    static void unique_id (std::wostream &stream_)
+    static void unique_id(std::wostream &stream_)
     {
         stream_ << L", Unique Id = ";
     }
 
-    static void any (std::ostream &stream_)
+    static void any(std::ostream &stream_)
     {
         stream_ << "  . -> ";
     }
 
-    static void any (std::wostream &stream_)
+    static void any(std::wostream &stream_)
     {
         stream_ << L"  . -> ";
     }
 
-    static void open_bracket (std::ostream &stream_)
+    static void open_bracket(std::ostream &stream_)
     {
         stream_ << "  [";
     }
 
-    static void open_bracket (std::wostream &stream_)
+    static void open_bracket(std::wostream &stream_)
     {
         stream_ << L"  [";
     }
 
-    static void negated (std::ostream &stream_)
+    static void negated(std::ostream &stream_)
     {
         stream_ << "^";
     }
 
-    static void negated (std::wostream &stream_)
+    static void negated(std::wostream &stream_)
     {
         stream_ << L"^";
     }
 
-    static void close_bracket (std::ostream &stream_)
+    static void close_bracket(std::ostream &stream_)
     {
         stream_ << "] -> ";
     }
 
-    static void close_bracket (std::wostream &stream_)
+    static void close_bracket(std::wostream &stream_)
     {
         stream_ << L"] -> ";
     }
 
-    static void dfa (std::ostream &stream_)
+    static void dfa(std::ostream &stream_)
     {
         stream_ << ", dfa = ";
     }
 
-    static void dfa (std::wostream &stream_)
+    static void dfa(std::wostream &stream_)
     {
         stream_ << L", dfa = ";
     }
@@ -279,7 +281,7 @@ protected:
 
 typedef basic_debug<char> debug;
 typedef basic_debug<wchar_t> wdebug;
-}
-}
+} // namespace lexer
+} // namespace boost
 
 #endif

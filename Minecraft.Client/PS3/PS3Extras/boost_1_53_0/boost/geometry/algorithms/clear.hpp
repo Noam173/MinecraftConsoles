@@ -25,18 +25,21 @@
 
 #include <boost/geometry/geometries/concepts/check.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace clear
+namespace detail
+{
+namespace clear
 {
 
 template <typename Geometry>
 struct collection_clear
 {
-    static inline void apply(Geometry& geometry)
+    static inline void apply(Geometry &geometry)
     {
         traits::clear<Geometry>::apply(geometry);
     }
@@ -45,91 +48,82 @@ struct collection_clear
 template <typename Polygon>
 struct polygon_clear
 {
-    static inline void apply(Polygon& polygon)
+    static inline void apply(Polygon &polygon)
     {
-        traits::clear
-            <
-                typename boost::remove_reference
-                    <
-                        typename traits::interior_mutable_type<Polygon>::type
-                    >::type
-            >::apply(interior_rings(polygon));
-        traits::clear
-            <
-                typename boost::remove_reference
-                    <
-                        typename traits::ring_mutable_type<Polygon>::type
-                    >::type
-            >::apply(exterior_ring(polygon));
+        traits::clear<
+            typename boost::remove_reference<
+                typename traits::interior_mutable_type<Polygon>::type>::type>::apply(interior_rings(polygon));
+        traits::clear<
+            typename boost::remove_reference<
+                typename traits::ring_mutable_type<Polygon>::type>::type>::apply(exterior_ring(polygon));
     }
 };
 
 template <typename Geometry>
 struct no_action
 {
-    static inline void apply(Geometry& )
+    static inline void apply(Geometry &)
     {
     }
 };
 
-}} // namespace detail::clear
+} // namespace clear
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-template
-<
+template <
     typename Geometry,
-    typename Tag = typename tag_cast<typename tag<Geometry>::type, multi_tag>::type
->
+    typename Tag = typename tag_cast<typename tag<Geometry>::type, multi_tag>::type>
 struct clear
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_OR_NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE
-            , (types<Geometry>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_OR_NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE, (types<Geometry>));
 };
 
 // Point/box/segment do not have clear. So specialize to do nothing.
 template <typename Geometry>
 struct clear<Geometry, point_tag>
     : detail::clear::no_action<Geometry>
-{};
+{
+};
 
 template <typename Geometry>
 struct clear<Geometry, box_tag>
     : detail::clear::no_action<Geometry>
-{};
+{
+};
 
 template <typename Geometry>
 struct clear<Geometry, segment_tag>
     : detail::clear::no_action<Geometry>
-{};
+{
+};
 
 template <typename Geometry>
 struct clear<Geometry, linestring_tag>
     : detail::clear::collection_clear<Geometry>
-{};
+{
+};
 
 template <typename Geometry>
 struct clear<Geometry, ring_tag>
     : detail::clear::collection_clear<Geometry>
-{};
-
+{
+};
 
 // Polygon can (indirectly) use std for clear
 template <typename Polygon>
 struct clear<Polygon, polygon_tag>
     : detail::clear::polygon_clear<Polygon>
-{};
-
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
 
 /*!
 \brief Clears a linestring, ring or polygon (exterior+interiors) or multi*
@@ -145,15 +139,14 @@ struct clear<Polygon, polygon_tag>
 \qbk{[include reference/algorithms/clear.qbk]}
 */
 template <typename Geometry>
-inline void clear(Geometry& geometry)
+inline void clear(Geometry &geometry)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     dispatch::clear<Geometry>::apply(geometry);
 }
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_CLEAR_HPP

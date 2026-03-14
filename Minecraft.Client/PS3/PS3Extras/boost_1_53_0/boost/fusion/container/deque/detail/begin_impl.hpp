@@ -13,36 +13,35 @@
 #include <boost/mpl/equal_to.hpp>
 #include <boost/mpl/if.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct deque_tag;
+namespace fusion
+{
+struct deque_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct begin_impl;
+
+template <>
+struct begin_impl<deque_tag>
+{
+    template <typename Sequence>
+    struct apply
     {
-        template<typename T>
-        struct begin_impl;
+        typedef typename mpl::if_c<
+            (Sequence::next_down::value == Sequence::next_up::value), deque_iterator<Sequence, 0>, deque_iterator<Sequence, (Sequence::next_down::value + 1)>>::type
+            type;
 
-        template<>
-        struct begin_impl<deque_tag>
+        static type call(Sequence &seq)
         {
-            template<typename Sequence>
-            struct apply
-            {
-                typedef typename
-                    mpl::if_c<
-                        (Sequence::next_down::value == Sequence::next_up::value)
-                      , deque_iterator<Sequence, 0>
-                      , deque_iterator<Sequence, (Sequence::next_down::value + 1)>
-                    >::type
-                type;
-
-                static type call(Sequence& seq)
-                {
-                    return type(seq);
-                }
-            };
-        };
-    }
-}}
+            return type(seq);
+        }
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

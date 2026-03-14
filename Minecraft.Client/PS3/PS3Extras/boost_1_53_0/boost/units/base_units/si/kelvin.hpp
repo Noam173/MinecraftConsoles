@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -13,20 +13,29 @@
 
 #include <string>
 
-#include <boost/units/config.hpp>
 #include <boost/units/base_unit.hpp>
+#include <boost/units/config.hpp>
 #include <boost/units/physical_dimensions/temperature.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units {
+namespace units
+{
 
-namespace si {
+namespace si
+{
 
 struct kelvin_base_unit : public base_unit<kelvin_base_unit, temperature_dimension, -5>
 {
-    static std::string name()   { return("kelvin"); }
-    static std::string symbol() { return("K"); }
+    static std::string name()
+    {
+        return ("kelvin");
+    }
+    static std::string symbol()
+    {
+        return ("K");
+    }
 };
 
 } // namespace si
@@ -43,6 +52,6 @@ BOOST_TYPEOF_REGISTER_TYPE(boost::units::si::kelvin_base_unit)
 
 #endif
 
-//#include <boost/units/base_units/detail/conversions.hpp>
+// #include <boost/units/base_units/detail/conversions.hpp>
 
 #endif // BOOST_UNITS_SI_KELVIN_BASE_UNIT_HPP

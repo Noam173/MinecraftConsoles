@@ -14,21 +14,20 @@
 #ifndef BOOST_GEOMETRY_GEOMETRIES_VARIANT_GEOMETRY_HPP
 #define BOOST_GEOMETRY_GEOMETRIES_VARIANT_GEOMETRY_HPP
 
-
 #include <boost/variant/variant_fwd.hpp>
 
-
-namespace boost { namespace geometry {
-
+namespace boost
+{
+namespace geometry
+{
 
 template <BOOST_VARIANT_ENUM_PARAMS(typename T)>
-struct point_type<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
+struct point_type<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>>
     : point_type<T0>
-{};
-
+{
+};
 
 } // namespace geometry
 } // namespace boost
-
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_VARIANT_GEOMETRY_HPP

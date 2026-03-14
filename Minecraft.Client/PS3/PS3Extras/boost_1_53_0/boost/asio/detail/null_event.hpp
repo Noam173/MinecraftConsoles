@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_NULL_EVENT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -23,47 +23,50 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 class null_event
-  : private noncopyable
+    : private noncopyable
 {
-public:
-  // Constructor.
-  null_event()
-  {
-  }
+  public:
+    // Constructor.
+    null_event()
+    {
+    }
 
-  // Destructor.
-  ~null_event()
-  {
-  }
+    // Destructor.
+    ~null_event()
+    {
+    }
 
-  // Signal the event.
-  template <typename Lock>
-  void signal(Lock&)
-  {
-  }
+    // Signal the event.
+    template <typename Lock>
+    void signal(Lock &)
+    {
+    }
 
-  // Signal the event and unlock the mutex.
-  template <typename Lock>
-  void signal_and_unlock(Lock&)
-  {
-  }
+    // Signal the event and unlock the mutex.
+    template <typename Lock>
+    void signal_and_unlock(Lock &)
+    {
+    }
 
-  // Reset the event.
-  template <typename Lock>
-  void clear(Lock&)
-  {
-  }
+    // Reset the event.
+    template <typename Lock>
+    void clear(Lock &)
+    {
+    }
 
-  // Wait for the event to become signalled.
-  template <typename Lock>
-  void wait(Lock&)
-  {
-  }
+    // Wait for the event to become signalled.
+    template <typename Lock>
+    void wait(Lock &)
+    {
+    }
 };
 
 } // namespace detail

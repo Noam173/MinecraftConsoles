@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -13,13 +13,13 @@
 
 #include <string>
 
-#include <boost/units/config.hpp>
 #include <boost/units/base_unit.hpp>
-#include <boost/units/physical_dimensions/length.hpp>
 #include <boost/units/base_units/si/meter.hpp>
+#include <boost/units/config.hpp>
 #include <boost/units/conversion.hpp>
+#include <boost/units/physical_dimensions/length.hpp>
 
-BOOST_UNITS_DEFINE_BASE_UNIT_WITH_CONVERSIONS(us, yard, "yard", "yd", 0.9144, si::meter_base_unit, -501);    // exact conversion
+BOOST_UNITS_DEFINE_BASE_UNIT_WITH_CONVERSIONS(us, yard, "yard", "yd", 0.9144, si::meter_base_unit, -501); // exact conversion
 
 #if BOOST_UNITS_HAS_BOOST_TYPEOF
 

@@ -10,15 +10,20 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include "boost/proto/detail/ignore_unused.hpp"
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
 {
-  using boost::proto::detail::ignore_unused;
-}}}
+namespace xpressive
+{
+namespace detail
+{
+using boost::proto::detail::ignore_unused;
+}
+} // namespace xpressive
+} // namespace boost
 
 #endif
-

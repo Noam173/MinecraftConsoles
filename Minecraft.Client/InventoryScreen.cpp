@@ -1,18 +1,18 @@
-#include "stdafx.h"
 #include "InventoryScreen.h"
-#include "MultiplayerLocalPlayer.h"
-#include "Font.h"
-#include "EntityRenderDispatcher.h"
-#include "Lighting.h"
-#include "Textures.h"
-#include "Button.h"
-#include "AchievementScreen.h"
-#include "StatsScreen.h"
 #include "..\Minecraft.World\net.minecraft.stats.h"
+#include "AchievementScreen.h"
+#include "Button.h"
+#include "EntityRenderDispatcher.h"
+#include "Font.h"
+#include "Lighting.h"
+#include "MultiplayerLocalPlayer.h"
+#include "StatsScreen.h"
+#include "Textures.h"
+#include "stdafx.h"
 
 InventoryScreen::InventoryScreen(shared_ptr<Player> player) : AbstractContainerScreen(player->inventoryMenu)
 {
-	xMouse = yMouse = 0.0f; // 4J added
+    xMouse = yMouse = 0.0f; // 4J added
 
     this->passEvents = true;
     player->awardStat(GenericStats::openInventory(), GenericStats::param_noArgs());
@@ -20,12 +20,12 @@ InventoryScreen::InventoryScreen(shared_ptr<Player> player) : AbstractContainerS
 
 void InventoryScreen::init()
 {
-	buttons.clear();
+    buttons.clear();
 }
 
 void InventoryScreen::renderLabels()
 {
-	font->draw(L"Crafting", 84 + 2, 8 * 2, 0x404040);
+    font->draw(L"Crafting", 84 + 2, 8 * 2, 0x404040);
 }
 
 void InventoryScreen::render(int xm, int ym, float a)
@@ -37,7 +37,7 @@ void InventoryScreen::render(int xm, int ym, float a)
 
 void InventoryScreen::renderBg(float a)
 {
-	// 4J Unused
+    // 4J Unused
 #if 0
     int tex = minecraft->textures->loadTexture(L"/gui/inventory.png");
     glColor4f(1, 1, 1, 1);
@@ -86,11 +86,11 @@ void InventoryScreen::renderBg(float a)
 void InventoryScreen::buttonClicked(Button *button)
 {
     if (button->id == 0)
-	{
-		minecraft->setScreen(new AchievementScreen(minecraft->stats[minecraft->player->GetXboxPad()]));
+    {
+        minecraft->setScreen(new AchievementScreen(minecraft->stats[minecraft->player->GetXboxPad()]));
     }
     if (button->id == 1)
-	{
+    {
         minecraft->setScreen(new StatsScreen(this, minecraft->stats[minecraft->player->GetXboxPad()]));
     }
 }

@@ -1,14 +1,13 @@
-#include "stdafx.h"
 #include "TrapScreen.h"
-#include "LocalPlayer.h"
-#include "Textures.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "..\Minecraft.World\DispenserTileEntity.h"
 #include "..\Minecraft.World\net.minecraft.world.h"
+#include "..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "LocalPlayer.h"
+#include "Textures.h"
+#include "stdafx.h"
 
 TrapScreen::TrapScreen(shared_ptr<Inventory> inventory, shared_ptr<DispenserTileEntity> trap) : AbstractContainerScreen(new TrapMenu(inventory, trap))
 {
-
 }
 
 void TrapScreen::renderLabels()
@@ -19,7 +18,7 @@ void TrapScreen::renderLabels()
 
 void TrapScreen::renderBg(float a)
 {
-	// 4J Unused
+    // 4J Unused
 #if 0
 	int tex = minecraft->textures->loadTexture(L"/gui/trap.png");
 	glColor4f(1, 1, 1, 1);

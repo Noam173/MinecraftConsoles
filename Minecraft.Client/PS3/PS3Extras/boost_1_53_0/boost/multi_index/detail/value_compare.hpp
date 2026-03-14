@@ -9,42 +9,44 @@
 #ifndef BOOST_MULTI_INDEX_DETAIL_VALUE_COMPARE_HPP
 #define BOOST_MULTI_INDEX_DETAIL_VALUE_COMPARE_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
-#include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
 #include <boost/call_traits.hpp>
+#include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
 #include <functional>
 
-namespace boost{
-
-namespace multi_index{
-
-namespace detail{
-
-template<typename Value,typename KeyFromValue,typename Compare>
-struct value_comparison:std::binary_function<Value,Value,bool>
+namespace boost
 {
-  value_comparison(
-    const KeyFromValue& key_=KeyFromValue(),const Compare& comp_=Compare()):
-    key(key_),comp(comp_)
-  {
-  }
 
-  bool operator()(
-    typename call_traits<Value>::param_type x,
-    typename call_traits<Value>::param_type y)const
-  {
-    return comp(key(x),key(y));
-  }
+namespace multi_index
+{
 
-private:
-  KeyFromValue key;
-  Compare      comp;
+namespace detail
+{
+
+template <typename Value, typename KeyFromValue, typename Compare>
+struct value_comparison : std::binary_function<Value, Value, bool>
+{
+    value_comparison(
+        const KeyFromValue &key_ = KeyFromValue(), const Compare &comp_ = Compare()) : key(key_), comp(comp_)
+    {
+    }
+
+    bool operator()(
+        typename call_traits<Value>::param_type x,
+        typename call_traits<Value>::param_type y) const
+    {
+        return comp(key(x), key(y));
+    }
+
+  private:
+    KeyFromValue key;
+    Compare comp;
 };
 
-} /* namespace multi_index::detail */
+} // namespace detail
 
 } /* namespace multi_index */
 

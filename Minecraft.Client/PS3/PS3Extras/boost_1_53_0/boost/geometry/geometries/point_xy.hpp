@@ -21,10 +21,14 @@
 #include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/geometries/point.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace model { namespace d2
+namespace model
+{
+namespace d2
 {
 
 /*!
@@ -40,41 +44,49 @@ namespace model { namespace d2
 \qbk{[include reference/geometries/point_assign_warning.qbk]}
 
 */
-template<typename CoordinateType, typename CoordinateSystem = cs::cartesian>
+template <typename CoordinateType, typename CoordinateSystem = cs::cartesian>
 class point_xy : public model::point<CoordinateType, 2, CoordinateSystem>
 {
-public:
-
+  public:
     /// Default constructor, does not initialize anything
     inline point_xy()
         : model::point<CoordinateType, 2, CoordinateSystem>()
-    {}
+    {
+    }
 
     /// Constructor with x/y values
-    inline point_xy(CoordinateType const& x, CoordinateType const& y)
+    inline point_xy(CoordinateType const &x, CoordinateType const &y)
         : model::point<CoordinateType, 2, CoordinateSystem>(x, y)
-    {}
+    {
+    }
 
     /// Get x-value
-    inline CoordinateType const& x() const
-    { return this->template get<0>(); }
+    inline CoordinateType const &x() const
+    {
+        return this->template get<0>();
+    }
 
     /// Get y-value
-    inline CoordinateType const& y() const
-    { return this->template get<1>(); }
+    inline CoordinateType const &y() const
+    {
+        return this->template get<1>();
+    }
 
     /// Set x-value
-    inline void x(CoordinateType const& v)
-    { this->template set<0>(v); }
+    inline void x(CoordinateType const &v)
+    {
+        this->template set<0>(v);
+    }
 
     /// Set y-value
-    inline void y(CoordinateType const& v)
-    { this->template set<1>(v); }
+    inline void y(CoordinateType const &v)
+    {
+        this->template set<1>(v);
+    }
 };
 
-
-}} // namespace model::d2
-
+} // namespace d2
+} // namespace model
 
 // Adapt the point_xy to the concept
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
@@ -82,39 +94,40 @@ namespace traits
 {
 
 template <typename CoordinateType, typename CoordinateSystem>
-struct tag<model::d2::point_xy<CoordinateType, CoordinateSystem> >
+struct tag<model::d2::point_xy<CoordinateType, CoordinateSystem>>
 {
     typedef point_tag type;
 };
 
-template<typename CoordinateType, typename CoordinateSystem>
-struct coordinate_type<model::d2::point_xy<CoordinateType, CoordinateSystem> >
+template <typename CoordinateType, typename CoordinateSystem>
+struct coordinate_type<model::d2::point_xy<CoordinateType, CoordinateSystem>>
 {
     typedef CoordinateType type;
 };
 
-template<typename CoordinateType, typename CoordinateSystem>
-struct coordinate_system<model::d2::point_xy<CoordinateType, CoordinateSystem> >
+template <typename CoordinateType, typename CoordinateSystem>
+struct coordinate_system<model::d2::point_xy<CoordinateType, CoordinateSystem>>
 {
     typedef CoordinateSystem type;
 };
 
-template<typename CoordinateType, typename CoordinateSystem>
-struct dimension<model::d2::point_xy<CoordinateType, CoordinateSystem> >
+template <typename CoordinateType, typename CoordinateSystem>
+struct dimension<model::d2::point_xy<CoordinateType, CoordinateSystem>>
     : boost::mpl::int_<2>
-{};
+{
+};
 
-template<typename CoordinateType, typename CoordinateSystem, std::size_t Dimension>
-struct access<model::d2::point_xy<CoordinateType, CoordinateSystem>, Dimension >
+template <typename CoordinateType, typename CoordinateSystem, std::size_t Dimension>
+struct access<model::d2::point_xy<CoordinateType, CoordinateSystem>, Dimension>
 {
     static inline CoordinateType get(
-        model::d2::point_xy<CoordinateType, CoordinateSystem> const& p)
+        model::d2::point_xy<CoordinateType, CoordinateSystem> const &p)
     {
         return p.template get<Dimension>();
     }
 
-    static inline void set(model::d2::point_xy<CoordinateType, CoordinateSystem>& p,
-        CoordinateType const& value)
+    static inline void set(model::d2::point_xy<CoordinateType, CoordinateSystem> &p,
+                           CoordinateType const &value)
     {
         p.template set<Dimension>(value);
     }
@@ -123,6 +136,7 @@ struct access<model::d2::point_xy<CoordinateType, CoordinateSystem>, Dimension >
 } // namespace traits
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_POINT_XY_HPP

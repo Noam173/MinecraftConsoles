@@ -3,7 +3,6 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_THREAD_TESTABLE_LOCKABLE_HPP
 #define BOOST_THREAD_TESTABLE_LOCKABLE_HPP
 
@@ -11,32 +10,33 @@
 
 #include <boost/thread/detail/thread.hpp>
 
-#include <boost/atomic.hpp>
 #include <boost/assert.hpp>
+#include <boost/atomic.hpp>
 
 #include <boost/config/abi_prefix.hpp>
 
 namespace boost
 {
-  /**
-   * Based on Associate Mutexes with Data to Prevent Races, By Herb Sutter, May 13, 2010
-   * http://www.drdobbs.com/windows/associate-mutexes-with-data-to-prevent-r/224701827?pgno=3
-   *
-   * Make our mutex testable if it isn't already.
-   *
-   * Many mutex services (including boost::mutex) don't provide a way to ask,
-   * "Do I already hold a lock on this mutex?"
-   * Sometimes it is needed to know if a method like is_held to be available.
-   * This wrapper associates an arbitrary lockable type with a thread id that stores the ID of the thread that
-   * currently holds the lockable. The thread id initially holds an invalid value that means no threads own the mutex.
-   * When we acquire a lock, we set the thread id; and when we release a lock, we reset it back to its default no id state.
-   *
-   */
-  template <typename Lockable>
-  class testable_mutex
-  {
+/**
+ * Based on Associate Mutexes with Data to Prevent Races, By Herb Sutter, May 13, 2010
+ * http://www.drdobbs.com/windows/associate-mutexes-with-data-to-prevent-r/224701827?pgno=3
+ *
+ * Make our mutex testable if it isn't already.
+ *
+ * Many mutex services (including boost::mutex) don't provide a way to ask,
+ * "Do I already hold a lock on this mutex?"
+ * Sometimes it is needed to know if a method like is_held to be available.
+ * This wrapper associates an arbitrary lockable type with a thread id that stores the ID of the thread that
+ * currently holds the lockable. The thread id initially holds an invalid value that means no threads own the mutex.
+ * When we acquire a lock, we set the thread id; and when we release a lock, we reset it back to its default no id state.
+ *
+ */
+template <typename Lockable>
+class testable_mutex
+{
     Lockable mtx_;
     atomic<thread::id> id_;
+
   public:
     /// the type of the wrapped lockable
     typedef Lockable lockable_type;
@@ -46,78 +46,80 @@ namespace boost
 
     void lock()
     {
-      mtx_.lock();
-      id_ = this_thread::get_id();
+        mtx_.lock();
+        id_ = this_thread::get_id();
     }
 
     void unlock()
     {
-      BOOST_ASSERT(is_locked(mtx_));
-      id_ = thread::id();
-      mtx_.unlock();
+        BOOST_ASSERT(is_locked(mtx_));
+        id_ = thread::id();
+        mtx_.unlock();
     }
 
     bool try_lock()
     {
-      if (mtx_.try_lock())
-      {
-        id_ = this_thread::get_id();
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+        if (mtx_.try_lock())
+        {
+            id_ = this_thread::get_id();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 #ifdef BOOST_THREAD_USES_CHRONO
-        template <class Rep, class Period>
-        bool try_lock_for(const chrono::duration<Rep, Period>& rel_time)
+    template <class Rep, class Period>
+    bool try_lock_for(const chrono::duration<Rep, Period> &rel_time)
+    {
+        if (mtx_.try_lock_for(rel_time))
         {
-          if (mtx_.try_lock_for(rel_time))
-          {
             id_ = this_thread::get_id();
             return true;
-          }
-          else
-          {
-            return false;
-          }
         }
-        template <class Clock, class Duration>
-        bool try_lock_until(const chrono::time_point<Clock, Duration>& abs_time)
+        else
         {
-          if (mtx_.try_lock_until(abs_time))
-          {
+            return false;
+        }
+    }
+    template <class Clock, class Duration>
+    bool try_lock_until(const chrono::time_point<Clock, Duration> &abs_time)
+    {
+        if (mtx_.try_lock_until(abs_time))
+        {
             id_ = this_thread::get_id();
             return true;
-          }
-          else
-          {
-            return false;
-          }
         }
+        else
+        {
+            return false;
+        }
+    }
 #endif
 
     bool is_locked_by_this_thread()
     {
-      return this_thread::get_id() == id_;
+        return this_thread::get_id() == id_;
     }
 
     bool get_id()
     {
-      return id_;
+        return id_;
     }
 
     // todo add the shared and upgrade mutex functions
-  };
+};
 
-  template <typename Lockable>
-  struct is_testable_lockable : false_type
-  {};
+template <typename Lockable>
+struct is_testable_lockable : false_type
+{
+};
 
-  template <typename Lockable>
-  struct is_testable_lockable<testable_mutex<Lockable> > : true_type
-  {};
+template <typename Lockable>
+struct is_testable_lockable<testable_mutex<Lockable>> : true_type
+{
+};
 
 //  /**
 //   * Overloaded function used to check if the mutex is locked when it is testable and do nothing otherwise.
@@ -135,7 +137,7 @@ namespace boost
 //  {
 //    return true;
 //  }
-}
+} // namespace boost
 
 #include <boost/config/abi_suffix.hpp>
 

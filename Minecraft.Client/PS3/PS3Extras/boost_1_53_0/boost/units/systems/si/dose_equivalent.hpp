@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,19 +11,22 @@
 #ifndef BOOST_UNITS_SI_DOSE_EQUIVALENT_HPP
 #define BOOST_UNITS_SI_DOSE_EQUIVALENT_HPP
 
-#include <boost/units/systems/si/base.hpp>
 #include <boost/units/physical_dimensions/dose_equivalent.hpp>
+#include <boost/units/systems/si/base.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units { 
+namespace units
+{
 
-namespace si {
+namespace si
+{
 
-typedef unit<dose_equivalent_dimension,si::system>     dose_equivalent;
-    
-BOOST_UNITS_STATIC_CONSTANT(sievert,dose_equivalent);  
-BOOST_UNITS_STATIC_CONSTANT(sieverts,dose_equivalent); 
+typedef unit<dose_equivalent_dimension, si::system> dose_equivalent;
+
+BOOST_UNITS_STATIC_CONSTANT(sievert, dose_equivalent);
+BOOST_UNITS_STATIC_CONSTANT(sieverts, dose_equivalent);
 
 } // namespace si
 

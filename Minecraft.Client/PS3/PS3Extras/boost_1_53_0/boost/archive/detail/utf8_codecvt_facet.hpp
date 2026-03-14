@@ -8,9 +8,17 @@
 #define BOOST_ARCHIVE_DETAIL_UTF8_CODECVT_FACET_HPP
 
 #define BOOST_UTF8_BEGIN_NAMESPACE \
-     namespace boost { namespace archive { namespace detail {
+    namespace boost                \
+    {                              \
+    namespace archive              \
+    {                              \
+    namespace detail               \
+    {
 #define BOOST_UTF8_DECL
-#define BOOST_UTF8_END_NAMESPACE }}}
+#define BOOST_UTF8_END_NAMESPACE \
+    }                            \
+    }                            \
+    }
 
 #include <boost/detail/utf8_codecvt_facet.hpp>
 

@@ -1,38 +1,46 @@
 
 // Copyright Aleksey Gurtovoy 2000-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
 // Preprocessed version of "boost/mpl/aux_/advance_forward.hpp" header
 // -- DO NOT modify by hand!
 
-namespace boost { namespace mpl { namespace aux {
+namespace boost
+{
+namespace mpl
+{
+namespace aux
+{
 
-template< long N > struct advance_forward;
-template<>
+template <long N>
+struct advance_forward;
+template <>
 struct advance_forward<0>
 {
-    template< typename Iterator > struct apply
+    template <typename Iterator>
+    struct apply
     {
         typedef Iterator iter0;
         typedef iter0 type;
     };
 
     /// ETI workaround
-    template<> struct apply<int>
+    template <>
+    struct apply<int>
     {
         typedef int type;
     };
-
 };
 
-template<>
+template <>
 struct advance_forward<1>
 {
-    template< typename Iterator > struct apply
+    template <typename Iterator>
+    struct apply
     {
         typedef Iterator iter0;
         typedef typename next<iter0>::type iter1;
@@ -40,17 +48,18 @@ struct advance_forward<1>
     };
 
     /// ETI workaround
-    template<> struct apply<int>
+    template <>
+    struct apply<int>
     {
         typedef int type;
     };
-
 };
 
-template<>
+template <>
 struct advance_forward<2>
 {
-    template< typename Iterator > struct apply
+    template <typename Iterator>
+    struct apply
     {
         typedef Iterator iter0;
         typedef typename next<iter0>::type iter1;
@@ -59,17 +68,18 @@ struct advance_forward<2>
     };
 
     /// ETI workaround
-    template<> struct apply<int>
+    template <>
+    struct apply<int>
     {
         typedef int type;
     };
-
 };
 
-template<>
+template <>
 struct advance_forward<3>
 {
-    template< typename Iterator > struct apply
+    template <typename Iterator>
+    struct apply
     {
         typedef Iterator iter0;
         typedef typename next<iter0>::type iter1;
@@ -79,17 +89,18 @@ struct advance_forward<3>
     };
 
     /// ETI workaround
-    template<> struct apply<int>
+    template <>
+    struct apply<int>
     {
         typedef int type;
     };
-
 };
 
-template<>
+template <>
 struct advance_forward<4>
 {
-    template< typename Iterator > struct apply
+    template <typename Iterator>
+    struct apply
     {
         typedef Iterator iter0;
         typedef typename next<iter0>::type iter1;
@@ -100,33 +111,31 @@ struct advance_forward<4>
     };
 
     /// ETI workaround
-    template<> struct apply<int>
+    template <>
+    struct apply<int>
     {
         typedef int type;
     };
-
 };
 
-template< long N >
+template <long N>
 struct advance_forward
 {
-    template< typename Iterator > struct apply
+    template <typename Iterator>
+    struct apply
     {
         typedef typename apply_wrap1<
-              advance_forward<4>
-            , Iterator
-            >::type chunk_result_;
+            advance_forward<4>, Iterator>::type chunk_result_;
 
         typedef typename apply_wrap1<
-              advance_forward<(
+            advance_forward<(
                 (N - 4) < 0
                     ? 0
-                    : N - 4
-                    )>
-            , chunk_result_
-            >::type type;
+                    : N - 4)>,
+            chunk_result_>::type type;
     };
 };
 
-}}}
-
+} // namespace aux
+} // namespace mpl
+} // namespace boost

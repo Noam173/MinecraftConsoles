@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_NULL_THREAD_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -25,31 +25,34 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 class null_thread
-  : private noncopyable
+    : private noncopyable
 {
-public:
-  // Constructor.
-  template <typename Function>
-  null_thread(Function, unsigned int = 0)
-  {
-    boost::asio::detail::throw_error(
-        boost::asio::error::operation_not_supported, "thread");
-  }
+  public:
+    // Constructor.
+    template <typename Function>
+    null_thread(Function, unsigned int = 0)
+    {
+        boost::asio::detail::throw_error(
+            boost::asio::error::operation_not_supported, "thread");
+    }
 
-  // Destructor.
-  ~null_thread()
-  {
-  }
+    // Destructor.
+    ~null_thread()
+    {
+    }
 
-  // Wait for the thread to exit.
-  void join()
-  {
-  }
+    // Wait for the thread to exit.
+    void join()
+    {
+    }
 };
 
 } // namespace detail

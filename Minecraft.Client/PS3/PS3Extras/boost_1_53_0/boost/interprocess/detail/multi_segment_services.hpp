@@ -12,35 +12,37 @@
 #define BOOST_INTERPROCESS_MULTI_SEGMENT_SERVICES_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 #include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/interprocess/detail/workaround.hpp>
 
-
 /*!\file
    Describes a named shared memory allocation user class.
 */
 
-namespace boost {
+namespace boost
+{
 
-namespace interprocess {
+namespace interprocess
+{
 
 class multi_segment_services
 {
-   public:
-   virtual std::pair<void *, std::size_t> create_new_segment(std::size_t mem) = 0;
-   virtual bool                           update_segments   () = 0;
-   virtual ~multi_segment_services() = 0;
+  public:
+    virtual std::pair<void *, std::size_t> create_new_segment(std::size_t mem) = 0;
+    virtual bool update_segments() = 0;
+    virtual ~multi_segment_services() = 0;
 };
 
 inline multi_segment_services::~multi_segment_services()
-{}
+{
+}
 
-
-}} //namespace boost {  namespace interprocess {
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif //#ifdef BOOST_INTERPROCESS_MULTI_SEGMENT_SERVICES_HPP
+#endif // #ifdef BOOST_INTERPROCESS_MULTI_SEGMENT_SERVICES_HPP

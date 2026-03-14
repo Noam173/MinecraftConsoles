@@ -15,13 +15,13 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/assert.hpp>
 
 #ifdef BOOST_USE_WINDOWS_H
-#  include <windows.h>
+#include <windows.h>
 #endif
 
 namespace boost
@@ -34,11 +34,11 @@ namespace signals2
 
 struct critical_section
 {
-    struct critical_section_debug * DebugInfo;
+    struct critical_section_debug *DebugInfo;
     long LockCount;
     long RecursionCount;
-    void * OwningThread;
-    void * LockSemaphore;
+    void *OwningThread;
+    void *LockSemaphore;
 #if defined(_WIN64)
     unsigned __int64 SpinCount;
 #else
@@ -60,15 +60,13 @@ typedef ::CRITICAL_SECTION critical_section;
 
 class mutex
 {
-private:
-
+  private:
     critical_section cs_;
 
     mutex(mutex const &);
-    mutex & operator=(mutex const &);
+    mutex &operator=(mutex const &);
 
-public:
-
+  public:
     mutex()
     {
         InitializeCriticalSection(&cs_);

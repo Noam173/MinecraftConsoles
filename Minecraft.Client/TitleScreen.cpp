@@ -1,56 +1,56 @@
-#include "stdafx.h"
+#include "TitleScreen.h"
+#include "..\Minecraft.World\InputOutputStream.h"
+#include "..\Minecraft.World\Random.h"
+#include "..\Minecraft.World\StringHelpers.h"
+#include "..\Minecraft.World\System.h"
+#include "..\Minecraft.World\net.minecraft.locale.h"
 #include "Button.h"
+#include "JoinMultiplayerScreen.h"
 #include "OptionsScreen.h"
 #include "SelectWorldScreen.h"
-#include "JoinMultiplayerScreen.h"
 #include "Tesselator.h"
 #include "Textures.h"
-#include "..\Minecraft.World\StringHelpers.h"
-#include "..\Minecraft.World\InputOutputStream.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\System.h"
-#include "..\Minecraft.World\Random.h"
-#include "TitleScreen.h"
+#include "stdafx.h"
 
 Random *TitleScreen::random = new Random();
 
 TitleScreen::TitleScreen()
 {
-	// 4J - added initialisers
-	vo = 0;
-	multiplayerButton = nullptr;
+    // 4J - added initialisers
+    vo = 0;
+    multiplayerButton = nullptr;
 
     splash = L"missingno";
-//    try {	// 4J - removed try/catch
+    //    try {	// 4J - removed try/catch
     vector<wstring> splashes;
 
-	/*
+    /*
     BufferedReader *br = new BufferedReader(new InputStreamReader(InputStream::getResourceAsStream(L"res\\title\\splashes.txt"))); //, Charset.forName("UTF-8")
-		
+
     wstring line = L"";
     while ( !(line = br->readLine()).empty() )
-	{
+    {
         line = trimString( line );
         if (line.length() > 0)
-		{
+        {
             splashes.push_back(line);
         }
     }
-	
+
     br->close();
-	delete br;
-	*/
+    delete br;
+    */
 
-    splash = L""; //splashes.at(random->nextInt(splashes.size()));
+    splash = L""; // splashes.at(random->nextInt(splashes.size()));
 
-//    } catch (Exception e) {
-//    }
+    //    } catch (Exception e) {
+    //    }
 }
 
 void TitleScreen::tick()
 {
-	//vo += 1.0f;
-	//if( vo > 100.0f ) minecraft->setScreen(new SelectWorldScreen(this));		// 4J - temp testing
+    // vo += 1.0f;
+    // if( vo > 100.0f ) minecraft->setScreen(new SelectWorldScreen(this));		// 4J - temp testing
 }
 
 void TitleScreen::keyPressed(wchar_t eventCharacter, int eventKey)
@@ -59,7 +59,7 @@ void TitleScreen::keyPressed(wchar_t eventCharacter, int eventKey)
 
 void TitleScreen::init()
 {
-	/* 4J - Implemented in main menu instead
+    /* 4J - Implemented in main menu instead
     Calendar c = Calendar.getInstance();
     c.setTime(new Date());
 
@@ -72,7 +72,7 @@ void TitleScreen::init()
     } else if (c.get(Calendar.MONTH) + 1 == 1 && c.get(Calendar.DAY_OF_MONTH) == 1) {
         splash = "Happy new year!";
     }
-	*/
+    */
 
     Language *language = Language::getInstance();
 
@@ -84,49 +84,48 @@ void TitleScreen::init()
     buttons.push_back(new Button(3, width / 2 - 100, topPos + spacing * 2, language->getElement(L"menu.mods")));
 
     if (minecraft->appletMode)
-	{
+    {
         buttons.push_back(new Button(0, width / 2 - 100, topPos + spacing * 3, language->getElement(L"menu.options")));
     }
-	else
-	{
+    else
+    {
         buttons.push_back(new Button(0, width / 2 - 100, topPos + spacing * 3 + 12, 98, 20, language->getElement(L"menu.options")));
         buttons.push_back(new Button(4, width / 2 + 2, topPos + spacing * 3 + 12, 98, 20, language->getElement(L"menu.quit")));
     }
 
     if (minecraft->user == nullptr)
-	{
+    {
         multiplayerButton->active = false;
     }
-
 }
 
 void TitleScreen::buttonClicked(Button *button)
 {
     if (button->id == 0)
-	{
+    {
         minecraft->setScreen(new OptionsScreen(this, minecraft->options));
     }
     if (button->id == 1)
-	{
+    {
         minecraft->setScreen(new SelectWorldScreen(this));
     }
     if (button->id == 2)
-	{
+    {
         minecraft->setScreen(new JoinMultiplayerScreen(this));
     }
     if (button->id == 3)
-	{
- //       minecraft->setScreen(new TexturePackSelectScreen(this));		// 4J - TODO put back in
+    {
+        //       minecraft->setScreen(new TexturePackSelectScreen(this));		// 4J - TODO put back in
     }
     if (button->id == 4)
-	{
+    {
         minecraft->stop();
     }
 }
 
 void TitleScreen::render(int xm, int ym, float a)
 {
-	// 4J Unused
+    // 4J Unused
 #if 0
     renderBackground();
     Tesselator *t = Tesselator::getInstance();

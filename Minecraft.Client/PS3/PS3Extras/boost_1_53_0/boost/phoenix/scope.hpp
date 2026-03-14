@@ -8,10 +8,10 @@
 #ifndef BOOST_PHOENIX_SCOPE_HPP
 #define BOOST_PHOENIX_SCOPE_HPP
 
-#include <boost/phoenix/version.hpp>
-#include <boost/phoenix/scope/scoped_environment.hpp>
 #include <boost/phoenix/scope/lambda.hpp>
 #include <boost/phoenix/scope/let.hpp>
 #include <boost/phoenix/scope/local_variable.hpp>
+#include <boost/phoenix/scope/scoped_environment.hpp>
+#include <boost/phoenix/version.hpp>
 
 #endif

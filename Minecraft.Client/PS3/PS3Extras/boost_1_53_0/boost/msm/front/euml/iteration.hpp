@@ -12,15 +12,24 @@
 #define BOOST_MSM_FRONT_EUML_ITERATION_H
 
 #include <algorithm>
-#include <numeric>
 #include <boost/msm/front/euml/common.hpp>
+#include <numeric>
 
-namespace boost { namespace msm { namespace front { namespace euml
+namespace boost
+{
+namespace msm
+{
+namespace front
+{
+namespace euml
 {
 
-BOOST_MSM_EUML_FUNCTION(ForEach_ , std::for_each , for_each_ , RESULT_TYPE_PARAM3 , RESULT_TYPE2_PARAM3 )
-BOOST_MSM_EUML_FUNCTION(Accumulate_ , std::accumulate , accumulate_ , RESULT_TYPE_PARAM3 , RESULT_TYPE2_PARAM3 )
+BOOST_MSM_EUML_FUNCTION(ForEach_, std::for_each, for_each_, RESULT_TYPE_PARAM3, RESULT_TYPE2_PARAM3)
+BOOST_MSM_EUML_FUNCTION(Accumulate_, std::accumulate, accumulate_, RESULT_TYPE_PARAM3, RESULT_TYPE2_PARAM3)
 
-}}}}
+} // namespace euml
+} // namespace front
+} // namespace msm
+} // namespace boost
 
-#endif //BOOST_MSM_FRONT_EUML_ITERATION_H
+#endif // BOOST_MSM_FRONT_EUML_ITERATION_H

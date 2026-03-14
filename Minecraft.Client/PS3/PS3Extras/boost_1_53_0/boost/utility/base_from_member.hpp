@@ -15,7 +15,6 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 
-
 //  Base-from-member arity configuration macro  ------------------------------//
 
 // The following macro determines how many arguments will be in the largest
@@ -29,9 +28,8 @@
 // Contributed by Jonathan Turkanis
 
 #ifndef BOOST_BASE_FROM_MEMBER_MAX_ARITY
-#define BOOST_BASE_FROM_MEMBER_MAX_ARITY  10
+#define BOOST_BASE_FROM_MEMBER_MAX_ARITY 10
 #endif
-
 
 //  An iteration of a constructor template for base_from_member  -------------//
 
@@ -42,13 +40,13 @@
 //         {}
 // This macro should only persist within this file.
 
-#define BOOST_PRIVATE_CTR_DEF( z, n, data )                            \
-    template < BOOST_PP_ENUM_PARAMS(n, typename T) >                   \
-    explicit base_from_member( BOOST_PP_ENUM_BINARY_PARAMS(n, T, x) )  \
-        : member( BOOST_PP_ENUM_PARAMS(n, x) )                         \
-        {}                                                             \
+#define BOOST_PRIVATE_CTR_DEF(z, n, data)                           \
+    template <BOOST_PP_ENUM_PARAMS(n, typename T)>                  \
+    explicit base_from_member(BOOST_PP_ENUM_BINARY_PARAMS(n, T, x)) \
+        : member(BOOST_PP_ENUM_PARAMS(n, x))                        \
+    {                                                               \
+    }                                                               \
     /**/
-
 
 namespace boost
 {
@@ -62,26 +60,25 @@ namespace boost
 
 // Contributed by Daryle Walker
 
-template < typename MemberType, int UniqueID = 0 >
+template <typename MemberType, int UniqueID = 0>
 class base_from_member
 {
-protected:
-    MemberType  member;
+  protected:
+    MemberType member;
 
     base_from_member()
         : member()
-        {}
+    {
+    }
 
-    BOOST_PP_REPEAT_FROM_TO( 1, BOOST_PP_INC(BOOST_BASE_FROM_MEMBER_MAX_ARITY),
-     BOOST_PRIVATE_CTR_DEF, _ )
+    BOOST_PP_REPEAT_FROM_TO(1, BOOST_PP_INC(BOOST_BASE_FROM_MEMBER_MAX_ARITY),
+                            BOOST_PRIVATE_CTR_DEF, _)
 
-};  // boost::base_from_member
+}; // boost::base_from_member
 
-}  // namespace boost
-
+} // namespace boost
 
 // Undo any private macros
 #undef BOOST_PRIVATE_CTR_DEF
 
-
-#endif  // BOOST_UTILITY_BASE_FROM_MEMBER_HPP
+#endif // BOOST_UTILITY_BASE_FROM_MEMBER_HPP

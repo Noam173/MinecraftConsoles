@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_TAGS_SUPPORT_VALUE_TYPE_OF_HPP
 #define BOOST_BIMAP_TAGS_SUPPORT_VALUE_TYPE_OF_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -40,27 +40,28 @@ See also tagged, tag_of.
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-
-namespace boost {
-namespace bimaps {
-namespace tags {
-namespace support {
-
+namespace boost
+{
+namespace bimaps
+{
+namespace tags
+{
+namespace support
+{
 
 // value_type_of metafunction
 
-template< class Type >
+template <class Type>
 struct value_type_of
 {
     typedef Type type;
 };
 
-template< class Type, class Tag >
-struct value_type_of< tagged< Type, Tag > >
+template <class Type, class Tag>
+struct value_type_of<tagged<Type, Tag>>
 {
     typedef Type type;
 };
-
 
 } // namespace support
 } // namespace tags
@@ -70,5 +71,3 @@ struct value_type_of< tagged< Type, Tag > >
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_TAGS_SUPPORT_VALUE_TYPE_OF_HPP
-
-

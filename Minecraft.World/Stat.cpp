@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "Stat.h"
 #include "NumberFormaters.h"
 #include "StatFormatter.h"
 #include "Stats.h"
-#include "Stat.h"
+#include "stdafx.h"
 
 Stat::DefaultFormat *Stat::defaultFormatter = new DefaultFormat();
 Stat::TimeFormatter *Stat::timeFormatter = new TimeFormatter();
@@ -13,15 +13,15 @@ DecimalFormat *Stat::decimalFormat = new DecimalFormat(L"%0(3).2f");
 
 void Stat::_init()
 {
-	awardLocallyOnly = false;
+    awardLocallyOnly = false;
 }
 
-Stat::Stat(int id, const wstring& name, StatFormatter *formatter) : id(id), name(name), formatter(formatter)
+Stat::Stat(int id, const wstring &name, StatFormatter *formatter) : id(id), name(name), formatter(formatter)
 {
-	_init();
+    _init();
 }
 
-Stat::Stat(int id, const wstring& name) : id(id), name(name), formatter(defaultFormatter)
+Stat::Stat(int id, const wstring &name) : id(id), name(name), formatter(defaultFormatter)
 {
     _init();
 }
@@ -34,17 +34,17 @@ Stat *Stat::setAwardLocallyOnly()
 
 Stat *Stat::postConstruct()
 {
-    //if (Stats::statsById->containsKey(id))
-	//{
-        //throw new RuntimeException("Duplicate stat id: \"" + Stats::statsById->get(id)->name + "\" and \"" + name + "\" at id " + id);	4J - TODO
+    // if (Stats::statsById->containsKey(id))
+    //{
+    // throw new RuntimeException("Duplicate stat id: \"" + Stats::statsById->get(id)->name + "\" and \"" + name + "\" at id " + id);	4J - TODO
     //}
     Stats::all->push_back(this);
 
-	pair<int, Stat *> id1(id,this);
+    pair<int, Stat *> id1(id, this);
 #ifdef __PS3__
-	Stats::statsById->emplace(id1 );//	assert(0); // MGH - TODO - FIX - find out where this move function comes from
+    Stats::statsById->emplace(id1); //	assert(0); // MGH - TODO - FIX - find out where this move function comes from
 #else
-	Stats::statsById->emplace( move(id1) );
+    Stats::statsById->emplace(move(id1));
 #endif // __PS3__
 
     return this;
@@ -74,19 +74,19 @@ wstring Stat::TimeFormatter::format(int value)
     double years = days / 365.0;
 
     if (years > 0.5)
-	{
+    {
         return decimalFormat->format(years) + L" y";
     }
-	else if (days > 0.5)
-	{
+    else if (days > 0.5)
+    {
         return decimalFormat->format(days) + L" d";
     }
-	else if (hours > 0.5)
-	{
+    else if (hours > 0.5)
+    {
         return decimalFormat->format(hours) + L" h";
     }
-	else if (minutes > 0.5)
-	{
+    else if (minutes > 0.5)
+    {
         return decimalFormat->format(minutes) + L" m";
     }
 
@@ -95,7 +95,7 @@ wstring Stat::TimeFormatter::format(int value)
 
 wstring Stat::DefaultFormat::format(int value)
 {
-	return NumberFormat::format( value ); //numberFormat->format(value);
+    return NumberFormat::format(value); // numberFormat->format(value);
 }
 
 wstring Stat::DistanceFormatter::format(int cm)
@@ -104,11 +104,11 @@ wstring Stat::DistanceFormatter::format(int cm)
     double kilometers = meters / 1000.0;
 
     if (kilometers > 0.5)
-	{
+    {
         return decimalFormat->format(kilometers) + L" km";
-
-    } else if (meters > 0.5)
-	{
+    }
+    else if (meters > 0.5)
+    {
         return decimalFormat->format(meters) + L" m";
     }
     return std::to_wstring(cm) + L" cm";

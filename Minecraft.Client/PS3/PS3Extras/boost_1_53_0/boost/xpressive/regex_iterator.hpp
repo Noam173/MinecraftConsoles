@@ -12,43 +12,35 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/noncopyable.hpp>
 #include <boost/intrusive_ptr.hpp>
 #include <boost/iterator/iterator_traits.hpp>
-#include <boost/xpressive/detail/detail_fwd.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/xpressive/detail/core/access.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/utility/counted_base.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 //////////////////////////////////////////////////////////////////////////
 // regex_iterator_impl
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct regex_iterator_impl
-  : counted_base<regex_iterator_impl<BidiIter> >
+    : counted_base<regex_iterator_impl<BidiIter>>
 {
     typedef detail::core_access<BidiIter> access;
 
-    regex_iterator_impl
-    (
-        BidiIter begin
-      , BidiIter cur
-      , BidiIter end
-      , BidiIter next_search
-      , basic_regex<BidiIter> const &rex
-      , regex_constants::match_flag_type flags
-      , bool not_null = false
-    )
-      : rex_(rex)
-      , what_()
-      , state_(begin, end, what_, *access::get_regex_impl(rex_), flags)
-      , flags_(flags)
-      , not_null_(not_null)
+    regex_iterator_impl(
+        BidiIter begin, BidiIter cur, BidiIter end, BidiIter next_search, basic_regex<BidiIter> const &rex, regex_constants::match_flag_type flags, bool not_null = false)
+        : rex_(rex), what_(), state_(begin, end, what_, *access::get_regex_impl(rex_), flags), flags_(flags), not_null_(not_null)
     {
         this->state_.cur_ = cur;
         this->state_.next_search_ = next_search;
@@ -57,7 +49,7 @@ struct regex_iterator_impl
     bool next()
     {
         this->state_.reset(this->what_, *access::get_regex_impl(this->rex_));
-        if(!regex_search_impl(this->state_, this->rex_, this->not_null_))
+        if (!regex_search_impl(this->state_, this->rex_, this->not_null_))
         {
             return false;
         }
@@ -73,12 +65,7 @@ struct regex_iterator_impl
 
     bool equal_to(regex_iterator_impl<BidiIter> const &that) const
     {
-        return this->rex_.regex_id()    == that.rex_.regex_id()
-            && this->state_.begin_      == that.state_.begin_
-            && this->state_.cur_        == that.state_.cur_
-            && this->state_.end_        == that.state_.end_
-            && this->flags_             == that.flags_
-            ;
+        return this->rex_.regex_id() == that.rex_.regex_id() && this->state_.begin_ == that.state_.begin_ && this->state_.cur_ == that.state_.cur_ && this->state_.end_ == that.state_.end_ && this->flags_ == that.flags_;
     }
 
     basic_regex<BidiIter> rex_;
@@ -93,7 +80,7 @@ struct regex_iterator_impl
 //////////////////////////////////////////////////////////////////////////
 // regex_iterator
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct regex_iterator
 {
     typedef basic_regex<BidiIter> regex_type;
@@ -107,59 +94,48 @@ struct regex_iterator
     typedef detail::regex_iterator_impl<BidiIter> impl_type_;
 
     regex_iterator()
-      : impl_()
+        : impl_()
     {
     }
 
-    regex_iterator
-    (
-        BidiIter begin
-      , BidiIter end
-      , basic_regex<BidiIter> const &rex
-      , regex_constants::match_flag_type flags = regex_constants::match_default
-    )
-      : impl_()
+    regex_iterator(
+        BidiIter begin, BidiIter end, basic_regex<BidiIter> const &rex, regex_constants::match_flag_type flags = regex_constants::match_default)
+        : impl_()
     {
-        if(0 != rex.regex_id()) // Empty regexes are guaranteed to match nothing
+        if (0 != rex.regex_id()) // Empty regexes are guaranteed to match nothing
         {
-          this->impl_ = new impl_type_(begin, begin, end, begin, rex, flags);
-          this->next_();
+            this->impl_ = new impl_type_(begin, begin, end, begin, rex, flags);
+            this->next_();
         }
     }
 
-    template<typename LetExpr>
-    regex_iterator
-    (
-        BidiIter begin
-      , BidiIter end
-      , basic_regex<BidiIter> const &rex
-      , detail::let_<LetExpr> const &args
-      , regex_constants::match_flag_type flags = regex_constants::match_default
-    )
-      : impl_()
+    template <typename LetExpr>
+    regex_iterator(
+        BidiIter begin, BidiIter end, basic_regex<BidiIter> const &rex, detail::let_<LetExpr> const &args, regex_constants::match_flag_type flags = regex_constants::match_default)
+        : impl_()
     {
-        if(0 != rex.regex_id()) // Empty regexes are guaranteed to match nothing
+        if (0 != rex.regex_id()) // Empty regexes are guaranteed to match nothing
         {
-          this->impl_ = new impl_type_(begin, begin, end, begin, rex, flags);
-          detail::bind_args(args, this->impl_->what_);
-          this->next_();
+            this->impl_ = new impl_type_(begin, begin, end, begin, rex, flags);
+            detail::bind_args(args, this->impl_->what_);
+            this->next_();
         }
     }
 
     regex_iterator(regex_iterator<BidiIter> const &that)
-      : impl_(that.impl_) // COW
+        : impl_(that.impl_) // COW
     {
     }
 
-    regex_iterator<BidiIter> &operator =(regex_iterator<BidiIter> const &that)
+    regex_iterator<BidiIter> &operator=(regex_iterator<BidiIter> const &that)
     {
         this->impl_ = that.impl_; // COW
         return *this;
     }
 
-    friend bool operator ==(regex_iterator<BidiIter> const &left, regex_iterator<BidiIter> const &right)
+    friend bool operator==(regex_iterator<BidiIter> const &left, regex_iterator<BidiIter> const &right)
     {
-        if(!left.impl_ || !right.impl_)
+        if (!left.impl_ || !right.impl_)
         {
             return !left.impl_ && !right.impl_;
         }
@@ -167,17 +143,17 @@ struct regex_iterator
         return left.impl_->equal_to(*right.impl_);
     }
 
-    friend bool operator !=(regex_iterator<BidiIter> const &left, regex_iterator<BidiIter> const &right)
+    friend bool operator!=(regex_iterator<BidiIter> const &left, regex_iterator<BidiIter> const &right)
     {
         return !(left == right);
     }
 
-    value_type const &operator *() const
+    value_type const &operator*() const
     {
         return this->impl_->what_;
     }
 
-    value_type const *operator ->() const
+    value_type const *operator->() const
     {
         return &this->impl_->what_;
     }
@@ -204,41 +180,31 @@ struct regex_iterator
     /// \post (**this)[n].second == For all integers n \< (*this)-\>size(), the end of the sequence that matched sub-expression n. Alternatively, if sub-expression n did not participate in the match, then end.
     /// \post (**this)[n].matched == For all integers n \< (*this)-\>size(), true if sub-expression n participated in the match, false otherwise.
     /// \post (*this)-\>position() == The distance from the start of the original sequence being iterated, to the start of this match.
-    regex_iterator<BidiIter> &operator ++()
+    regex_iterator<BidiIter> &operator++()
     {
         this->fork_(); // un-share the implementation
         this->next_();
         return *this;
     }
 
-    regex_iterator<BidiIter> operator ++(int)
+    regex_iterator<BidiIter> operator++(int)
     {
         regex_iterator<BidiIter> tmp(*this);
         ++*this;
         return tmp;
     }
 
-private:
-
+  private:
     /// INTERNAL ONLY
     void fork_()
     {
-        if(1 != this->impl_->use_count())
+        if (1 != this->impl_->use_count())
         {
             // This is OK, the use_count is > 1
             impl_type_ *that = this->impl_.get();
-            this->impl_ = new impl_type_
-            (
-                that->state_.begin_
-              , that->state_.cur_
-              , that->state_.end_
-              , that->state_.next_search_
-              , that->rex_
-              , that->flags_
-              , that->not_null_
-            );
-            detail::core_access<BidiIter>::get_action_args(this->impl_->what_)
-                = detail::core_access<BidiIter>::get_action_args(that->what_);
+            this->impl_ = new impl_type_(
+                that->state_.begin_, that->state_.cur_, that->state_.end_, that->state_.next_search_, that->rex_, that->flags_, that->not_null_);
+            detail::core_access<BidiIter>::get_action_args(this->impl_->what_) = detail::core_access<BidiIter>::get_action_args(that->what_);
         }
     }
 
@@ -246,7 +212,7 @@ private:
     void next_()
     {
         BOOST_ASSERT(this->impl_ && 1 == this->impl_->use_count());
-        if(!this->impl_->next())
+        if (!this->impl_->next())
         {
             this->impl_ = 0;
         }
@@ -255,6 +221,7 @@ private:
     intrusive_ptr<impl_type_> impl_;
 };
 
-}} // namespace boost::xpressive
+} // namespace xpressive
+} // namespace boost
 
 #endif

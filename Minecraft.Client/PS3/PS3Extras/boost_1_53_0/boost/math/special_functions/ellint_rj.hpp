@@ -17,20 +17,25 @@
 #pragma once
 #endif
 
-#include <boost/math/special_functions/math_fwd.hpp>
-#include <boost/math/tools/config.hpp>
 #include <boost/math/policies/error_handling.hpp>
 #include <boost/math/special_functions/ellint_rc.hpp>
 #include <boost/math/special_functions/ellint_rf.hpp>
+#include <boost/math/special_functions/math_fwd.hpp>
+#include <boost/math/tools/config.hpp>
 
 // Carlson's elliptic integral of the third kind
 // R_J(x, y, z, p) = 1.5 * \int_{0}^{\infty} (t+p)^{-1} [(t+x)(t+y)(t+z)]^{-1/2} dt
 // Carlson, Numerische Mathematik, vol 33, 1 (1979)
 
-namespace boost { namespace math { namespace detail{
+namespace boost
+{
+namespace math
+{
+namespace detail
+{
 
 template <typename T, typename Policy>
-T ellint_rj_imp(T x, T y, T z, T p, const Policy& pol)
+T ellint_rj_imp(T x, T y, T z, T p, const Policy &pol)
 {
     T value, u, lambda, alpha, beta, sigma, factor, tolerance;
     T X, Y, Z, P, EA, EB, EC, E2, E3, S1, S2, S3;
@@ -39,33 +44,34 @@ T ellint_rj_imp(T x, T y, T z, T p, const Policy& pol)
     BOOST_MATH_STD_USING
     using namespace boost::math::tools;
 
-    static const char* function = "boost::math::ellint_rj<%1%>(%1%,%1%,%1%)";
+    static const char *function = "boost::math::ellint_rj<%1%>(%1%,%1%,%1%)";
 
     if (x < 0)
     {
-       return policies::raise_domain_error<T>(function,
-            "Argument x must be non-negative, but got x = %1%", x, pol);
+        return policies::raise_domain_error<T>(function,
+                                               "Argument x must be non-negative, but got x = %1%", x, pol);
     }
-    if(y < 0)
+    if (y < 0)
     {
-       return policies::raise_domain_error<T>(function,
-            "Argument y must be non-negative, but got y = %1%", y, pol);
+        return policies::raise_domain_error<T>(function,
+                                               "Argument y must be non-negative, but got y = %1%", y, pol);
     }
-    if(z < 0)
+    if (z < 0)
     {
-       return policies::raise_domain_error<T>(function,
-            "Argument z must be non-negative, but got z = %1%", z, pol);
+        return policies::raise_domain_error<T>(function,
+                                               "Argument z must be non-negative, but got z = %1%", z, pol);
     }
-    if(p == 0)
+    if (p == 0)
     {
-       return policies::raise_domain_error<T>(function,
-            "Argument p must not be zero, but got p = %1%", p, pol);
+        return policies::raise_domain_error<T>(function,
+                                               "Argument p must not be zero, but got p = %1%", p, pol);
     }
     if (x + y == 0 || y + z == 0 || z + x == 0)
     {
-       return policies::raise_domain_error<T>(function,
-            "At most one argument can be zero, "
-            "only possible result is %1%.", std::numeric_limits<T>::quiet_NaN(), pol);
+        return policies::raise_domain_error<T>(function,
+                                               "At most one argument can be zero, "
+                                               "only possible result is %1%.",
+                                               std::numeric_limits<T>::quiet_NaN(), pol);
     }
 
     // error scales as the 6th power of tolerance
@@ -74,30 +80,36 @@ T ellint_rj_imp(T x, T y, T z, T p, const Policy& pol)
     // for p < 0, the integral is singular, return Cauchy principal value
     if (p < 0)
     {
-       //
-       // We must ensure that (z - y) * (y - x) is positive.
-       // Since the integral is symmetrical in x, y and z
-       // we can just permute the values:
-       //
-       if(x > y)
-          std::swap(x, y);
-       if(y > z)
-          std::swap(y, z);
-       if(x > y)
-          std::swap(x, y);
+        //
+        // We must ensure that (z - y) * (y - x) is positive.
+        // Since the integral is symmetrical in x, y and z
+        // we can just permute the values:
+        //
+        if (x > y)
+        {
+            std::swap(x, y);
+        }
+        if (y > z)
+        {
+            std::swap(y, z);
+        }
+        if (x > y)
+        {
+            std::swap(x, y);
+        }
 
-       T q = -p;
-       T pmy = (z - y) * (y - x) / (y + q);  // p - y
+        T q = -p;
+        T pmy = (z - y) * (y - x) / (y + q); // p - y
 
-       BOOST_ASSERT(pmy >= 0);
+        BOOST_ASSERT(pmy >= 0);
 
-       T p = pmy + y;
-       value = boost::math::ellint_rj(x, y, z, p, pol);
-       value *= pmy;
-       value -= 3 * boost::math::ellint_rf(x, y, z, pol);
-       value += 3 * sqrt((x * y * z) / (x * z + p * q)) * boost::math::ellint_rc(x * z + p * q, p * q, pol);
-       value /= (y + q);
-       return value;
+        T p = pmy + y;
+        value = boost::math::ellint_rj(x, y, z, p, pol);
+        value *= pmy;
+        value -= 3 * boost::math::ellint_rf(x, y, z, pol);
+        value += 3 * sqrt((x * y * z) / (x * z + p * q)) * boost::math::ellint_rc(x * z + p * q, p * q, pol);
+        value /= (y + q);
+        return value;
     }
 
     // duplication
@@ -111,14 +123,16 @@ T ellint_rj_imp(T x, T y, T z, T p, const Policy& pol)
         Y = (u - y) / u;
         Z = (u - z) / u;
         P = (u - p) / u;
-        
-        if ((tools::max)(abs(X), abs(Y), abs(Z), abs(P)) < tolerance) 
-           break;
+
+        if ((tools::max)(abs(X), abs(Y), abs(Z), abs(P)) < tolerance)
+        {
+            break;
+        }
 
         T sx = sqrt(x);
         T sy = sqrt(y);
         T sz = sqrt(z);
-        
+
         lambda = sy * (sx + sz) + sz * sx;
         alpha = p * (sx + sy + sz) + sx * sy * sz;
         alpha *= alpha;
@@ -130,8 +144,7 @@ T ellint_rj_imp(T x, T y, T z, T p, const Policy& pol)
         z = (z + lambda) / 4;
         p = (p + lambda) / 4;
         ++k;
-    }
-    while(k < policies::get_max_series_iterations<Policy>());
+    } while (k < policies::get_max_series_iterations<Policy>());
 
     // Check to see if we gave up too soon:
     policies::check_series_iterations<T>(function, k, pol);
@@ -153,28 +166,29 @@ T ellint_rj_imp(T x, T y, T z, T p, const Policy& pol)
 } // namespace detail
 
 template <class T1, class T2, class T3, class T4, class Policy>
-inline typename tools::promote_args<T1, T2, T3, T4>::type 
-   ellint_rj(T1 x, T2 y, T3 z, T4 p, const Policy& pol)
+inline typename tools::promote_args<T1, T2, T3, T4>::type
+ellint_rj(T1 x, T2 y, T3 z, T4 p, const Policy &pol)
 {
-   typedef typename tools::promote_args<T1, T2, T3, T4>::type result_type;
-   typedef typename policies::evaluation<result_type, Policy>::type value_type;
-   return policies::checked_narrowing_cast<result_type, Policy>(
-      detail::ellint_rj_imp(
-         static_cast<value_type>(x),
-         static_cast<value_type>(y),
-         static_cast<value_type>(z),
-         static_cast<value_type>(p),
-         pol), "boost::math::ellint_rj<%1%>(%1%,%1%,%1%,%1%)");
+    typedef typename tools::promote_args<T1, T2, T3, T4>::type result_type;
+    typedef typename policies::evaluation<result_type, Policy>::type value_type;
+    return policies::checked_narrowing_cast<result_type, Policy>(
+        detail::ellint_rj_imp(
+            static_cast<value_type>(x),
+            static_cast<value_type>(y),
+            static_cast<value_type>(z),
+            static_cast<value_type>(p),
+            pol),
+        "boost::math::ellint_rj<%1%>(%1%,%1%,%1%,%1%)");
 }
 
 template <class T1, class T2, class T3, class T4>
-inline typename tools::promote_args<T1, T2, T3, T4>::type 
-   ellint_rj(T1 x, T2 y, T3 z, T4 p)
+inline typename tools::promote_args<T1, T2, T3, T4>::type
+ellint_rj(T1 x, T2 y, T3 z, T4 p)
 {
-   return ellint_rj(x, y, z, p, policies::policy<>());
+    return ellint_rj(x, y, z, p, policies::policy<>());
 }
 
-}} // namespaces
+} // namespace math
+} // namespace boost
 
 #endif // BOOST_MATH_ELLINT_RJ_HPP
-

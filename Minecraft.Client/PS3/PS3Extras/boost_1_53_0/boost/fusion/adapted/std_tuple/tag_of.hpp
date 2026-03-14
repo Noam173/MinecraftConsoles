@@ -7,40 +7,46 @@
 #if !defined(BOOST_FUSION_TAG_OF_09112011_1842)
 #define BOOST_FUSION_TAG_OF_09112011_1842
 
-#include <tuple>
 #include <boost/fusion/support/tag_of_fwd.hpp>
+#include <tuple>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct std_tuple_tag;
-    struct fusion_sequence_tag;
-
-    namespace traits
-    {
-        template <typename... Elements>
-        struct tag_of<std::tuple<Elements...>>
-        {
-            typedef std_tuple_tag type;
-        };
-    }
-}}
-
-namespace boost { namespace mpl
+namespace fusion
 {
-    template <typename>
-    struct sequence_tag;
+struct std_tuple_tag;
+struct fusion_sequence_tag;
 
-    template <typename... Elements>
-    struct sequence_tag<std::tuple<Elements...>>
-    {
-        typedef fusion::fusion_sequence_tag type;
-    };
+namespace traits
+{
+template <typename... Elements>
+struct tag_of<std::tuple<Elements...>>
+{
+    typedef std_tuple_tag type;
+};
+} // namespace traits
+} // namespace fusion
+} // namespace boost
 
-    template <typename... Elements>
-    struct sequence_tag<std::tuple<Elements...> const>
-    {
-        typedef fusion::fusion_sequence_tag type;
-    };
-}}
+namespace boost
+{
+namespace mpl
+{
+template <typename>
+struct sequence_tag;
+
+template <typename... Elements>
+struct sequence_tag<std::tuple<Elements...>>
+{
+    typedef fusion::fusion_sequence_tag type;
+};
+
+template <typename... Elements>
+struct sequence_tag<std::tuple<Elements...> const>
+{
+    typedef fusion::fusion_sequence_tag type;
+};
+} // namespace mpl
+} // namespace boost
 
 #endif

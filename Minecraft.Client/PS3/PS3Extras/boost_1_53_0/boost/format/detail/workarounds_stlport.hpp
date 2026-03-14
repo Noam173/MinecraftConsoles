@@ -13,9 +13,9 @@
 #ifndef BOOST_MACROS_STLPORT_HPP
 #define BOOST_MACROS_STLPORT_HPP
 
-#if defined(_STLPORT_VERSION) && BOOST_WORKAROUND( BOOST_MSVC, <= 1300)
+#if defined(_STLPORT_VERSION) && BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
 // msvc-6-stlport fails to find basic_string::append( iterator, iterator) when linking
-// might affect other MSwindows compilers 
+// might affect other MSwindows compilers
 #define BOOST_NO_STRING_APPEND
 #endif
 
@@ -26,16 +26,15 @@
 
 // STLport 4.5
 #if !defined(_STLP_OWN_IOSTREAMS) && defined(_STLP_USE_NAMESPACES) && defined(BOOST_NO_USING_TEMPLATE)
-#  define BOOST_IO_STD 
-#  define BOOST_IO_NEEDS_USING_DECLARATION
+#define BOOST_IO_STD
+#define BOOST_IO_NEEDS_USING_DECLARATION
 #endif
 
 // STLport 4.0
 #if !defined(__SGI_STL_OWN_IOSTREAMS) && defined(__STL_USE_OWN_NAMESPACE) && defined(BOOST_NO_USING_TEMPLATE)
-#  define BOOST_IO_STD 
-#  define BOOST_IO_NEEDS_USING_DECLARATION
+#define BOOST_IO_STD
+#define BOOST_IO_NEEDS_USING_DECLARATION
 #endif
-
 
 // ----------------------------------------------------------------------------
 

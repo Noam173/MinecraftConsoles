@@ -12,14 +12,16 @@
 #ifndef BOOST_BIMAP_TAGS_TAGGED_HPP
 #define BOOST_BIMAP_TAGS_TAGGED_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
-namespace boost {
-namespace bimaps {
+namespace boost
+{
+namespace bimaps
+{
 
 /// \brief A light non-invasive idiom to tag a type.
 /**
@@ -48,7 +50,8 @@ writer can enjoy the coding too.
 
                                                                             **/
 
-namespace tags {
+namespace tags
+{
 
 /// \brief The tag holder
 /**
@@ -77,7 +80,7 @@ See also value_type_of, tag_of, is_tagged, apply_to_value_type.
 
 \ingroup tagged_group
                                                                                     **/
-template< class Type, class Tag >
+template <class Type, class Tag>
 struct tagged
 {
     typedef Type value_type;
@@ -101,7 +104,3 @@ the type of a TaggedType.
                                                                                     **/
 
 #endif // BOOST_BIMAP_TAGS_TAGGED_HPP
-
-
-
-

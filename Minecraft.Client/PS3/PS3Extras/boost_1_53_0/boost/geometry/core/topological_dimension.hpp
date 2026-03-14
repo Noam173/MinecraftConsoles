@@ -11,63 +11,61 @@
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_GEOMETRY_CORE_TOPOLOGICAL_DIMENSION_HPP
 #define BOOST_GEOMETRY_CORE_TOPOLOGICAL_DIMENSION_HPP
 
-
 #include <boost/mpl/int.hpp>
-
 
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace core_dispatch
 {
 
-
 template <typename GeometryTag>
-struct top_dim {};
-
-
-template <>
-struct top_dim<point_tag>      : boost::mpl::int_<0> {};
-
+struct top_dim
+{
+};
 
 template <>
-struct top_dim<linestring_tag> : boost::mpl::int_<1> {};
-
+struct top_dim<point_tag> : boost::mpl::int_<0>
+{
+};
 
 template <>
-struct top_dim<segment_tag>    : boost::mpl::int_<1> {};
+struct top_dim<linestring_tag> : boost::mpl::int_<1>
+{
+};
 
+template <>
+struct top_dim<segment_tag> : boost::mpl::int_<1>
+{
+};
 
 // ring: topological dimension of two, but some people say: 1 !!
 template <>
-struct top_dim<ring_tag>       : boost::mpl::int_<2> {};
-
-
-template <>
-struct top_dim<box_tag>        : boost::mpl::int_<2> {};
-
+struct top_dim<ring_tag> : boost::mpl::int_<2>
+{
+};
 
 template <>
-struct top_dim<polygon_tag>    : boost::mpl::int_<2> {};
+struct top_dim<box_tag> : boost::mpl::int_<2>
+{
+};
 
-
+template <>
+struct top_dim<polygon_tag> : boost::mpl::int_<2>
+{
+};
 
 } // namespace core_dispatch
 #endif
-
-
-
-
 
 /*!
     \brief Meta-function returning the topological dimension of a geometry
@@ -79,10 +77,11 @@ struct top_dim<polygon_tag>    : boost::mpl::int_<2> {};
 */
 template <typename Geometry>
 struct topological_dimension
-    : core_dispatch::top_dim<typename tag<Geometry>::type> {};
+    : core_dispatch::top_dim<typename tag<Geometry>::type>
+{
+};
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_CORE_TOPOLOGICAL_DIMENSION_HPP

@@ -14,44 +14,50 @@
 #include <boost/coroutine/detail/coroutine_base.hpp>
 
 #ifdef BOOST_HAS_ABI_HEADERS
-#  include BOOST_ABI_PREFIX
+#include BOOST_ABI_PREFIX
 #endif
 
-namespace boost {
-namespace coroutines {
-namespace detail {
-
-template< typename Signature, typename Allocator >
-class coroutine_caller : public  coroutine_base< Signature >
+namespace boost
 {
-public:
-    typedef typename Allocator::template rebind<
-        coroutine_caller< Signature, Allocator >
-    >::other   allocator_t;
+namespace coroutines
+{
+namespace detail
+{
 
-    coroutine_caller( context::fcontext_t * callee, bool unwind, bool preserve_fpu,
-                    allocator_t const& alloc) BOOST_NOEXCEPT :
-        coroutine_base< Signature >( callee, unwind, preserve_fpu),
-        alloc_( alloc)
-    {}
+template <typename Signature, typename Allocator>
+class coroutine_caller : public coroutine_base<Signature>
+{
+  public:
+    typedef typename Allocator::template rebind<
+        coroutine_caller<Signature, Allocator>>::other allocator_t;
+
+    coroutine_caller(context::fcontext_t *callee, bool unwind, bool preserve_fpu,
+                     allocator_t const &alloc) BOOST_NOEXCEPT : coroutine_base<Signature>(callee, unwind, preserve_fpu),
+                                                                alloc_(alloc)
+    {
+    }
 
     void deallocate_object()
-    { destroy_( alloc_, this); }
-
-private:
-    allocator_t   alloc_;
-
-    static void destroy_( allocator_t & alloc, coroutine_caller * p)
     {
-        alloc.destroy( p);
-        alloc.deallocate( p, 1);
+        destroy_(alloc_, this);
+    }
+
+  private:
+    allocator_t alloc_;
+
+    static void destroy_(allocator_t &alloc, coroutine_caller *p)
+    {
+        alloc.destroy(p);
+        alloc.deallocate(p, 1);
     }
 };
 
-}}}
+} // namespace detail
+} // namespace coroutines
+} // namespace boost
 
 #ifdef BOOST_HAS_ABI_HEADERS
-#  include BOOST_ABI_SUFFIX
+#include BOOST_ABI_SUFFIX
 #endif
 
 #endif // BOOST_COROUTINES_DETAIL_COROUTINE_CALLER_H

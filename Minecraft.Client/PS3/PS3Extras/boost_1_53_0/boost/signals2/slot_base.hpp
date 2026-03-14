@@ -14,88 +14,95 @@
 
 #include <boost/any.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
 #include <boost/signals2/detail/foreign_ptr.hpp>
 #include <boost/signals2/expired_slot.hpp>
 #include <boost/signals2/signal_base.hpp>
 #include <boost/throw_exception.hpp>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/variant.hpp>
+#include <boost/weak_ptr.hpp>
 #include <vector>
 
 namespace boost
 {
-  namespace signals2
-  {
-    namespace detail
-    {
-      class tracked_objects_visitor;
+namespace signals2
+{
+namespace detail
+{
+class tracked_objects_visitor;
 
-      typedef boost::variant<boost::weak_ptr<void>, detail::foreign_void_weak_ptr > void_weak_ptr_variant;
-      typedef boost::variant<boost::shared_ptr<void>, detail::foreign_void_shared_ptr > void_shared_ptr_variant;
-      class lock_weak_ptr_visitor
-      {
-      public:
-        typedef void_shared_ptr_variant result_type;
-        template<typename WeakPtr>
-        result_type operator()(const WeakPtr &wp) const
-        {
-          return wp.lock();
-        }
-      };
-      class expired_weak_ptr_visitor
-      {
-      public:
-        typedef bool result_type;
-        template<typename WeakPtr>
-        bool operator()(const WeakPtr &wp) const
-        {
-          return wp.expired();
-        }
-      };
+typedef boost::variant<boost::weak_ptr<void>, detail::foreign_void_weak_ptr> void_weak_ptr_variant;
+typedef boost::variant<boost::shared_ptr<void>, detail::foreign_void_shared_ptr> void_shared_ptr_variant;
+class lock_weak_ptr_visitor
+{
+  public:
+    typedef void_shared_ptr_variant result_type;
+    template <typename WeakPtr>
+    result_type operator()(const WeakPtr &wp) const
+    {
+        return wp.lock();
     }
-
-    class slot_base
+};
+class expired_weak_ptr_visitor
+{
+  public:
+    typedef bool result_type;
+    template <typename WeakPtr>
+    bool operator()(const WeakPtr &wp) const
     {
-    public:
-      typedef std::vector<detail::void_weak_ptr_variant> tracked_container_type;
-      typedef std::vector<detail::void_shared_ptr_variant> locked_container_type;
+        return wp.expired();
+    }
+};
+} // namespace detail
 
-      const tracked_container_type& tracked_objects() const {return _tracked_objects;}
-      locked_container_type lock() const
-      {
+class slot_base
+{
+  public:
+    typedef std::vector<detail::void_weak_ptr_variant> tracked_container_type;
+    typedef std::vector<detail::void_shared_ptr_variant> locked_container_type;
+
+    const tracked_container_type &tracked_objects() const
+    {
+        return _tracked_objects;
+    }
+    locked_container_type lock() const
+    {
         locked_container_type locked_objects;
         tracked_container_type::const_iterator it;
-        for(it = tracked_objects().begin(); it != tracked_objects().end(); ++it)
+        for (it = tracked_objects().begin(); it != tracked_objects().end(); ++it)
         {
-          locked_objects.push_back(apply_visitor(detail::lock_weak_ptr_visitor(), *it));
-          if(apply_visitor(detail::expired_weak_ptr_visitor(), *it))
-          {
-            boost::throw_exception(expired_slot());
-          }
+            locked_objects.push_back(apply_visitor(detail::lock_weak_ptr_visitor(), *it));
+            if (apply_visitor(detail::expired_weak_ptr_visitor(), *it))
+            {
+                boost::throw_exception(expired_slot());
+            }
         }
         return locked_objects;
-      }
-      bool expired() const
-      {
+    }
+    bool expired() const
+    {
         tracked_container_type::const_iterator it;
-        for(it = tracked_objects().begin(); it != tracked_objects().end(); ++it)
+        for (it = tracked_objects().begin(); it != tracked_objects().end(); ++it)
         {
-          if(apply_visitor(detail::expired_weak_ptr_visitor(), *it)) return true;
+            if (apply_visitor(detail::expired_weak_ptr_visitor(), *it))
+            {
+                return true;
+            }
         }
         return false;
-      }
-    protected:
-      friend class detail::tracked_objects_visitor;
+    }
 
-      void track_signal(const signal_base &signal)
-      {
+  protected:
+    friend class detail::tracked_objects_visitor;
+
+    void track_signal(const signal_base &signal)
+    {
         _tracked_objects.push_back(signal.lock_pimpl());
-      }
+    }
 
-      tracked_container_type _tracked_objects;
-    };
-  }
+    tracked_container_type _tracked_objects;
+};
+} // namespace signals2
 } // end namespace boost
 
 #endif // BOOST_SIGNALS2_SLOT_BASE_HPP

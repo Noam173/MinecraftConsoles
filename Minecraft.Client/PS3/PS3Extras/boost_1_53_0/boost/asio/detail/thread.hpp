@@ -12,37 +12,40 @@
 #define BOOST_ASIO_DETAIL_THREAD_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if !defined(BOOST_HAS_THREADS) || defined(BOOST_ASIO_DISABLE_THREADS)
-# include <boost/asio/detail/null_thread.hpp>
+#include <boost/asio/detail/null_thread.hpp>
 #elif defined(BOOST_WINDOWS)
-# if defined(UNDER_CE)
-#  include <boost/asio/detail/wince_thread.hpp>
-# else
-#  include <boost/asio/detail/win_thread.hpp>
-# endif
-#elif defined(BOOST_HAS_PTHREADS)
-# include <boost/asio/detail/posix_thread.hpp>
+#if defined(UNDER_CE)
+#include <boost/asio/detail/wince_thread.hpp>
 #else
-# error Only Windows and POSIX are supported!
+#include <boost/asio/detail/win_thread.hpp>
+#endif
+#elif defined(BOOST_HAS_PTHREADS)
+#include <boost/asio/detail/posix_thread.hpp>
+#else
+#error Only Windows and POSIX are supported!
 #endif
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 #if !defined(BOOST_HAS_THREADS) || defined(BOOST_ASIO_DISABLE_THREADS)
 typedef null_thread thread;
 #elif defined(BOOST_WINDOWS)
-# if defined(UNDER_CE)
+#if defined(UNDER_CE)
 typedef wince_thread thread;
-# else
+#else
 typedef win_thread thread;
-# endif
+#endif
 #elif defined(BOOST_HAS_PTHREADS)
 typedef posix_thread thread;
 #endif

@@ -9,7 +9,6 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_GET_TURNS_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_GET_TURNS_HPP
 
-
 #include <boost/geometry/multi/core/ring_type.hpp>
 
 #include <boost/geometry/algorithms/detail/overlay/get_turns.hpp>
@@ -20,34 +19,32 @@
 #include <boost/geometry/multi/algorithms/detail/sections/range_by_section.hpp>
 #include <boost/geometry/multi/algorithms/detail/sections/sectionalize.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace get_turns
+namespace detail
+{
+namespace get_turns
 {
 
-template
-<
+template <
     typename Multi, typename Box,
     bool Reverse, bool ReverseBox,
     typename Turns,
     typename TurnPolicy,
-    typename InterruptPolicy
->
+    typename InterruptPolicy>
 struct get_turns_multi_polygon_cs
 {
     static inline void apply(
-            int source_id1, Multi const& multi,
-            int source_id2, Box const& box,
-            Turns& turns, InterruptPolicy& interrupt_policy)
+        int source_id1, Multi const &multi,
+        int source_id2, Box const &box,
+        Turns &turns, InterruptPolicy &interrupt_policy)
     {
-        typedef typename boost::range_iterator
-            <
-                Multi const
-            >::type iterator_type;
+        typedef typename boost::range_iterator<
+            Multi const>::type iterator_type;
 
         int i = 0;
         for (iterator_type it = boost::begin(multi);
@@ -55,57 +52,48 @@ struct get_turns_multi_polygon_cs
              ++it, ++i)
         {
             // Call its single version
-            get_turns_polygon_cs
-                <
-                    typename boost::range_value<Multi>::type, Box,
-                    Reverse, ReverseBox,
-                    Turns, TurnPolicy, InterruptPolicy
-                >::apply(source_id1, *it, source_id2, box,
-                            turns, interrupt_policy, i);
+            get_turns_polygon_cs<
+                typename boost::range_value<Multi>::type, Box,
+                Reverse, ReverseBox,
+                Turns, TurnPolicy, InterruptPolicy>::apply(source_id1, *it, source_id2, box,
+                                                           turns, interrupt_policy, i);
         }
     }
 };
 
-}} // namespace detail::get_turns
+} // namespace get_turns
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
-template
-<
+template <
     typename MultiPolygon,
     typename Box,
     bool ReverseMultiPolygon, bool ReverseBox,
     typename Turns,
     typename TurnPolicy,
-    typename InterruptPolicy
->
-struct get_turns
-    <
-        multi_polygon_tag, box_tag,
-        MultiPolygon, Box,
-        ReverseMultiPolygon, ReverseBox,
-        Turns,
-        TurnPolicy, InterruptPolicy
-    >
-    : detail::get_turns::get_turns_multi_polygon_cs
-        <
-            MultiPolygon, Box,
-            ReverseMultiPolygon, ReverseBox,
-            Turns,
-            TurnPolicy, InterruptPolicy
-        >
-{};
+    typename InterruptPolicy>
+struct get_turns<
+    multi_polygon_tag, box_tag,
+    MultiPolygon, Box,
+    ReverseMultiPolygon, ReverseBox,
+    Turns,
+    TurnPolicy, InterruptPolicy>
+    : detail::get_turns::get_turns_multi_polygon_cs<
+          MultiPolygon, Box,
+          ReverseMultiPolygon, ReverseBox,
+          Turns,
+          TurnPolicy, InterruptPolicy>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_GET_TURNS_HPP

@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_ASSIGN_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_ASSIGN_HPP
 
-
 #include <cstddef>
 
 #include <boost/concept/requires.hpp>
@@ -25,12 +24,12 @@
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/type_traits.hpp>
 
+#include <boost/geometry/algorithms/append.hpp>
+#include <boost/geometry/algorithms/clear.hpp>
+#include <boost/geometry/algorithms/convert.hpp>
 #include <boost/geometry/algorithms/detail/assign_box_corners.hpp>
 #include <boost/geometry/algorithms/detail/assign_indexed_point.hpp>
 #include <boost/geometry/algorithms/detail/assign_values.hpp>
-#include <boost/geometry/algorithms/convert.hpp>
-#include <boost/geometry/algorithms/append.hpp>
-#include <boost/geometry/algorithms/clear.hpp>
 #include <boost/geometry/arithmetic/arithmetic.hpp>
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/exterior_ring.hpp>
@@ -40,7 +39,9 @@
 
 #include <boost/geometry/util/for_each_coordinate.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
@@ -63,14 +64,13 @@ namespace boost { namespace geometry
 }
  */
 template <typename Geometry, typename Range>
-inline void assign_points(Geometry& geometry, Range const& range)
+inline void assign_points(Geometry &geometry, Range const &range)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     clear(geometry);
     geometry::append(geometry, range, -1, 0);
 }
-
 
 /*!
 \brief assign to a box inverse infinite
@@ -90,15 +90,13 @@ collect the minimum bounding box of a geometry.
 }
  */
 template <typename Geometry>
-inline void assign_inverse(Geometry& geometry)
+inline void assign_inverse(Geometry &geometry)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
-    dispatch::assign_inverse
-        <
-            typename tag<Geometry>::type,
-            Geometry
-        >::apply(geometry);
+    dispatch::assign_inverse<
+        typename tag<Geometry>::type,
+        Geometry>::apply(geometry);
 }
 
 /*!
@@ -110,15 +108,13 @@ inline void assign_inverse(Geometry& geometry)
 
  */
 template <typename Geometry>
-inline void assign_zero(Geometry& geometry)
+inline void assign_zero(Geometry &geometry)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
-    dispatch::assign_zero
-        <
-            typename tag<Geometry>::type,
-            Geometry
-        >::apply(geometry);
+    dispatch::assign_zero<
+        typename tag<Geometry>::type,
+        Geometry>::apply(geometry);
 }
 
 /*!
@@ -140,32 +136,24 @@ if it is possible and applicable.
 }
  */
 template <typename Geometry1, typename Geometry2>
-inline void assign(Geometry1& geometry1, Geometry2 const& geometry2)
+inline void assign(Geometry1 &geometry1, Geometry2 const &geometry2)
 {
-    concept::check_concepts_and_equal_dimensions<Geometry1, Geometry2 const>();
+    concept ::check_concepts_and_equal_dimensions<Geometry1, Geometry2 const>();
 
-    bool const same_point_order = 
-            point_order<Geometry1>::value == point_order<Geometry2>::value;
-    bool const same_closure = 
-            closure<Geometry1>::value == closure<Geometry2>::value;
+    bool const same_point_order =
+        point_order<Geometry1>::value == point_order<Geometry2>::value;
+    bool const same_closure =
+        closure<Geometry1>::value == closure<Geometry2>::value;
 
-    BOOST_MPL_ASSERT_MSG
-        (
-            same_point_order, ASSIGN_IS_NOT_SUPPORTED_FOR_DIFFERENT_POINT_ORDER
-            , (types<Geometry1, Geometry2>)
-        );
-    BOOST_MPL_ASSERT_MSG
-        (
-            same_closure, ASSIGN_IS_NOT_SUPPORTED_FOR_DIFFERENT_CLOSURE
-            , (types<Geometry1, Geometry2>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        same_point_order, ASSIGN_IS_NOT_SUPPORTED_FOR_DIFFERENT_POINT_ORDER, (types<Geometry1, Geometry2>));
+    BOOST_MPL_ASSERT_MSG(
+        same_closure, ASSIGN_IS_NOT_SUPPORTED_FOR_DIFFERENT_CLOSURE, (types<Geometry1, Geometry2>));
 
     dispatch::convert<Geometry2, Geometry1>::apply(geometry2, geometry1);
 }
 
-
-}} // namespace boost::geometry
-
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_ASSIGN_HPP

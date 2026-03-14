@@ -4,8 +4,8 @@
 
 // Copyright Aleksey Gurtovoy 2000-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -14,26 +14,31 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
-#include <boost/mpl/pop_back_fwd.hpp>
 #include <boost/mpl/aux_/config/typeof.hpp>
+#include <boost/mpl/pop_back_fwd.hpp>
 
 #if defined(BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES)
 
-#   include <boost/mpl/vector/aux_/item.hpp>
-#   include <boost/mpl/vector/aux_/tag.hpp>
+#include <boost/mpl/vector/aux_/item.hpp>
+#include <boost/mpl/vector/aux_/tag.hpp>
 
-namespace boost { namespace mpl {
-
-template<>
-struct pop_back_impl< aux::vector_tag >
+namespace boost
 {
-    template< typename Vector > struct apply
+namespace mpl
+{
+
+template <>
+struct pop_back_impl<aux::vector_tag>
+{
+    template <typename Vector>
+    struct apply
     {
-        typedef v_mask<Vector,0> type;
+        typedef v_mask<Vector, 0> type;
     };
 };
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES
 

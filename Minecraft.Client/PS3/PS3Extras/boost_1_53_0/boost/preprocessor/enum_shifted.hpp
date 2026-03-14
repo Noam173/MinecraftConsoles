@@ -1,4 +1,4 @@
-# /* **************************************************************************
+#/* **************************************************************************
 #  *                                                                          *
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
@@ -7,11 +7,11 @@
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+#/* See http://www.boost.org for most recent version. */
 #
-# ifndef BOOST_PREPROCESSOR_ENUM_SHIFTED_HPP
-# define BOOST_PREPROCESSOR_ENUM_SHIFTED_HPP
+#ifndef BOOST_PREPROCESSOR_ENUM_SHIFTED_HPP
+#define BOOST_PREPROCESSOR_ENUM_SHIFTED_HPP
 #
-# include <boost/preprocessor/repetition/enum_shifted.hpp>
+#include <boost/preprocessor/repetition/enum_shifted.hpp>
 #
-# endif
+#endif

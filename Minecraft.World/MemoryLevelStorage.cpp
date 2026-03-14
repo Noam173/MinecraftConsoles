@@ -1,10 +1,10 @@
-#include "stdafx.h"
+#include "MemoryLevelStorage.h"
+#include "com.mojang.nbt.h"
 #include "net.minecraft.world.entity.player.h"
-#include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.chunk.storage.h"
 #include "net.minecraft.world.level.dimension.h"
-#include "com.mojang.nbt.h"
-#include "MemoryLevelStorage.h"
+#include "net.minecraft.world.level.h"
+#include "stdafx.h"
 
 #include "ConsoleSaveFileIO.h"
 
@@ -14,19 +14,19 @@ MemoryLevelStorage::MemoryLevelStorage()
 
 LevelData *MemoryLevelStorage::prepareLevel()
 {
-	return nullptr;
+    return nullptr;
 }
 
-void MemoryLevelStorage::checkSession() 
+void MemoryLevelStorage::checkSession()
 {
 }
 
 ChunkStorage *MemoryLevelStorage::createChunkStorage(Dimension *dimension)
 {
-	return new MemoryChunkStorage();
+    return new MemoryChunkStorage();
 }
 
-void MemoryLevelStorage::saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players) 
+void MemoryLevelStorage::saveLevelData(LevelData *levelData, vector<shared_ptr<Player>> *players)
 {
 }
 
@@ -36,28 +36,28 @@ void MemoryLevelStorage::saveLevelData(LevelData *levelData)
 
 PlayerIO *MemoryLevelStorage::getPlayerIO()
 {
-	return this;
+    return this;
 }
 
 void MemoryLevelStorage::closeAll()
 {
 }
 
-void MemoryLevelStorage::save(shared_ptr<Player> player) 
+void MemoryLevelStorage::save(shared_ptr<Player> player)
 {
 }
 
 bool MemoryLevelStorage::load(shared_ptr<Player> player)
 {
-	return false;
+    return false;
 }
 
-CompoundTag *MemoryLevelStorage::loadPlayerDataTag(const wstring& playerName) 
+CompoundTag *MemoryLevelStorage::loadPlayerDataTag(const wstring &playerName)
 {
-	return nullptr;
+    return nullptr;
 }
 
-ConsoleSavePath MemoryLevelStorage::getDataFile(const wstring& id) 
+ConsoleSavePath MemoryLevelStorage::getDataFile(const wstring &id)
 {
-	return ConsoleSaveFile(wstring(L""));
+    return ConsoleSaveFile(wstring(L""));
 }

@@ -11,71 +11,77 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/qi/detail/string_parse.hpp>
 #include <boost/spirit/home/qi/detail/assign_to.hpp>
+#include <boost/spirit/home/qi/detail/string_parse.hpp>
 
-namespace boost { namespace spirit { namespace qi
+namespace boost
 {
-    ///////////////////////////////////////////////////////////////////////////
-    //  Default boolean policies
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename T = bool>
-    struct bool_policies
+namespace spirit
+{
+namespace qi
+{
+///////////////////////////////////////////////////////////////////////////
+//  Default boolean policies
+///////////////////////////////////////////////////////////////////////////
+template <typename T = bool>
+struct bool_policies
+{
+    template <typename Iterator, typename Attribute>
+    static bool
+    parse_true(Iterator &first, Iterator const &last, Attribute &attr)
     {
-        template <typename Iterator, typename Attribute>
-        static bool
-        parse_true(Iterator& first, Iterator const& last, Attribute& attr)
+        if (detail::string_parse("true", first, last, unused))
         {
-            if (detail::string_parse("true", first, last, unused))
-            {
-                spirit::traits::assign_to(T(true), attr);    // result is true
-                return true;
-            }
-            return false;
+            spirit::traits::assign_to(T(true), attr); // result is true
+            return true;
         }
+        return false;
+    }
 
-        template <typename Iterator, typename Attribute>
-        static bool
-        parse_false(Iterator& first, Iterator const& last, Attribute& attr)
-        {
-            if (detail::string_parse("false", first, last, unused))
-            {
-                spirit::traits::assign_to(T(false), attr);   // result is false
-                return true;
-            }
-            return false;
-        }
-    };
-
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename T = bool>
-    struct no_case_bool_policies
+    template <typename Iterator, typename Attribute>
+    static bool
+    parse_false(Iterator &first, Iterator const &last, Attribute &attr)
     {
-        template <typename Iterator, typename Attribute>
-        static bool
-        parse_true(Iterator& first, Iterator const& last, Attribute& attr)
+        if (detail::string_parse("false", first, last, unused))
         {
-            if (detail::string_parse("true", "TRUE", first, last, unused))
-            {
-                spirit::traits::assign_to(T(true), attr);    // result is true
-                return true;
-            }
-            return false;
+            spirit::traits::assign_to(T(false), attr); // result is false
+            return true;
         }
+        return false;
+    }
+};
 
-        template <typename Iterator, typename Attribute>
-        static bool
-        parse_false(Iterator& first, Iterator const& last, Attribute& attr)
+///////////////////////////////////////////////////////////////////////////
+template <typename T = bool>
+struct no_case_bool_policies
+{
+    template <typename Iterator, typename Attribute>
+    static bool
+    parse_true(Iterator &first, Iterator const &last, Attribute &attr)
+    {
+        if (detail::string_parse("true", "TRUE", first, last, unused))
         {
-            if (detail::string_parse("false", "FALSE", first, last, unused))
-            {
-                spirit::traits::assign_to(T(false), attr);   // result is false
-                return true;
-            }
-            return false;
+            spirit::traits::assign_to(T(true), attr); // result is true
+            return true;
         }
-    };
+        return false;
+    }
 
-}}}
+    template <typename Iterator, typename Attribute>
+    static bool
+    parse_false(Iterator &first, Iterator const &last, Attribute &attr)
+    {
+        if (detail::string_parse("false", "FALSE", first, last, unused))
+        {
+            spirit::traits::assign_to(T(false), attr); // result is false
+            return true;
+        }
+        return false;
+    }
+};
+
+} // namespace qi
+} // namespace spirit
+} // namespace boost
 
 #endif

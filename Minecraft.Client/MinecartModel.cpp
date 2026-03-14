@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "MinecartModel.h"
 #include "ModelPart.h"
+#include "stdafx.h"
 
 MinecartModel::MinecartModel() : Model()
 {
@@ -18,32 +18,32 @@ MinecartModel::MinecartModel() : Model()
 
     cubes[0]->addBox(static_cast<float>(-w / 2), static_cast<float>(-h / 2), -1, w, h, 2, 0);
     cubes[0]->setPos(0, static_cast<float>(0 + yOff), 0);
-			
+
     cubes[5]->addBox(static_cast<float>(-w / 2 + 1), static_cast<float>(-h / 2 + 1), -1, w - 2, h - 2, 1, 0);
     cubes[5]->setPos(0, static_cast<float>(0 + yOff), 0);
-			
+
     cubes[1]->addBox(static_cast<float>(-w / 2 + 2), static_cast<float>(-d - 1), -1, w - 4, d, 2, 0);
     cubes[1]->setPos(static_cast<float>(-w / 2 + 1), static_cast<float>(0 + yOff), 0);
-			
+
     cubes[2]->addBox(static_cast<float>(-w / 2 + 2), static_cast<float>(-d - 1), -1, w - 4, d, 2, 0);
     cubes[2]->setPos(static_cast<float>(+w / 2 - 1), static_cast<float>(0 + yOff), 0);
-			
+
     cubes[3]->addBox(static_cast<float>(-w / 2 + 2), static_cast<float>(-d - 1), -1, w - 4, d, 2, 0);
     cubes[3]->setPos(0, static_cast<float>(0 + yOff), static_cast<float>(-h / 2 + 1));
-			
+
     cubes[4]->addBox(static_cast<float>(-w / 2 + 2), static_cast<float>(-d - 1), -1, w - 4, d, 2, 0);
     cubes[4]->setPos(0, static_cast<float>(0 + yOff), static_cast<float>(+h / 2 - 1));
-			
+
     cubes[0]->xRot = PI / 2;
     cubes[1]->yRot = PI / 2 * 3;
     cubes[2]->yRot = PI / 2 * 1;
     cubes[3]->yRot = PI / 2 * 2;
     cubes[5]->xRot = -PI / 2;
 
-	// 4J added - compile now to avoid random performance hit first time cubes are rendered
+    // 4J added - compile now to avoid random performance hit first time cubes are rendered
     for (int i = 0; i < MINECART_LENGTH; i++)
-	{
-        cubes[i]->compile(1.0f/16.0f);
+    {
+        cubes[i]->compile(1.0f / 16.0f);
     }
 }
 
@@ -51,7 +51,7 @@ void MinecartModel::render(shared_ptr<Entity> entity, float time, float r, float
 {
     cubes[5]->y = 4 - bob;
     for (int i = 0; i < MINECART_LENGTH; i++)
-	{
+    {
         cubes[i]->render(scale, usecompiled);
     }
 }

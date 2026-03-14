@@ -1,41 +1,44 @@
-#include "stdafx.h"
-#include "net.minecraft.world.level.h"
-#include "net.minecraft.world.entity.player.h"
 #include "MilkBucketItem.h"
+#include "net.minecraft.world.entity.player.h"
+#include "net.minecraft.world.level.h"
+#include "stdafx.h"
 
-MilkBucketItem::MilkBucketItem(int id) : Item( id )
+MilkBucketItem::MilkBucketItem(int id) : Item(id)
 {
-	setMaxStackSize(1);
+    setMaxStackSize(1);
 }
 
 shared_ptr<ItemInstance> MilkBucketItem::useTimeDepleted(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
-	if (!player->abilities.instabuild) instance->count--;
+    if (!player->abilities.instabuild)
+    {
+        instance->count--;
+    }
 
-	if (!level->isClientSide)
-	{
-		player->removeAllEffects();
-	}
+    if (!level->isClientSide)
+    {
+        player->removeAllEffects();
+    }
 
-	if (instance->count <= 0)
-	{
-		return std::make_shared<ItemInstance>(Item::bucket_empty);
-	}
-	return instance;
+    if (instance->count <= 0)
+    {
+        return std::make_shared<ItemInstance>(Item::bucket_empty);
+    }
+    return instance;
 }
 
 int MilkBucketItem::getUseDuration(shared_ptr<ItemInstance> itemInstance)
 {
-	return DRINK_DURATION;
+    return DRINK_DURATION;
 }
 
 UseAnim MilkBucketItem::getUseAnimation(shared_ptr<ItemInstance> itemInstance)
 {
-	return UseAnim_drink;
+    return UseAnim_drink;
 }
 
 shared_ptr<ItemInstance> MilkBucketItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
-	player->startUsingItem(instance, getUseDuration(instance));
-	return instance;
+    player->startUsingItem(instance, getUseDuration(instance));
+    return instance;
 }

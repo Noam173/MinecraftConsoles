@@ -7,16 +7,22 @@
 
 #include <boost/python/converter/registered.hpp>
 
-namespace boost {namespace python {namespace detail{
+namespace boost
+{
+namespace python
+{
+namespace detail
+{
 
-
-template <class T> struct python_class : PyObject
+template <class T>
+struct python_class : PyObject
 {
     typedef python_class<T> this_type;
 
     typedef T type;
 
-    static void *converter (PyObject *p){
+    static void *converter(PyObject *p)
+    {
         return p;
     }
 
@@ -24,14 +30,18 @@ template <class T> struct python_class : PyObject
     {
         static bool first_time = true;
 
-        if ( !first_time ) return;
+        if (!first_time)
+        {
+            return;
+        }
 
         first_time = false;
         converter::registry::insert(&converter, boost::python::type_id<this_type>(), &converter::registered_pytype_direct<T>::get_pytype);
     }
 };
 
+} // namespace detail
+} // namespace python
+} // namespace boost
 
-}}} //namespace boost :: python :: detail
-
-#endif //BOOST_PYTHON_OBJECT_PYTHON_TYPE_H
+#endif // BOOST_PYTHON_OBJECT_PYTHON_TYPE_H

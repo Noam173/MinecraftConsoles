@@ -11,13 +11,16 @@
 #ifndef BOOST_MSM_BACK_TOOLS_H
 #define BOOST_MSM_BACK_TOOLS_H
 
-
-#include <string>
-#include <iostream>
 #include <boost/msm/back/common_types.hpp>
 #include <boost/msm/back/metafunctions.hpp>
+#include <iostream>
+#include <string>
 
-namespace boost { namespace msm { namespace back
+namespace boost
+{
+namespace msm
+{
+namespace back
 {
 
 // fills the array passed in with the state names in the correct order
@@ -26,43 +29,51 @@ namespace boost { namespace msm { namespace back
 template <class stt>
 struct fill_state_names
 {
-    fill_state_names(char const** names):m_names(names){}
-    template <class StateType>
-    void operator()(boost::msm::wrap<StateType> const&)
+    fill_state_names(char const **names) : m_names(names)
     {
-        m_names[get_state_id<stt,StateType>::value]= typeid(StateType).name();
     }
-private:
-    char const** m_names;
+    template <class StateType>
+    void operator()(boost::msm::wrap<StateType> const &)
+    {
+        m_names[get_state_id<stt, StateType>::value] = typeid(StateType).name();
+    }
+
+  private:
+    char const **m_names;
 };
 
 // fills the typeid-generated name of the given state in the string passed as argument
 template <class stt>
 struct get_state_name
 {
-    get_state_name(std::string& name_to_fill, int state_id):m_name(name_to_fill),m_state_id(state_id){}
-    template <class StateType>
-    void operator()(boost::msm::wrap<StateType> const&)
+    get_state_name(std::string &name_to_fill, int state_id) : m_name(name_to_fill), m_state_id(state_id)
     {
-        if (get_state_id<stt,StateType>::value == m_state_id)
+    }
+    template <class StateType>
+    void operator()(boost::msm::wrap<StateType> const &)
+    {
+        if (get_state_id<stt, StateType>::value == m_state_id)
         {
             m_name = typeid(StateType).name();
         }
     }
-private:
-    std::string&    m_name;
-    int             m_state_id;
+
+  private:
+    std::string &m_name;
+    int m_state_id;
 };
 
 // displays the typeid of the given Type
-struct display_type 
+struct display_type
 {
     template <class Type>
-    void operator()(boost::msm::wrap<Type> const&)
+    void operator()(boost::msm::wrap<Type> const &)
     {
         std::cout << typeid(Type).name() << std::endl;
     }
 };
 
-} } }//boost::msm::back
-#endif //BOOST_MSM_BACK_TOOLS_H
+} // namespace back
+} // namespace msm
+} // namespace boost
+#endif // BOOST_MSM_BACK_TOOLS_H

@@ -16,40 +16,40 @@
 #include <cstddef>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
-#endif       
+#pragma once
+#endif
 
 //------------------Templated stream support----------------------------------//
 
 // From boost/dynamic_bitset.hpp; thanks to Matthias Troyer for cray patch.
 #ifndef BOOST_IOSTREAMS_NO_STREAM_TEMPLATES
-# if defined(__STL_CONFIG_H) && \
-    !defined (__STL_USE_NEW_IOSTREAMS) && !defined(__crayx1) \
-    /**/
-#  define BOOST_IOSTREAMS_NO_STREAM_TEMPLATES
-# endif
+#if defined(__STL_CONFIG_H) && \
+    !defined(__STL_USE_NEW_IOSTREAMS) && !defined(__crayx1)
+/**/
+#define BOOST_IOSTREAMS_NO_STREAM_TEMPLATES
+#endif
 #endif // #ifndef BOOST_IOSTREAMS_NO_STREAM_TEMPLATES
 
 //------------------Wide stream support---------------------------------------//
 
 #ifndef BOOST_IOSTREAMS_NO_WIDE_STREAMS
-# if defined(BOOST_IOSTREAMS_NO_STREAM_TEMPLATES) || \
-     defined (BOOST_NO_STD_WSTREAMBUF) && \
-     ( !defined(__MSL_CPP__) || defined(_MSL_NO_WCHART_CPP_SUPPORT) ) \
-     /**/
-#  define BOOST_IOSTREAMS_NO_WIDE_STREAMS
-# endif
-#endif // #ifndef BOOST_IOSTREAMS_NO_WIDE_STREAMS   
+#if defined(BOOST_IOSTREAMS_NO_STREAM_TEMPLATES) || \
+    defined(BOOST_NO_STD_WSTREAMBUF) &&             \
+        (!defined(__MSL_CPP__) || defined(_MSL_NO_WCHART_CPP_SUPPORT))
+/**/
+#define BOOST_IOSTREAMS_NO_WIDE_STREAMS
+#endif
+#endif // #ifndef BOOST_IOSTREAMS_NO_WIDE_STREAMS
 
 //------------------Locale support--------------------------------------------//
 
 #ifndef BOOST_IOSTREAMS_NO_LOCALE
-# if defined(BOOST_NO_STD_LOCALE) || \
-     defined(__CYGWIN__) && \
-     ( !defined(__MSL_CPP__) || defined(_MSL_NO_WCHART_CPP_SUPPORT) ) \
-     /**/
-#  define BOOST_IOSTREAMS_NO_LOCALE
-# endif
+#if defined(BOOST_NO_STD_LOCALE) || \
+    defined(__CYGWIN__) &&          \
+        (!defined(__MSL_CPP__) || defined(_MSL_NO_WCHART_CPP_SUPPORT))
+/**/
+#define BOOST_IOSTREAMS_NO_LOCALE
+#endif
 #endif // #ifndef BOOST_IOSTREAMS_NO_LOCALE
 
 #endif // #ifndef BOOST_IOSTREAMS_DETAIL_CONFIG_WIDE_STREAMS_HPP_INCLUDED

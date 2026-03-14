@@ -1,16 +1,16 @@
-#include "stdafx.h"
 #include "vertex.h"
+#include "stdafx.h"
 
 Vertex::Vertex(float x, float y, float z, float u, float v)
 {
-    this->pos = Vec3::newPermanent(x,y,z);
+    this->pos = Vec3::newPermanent(x, y, z);
     this->u = u;
     this->v = v;
 }
 
 Vertex *Vertex::remap(float u, float v)
 {
-	return new Vertex(this, u, v);
+    return new Vertex(this, u, v);
 }
 
 Vertex::Vertex(Vertex *vertex, float u, float v)

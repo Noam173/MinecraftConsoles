@@ -8,13 +8,17 @@
 #ifndef BOOST_XPRESSIVE_DETAIL_CORE_ICASE_HPP_EAN_10_04_2005
 #define BOOST_XPRESSIVE_DETAIL_CORE_ICASE_HPP_EAN_10_04_2005
 
-#include <boost/xpressive/detail/detail_fwd.hpp>
-#include <boost/xpressive/regex_constants.hpp>
-#include <boost/xpressive/detail/static/modifier.hpp>
 #include <boost/xpressive/detail/core/linker.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
+#include <boost/xpressive/detail/static/modifier.hpp>
 #include <boost/xpressive/detail/utility/ignore_unused.hpp>
+#include <boost/xpressive/regex_constants.hpp>
 
-namespace boost { namespace xpressive { namespace regex_constants
+namespace boost
+{
+namespace xpressive
+{
+namespace regex_constants
 {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,12 +35,13 @@ using regex_constants::icase;
 
 namespace detail
 {
-    inline void ignore_unused_icase()
-    {
-        detail::ignore_unused(icase);
-    }
+inline void ignore_unused_icase()
+{
+    detail::ignore_unused(icase);
 }
+} // namespace detail
 
-}} // namespace boost::xpressive
+} // namespace xpressive
+} // namespace boost
 
 #endif

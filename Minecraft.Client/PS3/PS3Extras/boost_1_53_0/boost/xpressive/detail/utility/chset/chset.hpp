@@ -10,24 +10,28 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <vector>
 #include <boost/call_traits.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/utility/algorithm.hpp>
 #include <boost/xpressive/detail/utility/chset/basic_chset.ipp>
+#include <vector>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // compound_charset
 //
-template<typename Traits>
+template <typename Traits>
 struct compound_charset
-  : private basic_chset<typename Traits::char_type>
+    : private basic_chset<typename Traits::char_type>
 {
     typedef typename Traits::char_type char_type;
     typedef basic_chset<char_type> base_type;
@@ -35,11 +39,7 @@ struct compound_charset
     typedef typename Traits::char_class_type char_class_type;
 
     compound_charset()
-      : base_type()
-      , complement_(false)
-      , has_posix_(false)
-      , posix_yes_()
-      , posix_no_()
+        : base_type(), complement_(false), has_posix_(false), posix_yes_(), posix_no_()
     {
     }
 
@@ -88,7 +88,7 @@ struct compound_charset
     {
         this->has_posix_ = true;
 
-        if(no)
+        if (no)
         {
             this->posix_no_.push_back(m);
         }
@@ -100,16 +100,15 @@ struct compound_charset
 
     ///////////////////////////////////////////////////////////////////////////////
     // test
-    template<typename ICase>
+    template <typename ICase>
     bool test(char_type ch, Traits const &tr, ICase) const
     {
         return this->complement_ !=
-            (this->base_type::test(ch, tr, ICase()) ||
-            (this->has_posix_ && this->test_posix(ch, tr)));
+               (this->base_type::test(ch, tr, ICase()) ||
+                (this->has_posix_ && this->test_posix(ch, tr)));
     }
 
-private:
-
+  private:
     ///////////////////////////////////////////////////////////////////////////////
     // not_posix_pred
     struct not_posix_pred
@@ -117,7 +116,7 @@ private:
         char_type ch_;
         Traits const *traits_ptr_;
 
-        bool operator ()(typename call_traits<char_class_type>::param_type m) const
+        bool operator()(typename call_traits<char_class_type>::param_type m) const
         {
             return !this->traits_ptr_->isctype(this->ch_, m);
         }
@@ -128,8 +127,7 @@ private:
     bool test_posix(char_type ch, Traits const &tr) const
     {
         not_posix_pred const pred = {ch, &tr};
-        return tr.isctype(ch, this->posix_yes_)
-            || any(this->posix_no_.begin(), this->posix_no_.end(), pred);
+        return tr.isctype(ch, this->posix_yes_) || any(this->posix_no_.begin(), this->posix_no_.end(), pred);
     }
 
     bool complement_;
@@ -138,28 +136,28 @@ private:
     std::vector<char_class_type> posix_no_;
 };
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // helpers
-template<typename Char, typename Traits>
+template <typename Char, typename Traits>
 inline void set_char(compound_charset<Traits> &chset, Char ch, Traits const &tr, bool icase)
 {
     chset.set_char(ch, tr, icase);
 }
 
-template<typename Char, typename Traits>
+template <typename Char, typename Traits>
 inline void set_range(compound_charset<Traits> &chset, Char from, Char to, Traits const &tr, bool icase)
 {
     chset.set_range(from, to, tr, icase);
 }
 
-template<typename Traits>
+template <typename Traits>
 inline void set_class(compound_charset<Traits> &chset, typename Traits::char_class_type char_class, bool no, Traits const &)
 {
     chset.set_class(char_class, no);
 }
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif
-

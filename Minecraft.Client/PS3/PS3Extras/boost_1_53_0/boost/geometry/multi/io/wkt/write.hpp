@@ -14,32 +14,36 @@
 #ifndef BOOST_GEOMETRY_MULTI_IO_WKT_WRITE_HPP
 #define BOOST_GEOMETRY_MULTI_IO_WKT_WRITE_HPP
 
+#include <boost/geometry/io/wkt/write.hpp>
 #include <boost/geometry/multi/core/tags.hpp>
 #include <boost/geometry/multi/io/wkt/detail/prefix.hpp>
-#include <boost/geometry/io/wkt/write.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace wkt
+namespace detail
+{
+namespace wkt
 {
 
 template <typename Multi, typename StreamPolicy, typename PrefixPolicy>
 struct wkt_multi
 {
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>& os,
-                Multi const& geometry)
+    static inline void apply(std::basic_ostream<Char, Traits> &os,
+                             Multi const &geometry)
     {
         os << PrefixPolicy::apply();
         // TODO: check EMPTY here
         os << "(";
 
         for (typename boost::range_iterator<Multi const>::type
-                    it = boost::begin(geometry);
-            it != boost::end(geometry);
-            ++it)
+                 it = boost::begin(geometry);
+             it != boost::end(geometry);
+             ++it)
         {
             if (it != boost::begin(geometry))
             {
@@ -52,7 +56,8 @@ struct wkt_multi
     }
 };
 
-}} // namespace wkt::impl
+} // namespace wkt
+} // namespace detail
 #endif
 
 #ifndef DOXYGEN_NO_DISPATCH
@@ -61,48 +66,40 @@ namespace dispatch
 
 template <typename Multi>
 struct wkt<multi_point_tag, Multi>
-    : detail::wkt::wkt_multi
-        <
-            Multi,
-            detail::wkt::wkt_point
-                <
-                    typename boost::range_value<Multi>::type,
-                    detail::wkt::prefix_null
-                >,
-            detail::wkt::prefix_multipoint
-        >
-{};
+    : detail::wkt::wkt_multi<
+          Multi,
+          detail::wkt::wkt_point<
+              typename boost::range_value<Multi>::type,
+              detail::wkt::prefix_null>,
+          detail::wkt::prefix_multipoint>
+{
+};
 
 template <typename Multi>
 struct wkt<multi_linestring_tag, Multi>
-    : detail::wkt::wkt_multi
-        <
-            Multi,
-            detail::wkt::wkt_sequence
-                <
-                    typename boost::range_value<Multi>::type
-                >,
-            detail::wkt::prefix_multilinestring
-        >
-{};
+    : detail::wkt::wkt_multi<
+          Multi,
+          detail::wkt::wkt_sequence<
+              typename boost::range_value<Multi>::type>,
+          detail::wkt::prefix_multilinestring>
+{
+};
 
 template <typename Multi>
 struct wkt<multi_polygon_tag, Multi>
-    : detail::wkt::wkt_multi
-        <
-            Multi,
-            detail::wkt::wkt_poly
-                <
-                    typename boost::range_value<Multi>::type,
-                    detail::wkt::prefix_null
-                >,
-            detail::wkt::prefix_multipolygon
-        >
-{};
+    : detail::wkt::wkt_multi<
+          Multi,
+          detail::wkt::wkt_poly<
+              typename boost::range_value<Multi>::type,
+              detail::wkt::prefix_null>,
+          detail::wkt::prefix_multipolygon>
+{
+};
 
 } // namespace dispatch
 #endif
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_IO_WKT_WRITE_HPP

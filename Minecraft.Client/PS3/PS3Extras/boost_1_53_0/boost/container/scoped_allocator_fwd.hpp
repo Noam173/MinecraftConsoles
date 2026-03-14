@@ -12,7 +12,7 @@
 #define BOOST_CONTAINER_ALLOCATOR_SCOPED_ALLOCATOR_FWD_HPP
 
 #if (defined MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 #include <boost/container/detail/config_begin.hpp>
@@ -23,34 +23,34 @@
 #include <boost/container/detail/type_traits.hpp>
 #endif
 
-namespace boost { namespace container {
+namespace boost
+{
+namespace container
+{
 
 ///@cond
 
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
 
-   #if !defined(BOOST_CONTAINER_UNIMPLEMENTED_PACK_EXPANSION_TO_FIXED_LIST)
+#if !defined(BOOST_CONTAINER_UNIMPLEMENTED_PACK_EXPANSION_TO_FIXED_LIST)
 
-   template <typename OuterAlloc, typename ...InnerAllocs>
-   class scoped_allocator_adaptor;
+template <typename OuterAlloc, typename... InnerAllocs>
+class scoped_allocator_adaptor;
 
-   #else // #if !defined(BOOST_CONTAINER_UNIMPLEMENTED_PACK_EXPANSION_TO_FIXED_LIST)
+#else // #if !defined(BOOST_CONTAINER_UNIMPLEMENTED_PACK_EXPANSION_TO_FIXED_LIST)
 
-   template <typename ...InnerAllocs>
-   class scoped_allocator_adaptor;
+template <typename... InnerAllocs>
+class scoped_allocator_adaptor;
 
-   template <typename OuterAlloc, typename ...InnerAllocs>
-   class scoped_allocator_adaptor<OuterAlloc, InnerAllocs...>;
+template <typename OuterAlloc, typename... InnerAllocs>
+class scoped_allocator_adaptor<OuterAlloc, InnerAllocs...>;
 
-   #endif   // #if !defined(BOOST_CONTAINER_UNIMPLEMENTED_PACK_EXPANSION_TO_FIXED_LIST)
+#endif // #if !defined(BOOST_CONTAINER_UNIMPLEMENTED_PACK_EXPANSION_TO_FIXED_LIST)
 
-
-#else    // #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
+#else // #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
 
 template <typename OuterAlloc
-BOOST_PP_ENUM_TRAILING( BOOST_CONTAINER_MAX_CONSTRUCTOR_PARAMETERS
-                      , BOOST_CONTAINER_PP_TEMPLATE_PARAM_WITH_DEFAULT, container_detail::nat)
->
+              BOOST_PP_ENUM_TRAILING(BOOST_CONTAINER_MAX_CONSTRUCTOR_PARAMETERS, BOOST_CONTAINER_PP_TEMPLATE_PARAM_WITH_DEFAULT, container_detail::nat)>
 class scoped_allocator_adaptor;
 
 #endif
@@ -61,7 +61,9 @@ class scoped_allocator_adaptor;
 //! disambiguate constructor and function overloading. Specifically, several types
 //! have constructors with allocator_arg_t as the first argument, immediately followed
 //! by an argument of a type that satisfies the Allocator requirements
-struct allocator_arg_t{};
+struct allocator_arg_t
+{
+};
 
 //! A instance of type allocator_arg_t
 //!
@@ -76,7 +78,8 @@ struct constructible_with_allocator_prefix;
 template <typename T, typename Alloc>
 struct uses_allocator;
 
-}} // namespace boost { namespace container {
+} // namespace container
+} // namespace boost
 
 #include <boost/container/detail/config_end.hpp>
 

@@ -13,8 +13,8 @@
 
 #include <vector>
 
-#include <boost/wave/wave_config.hpp>
 #include <boost/wave/token_ids.hpp>
+#include <boost/wave/wave_config.hpp>
 
 // this must occur after all of the includes and before any code appears
 #ifdef BOOST_HAS_ABI_HEADERS
@@ -22,9 +22,12 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost {
-namespace wave {
-namespace cpplexer {
+namespace boost
+{
+namespace wave
+{
+namespace cpplexer
+{
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -32,19 +35,19 @@ namespace cpplexer {
 //  keywords, operators and other constant language elements.
 //
 //  This avoids repeated construction of these tokens, which is especially
-//  effective when used in conjunction with a copy on write string 
+//  effective when used in conjunction with a copy on write string
 //  implementation (COW string).
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename StringT>
-class token_cache 
+class token_cache
 {
-public:
+  public:
     token_cache()
-    :   cache(T_LAST_TOKEN - T_FIRST_TOKEN)
+        : cache(T_LAST_TOKEN - T_FIRST_TOKEN)
     {
         typename std::vector<StringT>::iterator it = cache.begin();
-        for (unsigned int i = T_FIRST_TOKEN; i < T_LAST_TOKEN;  ++i, ++it)
+        for (unsigned int i = T_FIRST_TOKEN; i < T_LAST_TOKEN; ++i, ++it)
         {
             *it = StringT(boost::wave::get_token_value(token_id(i)));
         }
@@ -55,14 +58,14 @@ public:
         return cache[BASEID_FROM_TOKEN(id) - T_FIRST_TOKEN];
     }
 
-private:
+  private:
     std::vector<StringT> cache;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-}   // namespace cpplexer 
-}   // namespace wave
-}   // namespace boost
+} // namespace cpplexer
+} // namespace wave
+} // namespace boost
 
 // the suffix header occurs after all of the code
 #ifdef BOOST_HAS_ABI_HEADERS

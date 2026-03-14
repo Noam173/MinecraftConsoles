@@ -11,9 +11,12 @@
 
 #include <string> // std::size_t
 
-namespace boost {
-namespace heap {
-namespace detail {
+namespace boost
+{
+namespace heap
+{
+namespace detail
+{
 
 template <typename IntType>
 struct log2
@@ -21,35 +24,36 @@ struct log2
     IntType operator()(IntType value)
     {
         IntType l = 0;
-        while( (value >> l) > 1 )
+        while ((value >> l) > 1)
+        {
             ++l;
+        }
         return l;
     }
 };
 
 #ifdef __GNUC__
-template<>
+template <>
 struct log2<unsigned int>
 {
     unsigned int operator()(unsigned int value)
     {
-        return sizeof(unsigned int)*8 - __builtin_clz(value - 1);
+        return sizeof(unsigned int) * 8 - __builtin_clz(value - 1);
     }
 };
 
-template<>
+template <>
 struct log2<unsigned long>
 {
     unsigned long operator()(unsigned long value)
     {
-        return sizeof(unsigned long)*8 - __builtin_clzl(value - 1);
+        return sizeof(unsigned long) * 8 - __builtin_clzl(value - 1);
     }
 };
 
 #endif
 
 } /* namespace detail */
-
 
 template <typename IntType>
 IntType log2(IntType value)

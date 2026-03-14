@@ -16,13 +16,13 @@
 #define BOOST_RANGE_ALGORITHM_EXT_HPP
 
 #include <boost/range/algorithm_ext/copy_n.hpp>
+#include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/range/algorithm_ext/for_each.hpp>
-#include <boost/range/algorithm_ext/is_sorted.hpp>
+#include <boost/range/algorithm_ext/insert.hpp>
 #include <boost/range/algorithm_ext/iota.hpp>
+#include <boost/range/algorithm_ext/is_sorted.hpp>
 #include <boost/range/algorithm_ext/overwrite.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
 #include <boost/range/algorithm_ext/push_front.hpp>
-#include <boost/range/algorithm_ext/insert.hpp>
-#include <boost/range/algorithm_ext/erase.hpp>
 
 #endif

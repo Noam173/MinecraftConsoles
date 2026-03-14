@@ -13,8 +13,9 @@
 
 #include <boost/type_traits.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace util
@@ -23,16 +24,13 @@ namespace util
 template <typename T>
 struct bare_type
 {
-    typedef typename boost::remove_const
-        <
-            typename boost::remove_pointer<T>::type
-        >::type type;
+    typedef typename boost::remove_const<
+        typename boost::remove_pointer<T>::type>::type type;
 };
-
 
 } // namespace util
 
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_BARE_TYPE_HPP

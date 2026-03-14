@@ -13,24 +13,27 @@
 
 #include <boost/intrusive/detail/config_begin.hpp>
 
-namespace boost {
-namespace intrusive {
-namespace detail {
+namespace boost
+{
+namespace intrusive
+{
+namespace detail
+{
 
-template<class Derived>
+template <class Derived>
 class clear_on_destructor_base
 {
-   protected:
-   ~clear_on_destructor_base()
-   {
-      static_cast<Derived*>(this)->clear();
-   }
+  protected:
+    ~clear_on_destructor_base()
+    {
+        static_cast<Derived *>(this)->clear();
+    }
 };
 
-}  // namespace detail {
-}  // namespace intrusive {
-}  // namespace boost {
+} // namespace detail
+} // namespace intrusive
+} // namespace boost
 
 #include <boost/intrusive/detail/config_end.hpp>
 
-#endif   //#ifndef BOOST_INTRUSIVE_DETAIL_CLEAR_ON_DESTRUCTOR_HPP
+#endif // #ifndef BOOST_INTRUSIVE_DETAIL_CLEAR_ON_DESTRUCTOR_HPP

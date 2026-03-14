@@ -16,13 +16,15 @@
 
 #include <boost/move/move.hpp>
 
-namespace boost {
-namespace interprocess {
+namespace boost
+{
+namespace interprocess
+{
 
-using ::boost::move;
 using ::boost::forward;
+using ::boost::move;
 
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace interprocess
+} // namespace boost
 
-#endif //#ifndef BOOST_INTERPROCESS_DETAIL_MOVE_HPP
+#endif // #ifndef BOOST_INTERPROCESS_DETAIL_MOVE_HPP

@@ -13,17 +13,17 @@
 
 #if defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || defined(__ARM_ARCH_7S__)
 
-# define BOOST_SP_ARM_BARRIER "dmb"
-# define BOOST_SP_ARM_HAS_LDREX
+#define BOOST_SP_ARM_BARRIER "dmb"
+#define BOOST_SP_ARM_HAS_LDREX
 
 #elif defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_6Z__) || defined(__ARM_ARCH_6ZK__) || defined(__ARM_ARCH_6T2__)
 
-# define BOOST_SP_ARM_BARRIER "mcr p15, 0, r0, c7, c10, 5"
-# define BOOST_SP_ARM_HAS_LDREX
+#define BOOST_SP_ARM_BARRIER "mcr p15, 0, r0, c7, c10, 5"
+#define BOOST_SP_ARM_HAS_LDREX
 
 #else
 
-# define BOOST_SP_ARM_BARRIER ""
+#define BOOST_SP_ARM_BARRIER ""
 
 #endif
 
@@ -35,12 +35,10 @@ namespace detail
 
 class spinlock
 {
-public:
-
+  public:
     int v_;
 
-public:
-
+  public:
     bool try_lock()
     {
         int r;
@@ -50,20 +48,16 @@ public:
         __asm__ __volatile__(
             "ldrex %0, [%2]; \n"
             "cmp %0, %1; \n"
-            "strexne %0, %1, [%2]; \n"
-            BOOST_SP_ARM_BARRIER :
-            "=&r"( r ): // outputs
-            "r"( 1 ), "r"( &v_ ): // inputs
-            "memory", "cc" );
+            "strexne %0, %1, [%2]; \n" BOOST_SP_ARM_BARRIER : "=&r"(r) : // outputs
+            "r"(1), "r"(&v_) :                                           // inputs
+            "memory", "cc");
 
 #else
 
         __asm__ __volatile__(
-            "swp %0, %1, [%2];\n"
-            BOOST_SP_ARM_BARRIER :
-            "=&r"( r ): // outputs
-            "r"( 1 ), "r"( &v_ ): // inputs
-            "memory", "cc" );
+            "swp %0, %1, [%2];\n" BOOST_SP_ARM_BARRIER : "=&r"(r) : // outputs
+            "r"(1), "r"(&v_) :                                      // inputs
+            "memory", "cc");
 
 #endif
 
@@ -72,32 +66,29 @@ public:
 
     void lock()
     {
-        for( unsigned k = 0; !try_lock(); ++k )
+        for (unsigned k = 0; !try_lock(); ++k)
         {
-            boost::detail::yield( k );
+            boost::detail::yield(k);
         }
     }
 
     void unlock()
     {
-        __asm__ __volatile__( BOOST_SP_ARM_BARRIER ::: "memory" );
-        *const_cast< int volatile* >( &v_ ) = 0;
+        __asm__ __volatile__(BOOST_SP_ARM_BARRIER ::: "memory");
+        *const_cast<int volatile *>(&v_) = 0;
     }
 
-public:
-
+  public:
     class scoped_lock
     {
-    private:
+      private:
+        spinlock &sp_;
 
-        spinlock & sp_;
+        scoped_lock(scoped_lock const &);
+        scoped_lock &operator=(scoped_lock const &);
 
-        scoped_lock( scoped_lock const & );
-        scoped_lock & operator=( scoped_lock const & );
-
-    public:
-
-        explicit scoped_lock( spinlock & sp ): sp_( sp )
+      public:
+        explicit scoped_lock(spinlock &sp) : sp_(sp)
         {
             sp.lock();
         }

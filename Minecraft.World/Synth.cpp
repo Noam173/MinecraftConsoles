@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "Synth.h"
+#include "stdafx.h"
 
 doubleArray Synth::create(int width, int height)
 {

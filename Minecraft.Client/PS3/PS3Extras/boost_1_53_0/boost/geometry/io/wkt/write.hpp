@@ -33,18 +33,22 @@
 
 #include <boost/geometry/io/wkt/detail/prefix.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace wkt
+namespace detail
+{
+namespace wkt
 {
 
 template <typename P, int I, int Count>
 struct stream_coordinate
 {
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>& os, P const& p)
+    static inline void apply(std::basic_ostream<Char, Traits> &os, P const &p)
     {
         os << (I > 0 ? " " : "") << get<I>(p);
         stream_coordinate<P, I + 1, Count>::apply(os, p);
@@ -55,34 +59,50 @@ template <typename P, int Count>
 struct stream_coordinate<P, Count, Count>
 {
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>&, P const&)
-    {}
+    static inline void apply(std::basic_ostream<Char, Traits> &, P const &)
+    {
+    }
 };
 
 struct prefix_linestring_par
 {
-    static inline const char* apply() { return "LINESTRING("; }
+    static inline const char *apply()
+    {
+        return "LINESTRING(";
+    }
 };
 
 struct prefix_ring_par_par
 {
     // Note, double parentheses are intentional, indicating WKT ring begin/end
-    static inline const char* apply() { return "POLYGON(("; }
+    static inline const char *apply()
+    {
+        return "POLYGON((";
+    }
 };
 
 struct opening_parenthesis
 {
-    static inline const char* apply() { return "("; }
+    static inline const char *apply()
+    {
+        return "(";
+    }
 };
 
 struct closing_parenthesis
 {
-    static inline const char* apply() { return ")"; }
+    static inline const char *apply()
+    {
+        return ")";
+    }
 };
 
 struct double_closing_parenthesis
 {
-    static inline const char* apply() { return "))"; }
+    static inline const char *apply()
+    {
+        return "))";
+    }
 };
 
 /*!
@@ -92,7 +112,7 @@ template <typename Point, typename Policy>
 struct wkt_point
 {
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>& os, Point const& p)
+    static inline void apply(std::basic_ostream<Char, Traits> &os, Point const &p)
     {
         os << Policy::apply() << "(";
         stream_coordinate<Point, 0, dimension<Point>::type::value>::apply(os, p);
@@ -108,8 +128,8 @@ template <typename Range, typename PrefixPolicy, typename SuffixPolicy>
 struct wkt_range
 {
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>& os,
-                Range const& range)
+    static inline void apply(std::basic_ostream<Char, Traits> &os,
+                             Range const &range)
     {
         typedef typename boost::range_iterator<Range const>::type iterator_type;
 
@@ -120,21 +140,19 @@ struct wkt_range
         // TODO: check EMPTY here
 
         for (iterator_type it = boost::begin(range);
-            it != boost::end(range);
-            ++it)
+             it != boost::end(range);
+             ++it)
         {
             os << (first ? "" : ",");
-            stream_coordinate
-                <
-                    point_type, 0, dimension<point_type>::type::value
-                >::apply(os, *it);
+            stream_coordinate<
+                point_type, 0, dimension<point_type>::type::value>::apply(os, *it);
             first = false;
         }
 
         os << SuffixPolicy::apply();
     }
 
-private:
+  private:
     typedef typename boost::range_value<Range>::type point_type;
 };
 
@@ -144,20 +162,19 @@ private:
 */
 template <typename Range>
 struct wkt_sequence
-    : wkt_range
-        <
-            Range,
-            opening_parenthesis,
-            closing_parenthesis
-        >
-{};
+    : wkt_range<
+          Range,
+          opening_parenthesis,
+          closing_parenthesis>
+{
+};
 
 template <typename Polygon, typename PrefixPolicy>
 struct wkt_poly
 {
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>& os,
-                Polygon const& poly)
+    static inline void apply(std::basic_ostream<Char, Traits> &os,
+                             Polygon const &poly)
     {
         typedef typename ring_type<Polygon const>::type ring;
 
@@ -166,8 +183,7 @@ struct wkt_poly
         os << "(";
         wkt_sequence<ring>::apply(os, exterior_ring(poly));
 
-        typename interior_return_type<Polygon const>::type rings
-                    = interior_rings(poly);
+        typename interior_return_type<Polygon const>::type rings = interior_rings(poly);
         for (BOOST_AUTO_TPL(it, boost::begin(rings)); it != boost::end(rings); ++it)
         {
             os << ",";
@@ -183,8 +199,8 @@ struct wkt_box
     typedef typename point_type<Box>::type point_type;
 
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>& os,
-                Box const& box)
+    static inline void apply(std::basic_ostream<Char, Traits> &os,
+                             Box const &box)
     {
         // Convert to ring, then stream
         typedef model::ring<point_type> ring_type;
@@ -195,15 +211,13 @@ struct wkt_box
         os << ")";
     }
 
-    private:
-
-        inline wkt_box()
-        {
-            // Only streaming of boxes with two dimensions is support, otherwise it is a polyhedron!
-            //assert_dimension<B, 2>();
-        }
+  private:
+    inline wkt_box()
+    {
+        // Only streaming of boxes with two dimensions is support, otherwise it is a polyhedron!
+        // assert_dimension<B, 2>();
+    }
 };
-
 
 template <typename Segment>
 struct wkt_segment
@@ -211,8 +225,8 @@ struct wkt_segment
     typedef typename point_type<Segment>::type point_type;
 
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>& os,
-                Segment const& segment)
+    static inline void apply(std::basic_ostream<Char, Traits> &os,
+                             Segment const &segment)
     {
         // Convert to two points, then stream
         typedef boost::array<point_type, 2> sequence;
@@ -227,13 +241,14 @@ struct wkt_segment
         wkt_sequence<sequence>::apply(os, points);
     }
 
-    private:
-
-        inline wkt_segment()
-        {}
+  private:
+    inline wkt_segment()
+    {
+    }
 };
 
-}} // namespace detail::wkt
+} // namespace wkt
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
 #ifndef DOXYGEN_NO_DISPATCH
@@ -243,31 +258,26 @@ namespace dispatch
 template <typename Tag, typename Geometry>
 struct wkt
 {
-   BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE
-            , (types<Geometry>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE, (types<Geometry>));
 };
 
 template <typename Point>
 struct wkt<point_tag, Point>
-    : detail::wkt::wkt_point
-        <
-            Point,
-            detail::wkt::prefix_point
-        >
-{};
+    : detail::wkt::wkt_point<
+          Point,
+          detail::wkt::prefix_point>
+{
+};
 
 template <typename Linestring>
 struct wkt<linestring_tag, Linestring>
-    : detail::wkt::wkt_range
-        <
-            Linestring,
-            detail::wkt::prefix_linestring_par,
-            detail::wkt::closing_parenthesis
-        >
-{};
+    : detail::wkt::wkt_range<
+          Linestring,
+          detail::wkt::prefix_linestring_par,
+          detail::wkt::closing_parenthesis>
+{
+};
 
 /*!
 \brief Specialization to stream a box as WKT
@@ -277,12 +287,14 @@ It is therefore streamed as a polygon
 template <typename Box>
 struct wkt<box_tag, Box>
     : detail::wkt::wkt_box<Box>
-{};
+{
+};
 
 template <typename Segment>
 struct wkt<segment_tag, Segment>
     : detail::wkt::wkt_segment<Segment>
-{};
+{
+};
 
 /*!
 \brief Specialization to stream a ring as WKT
@@ -292,25 +304,23 @@ It is therefore streamed as a polygon
 */
 template <typename Ring>
 struct wkt<ring_tag, Ring>
-    : detail::wkt::wkt_range
-        <
-            Ring,
-            detail::wkt::prefix_ring_par_par,
-            detail::wkt::double_closing_parenthesis
-        >
-{};
+    : detail::wkt::wkt_range<
+          Ring,
+          detail::wkt::prefix_ring_par_par,
+          detail::wkt::double_closing_parenthesis>
+{
+};
 
 /*!
 \brief Specialization to stream polygon as WKT
 */
 template <typename Polygon>
 struct wkt<polygon_tag, Polygon>
-    : detail::wkt::wkt_poly
-        <
-            Polygon,
-            detail::wkt::prefix_polygon
-        >
-{};
+    : detail::wkt::wkt_poly<
+          Polygon,
+          detail::wkt::prefix_polygon>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
@@ -329,28 +339,26 @@ Small example showing how to use the wkt class
 template <typename Geometry>
 class wkt_manipulator
 {
-public:
-
-    inline wkt_manipulator(Geometry const& g)
+  public:
+    inline wkt_manipulator(Geometry const &g)
         : m_geometry(g)
-    {}
+    {
+    }
 
     template <typename Char, typename Traits>
-    inline friend std::basic_ostream<Char, Traits>& operator<<(
-            std::basic_ostream<Char, Traits>& os,
-            wkt_manipulator const& m)
+    inline friend std::basic_ostream<Char, Traits> &operator<<(
+        std::basic_ostream<Char, Traits> &os,
+        wkt_manipulator const &m)
     {
-        dispatch::wkt
-            <
-                typename tag<Geometry>::type,
-                Geometry
-            >::apply(os, m.m_geometry);
+        dispatch::wkt<
+            typename tag<Geometry>::type,
+            Geometry>::apply(os, m.m_geometry);
         os.flush();
         return os;
     }
 
-private:
-    Geometry const& m_geometry;
+  private:
+    Geometry const &m_geometry;
 };
 
 /*!
@@ -364,13 +372,14 @@ Small example showing how to use the wkt helper function
 \until }
 */
 template <typename Geometry>
-inline wkt_manipulator<Geometry> wkt(Geometry const& geometry)
+inline wkt_manipulator<Geometry> wkt(Geometry const &geometry)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
     return wkt_manipulator<Geometry>(geometry);
 }
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_IO_WKT_WRITE_HPP

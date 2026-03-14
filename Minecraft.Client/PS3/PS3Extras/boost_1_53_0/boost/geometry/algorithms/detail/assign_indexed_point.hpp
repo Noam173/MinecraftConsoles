@@ -14,18 +14,18 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_ASSIGN_INDEXED_POINT_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_ASSIGN_INDEXED_POINT_HPP
 
-
 #include <cstddef>
 
-#include <boost/geometry/geometries/concepts/check.hpp>
 #include <boost/geometry/algorithms/detail/assign_values.hpp>
+#include <boost/geometry/geometries/concepts/check.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail 
+namespace detail
 {
 
 /*!
@@ -44,17 +44,14 @@ namespace detail
 }
 */
 template <std::size_t Index, typename Geometry, typename Point>
-inline void assign_point_to_index(Point const& point, Geometry& geometry)
+inline void assign_point_to_index(Point const &point, Geometry &geometry)
 {
-    concept::check<Point const>();
-    concept::check<Geometry>();
+    concept ::check<Point const>();
+    concept ::check<Geometry>();
 
-    detail::assign::assign_point_to_index
-        <
-            Geometry, Point, Index, 0, dimension<Geometry>::type::value
-        >::apply(point, geometry);
+    detail::assign::assign_point_to_index<
+        Geometry, Point, Index, 0, dimension<Geometry>::type::value>::apply(point, geometry);
 }
-
 
 /*!
 \brief Assign a point with a point of a box or segment
@@ -72,23 +69,19 @@ inline void assign_point_to_index(Point const& point, Geometry& geometry)
 }
 */
 template <std::size_t Index, typename Point, typename Geometry>
-inline void assign_point_from_index(Geometry const& geometry, Point& point)
+inline void assign_point_from_index(Geometry const &geometry, Point &point)
 {
-    concept::check<Geometry const>();
-    concept::check<Point>();
+    concept ::check<Geometry const>();
+    concept ::check<Point>();
 
-    detail::assign::assign_point_from_index
-        <
-            Geometry, Point, Index, 0, dimension<Geometry>::type::value
-        >::apply(geometry, point);
+    detail::assign::assign_point_from_index<
+        Geometry, Point, Index, 0, dimension<Geometry>::type::value>::apply(geometry, point);
 }
-
 
 } // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_ASSIGN_INDEXED_POINT_HPP

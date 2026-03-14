@@ -13,94 +13,96 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <cstdlib>
-#include <boost/config.hpp>
 #include <boost/assert.hpp>
+#include <boost/config.hpp>
 #include <boost/xpressive/traits/detail/c_ctype.hpp>
+#include <cstdlib>
 
-namespace boost { namespace xpressive
+namespace boost
+{
+namespace xpressive
 {
 
 namespace detail
 {
-    ///////////////////////////////////////////////////////////////////////////////
-    // empty_locale
-    struct empty_locale
+///////////////////////////////////////////////////////////////////////////////
+// empty_locale
+struct empty_locale
+{
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// c_regex_traits_base
+template <typename Char, std::size_t SizeOfChar = sizeof(Char)>
+struct c_regex_traits_base
+{
+  protected:
+    template <typename Traits>
+    void imbue(Traits const &tr)
     {
-    };
-
-    ///////////////////////////////////////////////////////////////////////////////
-    // c_regex_traits_base
-    template<typename Char, std::size_t SizeOfChar = sizeof(Char)>
-    struct c_regex_traits_base
-    {
-    protected:
-        template<typename Traits>
-        void imbue(Traits const &tr)
-        {
-        }
-    };
-
-    template<typename Char>
-    struct c_regex_traits_base<Char, 1>
-    {
-    protected:
-        template<typename Traits>
-        static void imbue(Traits const &)
-        {
-        }
-    };
-
-    #ifndef BOOST_XPRESSIVE_NO_WREGEX
-    template<std::size_t SizeOfChar>
-    struct c_regex_traits_base<wchar_t, SizeOfChar>
-    {
-    protected:
-        template<typename Traits>
-        static void imbue(Traits const &)
-        {
-        }
-    };
-    #endif
-
-    template<typename Char>
-    Char c_tolower(Char);
-
-    template<typename Char>
-    Char c_toupper(Char);
-
-    template<>
-    inline char c_tolower(char ch)
-    {
-        using namespace std;
-        return static_cast<char>(tolower(static_cast<unsigned char>(ch)));
     }
+};
 
-    template<>
-    inline char c_toupper(char ch)
+template <typename Char>
+struct c_regex_traits_base<Char, 1>
+{
+  protected:
+    template <typename Traits>
+    static void imbue(Traits const &)
     {
-        using namespace std;
-        return static_cast<char>(toupper(static_cast<unsigned char>(ch)));
     }
+};
 
-    #ifndef BOOST_XPRESSIVE_NO_WREGEX
-    template<>
-    inline wchar_t c_tolower(wchar_t ch)
+#ifndef BOOST_XPRESSIVE_NO_WREGEX
+template <std::size_t SizeOfChar>
+struct c_regex_traits_base<wchar_t, SizeOfChar>
+{
+  protected:
+    template <typename Traits>
+    static void imbue(Traits const &)
     {
-        using namespace std;
-        return towlower(ch);
     }
+};
+#endif
 
-    template<>
-    inline wchar_t c_toupper(wchar_t ch)
-    {
-        using namespace std;
-        return towupper(ch);
-    }
-    #endif
+template <typename Char>
+Char c_tolower(Char);
+
+template <typename Char>
+Char c_toupper(Char);
+
+template <>
+inline char c_tolower(char ch)
+{
+    using namespace std;
+    return static_cast<char>(tolower(static_cast<unsigned char>(ch)));
+}
+
+template <>
+inline char c_toupper(char ch)
+{
+    using namespace std;
+    return static_cast<char>(toupper(static_cast<unsigned char>(ch)));
+}
+
+#ifndef BOOST_XPRESSIVE_NO_WREGEX
+template <>
+inline wchar_t c_tolower(wchar_t ch)
+{
+    using namespace std;
+    return towlower(ch);
+}
+
+template <>
+inline wchar_t c_toupper(wchar_t ch)
+{
+    using namespace std;
+    return towupper(ch);
+}
+#endif
 
 } // namespace detail
 
@@ -114,9 +116,9 @@ struct regex_traits_version_1_tag;
 //
 /// \brief Encapsaulates the standard C locale functions for use by the
 /// \c basic_regex\<\> class template.
-template<typename Char>
+template <typename Char>
 struct c_regex_traits
-  : detail::c_regex_traits_base<Char>
+    : detail::c_regex_traits_base<Char>
 {
     typedef Char char_type;
     typedef std::basic_string<char_type> string_type;
@@ -128,7 +130,7 @@ struct c_regex_traits
     /// Initialize a c_regex_traits object to use the global C locale.
     ///
     c_regex_traits(locale_type const &loc = locale_type())
-      : base_type()
+        : base_type()
     {
         this->imbue(loc);
     }
@@ -136,7 +138,7 @@ struct c_regex_traits
     /// Checks two c_regex_traits objects for equality
     ///
     /// \return true.
-    bool operator ==(c_regex_traits<char_type> const &) const
+    bool operator==(c_regex_traits<char_type> const &) const
     {
         return true;
     }
@@ -144,7 +146,7 @@ struct c_regex_traits
     /// Checks two c_regex_traits objects for inequality
     ///
     /// \return false.
-    bool operator !=(c_regex_traits<char_type> const &) const
+    bool operator!=(c_regex_traits<char_type> const &) const
     {
         return false;
     }
@@ -207,17 +209,16 @@ struct c_regex_traits
     /// \param ch The source character.
     /// \return \c string_type containing all chars which are equal to \c ch when disregarding
     ///     case
-    //typedef array<char_type, 2> fold_case_type;
+    // typedef array<char_type, 2> fold_case_type;
     string_type fold_case(char_type ch) const
     {
         BOOST_MPL_ASSERT((is_same<char_type, char>));
         char_type ntcs[] = {
-            detail::c_tolower(ch)
-          , detail::c_toupper(ch)
-          , 0
-        };
-        if(ntcs[1] == ntcs[0])
+            detail::c_tolower(ch), detail::c_toupper(ch), 0};
+        if (ntcs[1] == ntcs[0])
+        {
             ntcs[1] = 0;
+        }
         return string_type(ntcs);
     }
 
@@ -244,9 +245,7 @@ struct c_regex_traits
     ///     C locale functions.
     static bool in_range_nocase(char_type first, char_type last, char_type ch)
     {
-        return c_regex_traits::in_range(first, last, ch)
-            || c_regex_traits::in_range(first, last, detail::c_tolower(ch))
-            || c_regex_traits::in_range(first, last, detail::c_toupper(ch));
+        return c_regex_traits::in_range(first, last, ch) || c_regex_traits::in_range(first, last, detail::c_tolower(ch)) || c_regex_traits::in_range(first, last, detail::c_toupper(ch));
     }
 
     /// Returns a sort key for the character sequence designated by the iterator range [F1, F2)
@@ -254,7 +253,7 @@ struct c_regex_traits
     /// then v.transform(G1, G2) < v.transform(H1, H2).
     ///
     /// \attention Not currently used
-    template<typename FwdIter>
+    template <typename FwdIter>
     static string_type transform(FwdIter begin, FwdIter end)
     {
         BOOST_ASSERT(false); // BUGBUG implement me
@@ -266,7 +265,7 @@ struct c_regex_traits
     /// v.transform_primary(G1, G2) < v.transform_primary(H1, H2).
     ///
     /// \attention Not currently used
-    template<typename FwdIter>
+    template <typename FwdIter>
     static string_type transform_primary(FwdIter begin, FwdIter end)
     {
         BOOST_ASSERT(false); // BUGBUG implement me
@@ -277,7 +276,7 @@ struct c_regex_traits
     /// Returns an empty string if the character sequence is not a valid collating element.
     ///
     /// \attention Not currently used
-    template<typename FwdIter>
+    template <typename FwdIter>
     static string_type lookup_collatename(FwdIter begin, FwdIter end)
     {
         BOOST_ASSERT(false); // BUGBUG implement me
@@ -292,7 +291,7 @@ struct c_regex_traits
     /// \param icase Specifies whether the returned bitmask should represent the case-insensitive
     ///     version of the character class.
     /// \return A bitmask representing the character class.
-    template<typename FwdIter>
+    template <typename FwdIter>
     static char_class_type lookup_classname(FwdIter begin, FwdIter end, bool icase)
     {
         return detail::char_class_impl<char_type>::lookup_classname(begin, end, icase);
@@ -341,7 +340,7 @@ struct c_regex_traits
 ///////////////////////////////////////////////////////////////////////////////
 // c_regex_traits<>::widen specializations
 /// INTERNAL ONLY
-template<>
+template <>
 inline char c_regex_traits<char>::widen(char ch)
 {
     return ch;
@@ -349,7 +348,7 @@ inline char c_regex_traits<char>::widen(char ch)
 
 #ifndef BOOST_XPRESSIVE_NO_WREGEX
 /// INTERNAL ONLY
-template<>
+template <>
 inline wchar_t c_regex_traits<wchar_t>::widen(char ch)
 {
     using namespace std;
@@ -360,7 +359,7 @@ inline wchar_t c_regex_traits<wchar_t>::widen(char ch)
 ///////////////////////////////////////////////////////////////////////////////
 // c_regex_traits<>::hash specializations
 /// INTERNAL ONLY
-template<>
+template <>
 inline unsigned char c_regex_traits<char>::hash(char ch)
 {
     return static_cast<unsigned char>(ch);
@@ -368,7 +367,7 @@ inline unsigned char c_regex_traits<char>::hash(char ch)
 
 #ifndef BOOST_XPRESSIVE_NO_WREGEX
 /// INTERNAL ONLY
-template<>
+template <>
 inline unsigned char c_regex_traits<wchar_t>::hash(wchar_t ch)
 {
     return static_cast<unsigned char>(ch);
@@ -378,36 +377,37 @@ inline unsigned char c_regex_traits<wchar_t>::hash(wchar_t ch)
 ///////////////////////////////////////////////////////////////////////////////
 // c_regex_traits<>::value specializations
 /// INTERNAL ONLY
-template<>
+template <>
 inline int c_regex_traits<char>::value(char ch, int radix)
 {
     using namespace std;
     BOOST_ASSERT(8 == radix || 10 == radix || 16 == radix);
-    char begin[2] = { ch, '\0' }, *end = 0;
+    char begin[2] = {ch, '\0'}, *end = 0;
     int val = strtol(begin, &end, radix);
     return begin == end ? -1 : val;
 }
 
 #ifndef BOOST_XPRESSIVE_NO_WREGEX
 /// INTERNAL ONLY
-template<>
+template <>
 inline int c_regex_traits<wchar_t>::value(wchar_t ch, int radix)
 {
     using namespace std;
     BOOST_ASSERT(8 == radix || 10 == radix || 16 == radix);
-    wchar_t begin[2] = { ch, L'\0' }, *end = 0;
+    wchar_t begin[2] = {ch, L'\0'}, *end = 0;
     int val = wcstol(begin, &end, radix);
     return begin == end ? -1 : val;
 }
 #endif
 
 // Narrow C traits has fold_case() member function.
-template<>
-struct has_fold_case<c_regex_traits<char> >
-  : mpl::true_
+template <>
+struct has_fold_case<c_regex_traits<char>>
+    : mpl::true_
 {
 };
 
-}}
+} // namespace xpressive
+} // namespace boost
 
 #endif

@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_CORE_POINT_TYPE_HPP
 #define BOOST_GEOMETRY_CORE_POINT_TYPE_HPP
 
-
 #include <boost/mpl/assert.hpp>
 #include <boost/range.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -24,7 +23,9 @@
 #include <boost/geometry/core/tags.hpp>
 #include <boost/geometry/util/bare_type.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace traits
@@ -42,15 +43,11 @@ namespace traits
 template <typename Geometry>
 struct point_type
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE, (types<Geometry>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE, (types<Geometry>));
 };
 
-
 } // namespace traits
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace core_dispatch
@@ -60,12 +57,9 @@ template <typename Tag, typename Geometry>
 struct point_type
 {
     // Default: call traits to get point type
-    typedef typename boost::remove_const
-        <
-            typename traits::point_type<Geometry>::type
-        >::type type;
+    typedef typename boost::remove_const<
+        typename traits::point_type<Geometry>::type>::type type;
 };
-
 
 // Specialization for point: the point itself
 template <typename Point>
@@ -74,7 +68,6 @@ struct point_type<point_tag, Point>
     typedef Point type;
 };
 
-
 // Specializations for linestring/ring, via boost::range
 template <typename Linestring>
 struct point_type<linestring_tag, Linestring>
@@ -82,33 +75,27 @@ struct point_type<linestring_tag, Linestring>
     typedef typename boost::range_value<Linestring>::type type;
 };
 
-
 template <typename Ring>
 struct point_type<ring_tag, Ring>
 {
     typedef typename boost::range_value<Ring>::type type;
 };
 
-
 // Specialization for polygon: the point-type is the point-type of its rings
 template <typename Polygon>
 struct point_type<polygon_tag, Polygon>
 {
-    typedef typename point_type
-        <
-            ring_tag,
-            typename ring_type<polygon_tag, Polygon>::type
-        >::type type;
+    typedef typename point_type<
+        ring_tag,
+        typename ring_type<polygon_tag, Polygon>::type>::type type;
 };
-
 
 } // namespace core_dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
 /*!
 \brief \brief_meta{type, point_type, \meta_geometry_type}
-\tparam Geometry \tparam_geometry 
+\tparam Geometry \tparam_geometry
 \ingroup core
 
 \qbk{[include reference/core/point_type.qbk]}
@@ -116,15 +103,12 @@ struct point_type<polygon_tag, Polygon>
 template <typename Geometry>
 struct point_type
 {
-    typedef typename core_dispatch::point_type
-        <
-            typename tag<Geometry>::type,
-            typename boost::geometry::util::bare_type<Geometry>::type
-        >::type type;
+    typedef typename core_dispatch::point_type<
+        typename tag<Geometry>::type,
+        typename boost::geometry::util::bare_type<Geometry>::type>::type type;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_CORE_POINT_TYPE_HPP

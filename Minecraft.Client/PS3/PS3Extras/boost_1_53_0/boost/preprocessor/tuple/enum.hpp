@@ -1,4 +1,4 @@
-# /* **************************************************************************
+#/* **************************************************************************
 #  *                                                                          *
 #  *     (C) Copyright Edward Diener 2011.                                    *
 #  *     (C) Copyright Paul Mensonides 2011.                                  *
@@ -8,15 +8,15 @@
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+#/* See http://www.boost.org for most recent version. */
 #
-# ifndef BOOST_PREPROCESSOR_TUPLE_ENUM_HPP
-# define BOOST_PREPROCESSOR_TUPLE_ENUM_HPP
+#ifndef BOOST_PREPROCESSOR_TUPLE_ENUM_HPP
+#define BOOST_PREPROCESSOR_TUPLE_ENUM_HPP
 #
-# include <boost/preprocessor/tuple/rem.hpp>
+#include <boost/preprocessor/tuple/rem.hpp>
 #
-# /* BOOST_PP_TUPLE_ENUM */
+#/* BOOST_PP_TUPLE_ENUM */
 #
-# define BOOST_PP_TUPLE_ENUM BOOST_PP_TUPLE_REM_CTOR
+#define BOOST_PP_TUPLE_ENUM BOOST_PP_TUPLE_REM_CTOR
 #
-# endif
+#endif

@@ -12,25 +12,32 @@
 #ifndef BOOST_BIMAP_RELATION_PAIR_LAYOUT_HPP
 #define BOOST_BIMAP_RELATION_PAIR_LAYOUT_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
-namespace boost {
-namespace bimaps {
-namespace relation {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
 
 //@{
 
 /// \brief Tag for normal layout. ( A,B -> A,B )
 
-struct normal_layout {};
+struct normal_layout
+{
+};
 
 /// \brief Tag for mirror layout. ( A,B -> B,A )
 
-struct mirror_layout {};
+struct mirror_layout
+{
+};
 
 //@}
 
@@ -50,14 +57,14 @@ See also normal_layout, mirror_layout.
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-template< class Layout >
+template <class Layout>
 struct inverse_layout
 {
     typedef normal_layout type;
 };
 
-template<>
-struct inverse_layout< normal_layout >
+template <>
+struct inverse_layout<normal_layout>
 {
     typedef mirror_layout type;
 };
@@ -69,4 +76,3 @@ struct inverse_layout< normal_layout >
 } // namespace boost
 
 #endif // BOOST_BIMAP_RELATION_DETAIL_PAIR_LAYOUT_HPP
-

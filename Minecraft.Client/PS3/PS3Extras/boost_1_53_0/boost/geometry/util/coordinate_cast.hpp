@@ -14,11 +14,13 @@
 #ifndef BOOST_GEOMETRY_UTIL_COORDINATE_CAST_HPP
 #define BOOST_GEOMETRY_UTIL_COORDINATE_CAST_HPP
 
+#include <boost/lexical_cast.hpp>
 #include <cstdlib>
 #include <string>
-#include <boost/lexical_cast.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
@@ -34,7 +36,7 @@ namespace detail
 template <typename CoordinateType>
 struct coordinate_cast
 {
-    static inline CoordinateType apply(std::string const& source)
+    static inline CoordinateType apply(std::string const &source)
     {
 #if defined(BOOST_GEOMETRY_NO_LEXICAL_CAST)
         return atof(source.c_str());
@@ -44,12 +46,10 @@ struct coordinate_cast
     }
 };
 
-
 } // namespace detail
 #endif
 
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_COORDINATE_CAST_HPP

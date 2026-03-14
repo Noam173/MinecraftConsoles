@@ -12,17 +12,19 @@
 #define BOOST_ASIO_CONNECT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include <boost/asio/detail/config.hpp>
 #include <boost/asio/basic_socket.hpp>
+#include <boost/asio/detail/config.hpp>
 #include <boost/asio/error.hpp>
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
+namespace boost
+{
+namespace asio
+{
 
 /**
  * @defgroup connect boost::asio::connect
@@ -61,7 +63,7 @@ namespace asio {
  * boost::asio::connect(s, r.resolve(q)); @endcode
  */
 template <typename Protocol, typename SocketService, typename Iterator>
-Iterator connect(basic_socket<Protocol, SocketService>& s, Iterator begin);
+Iterator connect(basic_socket<Protocol, SocketService> &s, Iterator begin);
 
 /// Establishes a socket connection by trying each endpoint in a sequence.
 /**
@@ -98,8 +100,8 @@ Iterator connect(basic_socket<Protocol, SocketService>& s, Iterator begin);
  * } @endcode
  */
 template <typename Protocol, typename SocketService, typename Iterator>
-Iterator connect(basic_socket<Protocol, SocketService>& s,
-    Iterator begin, boost::system::error_code& ec);
+Iterator connect(basic_socket<Protocol, SocketService> &s,
+                 Iterator begin, boost::system::error_code &ec);
 
 /// Establishes a socket connection by trying each endpoint in a sequence.
 /**
@@ -130,8 +132,8 @@ Iterator connect(basic_socket<Protocol, SocketService>& s,
  * boost::asio::connect(s, i, end); @endcode
  */
 template <typename Protocol, typename SocketService, typename Iterator>
-Iterator connect(basic_socket<Protocol, SocketService>& s,
-    Iterator begin, Iterator end);
+Iterator connect(basic_socket<Protocol, SocketService> &s,
+                 Iterator begin, Iterator end);
 
 /// Establishes a socket connection by trying each endpoint in a sequence.
 /**
@@ -167,8 +169,8 @@ Iterator connect(basic_socket<Protocol, SocketService>& s,
  * } @endcode
  */
 template <typename Protocol, typename SocketService, typename Iterator>
-Iterator connect(basic_socket<Protocol, SocketService>& s,
-    Iterator begin, Iterator end, boost::system::error_code& ec);
+Iterator connect(basic_socket<Protocol, SocketService> &s,
+                 Iterator begin, Iterator end, boost::system::error_code &ec);
 
 /// Establishes a socket connection by trying each endpoint in a sequence.
 /**
@@ -230,9 +232,9 @@ Iterator connect(basic_socket<Protocol, SocketService>& s,
  * std::cout << "Connected to: " << i->endpoint() << std::endl; @endcode
  */
 template <typename Protocol, typename SocketService,
-    typename Iterator, typename ConnectCondition>
-Iterator connect(basic_socket<Protocol, SocketService>& s,
-    Iterator begin, ConnectCondition connect_condition);
+          typename Iterator, typename ConnectCondition>
+Iterator connect(basic_socket<Protocol, SocketService> &s,
+                 Iterator begin, ConnectCondition connect_condition);
 
 /// Establishes a socket connection by trying each endpoint in a sequence.
 /**
@@ -302,9 +304,9 @@ Iterator connect(basic_socket<Protocol, SocketService>& s,
  * } @endcode
  */
 template <typename Protocol, typename SocketService,
-    typename Iterator, typename ConnectCondition>
-Iterator connect(basic_socket<Protocol, SocketService>& s, Iterator begin,
-    ConnectCondition connect_condition, boost::system::error_code& ec);
+          typename Iterator, typename ConnectCondition>
+Iterator connect(basic_socket<Protocol, SocketService> &s, Iterator begin,
+                 ConnectCondition connect_condition, boost::system::error_code &ec);
 
 /// Establishes a socket connection by trying each endpoint in a sequence.
 /**
@@ -364,9 +366,9 @@ Iterator connect(basic_socket<Protocol, SocketService>& s, Iterator begin,
  * std::cout << "Connected to: " << i->endpoint() << std::endl; @endcode
  */
 template <typename Protocol, typename SocketService,
-    typename Iterator, typename ConnectCondition>
-Iterator connect(basic_socket<Protocol, SocketService>& s, Iterator begin,
-    Iterator end, ConnectCondition connect_condition);
+          typename Iterator, typename ConnectCondition>
+Iterator connect(basic_socket<Protocol, SocketService> &s, Iterator begin,
+                 Iterator end, ConnectCondition connect_condition);
 
 /// Establishes a socket connection by trying each endpoint in a sequence.
 /**
@@ -434,10 +436,10 @@ Iterator connect(basic_socket<Protocol, SocketService>& s, Iterator begin,
  * } @endcode
  */
 template <typename Protocol, typename SocketService,
-    typename Iterator, typename ConnectCondition>
-Iterator connect(basic_socket<Protocol, SocketService>& s,
-    Iterator begin, Iterator end, ConnectCondition connect_condition,
-    boost::system::error_code& ec);
+          typename Iterator, typename ConnectCondition>
+Iterator connect(basic_socket<Protocol, SocketService> &s,
+                 Iterator begin, Iterator end, ConnectCondition connect_condition,
+                 boost::system::error_code &ec);
 
 /*@}*/
 
@@ -515,9 +517,9 @@ Iterator connect(basic_socket<Protocol, SocketService>& s,
  * } @endcode
  */
 template <typename Protocol, typename SocketService,
-    typename Iterator, typename ComposedConnectHandler>
-void async_connect(basic_socket<Protocol, SocketService>& s,
-    Iterator begin, BOOST_ASIO_MOVE_ARG(ComposedConnectHandler) handler);
+          typename Iterator, typename ComposedConnectHandler>
+void async_connect(basic_socket<Protocol, SocketService> &s,
+                   Iterator begin, BOOST_ASIO_MOVE_ARG(ComposedConnectHandler) handler);
 
 /// Asynchronously establishes a socket connection by trying each endpoint in a
 /// sequence.
@@ -584,10 +586,10 @@ void async_connect(basic_socket<Protocol, SocketService>& s,
  * } @endcode
  */
 template <typename Protocol, typename SocketService,
-    typename Iterator, typename ComposedConnectHandler>
-void async_connect(basic_socket<Protocol, SocketService>& s,
-    Iterator begin, Iterator end,
-    BOOST_ASIO_MOVE_ARG(ComposedConnectHandler) handler);
+          typename Iterator, typename ComposedConnectHandler>
+void async_connect(basic_socket<Protocol, SocketService> &s,
+                   Iterator begin, Iterator end,
+                   BOOST_ASIO_MOVE_ARG(ComposedConnectHandler) handler);
 
 /// Asynchronously establishes a socket connection by trying each endpoint in a
 /// sequence.
@@ -692,10 +694,10 @@ void async_connect(basic_socket<Protocol, SocketService>& s,
  * } @endcode
  */
 template <typename Protocol, typename SocketService, typename Iterator,
-    typename ConnectCondition, typename ComposedConnectHandler>
-void async_connect(basic_socket<Protocol, SocketService>& s, Iterator begin,
-    ConnectCondition connect_condition,
-    BOOST_ASIO_MOVE_ARG(ComposedConnectHandler) handler);
+          typename ConnectCondition, typename ComposedConnectHandler>
+void async_connect(basic_socket<Protocol, SocketService> &s, Iterator begin,
+                   ConnectCondition connect_condition,
+                   BOOST_ASIO_MOVE_ARG(ComposedConnectHandler) handler);
 
 /// Asynchronously establishes a socket connection by trying each endpoint in a
 /// sequence.
@@ -799,10 +801,10 @@ void async_connect(basic_socket<Protocol, SocketService>& s, Iterator begin,
  * } @endcode
  */
 template <typename Protocol, typename SocketService, typename Iterator,
-    typename ConnectCondition, typename ComposedConnectHandler>
-void async_connect(basic_socket<Protocol, SocketService>& s,
-    Iterator begin, Iterator end, ConnectCondition connect_condition,
-    BOOST_ASIO_MOVE_ARG(ComposedConnectHandler) handler);
+          typename ConnectCondition, typename ComposedConnectHandler>
+void async_connect(basic_socket<Protocol, SocketService> &s,
+                   Iterator begin, Iterator end, ConnectCondition connect_condition,
+                   BOOST_ASIO_MOVE_ARG(ComposedConnectHandler) handler);
 
 /*@}*/
 

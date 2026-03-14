@@ -1,38 +1,38 @@
 #pragma once
 
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
-#include "..\Minecraft.World\File.h"
 #include "..\Minecraft.World\ArrayWithLength.h"
+#include "..\Minecraft.World\File.h"
 
 using namespace std;
 
 class ArchiveFile
 {
-protected:
-	File m_sourcefile;
-	BYTE *m_cachedData;
+  protected:
+    File m_sourcefile;
+    BYTE *m_cachedData;
 
-	typedef struct _MetaData
-	{
-		wstring filename;
-		int ptr;
-		int filesize;
-		bool isCompressed;
+    typedef struct _MetaData
+    {
+        wstring filename;
+        int ptr;
+        int filesize;
+        bool isCompressed;
 
-	} MetaData, *PMetaData;
-	
-	unordered_map<wstring, PMetaData> m_index;
-	
-public:
-	void _readHeader(DataInputStream *dis);
+    } MetaData, *PMetaData;
 
-	ArchiveFile(File file);
-	~ArchiveFile();
+    unordered_map<wstring, PMetaData> m_index;
 
-	vector<wstring> *getFileList();
-	bool hasFile(const wstring &filename);
-	int getFileSize(const wstring &filename);
-	byteArray getFile(const wstring &filename);
+  public:
+    void _readHeader(DataInputStream *dis);
+
+    ArchiveFile(File file);
+    ~ArchiveFile();
+
+    vector<wstring> *getFileList();
+    bool hasFile(const wstring &filename);
+    int getFileSize(const wstring &filename);
+    byteArray getFile(const wstring &filename);
 };

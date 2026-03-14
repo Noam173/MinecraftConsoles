@@ -22,7 +22,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  The BOOST_KARMA_DEFAULT_FIELD_MAXWIDTH specifies the default maximal field 
+//  The BOOST_KARMA_DEFAULT_FIELD_MAXWIDTH specifies the default maximal field
 //  length to be used for the maxwidth directive.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,35 +41,44 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace spirit { namespace karma { namespace detail
+namespace boost
 {
-    ///////////////////////////////////////////////////////////////////////////
-    struct default_width
+namespace spirit
+{
+namespace karma
+{
+namespace detail
+{
+///////////////////////////////////////////////////////////////////////////
+struct default_width
+{
+    operator int() const
     {
-        operator int() const
-        {
-            return BOOST_KARMA_DEFAULT_FIELD_LENGTH;
-        }
-    };
+        return BOOST_KARMA_DEFAULT_FIELD_LENGTH;
+    }
+};
 
-    ///////////////////////////////////////////////////////////////////////////
-    struct default_max_width
+///////////////////////////////////////////////////////////////////////////
+struct default_max_width
+{
+    operator int() const
     {
-        operator int() const
-        {
-            return BOOST_KARMA_DEFAULT_FIELD_MAXWIDTH;
-        }
-    };
+        return BOOST_KARMA_DEFAULT_FIELD_MAXWIDTH;
+    }
+};
 
-    ///////////////////////////////////////////////////////////////////////////
-    struct default_columns
+///////////////////////////////////////////////////////////////////////////
+struct default_columns
+{
+    operator int() const
     {
-        operator int() const
-        {
-            return BOOST_KARMA_DEFAULT_COLUMNS;
-        }
-    };
+        return BOOST_KARMA_DEFAULT_COLUMNS;
+    }
+};
 
-}}}}
+} // namespace detail
+} // namespace karma
+} // namespace spirit
+} // namespace boost
 
 #endif

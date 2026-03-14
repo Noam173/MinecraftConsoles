@@ -9,24 +9,28 @@
 #ifndef BOOST_FLYWEIGHT_NO_LOCKING_HPP
 #define BOOST_FLYWEIGHT_NO_LOCKING_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
-#include <boost/flyweight/no_locking_fwd.hpp>
 #include <boost/flyweight/locking_tag.hpp>
+#include <boost/flyweight/no_locking_fwd.hpp>
 
 /* null locking policy */
 
-namespace boost{
-
-namespace flyweights{
-
-struct no_locking:locking_marker
+namespace boost
 {
-  struct             mutex_type{};
-  typedef mutex_type lock_type;
+
+namespace flyweights
+{
+
+struct no_locking : locking_marker
+{
+    struct mutex_type
+    {
+    };
+    typedef mutex_type lock_type;
 };
 
 } /* namespace flyweights */

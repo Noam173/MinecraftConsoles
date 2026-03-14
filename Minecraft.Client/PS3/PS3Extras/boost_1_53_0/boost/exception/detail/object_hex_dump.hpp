@@ -1,7 +1,7 @@
-//Copyright (c) 2006-2009 Emil Dotchevski and Reverge Studios, Inc.
+// Copyright (c) 2006-2009 Emil Dotchevski and Reverge Studios, Inc.
 
-//Distributed under the Boost Software License, Version 1.0. (See accompanying
-//file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef UUID_6F463AC838DF11DDA3E6909F56D89593
 #define UUID_6F463AC838DF11DDA3E6909F56D89593
@@ -9,40 +9,39 @@
 #pragma GCC system_header
 #endif
 #if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
-#pragma warning(push,1)
+#pragma warning(push, 1)
 #endif
 
 #include <boost/exception/detail/type_info.hpp>
+#include <cstdlib>
 #include <iomanip>
 #include <ios>
-#include <string>
 #include <sstream>
-#include <cstdlib>
+#include <string>
 
-namespace
-boost
+namespace boost
+{
+namespace exception_detail
+{
+template <class T>
+inline std::string
+object_hex_dump(T const &x, std::size_t max_size = 16)
+{
+    std::ostringstream s;
+    s << "type: " << type_name<T>() << ", size: " << sizeof(T) << ", dump: ";
+    std::size_t n = sizeof(T) > max_size ? max_size : sizeof(T);
+    s.fill('0');
+    s.width(2);
+    unsigned char const *b = reinterpret_cast<unsigned char const *>(&x);
+    s << std::setw(2) << std::hex << (unsigned int)*b;
+    for (unsigned char const *e = b + n; ++b != e;)
     {
-    namespace
-    exception_detail
-        {
-        template <class T>
-        inline
-        std::string
-        object_hex_dump( T const & x, std::size_t max_size=16 )
-            {
-            std::ostringstream s;
-            s << "type: " << type_name<T>() << ", size: " << sizeof(T) << ", dump: ";
-            std::size_t n=sizeof(T)>max_size?max_size:sizeof(T);
-            s.fill('0');
-            s.width(2);
-            unsigned char const * b=reinterpret_cast<unsigned char const *>(&x);
-            s << std::setw(2) << std::hex << (unsigned int)*b;
-            for( unsigned char const * e=b+n; ++b!=e; )
-                s << " " << std::setw(2) << std::hex << (unsigned int)*b;
-            return s.str();
-            }
-        }
+        s << " " << std::setw(2) << std::hex << (unsigned int)*b;
     }
+    return s.str();
+}
+} // namespace exception_detail
+} // namespace boost
 
 #if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
 #pragma warning(pop)

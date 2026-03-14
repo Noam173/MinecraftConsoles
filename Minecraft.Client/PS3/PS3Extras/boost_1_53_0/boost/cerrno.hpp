@@ -135,7 +135,7 @@
 #endif
 
 #ifndef EOWNERDEAD
-#define EOWNERDEAD  9931
+#define EOWNERDEAD 9931
 #endif
 
 #ifndef EPROTO

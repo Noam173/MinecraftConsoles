@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //  detail/sp_convertible.hpp
@@ -17,19 +17,19 @@
 
 #include <boost/config.hpp>
 
-#if !defined( BOOST_SP_NO_SP_CONVERTIBLE ) && defined( BOOST_NO_SFINAE )
-# define BOOST_SP_NO_SP_CONVERTIBLE
+#if !defined(BOOST_SP_NO_SP_CONVERTIBLE) && defined(BOOST_NO_SFINAE)
+#define BOOST_SP_NO_SP_CONVERTIBLE
 #endif
 
-#if !defined( BOOST_SP_NO_SP_CONVERTIBLE ) && defined( __GNUC__ ) && ( __GNUC__ * 100 + __GNUC_MINOR__ < 303 )
-# define BOOST_SP_NO_SP_CONVERTIBLE
+#if !defined(BOOST_SP_NO_SP_CONVERTIBLE) && defined(__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__ < 303)
+#define BOOST_SP_NO_SP_CONVERTIBLE
 #endif
 
-#if !defined( BOOST_SP_NO_SP_CONVERTIBLE ) && defined( __BORLANDC__ ) && ( __BORLANDC__ < 0x630 )
-# define BOOST_SP_NO_SP_CONVERTIBLE
+#if !defined(BOOST_SP_NO_SP_CONVERTIBLE) && defined(__BORLANDC__) && (__BORLANDC__ < 0x630)
+#define BOOST_SP_NO_SP_CONVERTIBLE
 #endif
 
-#if !defined( BOOST_SP_NO_SP_CONVERTIBLE )
+#if !defined(BOOST_SP_NO_SP_CONVERTIBLE)
 
 namespace boost
 {
@@ -37,48 +37,70 @@ namespace boost
 namespace detail
 {
 
-template< class Y, class T > struct sp_convertible
+template <class Y, class T>
+struct sp_convertible
 {
-    typedef char (&yes) [1];
-    typedef char (&no)  [2];
+    typedef char (&yes)[1];
+    typedef char (&no)[2];
 
-    static yes f( T* );
-    static no  f( ... );
+    static yes f(T *);
+    static no f(...);
 
-    enum _vt { value = sizeof( (f)( static_cast<Y*>(0) ) ) == sizeof(yes) };
+    enum _vt
+    {
+        value = sizeof((f)(static_cast<Y *>(0))) == sizeof(yes)
+    };
 };
 
-template< class Y, class T > struct sp_convertible< Y, T[] >
+template <class Y, class T>
+struct sp_convertible<Y, T[]>
 {
-    enum _vt { value = false };
+    enum _vt
+    {
+        value = false
+    };
 };
 
-template< class Y, class T > struct sp_convertible< Y[], T[] >
+template <class Y, class T>
+struct sp_convertible<Y[], T[]>
 {
-    enum _vt { value = sp_convertible< Y[1], T[1] >::value };
+    enum _vt
+    {
+        value = sp_convertible < Y[1],
+        T[1] > ::value
+    };
 };
 
-template< class Y, std::size_t N, class T > struct sp_convertible< Y[N], T[] >
+template <class Y, std::size_t N, class T>
+struct sp_convertible<Y[N], T[]>
 {
-    enum _vt { value = sp_convertible< Y[1], T[1] >::value };
+    enum _vt
+    {
+        value = sp_convertible < Y[1],
+        T[1] > ::value
+    };
 };
 
 struct sp_empty
 {
 };
 
-template< bool > struct sp_enable_if_convertible_impl;
+template <bool>
+struct sp_enable_if_convertible_impl;
 
-template<> struct sp_enable_if_convertible_impl<true>
+template <>
+struct sp_enable_if_convertible_impl<true>
 {
     typedef sp_empty type;
 };
 
-template<> struct sp_enable_if_convertible_impl<false>
+template <>
+struct sp_enable_if_convertible_impl<false>
 {
 };
 
-template< class Y, class T > struct sp_enable_if_convertible: public sp_enable_if_convertible_impl< sp_convertible< Y, T >::value >
+template <class Y, class T>
+struct sp_enable_if_convertible : public sp_enable_if_convertible_impl<sp_convertible<Y, T>::value>
 {
 };
 
@@ -88,4 +110,4 @@ template< class Y, class T > struct sp_enable_if_convertible: public sp_enable_i
 
 #endif // !defined( BOOST_SP_NO_SP_CONVERTIBLE )
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_CONVERTIBLE_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_SP_CONVERTIBLE_HPP_INCLUDED

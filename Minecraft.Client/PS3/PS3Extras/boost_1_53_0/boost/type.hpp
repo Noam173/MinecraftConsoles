@@ -4,15 +4,18 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_TYPE_DWA20010120_HPP
-# define BOOST_TYPE_DWA20010120_HPP
+#define BOOST_TYPE_DWA20010120_HPP
 
-namespace boost {
+namespace boost
+{
 
-  // Just a simple "type envelope". Useful in various contexts, mostly to work
-  // around some MSVC deficiencies.
-  template <class T>
-  struct type {};
+// Just a simple "type envelope". Useful in various contexts, mostly to work
+// around some MSVC deficiencies.
+template <class T>
+struct type
+{
+};
 
-}
+} // namespace boost
 
 #endif // BOOST_TYPE_DWA20010120_HPP

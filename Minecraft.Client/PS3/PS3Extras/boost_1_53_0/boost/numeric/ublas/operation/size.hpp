@@ -15,8 +15,7 @@
 #ifndef BOOST_NUMERIC_UBLAS_OPERATION_SIZE_HPP
 #define BOOST_NUMERIC_UBLAS_OPERATION_SIZE_HPP
 
-
-#include <boost/mpl/has_xxx.hpp> 
+#include <boost/mpl/has_xxx.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/numeric/ublas/detail/config.hpp>
 #include <boost/numeric/ublas/expression_types.hpp>
@@ -26,14 +25,20 @@
 #include <boost/utility/enable_if.hpp>
 #include <cstddef>
 
+namespace boost
+{
+namespace numeric
+{
+namespace ublas
+{
 
-namespace boost { namespace numeric { namespace ublas {
-
-namespace detail { namespace /*<unnamed>*/ {
+namespace detail
+{
+namespace /*<unnamed>*/
+{
 
 /// Define a \c has_size_type trait class.
 BOOST_MPL_HAS_XXX_TRAIT_DEF(size_type)
-
 
 /**
  * \brief Wrapper type-traits used in \c boost::lazy_enabled_if for getting the
@@ -59,7 +64,6 @@ struct matrix_size_type
     typedef typename matrix_traits<MatrixT>::size_type type;
 };
 
-
 /**
  * \brief Auxiliary class for computing the size of the given dimension for
  *  a container of the given category.
@@ -68,7 +72,6 @@ struct matrix_size_type
  */
 template <std::size_t Dim, typename CategoryT>
 struct size_by_dim_impl;
-
 
 /**
  * \brief Auxiliary class for computing the size of the given dimension for
@@ -79,7 +82,6 @@ struct size_by_dim_impl;
  */
 template <typename TagT, typename CategoryT, typename OrientationT>
 struct size_by_tag_impl;
-
 
 /**
  * \brief Specialization of \c size_by_dim_impl for computing the size of a
@@ -94,13 +96,11 @@ struct size_by_dim_impl<1, vector_tag>
      * \pre ExprT must be a model of VectorExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename vector_traits<ExprT>::size_type apply(vector_expression<ExprT> const& ve)
+    BOOST_UBLAS_INLINE static typename vector_traits<ExprT>::size_type apply(vector_expression<ExprT> const &ve)
     {
         return ve().size();
     }
 };
-
 
 /**
  * \brief Specialization of \c size_by_dim_impl for computing the number of
@@ -115,13 +115,11 @@ struct size_by_dim_impl<1, matrix_tag>
      * \pre ExprT must be a model of MatrixExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const& me)
+    BOOST_UBLAS_INLINE static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const &me)
     {
         return me().size1();
     }
 };
-
 
 /**
  * \brief Specialization of \c size_by_dim_impl for computing the number of
@@ -136,13 +134,11 @@ struct size_by_dim_impl<2, matrix_tag>
      * \pre ExprT must be a model of MatrixExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const& me)
+    BOOST_UBLAS_INLINE static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const &me)
     {
         return me().size2();
     }
 };
-
 
 /**
  * \brief Specialization of \c size_by_tag_impl for computing the size of the
@@ -157,13 +153,11 @@ struct size_by_tag_impl<tag::major, matrix_tag, row_major_tag>
      * \pre ExprT must be a model of MatrixExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const& me)
+    BOOST_UBLAS_INLINE static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const &me)
     {
         return me().size1();
     }
 };
-
 
 /**
  * \brief Specialization of \c size_by_tag_impl for computing the size of the
@@ -178,13 +172,11 @@ struct size_by_tag_impl<tag::minor, matrix_tag, row_major_tag>
      * \pre ExprT must be a model of MatrixExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const& me)
+    BOOST_UBLAS_INLINE static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const &me)
     {
         return me().size2();
     }
 };
-
 
 /**
  * \brief Specialization of \c size_by_tag_impl for computing the size of the
@@ -199,13 +191,11 @@ struct size_by_tag_impl<tag::leading, matrix_tag, row_major_tag>
      * \pre ExprT must be a model of MatrixExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const& me)
+    BOOST_UBLAS_INLINE static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const &me)
     {
         return me().size2();
     }
 };
-
 
 /// \brief Specialization of \c size_by_tag_impl for computing the size of the
 ///  major dimension of a column-major oriented matrix.
@@ -218,13 +208,11 @@ struct size_by_tag_impl<tag::major, matrix_tag, column_major_tag>
      * \pre ExprT must be a model of MatrixExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const& me)
+    BOOST_UBLAS_INLINE static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const &me)
     {
         return me().size2();
     }
 };
-
 
 /// \brief Specialization of \c size_by_tag_impl for computing the size of the
 ///  minor dimension of a column-major oriented matrix.
@@ -237,13 +225,11 @@ struct size_by_tag_impl<tag::minor, matrix_tag, column_major_tag>
      * \pre ExprT must be a model of MatrixExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const& me)
+    BOOST_UBLAS_INLINE static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const &me)
     {
         return me().size1();
     }
 };
-
 
 /// \brief Specialization of \c size_by_tag_impl for computing the size of the
 ///  leading dimension of a column-major oriented matrix.
@@ -256,24 +242,22 @@ struct size_by_tag_impl<tag::leading, matrix_tag, column_major_tag>
      * \pre ExprT must be a model of MatrixExpression.
      */
     template <typename ExprT>
-    BOOST_UBLAS_INLINE
-    static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const& me)
+    BOOST_UBLAS_INLINE static typename matrix_traits<ExprT>::size_type apply(matrix_expression<ExprT> const &me)
     {
         return me().size1();
     }
 };
 
-
 /// \brief Specialization of \c size_by_tag_impl for computing the size of the
 ///  given dimension of a unknown oriented expression.
 template <typename TagT, typename CategoryT>
-struct size_by_tag_impl<TagT, CategoryT, unknown_orientation_tag>: size_by_tag_impl<TagT, CategoryT, row_major_tag>
+struct size_by_tag_impl<TagT, CategoryT, unknown_orientation_tag> : size_by_tag_impl<TagT, CategoryT, row_major_tag>
 {
     // Empty
 };
 
-}} // Namespace detail::<unnamed>
-
+} // namespace
+} // namespace detail
 
 /**
  * \brief Return the number of columns.
@@ -283,14 +267,13 @@ struct size_by_tag_impl<TagT, CategoryT, unknown_orientation_tag>: size_by_tag_i
  */
 template <typename VectorExprT>
 BOOST_UBLAS_INLINE
-typename ::boost::lazy_enable_if_c<
-    detail::has_size_type<VectorExprT>::value,
-    detail::vector_size_type<VectorExprT>
->::type size(vector_expression<VectorExprT> const& ve)
+    typename ::boost::lazy_enable_if_c<
+        detail::has_size_type<VectorExprT>::value,
+        detail::vector_size_type<VectorExprT>>::type
+    size(vector_expression<VectorExprT> const &ve)
 {
     return ve().size();
 }
-
 
 /**
  * \brief Return the size of the given dimension for the given vector
@@ -302,11 +285,11 @@ typename ::boost::lazy_enable_if_c<
  */
 template <std::size_t Dim, typename VectorExprT>
 BOOST_UBLAS_INLINE
-typename vector_traits<VectorExprT>::size_type size(vector_expression<VectorExprT> const& ve)
+    typename vector_traits<VectorExprT>::size_type
+    size(vector_expression<VectorExprT> const &ve)
 {
     return detail::size_by_dim_impl<Dim, vector_tag>::apply(ve);
 }
-
 
 /**
  * \brief Return the size of the given dimension for the given matrix
@@ -319,11 +302,11 @@ typename vector_traits<VectorExprT>::size_type size(vector_expression<VectorExpr
  */
 template <std::size_t Dim, typename MatrixExprT>
 BOOST_UBLAS_INLINE
-typename matrix_traits<MatrixExprT>::size_type size(matrix_expression<MatrixExprT> const& me)
+    typename matrix_traits<MatrixExprT>::size_type
+    size(matrix_expression<MatrixExprT> const &me)
 {
     return detail::size_by_dim_impl<Dim, matrix_tag>::apply(me);
 }
-
 
 /**
  * \brief Return the size of the given dimension tag for the given matrix
@@ -336,15 +319,16 @@ typename matrix_traits<MatrixExprT>::size_type size(matrix_expression<MatrixExpr
  */
 template <typename TagT, typename MatrixExprT>
 BOOST_UBLAS_INLINE
-typename ::boost::lazy_enable_if_c<
-    detail::has_size_type<MatrixExprT>::value,
-    detail::matrix_size_type<MatrixExprT>
->::type size(matrix_expression<MatrixExprT> const& me)
+    typename ::boost::lazy_enable_if_c<
+        detail::has_size_type<MatrixExprT>::value,
+        detail::matrix_size_type<MatrixExprT>>::type
+    size(matrix_expression<MatrixExprT> const &me)
 {
     return detail::size_by_tag_impl<TagT, matrix_tag, typename matrix_traits<MatrixExprT>::orientation_category>::apply(me);
 }
 
-}}} // Namespace boost::numeric::ublas
-
+} // namespace ublas
+} // namespace numeric
+} // namespace boost
 
 #endif // BOOST_NUMERIC_UBLAS_OPERATION_SIZE_HPP

@@ -11,9 +11,10 @@
 
 #include <boost/geometry/iterators/ever_circling_iterator.hpp>
 
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
 namespace detail
@@ -21,23 +22,21 @@ namespace detail
 
 // TODO: move this to /util/
 template <typename T>
-static inline std::pair<T, T> ordered_pair(T const& first, T const& second)
+static inline std::pair<T, T> ordered_pair(T const &first, T const &second)
 {
     return first < second ? std::make_pair(first, second) : std::make_pair(second, first);
 }
 
 template <typename AngleInfo>
-inline void debug_left_turn(AngleInfo const& ai, AngleInfo const& previous)
+inline void debug_left_turn(AngleInfo const &ai, AngleInfo const &previous)
 {
 #ifdef BOOST_GEOMETRY_DEBUG_BUFFER_OCCUPATION
-    std::cout << "Angle: " << (ai.incoming ? "i" : "o") 
-        << " " << si(ai.seg_id) 
-        << " " << (math::r2d * (ai.angle) )
-        << " turn: " << ai.turn_index << "[" << ai.operation_index << "]"
-        ;
+    std::cout << "Angle: " << (ai.incoming ? "i" : "o")
+              << " " << si(ai.seg_id)
+              << " " << (math::r2d * (ai.angle))
+              << " turn: " << ai.turn_index << "[" << ai.operation_index << "]";
 
-    if (ai.turn_index != previous.turn_index
-        || ai.operation_index != previous.operation_index)
+    if (ai.turn_index != previous.turn_index || ai.operation_index != previous.operation_index)
     {
         std::cout << " diff: " << math::r2d * math::abs(previous.angle - ai.angle);
     }
@@ -46,20 +45,19 @@ inline void debug_left_turn(AngleInfo const& ai, AngleInfo const& previous)
 }
 
 template <typename AngleInfo>
-inline void debug_left_turn(std::string const& caption, AngleInfo const& ai, AngleInfo const& previous,
-            int code = -99, int code2 = -99, int code3 = -99, int code4 = -99)
+inline void debug_left_turn(std::string const &caption, AngleInfo const &ai, AngleInfo const &previous,
+                            int code = -99, int code2 = -99, int code3 = -99, int code4 = -99)
 {
 #ifdef BOOST_GEOMETRY_DEBUG_BUFFER_OCCUPATION
     std::cout << " " << caption
-            << " turn: " << ai.turn_index << "[" << ai.operation_index << "]"
-            << " " << si(ai.seg_id) 
-            << " " << (ai.incoming ? "i" : "o") 
-            << " " << (math::r2d * (ai.angle) )
-            << " turn: " << previous.turn_index << "[" << previous.operation_index << "]"
-            << " " << si(previous.seg_id) 
-            << " " << (previous.incoming ? "i" : "o") 
-            << " " << (math::r2d * (previous.angle) )
-            ;
+              << " turn: " << ai.turn_index << "[" << ai.operation_index << "]"
+              << " " << si(ai.seg_id)
+              << " " << (ai.incoming ? "i" : "o")
+              << " " << (math::r2d * (ai.angle))
+              << " turn: " << previous.turn_index << "[" << previous.operation_index << "]"
+              << " " << si(previous.seg_id)
+              << " " << (previous.incoming ? "i" : "o")
+              << " " << (math::r2d * (previous.angle));
 
     if (code != -99)
     {
@@ -69,23 +67,18 @@ inline void debug_left_turn(std::string const& caption, AngleInfo const& ai, Ang
 #endif
 }
 
-
 template <typename Operation>
-inline bool include_operation(Operation const& op, 
-                segment_identifier const& outgoing_seg_id,
-                segment_identifier const& incoming_seg_id)
+inline bool include_operation(Operation const &op,
+                              segment_identifier const &outgoing_seg_id,
+                              segment_identifier const &incoming_seg_id)
 {
-    return op.seg_id == outgoing_seg_id
-        && op.other_id == incoming_seg_id
-        && (op.operation == detail::overlay::operation_union
-            ||op.operation == detail::overlay::operation_continue)
-            ;
+    return op.seg_id == outgoing_seg_id && op.other_id == incoming_seg_id && (op.operation == detail::overlay::operation_union || op.operation == detail::overlay::operation_continue);
 }
 
 template <typename Turn>
-inline bool process_include(segment_identifier const& outgoing_seg_id, segment_identifier const& incoming_seg_id,
-                int turn_index, Turn& turn,
-                std::set<int>& keep_indices, int priority)
+inline bool process_include(segment_identifier const &outgoing_seg_id, segment_identifier const &incoming_seg_id,
+                            int turn_index, Turn &turn,
+                            std::set<int> &keep_indices, int priority)
 {
     bool result = false;
     for (int i = 0; i < 2; i++)
@@ -106,12 +99,12 @@ inline bool process_include(segment_identifier const& outgoing_seg_id, segment_i
 
 template <typename AngleInfo, typename Turns, typename TurnSegmentIndices>
 inline bool include_left_turn_of_all(
-                AngleInfo const& outgoing, AngleInfo const& incoming,
-                Turns& turns, TurnSegmentIndices const& turn_segment_indices,
-                std::set<int>& keep_indices, int priority)
+    AngleInfo const &outgoing, AngleInfo const &incoming,
+    Turns &turns, TurnSegmentIndices const &turn_segment_indices,
+    std::set<int> &keep_indices, int priority)
 {
-    segment_identifier const& outgoing_seg_id = turns[outgoing.turn_index].operations[outgoing.operation_index].seg_id;
-    segment_identifier const& incoming_seg_id = turns[incoming.turn_index].operations[incoming.operation_index].seg_id;
+    segment_identifier const &outgoing_seg_id = turns[outgoing.turn_index].operations[outgoing.operation_index].seg_id;
+    segment_identifier const &incoming_seg_id = turns[incoming.turn_index].operations[incoming.operation_index].seg_id;
 
     if (outgoing.turn_index == incoming.turn_index)
     {
@@ -135,30 +128,28 @@ inline bool include_left_turn_of_all(
 }
 
 template <std::size_t Index, typename Turn>
-inline bool corresponds(Turn const& turn, segment_identifier const& seg_id)
+inline bool corresponds(Turn const &turn, segment_identifier const &seg_id)
 {
-    return turn.operations[Index].operation == detail::overlay::operation_union
-        && turn.operations[Index].seg_id == seg_id;
+    return turn.operations[Index].operation == detail::overlay::operation_union && turn.operations[Index].seg_id == seg_id;
 }
 
-
 template <typename Turns, typename TurnSegmentIndices>
-inline bool prefer_by_other(Turns const& turns,
-            TurnSegmentIndices const& turn_segment_indices,
-            std::set<int>& indices)
+inline bool prefer_by_other(Turns const &turns,
+                            TurnSegmentIndices const &turn_segment_indices,
+                            std::set<int> &indices)
 {
     std::map<segment_identifier, int> map;
     for (std::set<int>::const_iterator sit = indices.begin();
-        sit != indices.end();
-        ++sit)
+         sit != indices.end();
+         ++sit)
     {
         map[turns[*sit].operations[0].seg_id]++;
         map[turns[*sit].operations[1].seg_id]++;
     }
 
     std::set<segment_identifier> segment_occuring_once;
-    for (std::map<segment_identifier, int>::const_iterator mit = map.begin(); 
-        mit != map.end();++mit)
+    for (std::map<segment_identifier, int>::const_iterator mit = map.begin();
+         mit != map.end(); ++mit)
     {
         if (mit->second == 1)
         {
@@ -223,7 +214,7 @@ inline bool prefer_by_other(Turns const& turns,
 }
 
 template <typename Turns>
-inline void prefer_by_priority(Turns const& turns, std::set<int>& indices)
+inline void prefer_by_priority(Turns const &turns, std::set<int> &indices)
 {
     // Find max prio
     int min_prio = 1024, max_prio = 0;
@@ -261,16 +252,14 @@ inline void prefer_by_priority(Turns const& turns, std::set<int>& indices)
 }
 
 template <typename AngleInfo, typename Angles, typename Turns, typename TurnSegmentIndices>
-inline void calculate_left_turns(Angles const& angles, 
-                Turns& turns, TurnSegmentIndices const& turn_segment_indices,
-                std::set<int>& keep_indices)
+inline void calculate_left_turns(Angles const &angles,
+                                 Turns &turns, TurnSegmentIndices const &turn_segment_indices,
+                                 std::set<int> &keep_indices)
 {
     bool debug_indicate_size = false;
 
-    typedef typename strategy::side::services::default_strategy
-        <
-            typename cs_tag<typename AngleInfo::point_type>::type
-        >::type side_strategy;
+    typedef typename strategy::side::services::default_strategy<
+        typename cs_tag<typename AngleInfo::point_type>::type>::type side_strategy;
 
     std::size_t i = 0;
     std::size_t n = boost::size(angles);
@@ -279,13 +268,11 @@ inline void calculate_left_turns(Angles const& angles,
     circling_iterator cit(angles);
 
     debug_left_turn(*cit, *cit);
-    for(circling_iterator prev = cit++; i < n; prev = cit++, i++)
+    for (circling_iterator prev = cit++; i < n; prev = cit++, i++)
     {
         debug_left_turn(*cit, *prev);
 
-        bool const include = ! geometry::math::equals(prev->angle, cit->angle)
-            && ! prev->incoming
-            && cit->incoming;
+        bool const include = !geometry::math::equals(prev->angle, cit->angle) && !prev->incoming && cit->incoming;
 
         if (include)
         {
@@ -295,11 +282,9 @@ inline void calculate_left_turns(Angles const& angles,
 
             typename AngleInfo::angle_type eps = 0.00001;
             int b = 1;
-            for(std::size_t d = 0; 
-                    math::abs(prev->angle - back->angle) < eps 
-                        && ! back->incoming 
-                        && d < n;
-                d++)
+            for (std::size_t d = 0;
+                 math::abs(prev->angle - back->angle) < eps && !back->incoming && d < n;
+                 d++)
             {
                 --back;
                 ++b;
@@ -308,11 +293,9 @@ inline void calculate_left_turns(Angles const& angles,
             // Same but forward to possibly include more incoming angles
             int f = 1;
             circling_iterator forward = cit + 1;
-            for(std::size_t d = 0;
-                    math::abs(cit->angle - forward->angle) < eps 
-                        && forward->incoming 
-                        && d < n;
-                    d++)
+            for (std::size_t d = 0;
+                 math::abs(cit->angle - forward->angle) < eps && forward->incoming && d < n;
+                 d++)
             {
                 ++forward;
                 ++f;
@@ -321,11 +304,11 @@ inline void calculate_left_turns(Angles const& angles,
 #ifdef BOOST_GEOMETRY_DEBUG_BUFFER_OCCUPATION
             std::cout << "HANDLE " << b << "/" << f << " ANGLES" << std::endl;
 #endif
-            for(circling_iterator bit = prev; bit != back; --bit)
+            for (circling_iterator bit = prev; bit != back; --bit)
             {
                 int code = side_strategy::apply(bit->direction_point, prev->intersection_point, prev->direction_point);
                 int code2 = side_strategy::apply(prev->direction_point, bit->intersection_point, bit->direction_point);
-                for(circling_iterator fit = cit; fit != forward; ++fit)
+                for (circling_iterator fit = cit; fit != forward; ++fit)
                 {
                     int code3 = side_strategy::apply(fit->direction_point, cit->intersection_point, cit->direction_point);
                     int code4 = side_strategy::apply(cit->direction_point, fit->intersection_point, fit->direction_point);
@@ -358,14 +341,14 @@ inline void calculate_left_turns(Angles const& angles,
     }
     if (keep_indices.size() >= 2)
     {
-            prefer_by_priority(turns, keep_indices);
+        prefer_by_priority(turns, keep_indices);
     }
 }
 
 } // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_GET_LEFT_TURNS_HPP

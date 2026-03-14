@@ -15,25 +15,34 @@
 #define BOOST_INTERPROCESS_DETAIL_POINTER_TYPE_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 #include <boost/interprocess/detail/config_begin.hpp>
-#include <boost/interprocess/detail/workaround.hpp>
 #include <boost/interprocess/detail/type_traits.hpp>
+#include <boost/interprocess/detail/workaround.hpp>
 
-namespace boost {
-namespace interprocess {
-namespace ipcdetail {
+namespace boost
+{
+namespace interprocess
+{
+namespace ipcdetail
+{
 
-struct two {char _[2];};
+struct two
+{
+    char _[2];
+};
 
-namespace pointer_type_imp {
+namespace pointer_type_imp
+{
 
-template <class U> static two  test(...);
-template <class U> static char test(typename U::pointer* = 0);
+template <class U>
+static two test(...);
+template <class U>
+static char test(typename U::pointer * = 0);
 
-}  //namespace pointer_type_imp {
+} // namespace pointer_type_imp
 
 template <class T>
 struct has_pointer_type
@@ -41,7 +50,8 @@ struct has_pointer_type
     static const bool value = sizeof(pointer_type_imp::test<T>(0)) == 1;
 };
 
-namespace pointer_type_imp {
+namespace pointer_type_imp
+{
 
 template <class T, class D, bool = has_pointer_type<D>::value>
 struct pointer_type
@@ -52,23 +62,22 @@ struct pointer_type
 template <class T, class D>
 struct pointer_type<T, D, false>
 {
-    typedef T* type;
+    typedef T *type;
 };
 
-}  //namespace pointer_type_imp {
+} // namespace pointer_type_imp
 
 template <class T, class D>
 struct pointer_type
 {
     typedef typename pointer_type_imp::pointer_type<T,
-        typename remove_reference<D>::type>::type type;
+                                                    typename remove_reference<D>::type>::type type;
 };
 
-}  //namespace ipcdetail {
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace ipcdetail
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif   //#ifndef BOOST_INTERPROCESS_DETAIL_POINTER_TYPE_HPP
-
+#endif // #ifndef BOOST_INTERPROCESS_DETAIL_POINTER_TYPE_HPP

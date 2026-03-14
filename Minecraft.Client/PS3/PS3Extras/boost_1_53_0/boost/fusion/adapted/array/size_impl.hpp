@@ -8,22 +8,29 @@
 #ifndef BOOST_FUSION_ADAPTED_ARRAY_SIZE_IMPL_HPP
 #define BOOST_FUSION_ADAPTED_ARRAY_SIZE_IMPL_HPP
 
-#include <boost/type_traits/rank.hpp>
 #include <boost/type_traits/extent.hpp>
+#include <boost/type_traits/rank.hpp>
 
-namespace boost { namespace fusion { namespace extension
+namespace boost
 {
-    template<typename>
-    struct size_impl;
+namespace fusion
+{
+namespace extension
+{
+template <typename>
+struct size_impl;
 
-    template<>
-    struct size_impl<po_array_tag>
+template <>
+struct size_impl<po_array_tag>
+{
+    template <typename Seq>
+    struct apply
+        : extent<Seq, rank<Seq>::value - 1>
     {
-        template<typename Seq>
-        struct apply
-          : extent<Seq,rank<Seq>::value-1>
-        {};
     };
-}}}
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

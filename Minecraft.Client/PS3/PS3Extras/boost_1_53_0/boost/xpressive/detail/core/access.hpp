@@ -10,23 +10,27 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
 #include <boost/proto/traits.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/dynamic/matchable.hpp>
 #include <boost/xpressive/match_results.hpp> // for type_info_less
+#include <vector>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // core_access
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct core_access
 {
     typedef typename iterator_value<BidiIter>::type char_type;
@@ -41,42 +45,26 @@ struct core_access
         return rex.match_(state);
     }
 
-    static shared_ptr<detail::regex_impl<BidiIter> > const &
+    static shared_ptr<detail::regex_impl<BidiIter>> const &
     get_regex_impl(basic_regex<BidiIter> const &rex)
     {
         return proto::value(rex).get();
     }
 
-    static void init_sub_match_vector
-    (
-        sub_match_vector<BidiIter> &subs_vect
-      , sub_match_impl<BidiIter> *subs_ptr
-      , std::size_t size
-    )
+    static void init_sub_match_vector(
+        sub_match_vector<BidiIter> &subs_vect, sub_match_impl<BidiIter> *subs_ptr, std::size_t size)
     {
         subs_vect.init_(subs_ptr, size);
     }
 
-    static void init_sub_match_vector
-    (
-        sub_match_vector<BidiIter> &subs_vect
-      , sub_match_impl<BidiIter> *subs_ptr
-      , std::size_t size
-      , sub_match_vector<BidiIter> const &that
-    )
+    static void init_sub_match_vector(
+        sub_match_vector<BidiIter> &subs_vect, sub_match_impl<BidiIter> *subs_ptr, std::size_t size, sub_match_vector<BidiIter> const &that)
     {
         subs_vect.init_(subs_ptr, size, that);
     }
 
-    static void init_match_results
-    (
-        match_results<BidiIter> &what
-      , regex_id_type regex_id
-      , intrusive_ptr<traits<char_type> const> const &tr
-      , sub_match_impl<BidiIter> *sub_matches
-      , std::size_t size
-      , std::vector<named_mark<char_type> > const &named_marks
-    )
+    static void init_match_results(
+        match_results<BidiIter> &what, regex_id_type regex_id, intrusive_ptr<traits<char_type> const> const &tr, sub_match_impl<BidiIter> *sub_matches, std::size_t size, std::vector<named_mark<char_type>> const &named_marks)
     {
         what.init_(regex_id, tr, sub_matches, size, named_marks);
     }
@@ -127,6 +115,8 @@ struct core_access
     }
 };
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

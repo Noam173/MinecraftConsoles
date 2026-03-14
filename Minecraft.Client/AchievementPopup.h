@@ -6,8 +6,8 @@ using namespace std;
 
 class AchievementPopup : public GuiComponent
 {
-private:
-	Minecraft *mc;
+  private:
+    Minecraft *mc;
     int width, height;
 
     wstring title;
@@ -17,12 +17,14 @@ private:
     ItemRenderer *ir;
     bool isHelper;
 
-public:
-	AchievementPopup(Minecraft *mc);
+  public:
+    AchievementPopup(Minecraft *mc);
     void popup(Achievement *ach);
     void permanent(Achievement *ach);
-private:
-	void prepareWindow();
-public:
+
+  private:
+    void prepareWindow();
+
+  public:
     void render();
 };

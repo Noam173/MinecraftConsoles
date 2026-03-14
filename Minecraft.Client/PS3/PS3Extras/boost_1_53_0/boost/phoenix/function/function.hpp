@@ -8,50 +8,55 @@
 #ifndef BOOST_PHOENIX_FUNCTION_FUNCTION_HPP
 #define BOOST_PHOENIX_FUNCTION_FUNCTION_HPP
 
-//#include <boost/phoenix/function/function_handling.hpp>
+// #include <boost/phoenix/function/function_handling.hpp>
 #include <boost/phoenix/core/detail/function_eval.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 #include <boost/preprocessor/logical/or.hpp>
 #include <boost/utility/result_of.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
 {
-    /////////////////////////////////////////////////////////////////////////////
-    // Functions
-    /////////////////////////////////////////////////////////////////////////////
+namespace phoenix
+{
+/////////////////////////////////////////////////////////////////////////////
+// Functions
+/////////////////////////////////////////////////////////////////////////////
 
-    // functor which returns our lazy function call extension
-    template<typename F>
-    struct function
+// functor which returns our lazy function call extension
+template <typename F>
+struct function
+{
+    function()
     {
-        function() {}
+    }
 
-        function(F f)
-          : f(f)
-        {}
+    function(F f)
+        : f(f)
+    {
+    }
 
-        template <typename Sig>
-        struct result;
+    template <typename Sig>
+    struct result;
 
-        typename detail::expression::function_eval<F>::type const
-        operator()() const
-        {
-            return detail::expression::function_eval<F>::make(f);
-        }
+    typename detail::expression::function_eval<F>::type const
+    operator()() const
+    {
+        return detail::expression::function_eval<F>::make(f);
+    }
 
-        // Bring in the rest
-        #include <boost/phoenix/function/detail/function_operator.hpp>
+// Bring in the rest
+#include <boost/phoenix/function/detail/function_operator.hpp>
 
-        F f;
-    };
-}
+    F f;
+};
+} // namespace phoenix
 
-    template<typename F>
-    struct result_of<phoenix::function<F>()>
-      : phoenix::detail::expression::function_eval<F>
-    {};
+template <typename F>
+struct result_of<phoenix::function<F>()>
+    : phoenix::detail::expression::function_eval<F>
+{
+};
 
-}
+} // namespace boost
 
 #endif
-

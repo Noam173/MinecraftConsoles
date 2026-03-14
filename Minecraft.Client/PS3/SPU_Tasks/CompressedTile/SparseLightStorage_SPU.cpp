@@ -1,6 +1,2 @@
-#include "stdafx.h"
 #include "SparseLightStorage_SPU.h"
-
-
-
-
+#include "stdafx.h"

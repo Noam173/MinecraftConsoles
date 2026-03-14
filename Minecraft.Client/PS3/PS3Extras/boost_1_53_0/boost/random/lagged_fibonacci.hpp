@@ -16,35 +16,37 @@
 #ifndef BOOST_RANDOM_LAGGED_FIBONACCI_HPP
 #define BOOST_RANDOM_LAGGED_FIBONACCI_HPP
 
-#include <istream>
-#include <iosfwd>
-#include <algorithm>     // std::max
-#include <iterator>
-#include <boost/config/no_tr1/cmath.hpp>         // std::pow
+#include <algorithm> // std::max
 #include <boost/config.hpp>
-#include <boost/limits.hpp>
+#include <boost/config/no_tr1/cmath.hpp> // std::pow
 #include <boost/cstdint.hpp>
 #include <boost/integer/integer_mask.hpp>
+#include <boost/limits.hpp>
+#include <boost/random/detail/config.hpp>
+#include <boost/random/detail/generator_seed_seq.hpp>
+#include <boost/random/detail/operators.hpp>
+#include <boost/random/detail/seed.hpp>
 #include <boost/random/linear_congruential.hpp>
 #include <boost/random/uniform_01.hpp>
-#include <boost/random/detail/config.hpp>
-#include <boost/random/detail/seed.hpp>
-#include <boost/random/detail/operators.hpp>
-#include <boost/random/detail/generator_seed_seq.hpp>
+#include <iosfwd>
+#include <istream>
+#include <iterator>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
-/** 
+/**
  * Instantiations of class template \lagged_fibonacci_engine model a
  * \pseudo_random_number_generator. It uses a lagged Fibonacci
  * algorithm with two lags @c p and @c q:
  * x(i) = x(i-p) + x(i-q) (mod 2<sup>w</sup>) with p > q.
  */
-template<class UIntType, int w, unsigned int p, unsigned int q>
+template <class UIntType, int w, unsigned int p, unsigned int q>
 class lagged_fibonacci_engine
 {
-public:
+  public:
     typedef UIntType result_type;
     BOOST_STATIC_CONSTANT(bool, has_fixed_range = false);
     BOOST_STATIC_CONSTANT(int, word_size = w);
@@ -54,41 +56,59 @@ public:
     BOOST_STATIC_CONSTANT(UIntType, default_seed = 331u);
 
     /** Returns the smallest value that the generator can produce. */
-    static result_type min BOOST_PREVENT_MACRO_SUBSTITUTION () { return 0; }
+    static result_type min BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+        return 0;
+    }
     /** Returns the largest value that the generator can produce. */
-    static result_type max BOOST_PREVENT_MACRO_SUBSTITUTION ()
-    { return low_bits_mask_t<w>::sig_bits; }
+    static result_type max BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+        return low_bits_mask_t<w>::sig_bits;
+    }
 
     /** Creates a new @c lagged_fibonacci_engine and calls @c seed(). */
-    lagged_fibonacci_engine() { seed(); }
+    lagged_fibonacci_engine()
+    {
+        seed();
+    }
 
     /** Creates a new @c lagged_fibonacci_engine and calls @c seed(value). */
     BOOST_RANDOM_DETAIL_ARITHMETIC_CONSTRUCTOR(lagged_fibonacci_engine,
-        UIntType, value)
-    { seed(value); }
+                                               UIntType, value)
+    {
+        seed(value);
+    }
 
     /** Creates a new @c lagged_fibonacci_engine and calls @c seed(seq). */
     BOOST_RANDOM_DETAIL_SEED_SEQ_CONSTRUCTOR(lagged_fibonacci_engine,
-        SeedSeq, seq)
-    { seed(seq); }
+                                             SeedSeq, seq)
+    {
+        seed(seq);
+    }
 
     /**
      * Creates a new @c lagged_fibonacci_engine and calls @c seed(first, last).
      */
-    template<class It> lagged_fibonacci_engine(It& first, It last)
-    { seed(first, last); }
+    template <class It>
+    lagged_fibonacci_engine(It &first, It last)
+    {
+        seed(first, last);
+    }
 
     // compiler-generated copy ctor and assignment operator are fine
-    
+
     /** Calls @c seed(default_seed). */
-    void seed() { seed(default_seed); }
+    void seed()
+    {
+        seed(default_seed);
+    }
 
     /**
      * Sets the state of the generator to values produced by
      * a \minstd_rand0 generator.
      */
     BOOST_RANDOM_DETAIL_ARITHMETIC_SEED(lagged_fibonacci_engine,
-        UIntType, value)
+                                        UIntType, value)
     {
         minstd_rand0 intgen(static_cast<boost::uint32_t>(value));
         detail::generator_seed_seq<minstd_rand0> gen(intgen);
@@ -109,8 +129,8 @@ public:
      * range [first, last).  If there are not enough elements in the
      * range [first, last) throws @c std::invalid_argument.
      */
-    template<class It>
-    void seed(It& first, It last)
+    template <class It>
+    void seed(It &first, It last)
     {
         detail::fill_array_int<w>(first, last, x);
         i = long_lag;
@@ -119,60 +139,71 @@ public:
     /** Returns the next value of the generator. */
     result_type operator()()
     {
-        if(i >= long_lag)
+        if (i >= long_lag)
+        {
             fill();
+        }
         return x[i++];
     }
-  
+
     /** Fills a range with random values */
-    template<class Iter>
+    template <class Iter>
     void generate(Iter first, Iter last)
-    { detail::generate_from_int(*this, first, last); }
+    {
+        detail::generate_from_int(*this, first, last);
+    }
 
     /** Advances the state of the generator by @c z. */
     void discard(boost::uintmax_t z)
     {
-        for(boost::uintmax_t j = 0; j < z; ++j) {
+        for (boost::uintmax_t j = 0; j < z; ++j)
+        {
             (*this)();
         }
     }
-  
+
     /**
      * Writes the textual representation of the generator to a @c std::ostream.
      */
     BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(os, lagged_fibonacci_engine, f)
     {
         os << f.i;
-        for(unsigned int i = 0; i < f.long_lag; ++i)
+        for (unsigned int i = 0; i < f.long_lag; ++i)
+        {
             os << ' ' << f.x[i];
+        }
         return os;
     }
-    
+
     /**
      * Reads the textual representation of the generator from a @c std::istream.
      */
     BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, lagged_fibonacci_engine, f)
     {
         is >> f.i >> std::ws;
-        for(unsigned int i = 0; i < f.long_lag; ++i)
+        for (unsigned int i = 0; i < f.long_lag; ++i)
+        {
             is >> f.x[i] >> std::ws;
+        }
         return is;
     }
-    
+
     /**
      * Returns true if the two generators will produce identical
      * sequences of outputs.
      */
     BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(lagged_fibonacci_engine, x, y)
-    { return x.i == y.i && std::equal(x.x, x.x+long_lag, y.x); }
-    
+    {
+        return x.i == y.i && std::equal(x.x, x.x + long_lag, y.x);
+    }
+
     /**
      * Returns true if the two generators will produce different
      * sequences of outputs.
      */
     BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(lagged_fibonacci_engine)
 
-private:
+  private:
     /// \cond show_private
     void fill();
     /// \endcond
@@ -183,28 +214,32 @@ private:
 
 #ifndef BOOST_NO_INCLASS_MEMBER_INITIALIZATION
 //  A definition is required even for integral static constants
-template<class UIntType, int w, unsigned int p, unsigned int q>
+template <class UIntType, int w, unsigned int p, unsigned int q>
 const bool lagged_fibonacci_engine<UIntType, w, p, q>::has_fixed_range;
-template<class UIntType, int w, unsigned int p, unsigned int q>
+template <class UIntType, int w, unsigned int p, unsigned int q>
 const unsigned int lagged_fibonacci_engine<UIntType, w, p, q>::long_lag;
-template<class UIntType, int w, unsigned int p, unsigned int q>
+template <class UIntType, int w, unsigned int p, unsigned int q>
 const unsigned int lagged_fibonacci_engine<UIntType, w, p, q>::short_lag;
-template<class UIntType, int w, unsigned int p, unsigned int q>
+template <class UIntType, int w, unsigned int p, unsigned int q>
 const UIntType lagged_fibonacci_engine<UIntType, w, p, q>::default_seed;
 #endif
 
 /// \cond show_private
 
-template<class UIntType, int w, unsigned int p, unsigned int q>
+template <class UIntType, int w, unsigned int p, unsigned int q>
 void lagged_fibonacci_engine<UIntType, w, p, q>::fill()
 {
     // two loops to avoid costly modulo operations
-    {  // extra scope for MSVC brokenness w.r.t. for scope
-    for(unsigned int j = 0; j < short_lag; ++j)
-        x[j] = (x[j] + x[j+(long_lag-short_lag)]) & low_bits_mask_t<w>::sig_bits;
+    { // extra scope for MSVC brokenness w.r.t. for scope
+        for (unsigned int j = 0; j < short_lag; ++j)
+        {
+            x[j] = (x[j] + x[j + (long_lag - short_lag)]) & low_bits_mask_t<w>::sig_bits;
+        }
     }
-    for(unsigned int j = short_lag; j < long_lag; ++j)
-        x[j] = (x[j] + x[j-short_lag]) & low_bits_mask_t<w>::sig_bits;
+    for (unsigned int j = short_lag; j < long_lag; ++j)
+    {
+        x[j] = (x[j] + x[j - short_lag]) & low_bits_mask_t<w>::sig_bits;
+    }
     i = 0;
 }
 
@@ -213,18 +248,27 @@ void lagged_fibonacci_engine<UIntType, w, p, q>::fill()
 /// \cond show_deprecated
 
 // provided for backwards compatibility
-template<class UIntType, int w, unsigned int p, unsigned int q, UIntType v = 0>
+template <class UIntType, int w, unsigned int p, unsigned int q, UIntType v = 0>
 class lagged_fibonacci : public lagged_fibonacci_engine<UIntType, w, p, q>
 {
     typedef lagged_fibonacci_engine<UIntType, w, p, q> base_type;
-public:
-    lagged_fibonacci() {}
+
+  public:
+    lagged_fibonacci()
+    {
+    }
     BOOST_RANDOM_DETAIL_ARITHMETIC_CONSTRUCTOR(lagged_fibonacci, UIntType, val)
-    { this->seed(val); }
+    {
+        this->seed(val);
+    }
     BOOST_RANDOM_DETAIL_SEED_SEQ_CONSTRUCTOR(lagged_fibonacci, SeedSeq, seq)
-    { this->seed(seq); }
-    template<class It>
-    lagged_fibonacci(It& first, It last) : base_type(first, last) {}
+    {
+        this->seed(seq);
+    }
+    template <class It>
+    lagged_fibonacci(It &first, It last) : base_type(first, last)
+    {
+    }
 };
 
 /// \endcond
@@ -255,10 +299,10 @@ public:
  * of its state array. For example, \lagged_fibonacci607 requires about
  * 4856 bytes and \lagged_fibonacci44497 requires about 350 KBytes.
  */
-template<class RealType, int w, unsigned int p, unsigned int q>
+template <class RealType, int w, unsigned int p, unsigned int q>
 class lagged_fibonacci_01_engine
 {
-public:
+  public:
     typedef RealType result_type;
     BOOST_STATIC_CONSTANT(bool, has_fixed_range = false);
     BOOST_STATIC_CONSTANT(int, word_size = w);
@@ -268,20 +312,33 @@ public:
     BOOST_STATIC_CONSTANT(boost::uint32_t, default_seed = 331u);
 
     /** Constructs a @c lagged_fibonacci_01 generator and calls @c seed(). */
-    lagged_fibonacci_01_engine() { seed(); }
+    lagged_fibonacci_01_engine()
+    {
+        seed();
+    }
     /** Constructs a @c lagged_fibonacci_01 generator and calls @c seed(value). */
     BOOST_RANDOM_DETAIL_ARITHMETIC_CONSTRUCTOR(lagged_fibonacci_01_engine, uint32_t, value)
-    { seed(value); }
+    {
+        seed(value);
+    }
     /** Constructs a @c lagged_fibonacci_01 generator and calls @c seed(gen). */
     BOOST_RANDOM_DETAIL_SEED_SEQ_CONSTRUCTOR(lagged_fibonacci_01_engine, SeedSeq, seq)
-    { seed(seq); }
-    template<class It> lagged_fibonacci_01_engine(It& first, It last)
-    { seed(first, last); }
+    {
+        seed(seq);
+    }
+    template <class It>
+    lagged_fibonacci_01_engine(It &first, It last)
+    {
+        seed(first, last);
+    }
 
     // compiler-generated copy ctor and assignment operator are fine
 
     /** Calls seed(default_seed). */
-    void seed() { seed(default_seed); }
+    void seed()
+    {
+        seed(default_seed);
+    }
 
     /**
      * Constructs a \minstd_rand0 generator with the constructor parameter
@@ -306,45 +363,56 @@ public:
         detail::seed_array_real<w>(seq, x);
         i = long_lag;
     }
-    
+
     /**
      * Seeds this @c lagged_fibonacci_01_engine using values from the
      * iterator range [first, last).  If there are not enough elements
      * in the range, throws @c std::invalid_argument.
      */
-    template<class It>
-    void seed(It& first, It last)
+    template <class It>
+    void seed(It &first, It last)
     {
         detail::fill_array_real<w>(first, last, x);
         i = long_lag;
     }
-    
+
     /** Returns the smallest value that the generator can produce. */
-    static result_type min BOOST_PREVENT_MACRO_SUBSTITUTION () { return result_type(0); }
+    static result_type min BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+        return result_type(0);
+    }
     /** Returns the upper bound of the generators outputs. */
-    static result_type max BOOST_PREVENT_MACRO_SUBSTITUTION () { return result_type(1); }
+    static result_type max BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+        return result_type(1);
+    }
 
     /** Returns the next value of the generator. */
     result_type operator()()
     {
-        if(i >= long_lag)
+        if (i >= long_lag)
+        {
             fill();
+        }
         return x[i++];
     }
-  
+
     /** Fills a range with random values */
-    template<class Iter>
+    template <class Iter>
     void generate(Iter first, Iter last)
-    { return detail::generate_from_real(*this, first, last); }
+    {
+        return detail::generate_from_real(*this, first, last);
+    }
 
     /** Advances the state of the generator by @c z. */
     void discard(boost::uintmax_t z)
     {
-        for(boost::uintmax_t j = 0; j < z; ++j) {
+        for (boost::uintmax_t j = 0; j < z; ++j)
+        {
             (*this)();
         }
     }
-    
+
     /**
      * Writes the textual representation of the generator to a @c std::ostream.
      */
@@ -353,41 +421,46 @@ public:
         // allow for Koenig lookup
         using std::pow;
         os << f.i;
-        std::ios_base::fmtflags oldflags = os.flags(os.dec | os.fixed | os.left); 
-        for(unsigned int i = 0; i < f.long_lag; ++i)
+        std::ios_base::fmtflags oldflags = os.flags(os.dec | os.fixed | os.left);
+        for (unsigned int i = 0; i < f.long_lag; ++i)
+        {
             os << ' ' << f.x[i] * f.modulus();
+        }
         os.flags(oldflags);
         return os;
     }
-    
+
     /**
      * Reads the textual representation of the generator from a @c std::istream.
      */
     BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, lagged_fibonacci_01_engine, f)
     {
         is >> f.i;
-        for(unsigned int i = 0; i < f.long_lag; ++i) {
+        for (unsigned int i = 0; i < f.long_lag; ++i)
+        {
             typename lagged_fibonacci_01_engine::result_type value;
             is >> std::ws >> value;
             f.x[i] = value / f.modulus();
         }
         return is;
     }
-    
+
     /**
      * Returns true if the two generators will produce identical
      * sequences of outputs.
      */
     BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(lagged_fibonacci_01_engine, x, y)
-    { return x.i == y.i && std::equal(x.x, x.x+long_lag, y.x); }
-    
+    {
+        return x.i == y.i && std::equal(x.x, x.x + long_lag, y.x);
+    }
+
     /**
      * Returns true if the two generators will produce different
      * sequences of outputs.
      */
     BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(lagged_fibonacci_01_engine)
 
-private:
+  private:
     /// \cond show_private
     void fill();
     static RealType modulus()
@@ -402,35 +475,41 @@ private:
 
 #ifndef BOOST_NO_INCLASS_MEMBER_INITIALIZATION
 //  A definition is required even for integral static constants
-template<class RealType, int w, unsigned int p, unsigned int q>
+template <class RealType, int w, unsigned int p, unsigned int q>
 const bool lagged_fibonacci_01_engine<RealType, w, p, q>::has_fixed_range;
-template<class RealType, int w, unsigned int p, unsigned int q>
+template <class RealType, int w, unsigned int p, unsigned int q>
 const unsigned int lagged_fibonacci_01_engine<RealType, w, p, q>::long_lag;
-template<class RealType, int w, unsigned int p, unsigned int q>
+template <class RealType, int w, unsigned int p, unsigned int q>
 const unsigned int lagged_fibonacci_01_engine<RealType, w, p, q>::short_lag;
-template<class RealType, int w, unsigned int p, unsigned int q>
-const int lagged_fibonacci_01_engine<RealType,w,p,q>::word_size;
-template<class RealType, int w, unsigned int p, unsigned int q>
-const boost::uint32_t lagged_fibonacci_01_engine<RealType,w,p,q>::default_seed;
+template <class RealType, int w, unsigned int p, unsigned int q>
+const int lagged_fibonacci_01_engine<RealType, w, p, q>::word_size;
+template <class RealType, int w, unsigned int p, unsigned int q>
+const boost::uint32_t lagged_fibonacci_01_engine<RealType, w, p, q>::default_seed;
 #endif
 
 /// \cond show_private
-template<class RealType, int w, unsigned int p, unsigned int q>
+template <class RealType, int w, unsigned int p, unsigned int q>
 void lagged_fibonacci_01_engine<RealType, w, p, q>::fill()
 {
     // two loops to avoid costly modulo operations
-    {  // extra scope for MSVC brokenness w.r.t. for scope
-    for(unsigned int j = 0; j < short_lag; ++j) {
-        RealType t = x[j] + x[j+(long_lag-short_lag)];
-        if(t >= RealType(1))
-            t -= RealType(1);
-        x[j] = t;
+    { // extra scope for MSVC brokenness w.r.t. for scope
+        for (unsigned int j = 0; j < short_lag; ++j)
+        {
+            RealType t = x[j] + x[j + (long_lag - short_lag)];
+            if (t >= RealType(1))
+            {
+                t -= RealType(1);
+            }
+            x[j] = t;
+        }
     }
-    }
-    for(unsigned int j = short_lag; j < long_lag; ++j) {
-        RealType t = x[j] + x[j-short_lag];
-        if(t >= RealType(1))
+    for (unsigned int j = short_lag; j < long_lag; ++j)
+    {
+        RealType t = x[j] + x[j - short_lag];
+        if (t >= RealType(1))
+        {
             t -= RealType(1);
+        }
         x[j] = t;
     }
     i = 0;
@@ -440,43 +519,60 @@ void lagged_fibonacci_01_engine<RealType, w, p, q>::fill()
 /// \cond show_deprecated
 
 // provided for backwards compatibility
-template<class RealType, int w, unsigned int p, unsigned int q>
+template <class RealType, int w, unsigned int p, unsigned int q>
 class lagged_fibonacci_01 : public lagged_fibonacci_01_engine<RealType, w, p, q>
 {
     typedef lagged_fibonacci_01_engine<RealType, w, p, q> base_type;
-public:
-    lagged_fibonacci_01() {}
+
+  public:
+    lagged_fibonacci_01()
+    {
+    }
     BOOST_RANDOM_DETAIL_ARITHMETIC_CONSTRUCTOR(lagged_fibonacci_01, boost::uint32_t, val)
-    { this->seed(val); }
+    {
+        this->seed(val);
+    }
     BOOST_RANDOM_DETAIL_SEED_SEQ_CONSTRUCTOR(lagged_fibonacci_01, SeedSeq, seq)
-    { this->seed(seq); }
-    template<class It>
-    lagged_fibonacci_01(It& first, It last) : base_type(first, last) {}
+    {
+        this->seed(seq);
+    }
+    template <class It>
+    lagged_fibonacci_01(It &first, It last) : base_type(first, last)
+    {
+    }
 };
 
 /// \endcond
 
-namespace detail {
+namespace detail
+{
 
-template<class Engine>
+template <class Engine>
 struct generator_bits;
 
-template<class RealType, int w, unsigned int p, unsigned int q>
-struct generator_bits<lagged_fibonacci_01_engine<RealType, w, p, q> >
+template <class RealType, int w, unsigned int p, unsigned int q>
+struct generator_bits<lagged_fibonacci_01_engine<RealType, w, p, q>>
 {
-    static std::size_t value() { return w; }
+    static std::size_t value()
+    {
+        return w;
+    }
 };
 
-template<class RealType, int w, unsigned int p, unsigned int q>
-struct generator_bits<lagged_fibonacci_01<RealType, w, p, q> >
+template <class RealType, int w, unsigned int p, unsigned int q>
+struct generator_bits<lagged_fibonacci_01<RealType, w, p, q>>
 {
-    static std::size_t value() { return w; }
+    static std::size_t value()
+    {
+        return w;
+    }
 };
 
-}
+} // namespace detail
 
 #ifdef BOOST_RANDOM_DOXYGEN
-namespace detail {
+namespace detail
+{
 /**
  * The specializations lagged_fibonacci607 ... lagged_fibonacci44497
  * use well tested lags.
@@ -496,8 +592,10 @@ namespace detail {
  *  Dec. 1992, pp. 704-706.
  *  @endblockquote
  */
-struct lagged_fibonacci_doc {};
-}
+struct lagged_fibonacci_doc
+{
+};
+} // namespace detail
 #endif
 
 /** @copydoc boost::random::detail::lagged_fibonacci_doc */
@@ -521,15 +619,15 @@ typedef lagged_fibonacci_01_engine<double, 48, 44497, 21034> lagged_fibonacci444
 
 } // namespace random
 
-using random::lagged_fibonacci607;
 using random::lagged_fibonacci1279;
+using random::lagged_fibonacci19937;
 using random::lagged_fibonacci2281;
+using random::lagged_fibonacci23209;
 using random::lagged_fibonacci3217;
 using random::lagged_fibonacci4423;
-using random::lagged_fibonacci9689;
-using random::lagged_fibonacci19937;
-using random::lagged_fibonacci23209;
 using random::lagged_fibonacci44497;
+using random::lagged_fibonacci607;
+using random::lagged_fibonacci9689;
 
 } // namespace boost
 

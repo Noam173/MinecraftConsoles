@@ -26,7 +26,7 @@
 // begins with an underscore is reserved to the implementation for use as a
 // name in the global namespace".
 #define BOOST_LOCAL_FUNCTION_AUX_SYMBOL_INFIX_ X // `X` used as separator.
-            
+
 #define BOOST_LOCAL_FUNCTION_AUX_SYMBOL_PREFIX_ boost_local_function_aux
 
 #define BOOST_LOCAL_FUNCTION_AUX_SYMBOL_POSTFIX_(s, unused, tokens) \
@@ -35,16 +35,15 @@
 // PUBLIC //
 
 // Prefixes this library reserved symbol.
-#define BOOST_LOCAL_FUNCTION_AUX_SYMBOL(seq) \
-    BOOST_PP_SEQ_CAT(BOOST_PP_SEQ_TRANSFORM( \
-            BOOST_LOCAL_FUNCTION_AUX_SYMBOL_POSTFIX_, \
-            ~, (BOOST_LOCAL_FUNCTION_AUX_SYMBOL_PREFIX_) seq ))
+#define BOOST_LOCAL_FUNCTION_AUX_SYMBOL(seq)      \
+    BOOST_PP_SEQ_CAT(BOOST_PP_SEQ_TRANSFORM(      \
+        BOOST_LOCAL_FUNCTION_AUX_SYMBOL_POSTFIX_, \
+        ~, (BOOST_LOCAL_FUNCTION_AUX_SYMBOL_PREFIX_)seq))
 
 // Postfixes this library reserved symbol.
 #define BOOST_LOCAL_FUNCTION_AUX_SYMBOL_POSTFIX(seq) \
-    BOOST_PP_SEQ_CAT(BOOST_PP_SEQ_TRANSFORM( \
-            BOOST_LOCAL_FUNCTION_AUX_SYMBOL_POSTFIX_, \
-            ~, seq (BOOST_LOCAL_FUNCTION_AUX_SYMBOL_PREFIX_) ))
+    BOOST_PP_SEQ_CAT(BOOST_PP_SEQ_TRANSFORM(         \
+        BOOST_LOCAL_FUNCTION_AUX_SYMBOL_POSTFIX_,    \
+        ~, seq(BOOST_LOCAL_FUNCTION_AUX_SYMBOL_PREFIX_)))
 
 #endif // #include guard
-

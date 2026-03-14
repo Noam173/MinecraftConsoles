@@ -11,29 +11,35 @@
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_GEOMETRY_MULTI_CORE_TAGS_HPP
 #define BOOST_GEOMETRY_MULTI_CORE_TAGS_HPP
 
 #include <boost/geometry/core/tags.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /// OGC Multi point identifying tag
-struct multi_point_tag : multi_tag, pointlike_tag  {};
+struct multi_point_tag : multi_tag, pointlike_tag
+{
+};
 
 /// OGC Multi linestring identifying tag
-struct multi_linestring_tag : multi_tag, linear_tag {};
+struct multi_linestring_tag : multi_tag, linear_tag
+{
+};
 
 /// OGC Multi polygon identifying tag
-struct multi_polygon_tag : multi_tag, polygonal_tag {};
+struct multi_polygon_tag : multi_tag, polygonal_tag
+{
+};
 
 /// OGC Geometry Collection identifying tag
-struct geometry_collection_tag : multi_tag {};
-
-
-
+struct geometry_collection_tag : multi_tag
+{
+};
 
 /*!
 \brief Meta-function to get for a tag of a multi-geometry
@@ -41,7 +47,8 @@ struct geometry_collection_tag : multi_tag {};
 */
 template <typename Tag>
 struct single_tag_of
-{};
+{
+};
 
 #ifndef DOXYGEN_NO_DETAIL
 
@@ -65,7 +72,7 @@ struct single_tag_of<multi_polygon_tag>
 
 #endif
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_CORE_TAGS_HPP

@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,21 +11,24 @@
 #ifndef BOOST_UNITS_SI_AREA_HPP
 #define BOOST_UNITS_SI_AREA_HPP
 
-#include <boost/units/systems/si/base.hpp>
 #include <boost/units/physical_dimensions/area.hpp>
+#include <boost/units/systems/si/base.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units { 
+namespace units
+{
 
-namespace si {
+namespace si
+{
 
-typedef unit<area_dimension,si::system>      area;
-    
-BOOST_UNITS_STATIC_CONSTANT(square_meter,area);
-BOOST_UNITS_STATIC_CONSTANT(square_meters,area);
-BOOST_UNITS_STATIC_CONSTANT(square_metre,area);
-BOOST_UNITS_STATIC_CONSTANT(square_metres,area);
+typedef unit<area_dimension, si::system> area;
+
+BOOST_UNITS_STATIC_CONSTANT(square_meter, area);
+BOOST_UNITS_STATIC_CONSTANT(square_meters, area);
+BOOST_UNITS_STATIC_CONSTANT(square_metre, area);
+BOOST_UNITS_STATIC_CONSTANT(square_metres, area);
 
 } // namespace si
 

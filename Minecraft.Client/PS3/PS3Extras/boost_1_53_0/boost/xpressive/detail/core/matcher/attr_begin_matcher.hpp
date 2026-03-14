@@ -10,41 +10,47 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
 #include <boost/xpressive/detail/core/state.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // attr_begin_matcher
-    //
-    template<typename Nbr>
-    struct attr_begin_matcher
-      : quant_style<quant_none, 0, false>
+///////////////////////////////////////////////////////////////////////////////
+// attr_begin_matcher
+//
+template <typename Nbr>
+struct attr_begin_matcher
+    : quant_style<quant_none, 0, false>
+{
+    template <typename BidiIter, typename Next>
+    static bool match(match_state<BidiIter> &state, Next const &next)
     {
-        template<typename BidiIter, typename Next>
-        static bool match(match_state<BidiIter> &state, Next const &next)
+        void const *attr_slots[Nbr::value] = {};
+        attr_context old_attr_context = state.attr_context_;
+        state.attr_context_.attr_slots_ = attr_slots;
+        state.attr_context_.prev_attr_context_ = &old_attr_context;
+
+        if (next.match(state))
         {
-            void const *attr_slots[Nbr::value] = {};
-            attr_context old_attr_context = state.attr_context_;
-            state.attr_context_.attr_slots_ = attr_slots;
-            state.attr_context_.prev_attr_context_ = &old_attr_context;
-
-            if(next.match(state))
-            {
-                return true;
-            }
-
-            state.attr_context_ = old_attr_context;
-            return false;
+            return true;
         }
-    };
 
-}}}
+        state.attr_context_ = old_attr_context;
+        return false;
+    }
+};
+
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

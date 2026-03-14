@@ -21,23 +21,27 @@
 // Boost.Test
 #include <boost/test/utils/named_params.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace BOOST_RT_PARAM_NAMESPACE {
+namespace BOOST_RT_PARAM_NAMESPACE
+{
 
-namespace environment {
+namespace environment
+{
 
 // ************************************************************************** //
 // **************         environment variable modifiers       ************** //
 // ************************************************************************** //
 
-namespace {
+namespace
+{
 
-nfp::typed_keyword<cstring,struct global_id_t>   global_id;
-nfp::keyword<struct default_value_t>             default_value;
-nfp::keyword<struct interpreter_t>               interpreter;
+nfp::typed_keyword<cstring, struct global_id_t> global_id;
+nfp::keyword<struct default_value_t> default_value;
+nfp::keyword<struct interpreter_t> interpreter;
 
-} // local namespace
+} // namespace
 } // namespace environment
 
 } // namespace BOOST_RT_PARAM_NAMESPACE

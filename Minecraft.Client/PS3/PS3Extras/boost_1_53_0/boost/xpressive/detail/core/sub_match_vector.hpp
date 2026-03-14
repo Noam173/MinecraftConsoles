@@ -10,15 +10,19 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/noncopyable.hpp>
 #include <boost/iterator_adaptors.hpp>
-#include <boost/xpressive/detail/detail_fwd.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/xpressive/detail/core/sub_match_impl.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 #if BOOST_ITERATOR_ADAPTORS_VERSION >= 0x0200
@@ -26,26 +30,17 @@ namespace boost { namespace xpressive { namespace detail
 //////////////////////////////////////////////////////////////////////////
 // sub_match_iterator
 //
-template<typename Value, typename MainIter>
+template <typename Value, typename MainIter>
 struct sub_match_iterator
-  : iterator_adaptor
-    <
-        sub_match_iterator<Value, MainIter>
-      , MainIter
-      , Value
-      , std::random_access_iterator_tag
-    >
+    : iterator_adaptor<
+          sub_match_iterator<Value, MainIter>, MainIter, Value, std::random_access_iterator_tag>
 {
-    typedef iterator_adaptor
-    <
-        sub_match_iterator<Value, MainIter>
-      , MainIter
-      , Value
-      , std::random_access_iterator_tag
-    > base_t;
+    typedef iterator_adaptor<
+        sub_match_iterator<Value, MainIter>, MainIter, Value, std::random_access_iterator_tag>
+        base_t;
 
     sub_match_iterator(MainIter baseiter)
-      : base_t(baseiter)
+        : base_t(baseiter)
     {
     }
 };
@@ -55,15 +50,18 @@ struct sub_match_iterator
 //////////////////////////////////////////////////////////////////////////
 // sub_match_vector
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct sub_match_vector
-  : private noncopyable
+    : private noncopyable
 {
-private:
-    struct dummy { int i_; };
+  private:
+    struct dummy
+    {
+        int i_;
+    };
     typedef int dummy::*bool_type;
 
-public:
+  public:
     typedef sub_match<BidiIter> value_type;
     typedef std::size_t size_type;
     typedef value_type const &const_reference;
@@ -74,39 +72,31 @@ public:
 
 #if BOOST_ITERATOR_ADAPTORS_VERSION >= 0x0200
 
-    typedef sub_match_iterator
-    <
-        value_type const
-      , sub_match_impl<BidiIter> const *
-    > const_iterator;
+    typedef sub_match_iterator<
+        value_type const, sub_match_impl<BidiIter> const *>
+        const_iterator;
 
 #else
 
-    typedef iterator_adaptor
-    <
-        sub_match_impl<BidiIter> const *
-      , default_iterator_policies
-      , value_type
-      , value_type const &
-      , value_type const *
-    > const_iterator;
+    typedef iterator_adaptor<
+        sub_match_impl<BidiIter> const *, default_iterator_policies, value_type, value_type const &, value_type const *>
+        const_iterator;
 
 #endif // BOOST_ITERATOR_ADAPTORS_VERSION < 0x0200
 
     typedef const_iterator iterator;
 
     sub_match_vector()
-      : size_(0)
-      , sub_matches_(0)
+        : size_(0), sub_matches_(0)
     {
     }
 
-    const_reference operator [](size_type index) const
+    const_reference operator[](size_type index) const
     {
         static value_type const s_null;
         return (index >= this->size_)
-            ? s_null
-            : *static_cast<value_type const *>(&this->sub_matches_[ index ]);
+                   ? s_null
+                   : *static_cast<value_type const *>(&this->sub_matches_[index]);
     }
 
     size_type size() const
@@ -134,7 +124,7 @@ public:
         return (!this->empty() && (*this)[0].matched) ? &dummy::i_ : 0;
     }
 
-    bool operator !() const
+    bool operator!() const
     {
         return this->empty() || !(*this)[0].matched;
     }
@@ -145,7 +135,7 @@ public:
         std::swap(this->sub_matches_, that.sub_matches_);
     }
 
-private:
+  private:
     friend struct detail::core_access<BidiIter>;
 
     void init_(sub_match_impl<BidiIter> *sub_matches, size_type size)
@@ -166,6 +156,8 @@ private:
     sub_match_impl<BidiIter> *sub_matches_;
 };
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

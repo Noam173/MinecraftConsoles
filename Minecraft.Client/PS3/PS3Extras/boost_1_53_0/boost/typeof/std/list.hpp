@@ -5,13 +5,13 @@
 #ifndef BOOST_TYPEOF_STD_list_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_list_hpp_INCLUDED
 
-#include <list>
-#include <boost/typeof/typeof.hpp>
 #include <boost/typeof/std/memory.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <list>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::list, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::list, 2)
 
-#endif//BOOST_TYPEOF_STD_list_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_list_hpp_INCLUDED

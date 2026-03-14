@@ -16,16 +16,16 @@
 
 #include <boost/config.hpp>
 
-#include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/shared_array.hpp>
+#include <boost/shared_ptr.hpp>
 
 #if !defined(BOOST_NO_MEMBER_TEMPLATES) || defined(BOOST_MSVC6_MEMBER_TEMPLATES)
-# include <boost/weak_ptr.hpp>
-# include <boost/intrusive_ptr.hpp>
-# include <boost/enable_shared_from_this.hpp>
-# include <boost/make_shared.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/intrusive_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/weak_ptr.hpp>
 #endif
 
 #endif // #ifndef BOOST_SMART_PTR_HPP_INCLUDED

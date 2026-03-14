@@ -17,7 +17,6 @@
 #include "boost/mpl/aux_/template_arity.hpp"
 #include "boost/mpl/int_fwd.hpp"
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // BOOST_VARIANT_DETAIL_NO_SUBSTITUTE
 //
@@ -27,14 +26,16 @@
 #include "boost/mpl/aux_/config/ctps.hpp"
 #include "boost/mpl/aux_/config/ttp.hpp"
 
-#if defined(BOOST_NO_TEMPLATE_TEMPLATE_PARAMETERS) \
- || defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
- && !defined(BOOST_VARIANT_DETAIL_NO_SUBSTITUTE)
-#   define BOOST_VARIANT_DETAIL_NO_SUBSTITUTE
+#if defined(BOOST_NO_TEMPLATE_TEMPLATE_PARAMETERS) || defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_VARIANT_DETAIL_NO_SUBSTITUTE)
+#define BOOST_VARIANT_DETAIL_NO_SUBSTITUTE
 #endif
 
-namespace boost {
-namespace detail { namespace variant {
+namespace boost
+{
+namespace detail
+{
+namespace variant
+{
 
 #if !defined(BOOST_VARIANT_DETAIL_NO_SUBSTITUTE)
 
@@ -44,16 +45,13 @@ namespace detail { namespace variant {
 // Substitutes one type for another in the given type expression.
 //
 template <
-      typename T, typename Dest, typename Source
-      BOOST_MPL_AUX_LAMBDA_ARITY_PARAM(
-          typename Arity = mpl::int_< mpl::aux::template_arity<T>::value >
-        )
-    >
+    typename T, typename Dest, typename Source BOOST_MPL_AUX_LAMBDA_ARITY_PARAM(typename Arity = mpl::int_<mpl::aux::template_arity<T>::value>)>
 struct substitute;
 
 #endif // !defined(BOOST_VARIANT_DETAIL_NO_SUBSTITUTE)
 
-}} // namespace detail::variant
+} // namespace variant
+} // namespace detail
 } // namespace boost
 
 #endif // BOOST_VARIANT_DETAIL_SUBSTITUTE_FWD_HPP

@@ -13,53 +13,56 @@
 #define BOOST_ASIO_SSL_IMPL_CONTEXT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if !defined(BOOST_ASIO_ENABLE_OLD_SSL)
-# include <boost/asio/detail/throw_error.hpp>
+#include <boost/asio/detail/throw_error.hpp>
 #endif // !defined(BOOST_ASIO_ENABLE_OLD_SSL)
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace ssl {
+namespace boost
+{
+namespace asio
+{
+namespace ssl
+{
 
 #if !defined(BOOST_ASIO_ENABLE_OLD_SSL)
 
 template <typename VerifyCallback>
 void context::set_verify_callback(VerifyCallback callback)
 {
-  boost::system::error_code ec;
-  this->set_verify_callback(callback, ec);
-  boost::asio::detail::throw_error(ec, "set_verify_callback");
+    boost::system::error_code ec;
+    this->set_verify_callback(callback, ec);
+    boost::asio::detail::throw_error(ec, "set_verify_callback");
 }
 
 template <typename VerifyCallback>
 boost::system::error_code context::set_verify_callback(
-    VerifyCallback callback, boost::system::error_code& ec)
+    VerifyCallback callback, boost::system::error_code &ec)
 {
-  return do_set_verify_callback(
-      new detail::verify_callback<VerifyCallback>(callback), ec);
+    return do_set_verify_callback(
+        new detail::verify_callback<VerifyCallback>(callback), ec);
 }
 
 template <typename PasswordCallback>
 void context::set_password_callback(PasswordCallback callback)
 {
-  boost::system::error_code ec;
-  this->set_password_callback(callback, ec);
-  boost::asio::detail::throw_error(ec, "set_password_callback");
+    boost::system::error_code ec;
+    this->set_password_callback(callback, ec);
+    boost::asio::detail::throw_error(ec, "set_password_callback");
 }
 
 template <typename PasswordCallback>
 boost::system::error_code context::set_password_callback(
-    PasswordCallback callback, boost::system::error_code& ec)
+    PasswordCallback callback, boost::system::error_code &ec)
 {
-  return do_set_password_callback(
-      new detail::password_callback<PasswordCallback>(callback), ec);
+    return do_set_password_callback(
+        new detail::password_callback<PasswordCallback>(callback), ec);
 }
 
 #endif // !defined(BOOST_ASIO_ENABLE_OLD_SSL)

@@ -3,12 +3,17 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef STL_ITERATOR_CORE_EAN20051028_HPP
-# define STL_ITERATOR_CORE_EAN20051028_HPP
+#define STL_ITERATOR_CORE_EAN20051028_HPP
 
-# include <boost/python/object_fwd.hpp>
-# include <boost/python/handle_fwd.hpp>
+#include <boost/python/handle_fwd.hpp>
+#include <boost/python/object_fwd.hpp>
 
-namespace boost { namespace python { namespace objects {
+namespace boost
+{
+namespace python
+{
+namespace objects
+{
 
 struct BOOST_PYTHON_DECL stl_input_iterator_impl
 {
@@ -17,11 +22,14 @@ struct BOOST_PYTHON_DECL stl_input_iterator_impl
     void increment();
     bool equal(stl_input_iterator_impl const &that) const;
     boost::python::handle<> const &current() const;
-private:
+
+  private:
     boost::python::object it_;
     boost::python::handle<> ob_;
 };
 
-}}} // namespace boost::python::object
+} // namespace objects
+} // namespace python
+} // namespace boost
 
 #endif // STL_ITERATOR_CORE_EAN20051028_HPP

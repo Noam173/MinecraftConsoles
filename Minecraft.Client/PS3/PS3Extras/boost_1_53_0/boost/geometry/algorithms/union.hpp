@@ -9,26 +9,25 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_UNION_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_UNION_HPP
 
-
 #include <boost/range/metafunctions.hpp>
 
+#include <boost/geometry/algorithms/detail/overlay/overlay.hpp>
+#include <boost/geometry/algorithms/not_implemented.hpp>
 #include <boost/geometry/core/is_areal.hpp>
 #include <boost/geometry/core/point_order.hpp>
 #include <boost/geometry/core/reverse_dispatch.hpp>
 #include <boost/geometry/geometries/concepts/check.hpp>
-#include <boost/geometry/algorithms/not_implemented.hpp>
-#include <boost/geometry/algorithms/detail/overlay/overlay.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-template
-<
+template <
     typename Geometry1, typename Geometry2, typename GeometryOut,
     typename TagIn1 = typename tag<Geometry1>::type,
     typename TagIn2 = typename tag<Geometry2>::type,
@@ -39,83 +38,68 @@ template
     bool Reverse1 = detail::overlay::do_reverse<geometry::point_order<Geometry1>::value>::value,
     bool Reverse2 = detail::overlay::do_reverse<geometry::point_order<Geometry2>::value>::value,
     bool ReverseOut = detail::overlay::do_reverse<geometry::point_order<GeometryOut>::value>::value,
-    bool Reverse = geometry::reverse_dispatch<Geometry1, Geometry2>::type::value
->
-struct union_insert: not_implemented<TagIn1, TagIn2, TagOut>
-{};
-
+    bool Reverse = geometry::reverse_dispatch<Geometry1, Geometry2>::type::value>
+struct union_insert : not_implemented<TagIn1, TagIn2, TagOut>
+{
+};
 
 // If reversal is needed, perform it first
 
-template
-<
+template <
     typename Geometry1, typename Geometry2, typename GeometryOut,
     typename TagIn1, typename TagIn2, typename TagOut,
-    bool Reverse1, bool Reverse2, bool ReverseOut
->
-struct union_insert
-    <
-        Geometry1, Geometry2, GeometryOut,
-        TagIn1, TagIn2, TagOut,
-        true, true, true,
-        Reverse1, Reverse2, ReverseOut,
-        true
-    >: union_insert<Geometry2, Geometry1, GeometryOut>
+    bool Reverse1, bool Reverse2, bool ReverseOut>
+struct union_insert<
+    Geometry1, Geometry2, GeometryOut,
+    TagIn1, TagIn2, TagOut,
+    true, true, true,
+    Reverse1, Reverse2, ReverseOut,
+    true> : union_insert<Geometry2, Geometry1, GeometryOut>
 {
     template <typename OutputIterator, typename Strategy>
-    static inline OutputIterator apply(Geometry1 const& g1,
-            Geometry2 const& g2, OutputIterator out,
-            Strategy const& strategy)
+    static inline OutputIterator apply(Geometry1 const &g1,
+                                       Geometry2 const &g2, OutputIterator out,
+                                       Strategy const &strategy)
     {
-        return union_insert
-            <
-                Geometry2, Geometry1, GeometryOut
-            >::apply(g2, g1, out, strategy);
+        return union_insert<
+            Geometry2, Geometry1, GeometryOut>::apply(g2, g1, out, strategy);
     }
 };
 
-
-template
-<
+template <
     typename Geometry1, typename Geometry2, typename GeometryOut,
     typename TagIn1, typename TagIn2, typename TagOut,
-    bool Reverse1, bool Reverse2, bool ReverseOut
->
-struct union_insert
-    <
-        Geometry1, Geometry2, GeometryOut,
-        TagIn1, TagIn2, TagOut,
-        true, true, true,
-        Reverse1, Reverse2, ReverseOut,
-        false
-    > : detail::overlay::overlay
-        <Geometry1, Geometry2, Reverse1, Reverse2, ReverseOut, GeometryOut, overlay_union>
-{};
-
+    bool Reverse1, bool Reverse2, bool ReverseOut>
+struct union_insert<
+    Geometry1, Geometry2, GeometryOut,
+    TagIn1, TagIn2, TagOut,
+    true, true, true,
+    Reverse1, Reverse2, ReverseOut,
+    false> : detail::overlay::overlay<Geometry1, Geometry2, Reverse1, Reverse2, ReverseOut, GeometryOut, overlay_union>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace union_
+namespace detail
+{
+namespace union_
 {
 
-template
-<
+template <
     typename GeometryOut,
     typename Geometry1, typename Geometry2,
     typename OutputIterator,
-    typename Strategy
->
-inline OutputIterator insert(Geometry1 const& geometry1,
-            Geometry2 const& geometry2,
-            OutputIterator out,
-            Strategy const& strategy)
+    typename Strategy>
+inline OutputIterator insert(Geometry1 const &geometry1,
+                             Geometry2 const &geometry2,
+                             OutputIterator out,
+                             Strategy const &strategy)
 {
-    return dispatch::union_insert
-           <
-               Geometry1, Geometry2, GeometryOut
-           >::apply(geometry1, geometry2, out, strategy);
+    return dispatch::union_insert<
+        Geometry1, Geometry2, GeometryOut>::apply(geometry1, geometry2, out, strategy);
 }
 
 /*!
@@ -136,22 +120,20 @@ inline OutputIterator insert(Geometry1 const& geometry1,
 
 \qbk{distinguish,with strategy}
 */
-template
-<
+template <
     typename GeometryOut,
     typename Geometry1,
     typename Geometry2,
     typename OutputIterator,
-    typename Strategy
->
-inline OutputIterator union_insert(Geometry1 const& geometry1,
-            Geometry2 const& geometry2,
-            OutputIterator out,
-            Strategy const& strategy)
+    typename Strategy>
+inline OutputIterator union_insert(Geometry1 const &geometry1,
+                                   Geometry2 const &geometry2,
+                                   OutputIterator out,
+                                   Strategy const &strategy)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
-    concept::check<GeometryOut>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
+    concept ::check<GeometryOut>();
 
     return detail::union_::insert<GeometryOut>(geometry1, geometry2, out, strategy);
 }
@@ -170,38 +152,32 @@ inline OutputIterator union_insert(Geometry1 const& geometry1,
 \param out \param_out{union}
 \return \return_out
 */
-template
-<
+template <
     typename GeometryOut,
     typename Geometry1,
     typename Geometry2,
-    typename OutputIterator
->
-inline OutputIterator union_insert(Geometry1 const& geometry1,
-            Geometry2 const& geometry2,
-            OutputIterator out)
+    typename OutputIterator>
+inline OutputIterator union_insert(Geometry1 const &geometry1,
+                                   Geometry2 const &geometry2,
+                                   OutputIterator out)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
-    concept::check<GeometryOut>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
+    concept ::check<GeometryOut>();
 
-    typedef strategy_intersection
-        <
-            typename cs_tag<GeometryOut>::type,
-            Geometry1,
-            Geometry2,
-            typename geometry::point_type<GeometryOut>::type
-        > strategy;
+    typedef strategy_intersection<
+        typename cs_tag<GeometryOut>::type,
+        Geometry1,
+        Geometry2,
+        typename geometry::point_type<GeometryOut>::type>
+        strategy;
 
     return union_insert<GeometryOut>(geometry1, geometry2, out, strategy());
 }
 
-
-}} // namespace detail::union_
+} // namespace union_
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
-
-
 
 /*!
 \brief Combines two geometries which each other
@@ -218,28 +194,25 @@ inline OutputIterator union_insert(Geometry1 const& geometry1,
 
 \qbk{[include reference/algorithms/union.qbk]}
 */
-template
-<
+template <
     typename Geometry1,
     typename Geometry2,
-    typename Collection
->
-inline void union_(Geometry1 const& geometry1,
-            Geometry2 const& geometry2,
-            Collection& output_collection)
+    typename Collection>
+inline void union_(Geometry1 const &geometry1,
+                   Geometry2 const &geometry2,
+                   Collection &output_collection)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
 
     typedef typename boost::range_value<Collection>::type geometry_out;
-    concept::check<geometry_out>();
+    concept ::check<geometry_out>();
 
     detail::union_::union_insert<geometry_out>(geometry1, geometry2,
-                std::back_inserter(output_collection));
+                                               std::back_inserter(output_collection));
 }
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_UNION_HPP

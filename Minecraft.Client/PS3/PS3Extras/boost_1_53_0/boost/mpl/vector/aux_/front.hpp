@@ -4,8 +4,8 @@
 
 // Copyright Aleksey Gurtovoy 2000-2008
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -14,22 +14,26 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
+#include <boost/mpl/aux_/config/ctps.hpp>
+#include <boost/mpl/aux_/config/typeof.hpp>
+#include <boost/mpl/aux_/nttp_decl.hpp>
 #include <boost/mpl/front_fwd.hpp>
 #include <boost/mpl/vector/aux_/at.hpp>
 #include <boost/mpl/vector/aux_/tag.hpp>
-#include <boost/mpl/aux_/nttp_decl.hpp>
-#include <boost/mpl/aux_/config/typeof.hpp>
-#include <boost/mpl/aux_/config/ctps.hpp>
 
-namespace boost { namespace mpl {
+namespace boost
+{
+namespace mpl
+{
 
 #if defined(BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES)
 
-template<>
-struct front_impl< aux::vector_tag >
+template <>
+struct front_impl<aux::vector_tag>
 {
-    template< typename Vector > struct apply
-        : v_at<Vector,0>
+    template <typename Vector>
+    struct apply
+        : v_at<Vector, 0>
     {
     };
 };
@@ -38,10 +42,11 @@ struct front_impl< aux::vector_tag >
 
 #if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
-template< BOOST_MPL_AUX_NTTP_DECL(long, n_) >
-struct front_impl< aux::vector_tag<n_> >
+template <BOOST_MPL_AUX_NTTP_DECL(long, n_)>
+struct front_impl<aux::vector_tag<n_>>
 {
-    template< typename Vector > struct apply
+    template <typename Vector>
+    struct apply
     {
         typedef typename Vector::item0 type;
     };
@@ -51,6 +56,7 @@ struct front_impl< aux::vector_tag<n_> >
 
 #endif // BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_VECTOR_AUX_FRONT_HPP_INCLUDED

@@ -17,13 +17,13 @@ namespace boost
 namespace _bi
 {
 
-template<class R, class F> class af0
+template <class R, class F>
+class af0
 {
-public:
-
+  public:
     typedef R result_type;
 
-    explicit af0(F f): f_(f)
+    explicit af0(F f) : f_(f)
     {
     }
 
@@ -37,20 +37,19 @@ public:
         return f_();
     }
 
-private:
-
+  private:
     F f_;
 };
 
-template<class R, class A1, class F> class af1
+template <class R, class A1, class F>
+class af1
 {
-public:
-
+  public:
     typedef R result_type;
     typedef A1 argument_type;
     typedef A1 arg1_type;
 
-    explicit af1(F f): f_(f)
+    explicit af1(F f) : f_(f)
     {
     }
 
@@ -64,22 +63,21 @@ public:
         return f_(a1);
     }
 
-private:
-
+  private:
     F f_;
 };
 
-template<class R, class A1, class A2, class F> class af2
+template <class R, class A1, class A2, class F>
+class af2
 {
-public:
-
+  public:
     typedef R result_type;
     typedef A1 first_argument_type;
     typedef A2 second_argument_type;
     typedef A1 arg1_type;
     typedef A2 arg2_type;
 
-    explicit af2(F f): f_(f)
+    explicit af2(F f) : f_(f)
     {
     }
 
@@ -93,21 +91,20 @@ public:
         return f_(a1, a2);
     }
 
-private:
-
+  private:
     F f_;
 };
 
-template<class R, class A1, class A2, class A3, class F> class af3
+template <class R, class A1, class A2, class A3, class F>
+class af3
 {
-public:
-
+  public:
     typedef R result_type;
     typedef A1 arg1_type;
     typedef A2 arg2_type;
     typedef A3 arg3_type;
 
-    explicit af3(F f): f_(f)
+    explicit af3(F f) : f_(f)
     {
     }
 
@@ -121,22 +118,21 @@ public:
         return f_(a1, a2, a3);
     }
 
-private:
-
+  private:
     F f_;
 };
 
-template<class R, class A1, class A2, class A3, class A4, class F> class af4
+template <class R, class A1, class A2, class A3, class A4, class F>
+class af4
 {
-public:
-
+  public:
     typedef R result_type;
     typedef A1 arg1_type;
     typedef A2 arg2_type;
     typedef A3 arg3_type;
     typedef A4 arg4_type;
 
-    explicit af4(F f): f_(f)
+    explicit af4(F f) : f_(f)
     {
     }
 
@@ -150,34 +146,38 @@ public:
         return f_(a1, a2, a3, a4);
     }
 
-private:
-
+  private:
     F f_;
 };
 
 } // namespace _bi
 
-template<class R, class F> _bi::af0<R, F> make_adaptable(F f)
+template <class R, class F>
+_bi::af0<R, F> make_adaptable(F f)
 {
     return _bi::af0<R, F>(f);
 }
 
-template<class R, class A1, class F> _bi::af1<R, A1, F> make_adaptable(F f)
+template <class R, class A1, class F>
+_bi::af1<R, A1, F> make_adaptable(F f)
 {
     return _bi::af1<R, A1, F>(f);
 }
 
-template<class R, class A1, class A2, class F> _bi::af2<R, A1, A2, F> make_adaptable(F f)
+template <class R, class A1, class A2, class F>
+_bi::af2<R, A1, A2, F> make_adaptable(F f)
 {
     return _bi::af2<R, A1, A2, F>(f);
 }
 
-template<class R, class A1, class A2, class A3, class F> _bi::af3<R, A1, A2, A3, F> make_adaptable(F f)
+template <class R, class A1, class A2, class A3, class F>
+_bi::af3<R, A1, A2, A3, F> make_adaptable(F f)
 {
     return _bi::af3<R, A1, A2, A3, F>(f);
 }
 
-template<class R, class A1, class A2, class A3, class A4, class F> _bi::af4<R, A1, A2, A3, A4, F> make_adaptable(F f)
+template <class R, class A1, class A2, class A3, class A4, class F>
+_bi::af4<R, A1, A2, A3, A4, F> make_adaptable(F f)
 {
     return _bi::af4<R, A1, A2, A3, A4, F>(f);
 }

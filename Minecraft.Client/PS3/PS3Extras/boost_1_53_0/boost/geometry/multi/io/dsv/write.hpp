@@ -18,42 +18,40 @@
 
 #include <boost/geometry/io/dsv/write.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace dsv
+namespace detail
+{
+namespace dsv
 {
 
 template <typename MultiGeometry>
 struct dsv_multi
 {
-    typedef dispatch::dsv
-                <
-                    typename single_tag_of
-                        <
-                            typename tag<MultiGeometry>::type
-                        >::type,
-                    typename boost::range_value<MultiGeometry>::type
-                > dispatch_one;
+    typedef dispatch::dsv<
+        typename single_tag_of<
+            typename tag<MultiGeometry>::type>::type,
+        typename boost::range_value<MultiGeometry>::type>
+        dispatch_one;
 
-    typedef typename boost::range_iterator
-        <
-            MultiGeometry const
-        >::type iterator;
-
+    typedef typename boost::range_iterator<
+        MultiGeometry const>::type iterator;
 
     template <typename Char, typename Traits>
-    static inline void apply(std::basic_ostream<Char, Traits>& os,
-                MultiGeometry const& multi,
-                dsv_settings const& settings)
+    static inline void apply(std::basic_ostream<Char, Traits> &os,
+                             MultiGeometry const &multi,
+                             dsv_settings const &settings)
     {
         os << settings.list_open;
 
         bool first = true;
-        for(iterator it = boost::begin(multi);
-            it != boost::end(multi);
-            ++it, first = false)
+        for (iterator it = boost::begin(multi);
+             it != boost::end(multi);
+             ++it, first = false)
         {
             os << (first ? "" : settings.list_separator);
             dispatch_one::apply(os, *it, settings);
@@ -62,9 +60,9 @@ struct dsv_multi
     }
 };
 
-}} // namespace detail::dsv
+} // namespace dsv
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -73,11 +71,13 @@ namespace dispatch
 template <typename Geometry>
 struct dsv<multi_tag, Geometry>
     : detail::dsv::dsv_multi<Geometry>
-{};
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_IO_DSV_WRITE_HPP

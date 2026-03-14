@@ -14,14 +14,15 @@
  copy at http://www.boost.org/LICENSE_1_0.txt)
  */
 
-
 #ifndef BOOST_NUMERIC_ODEINT_STEPPER_CONTROLLED_STEP_RESULT_HPP_INCLUDED
 #define BOOST_NUMERIC_ODEINT_STEPPER_CONTROLLED_STEP_RESULT_HPP_INCLUDED
 
-
-namespace boost {
-namespace numeric {
-namespace odeint {
+namespace boost
+{
+namespace numeric
+{
+namespace odeint
+{
 
 /**
  * \enum controlled_step_result
@@ -30,13 +31,12 @@ namespace odeint {
  */
 typedef enum
 {
-    success , /**< The trial step was successful, hence the state and the time have been advanced. */
-    fail      /**< The step was not successful and might possibly be repeated with a small step size. */
+    success, /**< The trial step was successful, hence the state and the time have been advanced. */
+    fail     /**< The step was not successful and might possibly be repeated with a small step size. */
 } controlled_step_result;
 
 } // namespace odeint
-} // numeric
-} // boost
-
+} // namespace numeric
+} // namespace boost
 
 #endif // BOOST_NUMERIC_ODEINT_STEPPER_CONTROLLED_STEP_RESULT_HPP_INCLUDED

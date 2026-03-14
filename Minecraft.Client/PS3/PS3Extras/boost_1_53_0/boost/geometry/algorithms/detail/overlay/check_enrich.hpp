@@ -9,34 +9,32 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_CHECK_ENRICH_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_CHECK_ENRICH_HPP
 
-
 #include <cstddef>
-
 
 #include <boost/assert.hpp>
 #include <boost/range.hpp>
 
-
-
 #include <boost/geometry/algorithms/detail/ring_identifier.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
+{
+namespace overlay
 {
 
-
-template<typename Turn>
+template <typename Turn>
 struct meta_turn
 {
     int index;
-    Turn const* turn;
+    Turn const *turn;
     bool handled[2];
 
-    inline meta_turn(int i, Turn const& t)
+    inline meta_turn(int i, Turn const &t)
         : index(i), turn(&t)
     {
         handled[0] = false;
@@ -44,28 +42,26 @@ struct meta_turn
     }
 };
 
-
 template <typename MetaTurn>
-inline void display(MetaTurn const& meta_turn, std::string const& reason = "")
+inline void display(MetaTurn const &meta_turn, std::string const &reason = "")
 {
 #ifdef BOOST_GEOMETRY_DEBUG_ENRICH
     std::cout << meta_turn.index
-        << "\tMethods: " << method_char(meta_turn.turn->method)
-        << " operations: "  << operation_char(meta_turn.turn->operations[0].operation)
-                << operation_char(meta_turn.turn->operations[1].operation)
-        << " travels to " << meta_turn.turn->operations[0].enriched.travels_to_ip_index
-        << " and " << meta_turn.turn->operations[1].enriched.travels_to_ip_index
-        //<< " -> " << op_index
-        << " " << reason
-        << std::endl;
+              << "\tMethods: " << method_char(meta_turn.turn->method)
+              << " operations: " << operation_char(meta_turn.turn->operations[0].operation)
+              << operation_char(meta_turn.turn->operations[1].operation)
+              << " travels to " << meta_turn.turn->operations[0].enriched.travels_to_ip_index
+              << " and " << meta_turn.turn->operations[1].enriched.travels_to_ip_index
+              //<< " -> " << op_index
+              << " " << reason
+              << std::endl;
 #endif
 }
 
-
 template <typename MetaTurns, typename MetaTurn>
-inline void check_detailed(MetaTurns& meta_turns, MetaTurn const& meta_turn,
-            int op_index, int cycle, int start, operation_type for_operation,
-            bool& error)
+inline void check_detailed(MetaTurns &meta_turns, MetaTurn const &meta_turn,
+                           int op_index, int cycle, int start, operation_type for_operation,
+                           bool &error)
 {
     display(meta_turn);
     int const ip_index = meta_turn.turn->operations[op_index].enriched.travels_to_ip_index;
@@ -80,21 +76,17 @@ inline void check_detailed(MetaTurns& meta_turns, MetaTurn const& meta_turn,
         }
 
         // check on continuing, or on same-operation-on-same-geometry
-        if (! meta_turns[ip_index].handled[op_index]
-            && (meta_turns[ip_index].turn->operations[op_index].operation == operation_continue
-                || meta_turns[ip_index].turn->operations[op_index].operation == for_operation)
-            )
+        if (!meta_turns[ip_index].handled[op_index] && (meta_turns[ip_index].turn->operations[op_index].operation == operation_continue || meta_turns[ip_index].turn->operations[op_index].operation == for_operation))
         {
             meta_turns[ip_index].handled[op_index] = true;
             check_detailed(meta_turns, meta_turns[ip_index], op_index, cycle, start, for_operation, error);
             found = true;
         }
         // check on other geometry
-        if (! found)
+        if (!found)
         {
             int const other_index = 1 - op_index;
-            if (! meta_turns[ip_index].handled[other_index]
-                && meta_turns[ip_index].turn->operations[other_index].operation == for_operation)
+            if (!meta_turns[ip_index].handled[other_index] && meta_turns[ip_index].turn->operations[other_index].operation == for_operation)
             {
                 meta_turns[ip_index].handled[other_index] = true;
                 check_detailed(meta_turns, meta_turns[ip_index], other_index, cycle, start, for_operation, error);
@@ -102,29 +94,28 @@ inline void check_detailed(MetaTurns& meta_turns, MetaTurn const& meta_turn,
             }
         }
 
-        if (! found)
+        if (!found)
         {
             display(meta_turns[ip_index], " STOP");
             error = true;
 #ifndef BOOST_GEOMETRY_DEBUG_ENRICH
-            //std::cout << " STOP";
+            // std::cout << " STOP";
 #endif
         }
     }
 }
 
-
 template <typename TurnPoints>
-inline bool check_graph(TurnPoints& turn_points, operation_type for_operation)
+inline bool check_graph(TurnPoints &turn_points, operation_type for_operation)
 {
     typedef typename boost::range_value<TurnPoints>::type turn_point_type;
 
     bool error = false;
     int index = 0;
 
-    std::vector<meta_turn<turn_point_type> > meta_turns;
+    std::vector<meta_turn<turn_point_type>> meta_turns;
     for (typename boost::range_iterator<TurnPoints const>::type
-            it = boost::begin(turn_points);
+             it = boost::begin(turn_points);
          it != boost::end(turn_points);
          ++it, ++index)
     {
@@ -132,17 +123,16 @@ inline bool check_graph(TurnPoints& turn_points, operation_type for_operation)
     }
 
     int cycle = 0;
-    for (typename boost::range_iterator<std::vector<meta_turn<turn_point_type> > > ::type
-            it = boost::begin(meta_turns);
+    for (typename boost::range_iterator<std::vector<meta_turn<turn_point_type>>>::type
+             it = boost::begin(meta_turns);
          it != boost::end(meta_turns);
          ++it)
     {
-        if (! (it->turn->blocked() || it->turn->is_discarded()))
+        if (!(it->turn->blocked() || it->turn->is_discarded()))
         {
-            for (int i = 0 ; i < 2; i++)
+            for (int i = 0; i < 2; i++)
             {
-                if (! it->handled[i]
-                    && it->turn->operations[i].operation == for_operation)
+                if (!it->handled[i] && it->turn->operations[i].operation == for_operation)
                 {
 #ifdef BOOST_GEOMETRY_DEBUG_ENRICH
                     std::cout << "CYCLE " << cycle << std::endl;
@@ -150,7 +140,7 @@ inline bool check_graph(TurnPoints& turn_points, operation_type for_operation)
                     it->handled[i] = true;
                     check_detailed(meta_turns, *it, i, cycle++, it->index, for_operation, error);
 #ifdef BOOST_GEOMETRY_DEBUG_ENRICH
-                    std::cout <<" END CYCLE " << it->index << std::endl;
+                    std::cout << " END CYCLE " << it->index << std::endl;
 #endif
                 }
             }
@@ -159,14 +149,11 @@ inline bool check_graph(TurnPoints& turn_points, operation_type for_operation)
     return error;
 }
 
+} // namespace overlay
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
 
-
-}} // namespace detail::overlay
-#endif //DOXYGEN_NO_DETAIL
-
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_CHECK_ENRICH_HPP

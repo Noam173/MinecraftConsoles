@@ -1,6 +1,6 @@
 //  Copyright (c) 2001-2011 Hartmut Kaiser
-// 
-//  Distributed under the Boost Software License, Version 1.0. (See accompanying 
+//
+//  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #if !defined(BOOST_SPIRIT_KARMA_STRING_COMPARE_AUG_08_2009_0756PM)
@@ -10,67 +10,80 @@
 #pragma once
 #endif
 
-#include <string>
-#include <boost/spirit/home/support/char_class.hpp>
-#include <boost/spirit/home/karma/detail/generate_to.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/spirit/home/karma/detail/generate_to.hpp>
+#include <boost/spirit/home/support/char_class.hpp>
+#include <string>
 
-namespace boost { namespace spirit { namespace karma { namespace detail
+namespace boost
 {
-    template <typename Char>
-    bool string_compare(Char const* attr, Char const* lit)
+namespace spirit
+{
+namespace karma
+{
+namespace detail
+{
+template <typename Char>
+bool string_compare(Char const *attr, Char const *lit)
+{
+    Char ch_attr = *attr;
+    Char ch_lit = *lit;
+
+    while (!!ch_lit && !!ch_attr)
     {
-        Char ch_attr = *attr;
-        Char ch_lit = *lit;
-
-        while (!!ch_lit && !!ch_attr)
+        if (ch_attr != ch_lit)
         {
-            if (ch_attr != ch_lit)
-                return false;
-
-            ch_attr = *++attr;
-            ch_lit = *++lit;
+            return false;
         }
 
-        return !ch_lit && !ch_attr;
+        ch_attr = *++attr;
+        ch_lit = *++lit;
     }
 
-    template <typename Char>
-    bool string_compare(Char const* attr, Char const* lit, unused_type, unused_type)
-    {
-        return string_compare(attr, lit);
-    }
+    return !ch_lit && !ch_attr;
+}
 
-    template <typename Char>
-    bool string_compare(unused_type, Char const*, unused_type, unused_type)
-    {
-        return true;
-    }
+template <typename Char>
+bool string_compare(Char const *attr, Char const *lit, unused_type, unused_type)
+{
+    return string_compare(attr, lit);
+}
 
-    template <typename Char, typename CharEncoding, typename Tag>
-    bool string_compare(Char const* attr, Char const* lit, CharEncoding, Tag)
-    {
-        Char ch_attr = *attr;
-        Char ch_lit = spirit::char_class::convert<CharEncoding>::to(Tag(), *lit);
+template <typename Char>
+bool string_compare(unused_type, Char const *, unused_type, unused_type)
+{
+    return true;
+}
 
-        while (!!ch_lit && !!ch_attr)
+template <typename Char, typename CharEncoding, typename Tag>
+bool string_compare(Char const *attr, Char const *lit, CharEncoding, Tag)
+{
+    Char ch_attr = *attr;
+    Char ch_lit = spirit::char_class::convert<CharEncoding>::to(Tag(), *lit);
+
+    while (!!ch_lit && !!ch_attr)
+    {
+        if (ch_attr != ch_lit)
         {
-            if (ch_attr != ch_lit)
-                return false;
-
-            ch_attr = *++attr;
-            ch_lit = spirit::char_class::convert<CharEncoding>::to(Tag(), *++lit);
+            return false;
         }
 
-        return !ch_lit && !ch_attr;
+        ch_attr = *++attr;
+        ch_lit = spirit::char_class::convert<CharEncoding>::to(Tag(), *++lit);
     }
 
-    template <typename Char, typename CharEncoding, typename Tag>
-    bool string_compare(unused_type, Char const*, CharEncoding, Tag)
-    {
-        return true;
-    }
+    return !ch_lit && !ch_attr;
+}
 
-}}}}
+template <typename Char, typename CharEncoding, typename Tag>
+bool string_compare(unused_type, Char const *, CharEncoding, Tag)
+{
+    return true;
+}
+
+} // namespace detail
+} // namespace karma
+} // namespace spirit
+} // namespace boost
 
 #endif

@@ -3,39 +3,37 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef STL_ITERATOR_EAN20051028_HPP
-# define STL_ITERATOR_EAN20051028_HPP
+#define STL_ITERATOR_EAN20051028_HPP
 
-# include <boost/python/detail/prefix.hpp>
+#include <boost/python/detail/prefix.hpp>
 
-# include <boost/python/object/stl_iterator_core.hpp>
+#include <boost/python/object/stl_iterator_core.hpp>
 
-# include <boost/iterator/iterator_facade.hpp>
+#include <boost/iterator/iterator_facade.hpp>
 
-namespace boost { namespace python
-{ 
+namespace boost
+{
+namespace python
+{
 
 // An STL input iterator over a python sequence
-template<typename ValueT>
+template <typename ValueT>
 struct stl_input_iterator
-  : boost::iterator_facade<
-        stl_input_iterator<ValueT>
-      , ValueT
-      , std::input_iterator_tag
-      , ValueT
-    >
+    : boost::iterator_facade<
+          stl_input_iterator<ValueT>, ValueT, std::input_iterator_tag, ValueT>
 {
     stl_input_iterator()
-      : impl_()
+        : impl_()
     {
     }
 
     // ob is the python sequence
     stl_input_iterator(boost::python::object const &ob)
-      : impl_(ob)
+        : impl_(ob)
     {
     }
 
-private:
+  private:
     friend class boost::iterator_core_access;
 
     void increment()
@@ -56,6 +54,7 @@ private:
     objects::stl_input_iterator_impl impl_;
 };
 
-}} // namespace boost::python
+} // namespace python
+} // namespace boost
 
 #endif // STL_ITERATOR_EAN20051028_HPP

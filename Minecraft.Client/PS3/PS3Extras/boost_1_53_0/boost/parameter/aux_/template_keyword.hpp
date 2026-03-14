@@ -3,45 +3,50 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_PARAMETER_TEMPLATE_KEYWORD_060203_HPP
-# define BOOST_PARAMETER_TEMPLATE_KEYWORD_060203_HPP
+#define BOOST_PARAMETER_TEMPLATE_KEYWORD_060203_HPP
 
-# include <boost/mpl/and.hpp>
-# include <boost/mpl/not.hpp>
-# include <boost/type_traits/is_convertible.hpp>
-# include <boost/type_traits/is_reference.hpp>
+#include <boost/mpl/and.hpp>
+#include <boost/mpl/not.hpp>
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/is_reference.hpp>
 
-namespace boost { namespace parameter { 
-
-namespace aux 
+namespace boost
+{
+namespace parameter
 {
 
-  struct template_keyword_tag {}; 
+namespace aux
+{
 
-  template <class T, class U>
-  struct is_pointer_convertible
-    : is_convertible<T*, U*>
-  {};
+struct template_keyword_tag
+{
+};
 
-  template <class T>
-  struct is_template_keyword
+template <class T, class U>
+struct is_pointer_convertible
+    : is_convertible<T *, U *>
+{
+};
+
+template <class T>
+struct is_template_keyword
     : mpl::and_<
-          mpl::not_<is_reference<T> >
-        , is_pointer_convertible<T, template_keyword_tag>
-      >
-  {};
+          mpl::not_<is_reference<T>>, is_pointer_convertible<T, template_keyword_tag>>
+{
+};
 
 } // namespace aux
 
 template <class Tag, class T>
 struct template_keyword
-  : aux::template_keyword_tag
+    : aux::template_keyword_tag
 {
     typedef Tag key_type;
     typedef T value_type;
     typedef value_type reference;
 };
 
-}} // namespace boost::parameter
+} // namespace parameter
+} // namespace boost
 
 #endif // BOOST_PARAMETER_TEMPLATE_KEYWORD_060203_HPP
-

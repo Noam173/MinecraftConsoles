@@ -1,5 +1,5 @@
 //  Copyright (c) 2001-2011 Hartmut Kaiser
-// 
+//
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -15,19 +15,19 @@
 #ifndef BOOST_SPIRIT_USE_PHOENIX_V3
 
 #if !defined(SPIRIT_ARGUMENTS_LIMIT)
-# define SPIRIT_ARGUMENTS_LIMIT PHOENIX_LIMIT
+#define SPIRIT_ARGUMENTS_LIMIT PHOENIX_LIMIT
 #endif
 #if !defined(SPIRIT_ATTRIBUTES_LIMIT)
-# define SPIRIT_ATTRIBUTES_LIMIT PHOENIX_LIMIT
+#define SPIRIT_ATTRIBUTES_LIMIT PHOENIX_LIMIT
 #endif
 
 #else
 
 #if !defined(SPIRIT_ARGUMENTS_LIMIT)
-# define SPIRIT_ARGUMENTS_LIMIT BOOST_PHOENIX_LIMIT
+#define SPIRIT_ARGUMENTS_LIMIT BOOST_PHOENIX_LIMIT
 #endif
 #if !defined(SPIRIT_ATTRIBUTES_LIMIT)
-# define SPIRIT_ATTRIBUTES_LIMIT BOOST_PHOENIX_LIMIT
+#define SPIRIT_ATTRIBUTES_LIMIT BOOST_PHOENIX_LIMIT
 #endif
 
 #endif

@@ -14,23 +14,32 @@
 #pragma once
 #endif
 
-namespace boost {
-namespace atomics {
-namespace detail {
+namespace boost
+{
+namespace atomics
+{
+namespace detail
+{
 
-template<typename T, bool IsInt = boost::is_integral<T>::value>
+template <typename T, bool IsInt = boost::is_integral<T>::value>
 struct classify
 {
     typedef void type;
 };
 
-template<typename T>
-struct classify<T, true> {typedef int type;};
+template <typename T>
+struct classify<T, true>
+{
+    typedef int type;
+};
 
-template<typename T>
-struct classify<T*, false> {typedef void* type;};
+template <typename T>
+struct classify<T *, false>
+{
+    typedef void *type;
+};
 
-template<typename T>
+template <typename T>
 struct storage_size_of
 {
     enum _
@@ -40,6 +49,8 @@ struct storage_size_of
     };
 };
 
-}}}
+} // namespace detail
+} // namespace atomics
+} // namespace boost
 
 #endif

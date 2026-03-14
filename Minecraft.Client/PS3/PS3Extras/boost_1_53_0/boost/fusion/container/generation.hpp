@@ -7,17 +7,17 @@
 #if !defined(FUSION_SEQUENCE_GENERATION_10022005_0615)
 #define FUSION_SEQUENCE_GENERATION_10022005_0615
 
-#include <boost/fusion/container/generation/make_deque.hpp>
-#include <boost/fusion/container/generation/deque_tie.hpp>
 #include <boost/fusion/container/generation/cons_tie.hpp>
+#include <boost/fusion/container/generation/deque_tie.hpp>
 #include <boost/fusion/container/generation/ignore.hpp>
 #include <boost/fusion/container/generation/list_tie.hpp>
 #include <boost/fusion/container/generation/make_cons.hpp>
+#include <boost/fusion/container/generation/make_deque.hpp>
 #include <boost/fusion/container/generation/make_list.hpp>
 #include <boost/fusion/container/generation/make_map.hpp>
-#include <boost/fusion/container/generation/map_tie.hpp>
-#include <boost/fusion/container/generation/make_vector.hpp>
-#include <boost/fusion/container/generation/vector_tie.hpp>
 #include <boost/fusion/container/generation/make_set.hpp>
+#include <boost/fusion/container/generation/make_vector.hpp>
+#include <boost/fusion/container/generation/map_tie.hpp>
+#include <boost/fusion/container/generation/vector_tie.hpp>
 
 #endif

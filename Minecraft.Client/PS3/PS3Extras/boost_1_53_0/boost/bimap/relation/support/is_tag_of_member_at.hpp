@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_RELATION_SUPPORT_IS_TAG_OF_MEMBER_AT_HPP
 #define BOOST_BIMAP_RELATION_SUPPORT_IS_TAG_OF_MEMBER_AT_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -21,9 +21,9 @@
 #include <boost/bimap/relation/member_at.hpp>
 #include <boost/type_traits/is_same.hpp>
 
+#include <boost/bimap/relation/support/member_with_tag.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/bimap/relation/support/member_with_tag.hpp>
 
 /** \struct boost::bimaps::relation::support::is_tag_of_member_at_left
 
@@ -50,7 +50,6 @@ See also member_with_tag, member_at, is_tag_of_member_at_right.
 \ingroup relation_group
                                                                              **/
 
-
 /** \struct boost::bimaps::relation::support::is_tag_of_member_at_right
 
 \brief Metafunction to test if a user tag is refering to the left member.
@@ -76,98 +75,85 @@ See also member_with_tag, member_at, is_tag_of_member_at_left.
 \ingroup relation_group
                                                                              **/
 
-
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
 // Metafunction is_tag_of_member_at_left
 // Easiear metaprogramming
 
-template
-<
+template <
     class Tag,
     class Relation,
-    class Enable = void
->
-struct is_tag_of_member_at_left :
-    ::boost::mpl::false_ {};
+    class Enable = void>
+struct is_tag_of_member_at_left : ::boost::mpl::false_
+{
+};
 
-template< class Tag, class Relation >
-struct is_tag_of_member_at_left
-<
+template <class Tag, class Relation>
+struct is_tag_of_member_at_left<
     Tag, Relation,
-    BOOST_DEDUCED_TYPENAME enable_if
-    <
-        is_same
-        <
-            BOOST_DEDUCED_TYPENAME member_with_tag<Tag,Relation>::type,
-            member_at::left
-        >
+    BOOST_DEDUCED_TYPENAME enable_if<
+        is_same<
+            BOOST_DEDUCED_TYPENAME member_with_tag<Tag, Relation>::type,
+            member_at::left>
 
-    >::type
-> :
-    ::boost::mpl::true_ {};
+        >::type> : ::boost::mpl::true_
+{
+};
 
 // Metafunction is_tag_of_member_at_right
 // Easiear metaprogramming
 
-template
-<
+template <
     class Tag,
     class Relation,
-    class Enable = void
->
-struct is_tag_of_member_at_right :
-    ::boost::mpl::false_ {};
+    class Enable = void>
+struct is_tag_of_member_at_right : ::boost::mpl::false_
+{
+};
 
-template< class Tag, class Relation >
-struct is_tag_of_member_at_right
-<
+template <class Tag, class Relation>
+struct is_tag_of_member_at_right<
     Tag, Relation,
-    BOOST_DEDUCED_TYPENAME enable_if
-    <
-        is_same
-        <
-            BOOST_DEDUCED_TYPENAME member_with_tag<Tag,Relation>::type,
-            member_at::right
-        >
+    BOOST_DEDUCED_TYPENAME enable_if<
+        is_same<
+            BOOST_DEDUCED_TYPENAME member_with_tag<Tag, Relation>::type,
+            member_at::right>
 
-    >::type
-> :
-    ::boost::mpl::true_ {};
-
+        >::type> : ::boost::mpl::true_
+{
+};
 
 // Metafunction is_tag_of_member_at_info
 // Easiear metaprogramming
 
-template
-<
+template <
     class Tag,
     class Relation,
-    class Enable = void
->
-struct is_tag_of_member_at_info :
-    ::boost::mpl::false_ {};
+    class Enable = void>
+struct is_tag_of_member_at_info : ::boost::mpl::false_
+{
+};
 
-template< class Tag, class Relation >
-struct is_tag_of_member_at_info
-<
+template <class Tag, class Relation>
+struct is_tag_of_member_at_info<
     Tag, Relation,
-    BOOST_DEDUCED_TYPENAME enable_if
-    <
-        is_same
-        <
-            BOOST_DEDUCED_TYPENAME member_with_tag<Tag,Relation>::type,
-            member_at::info
-        >
+    BOOST_DEDUCED_TYPENAME enable_if<
+        is_same<
+            BOOST_DEDUCED_TYPENAME member_with_tag<Tag, Relation>::type,
+            member_at::info>
 
-    >::type
-> :
-    ::boost::mpl::true_ {};
+        >::type> : ::boost::mpl::true_
+{
+};
 
 } // namespace support
 } // namespace relation
@@ -177,5 +163,3 @@ struct is_tag_of_member_at_info
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_RELATION_SUPPORT_IS_TAG_OF_MEMBER_AT_HPP
-
-

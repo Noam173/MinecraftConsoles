@@ -10,10 +10,10 @@
 #ifndef BOOST_FUSION_ADAPTED_STRUCT_HPP
 #define BOOST_FUSION_ADAPTED_STRUCT_HPP
 
-#include <boost/fusion/adapted/struct/adapt_assoc_struct_named.hpp>
 #include <boost/fusion/adapted/struct/adapt_assoc_struct.hpp>
-#include <boost/fusion/adapted/struct/adapt_struct_named.hpp>
+#include <boost/fusion/adapted/struct/adapt_assoc_struct_named.hpp>
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
+#include <boost/fusion/adapted/struct/adapt_struct_named.hpp>
 #include <boost/fusion/adapted/struct/define_assoc_struct.hpp>
 #include <boost/fusion/adapted/struct/define_struct.hpp>
 #include <boost/fusion/adapted/struct/define_struct_inline.hpp>

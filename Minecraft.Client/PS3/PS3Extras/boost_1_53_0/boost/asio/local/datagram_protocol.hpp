@@ -12,13 +12,12 @@
 #define BOOST_ASIO_LOCAL_DATAGRAM_PROTOCOL_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
-#if defined(BOOST_ASIO_HAS_LOCAL_SOCKETS) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(BOOST_ASIO_HAS_LOCAL_SOCKETS) || defined(GENERATING_DOCUMENTATION)
 
 #include <boost/asio/basic_datagram_socket.hpp>
 #include <boost/asio/detail/socket_types.hpp>
@@ -26,9 +25,12 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace local {
+namespace boost
+{
+namespace asio
+{
+namespace local
+{
 
 /// Encapsulates the flags needed for datagram-oriented UNIX sockets.
 /**
@@ -44,30 +46,30 @@ namespace local {
  */
 class datagram_protocol
 {
-public:
-  /// Obtain an identifier for the type of the protocol.
-  int type() const
-  {
-    return SOCK_DGRAM;
-  }
+  public:
+    /// Obtain an identifier for the type of the protocol.
+    int type() const
+    {
+        return SOCK_DGRAM;
+    }
 
-  /// Obtain an identifier for the protocol.
-  int protocol() const
-  {
-    return 0;
-  }
+    /// Obtain an identifier for the protocol.
+    int protocol() const
+    {
+        return 0;
+    }
 
-  /// Obtain an identifier for the protocol family.
-  int family() const
-  {
-    return AF_UNIX;
-  }
+    /// Obtain an identifier for the protocol family.
+    int family() const
+    {
+        return AF_UNIX;
+    }
 
-  /// The type of a UNIX domain endpoint.
-  typedef basic_endpoint<datagram_protocol> endpoint;
+    /// The type of a UNIX domain endpoint.
+    typedef basic_endpoint<datagram_protocol> endpoint;
 
-  /// The UNIX domain socket type.
-  typedef basic_datagram_socket<datagram_protocol> socket;
+    /// The UNIX domain socket type.
+    typedef basic_datagram_socket<datagram_protocol> socket;
 };
 
 } // namespace local

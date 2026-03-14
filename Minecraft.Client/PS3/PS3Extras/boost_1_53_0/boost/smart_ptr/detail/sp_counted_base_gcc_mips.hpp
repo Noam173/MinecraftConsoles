@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -28,14 +28,13 @@ namespace boost
 namespace detail
 {
 
-inline void atomic_increment( int * pw )
+inline void atomic_increment(int *pw)
 {
     // ++*pw;
 
     int tmp;
 
-    __asm__ __volatile__
-    (
+    __asm__ __volatile__(
         "0:\n\t"
         ".set push\n\t"
         ".set mips2\n\t"
@@ -43,20 +42,16 @@ inline void atomic_increment( int * pw )
         "addiu %0, 1\n\t"
         "sc %0, %1\n\t"
         ".set pop\n\t"
-        "beqz %0, 0b":
-        "=&r"( tmp ), "=m"( *pw ):
-        "m"( *pw )
-    );
+        "beqz %0, 0b" : "=&r"(tmp), "=m"(*pw) : "m"(*pw));
 }
 
-inline int atomic_decrement( int * pw )
+inline int atomic_decrement(int *pw)
 {
     // return --*pw;
 
     int rv, tmp;
 
-    __asm__ __volatile__
-    (
+    __asm__ __volatile__(
         "0:\n\t"
         ".set push\n\t"
         ".set mips2\n\t"
@@ -65,24 +60,19 @@ inline int atomic_decrement( int * pw )
         "sc %0, %2\n\t"
         ".set pop\n\t"
         "beqz %0, 0b\n\t"
-        "addiu %0, %1, -1":
-        "=&r"( rv ), "=&r"( tmp ), "=m"( *pw ):
-        "m"( *pw ):
-        "memory"
-    );
+        "addiu %0, %1, -1" : "=&r"(rv), "=&r"(tmp), "=m"(*pw) : "m"(*pw) : "memory");
 
     return rv;
 }
 
-inline int atomic_conditional_increment( int * pw )
+inline int atomic_conditional_increment(int *pw)
 {
     // if( *pw != 0 ) ++*pw;
     // return *pw;
 
     int rv, tmp;
 
-    __asm__ __volatile__
-    (
+    __asm__ __volatile__(
         "0:\n\t"
         ".set push\n\t"
         ".set mips2\n\t"
@@ -93,28 +83,22 @@ inline int atomic_conditional_increment( int * pw )
         ".set pop\n\t"
         "beqz %1, 0b\n\t"
         "addiu %0, %0, 1\n\t"
-        "1:":
-        "=&r"( rv ), "=&r"( tmp ), "=m"( *pw ):
-        "m"( *pw ):
-        "memory"
-    );
+        "1:" : "=&r"(rv), "=&r"(tmp), "=m"(*pw) : "m"(*pw) : "memory");
 
     return rv;
 }
 
 class sp_counted_base
 {
-private:
+  private:
+    sp_counted_base(sp_counted_base const &);
+    sp_counted_base &operator=(sp_counted_base const &);
 
-    sp_counted_base( sp_counted_base const & );
-    sp_counted_base & operator= ( sp_counted_base const & );
+    int use_count_;  // #shared
+    int weak_count_; // #weak + (#shared != 0)
 
-    int use_count_;        // #shared
-    int weak_count_;       // #weak + (#shared != 0)
-
-public:
-
-    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
+  public:
+    sp_counted_base() : use_count_(1), weak_count_(1)
     {
     }
 
@@ -134,22 +118,22 @@ public:
         delete this;
     }
 
-    virtual void * get_deleter( sp_typeinfo const & ti ) = 0;
-    virtual void * get_untyped_deleter() = 0;
+    virtual void *get_deleter(sp_typeinfo const &ti) = 0;
+    virtual void *get_untyped_deleter() = 0;
 
     void add_ref_copy()
     {
-        atomic_increment( &use_count_ );
+        atomic_increment(&use_count_);
     }
 
     bool add_ref_lock() // true on success
     {
-        return atomic_conditional_increment( &use_count_ ) != 0;
+        return atomic_conditional_increment(&use_count_) != 0;
     }
 
     void release() // nothrow
     {
-        if( atomic_decrement( &use_count_ ) == 0 )
+        if (atomic_decrement(&use_count_) == 0)
         {
             dispose();
             weak_release();
@@ -158,12 +142,12 @@ public:
 
     void weak_add_ref() // nothrow
     {
-        atomic_increment( &weak_count_ );
+        atomic_increment(&weak_count_);
     }
 
     void weak_release() // nothrow
     {
-        if( atomic_decrement( &weak_count_ ) == 0 )
+        if (atomic_decrement(&weak_count_) == 0)
         {
             destroy();
         }
@@ -171,7 +155,7 @@ public:
 
     long use_count() const // nothrow
     {
-        return static_cast<int const volatile &>( use_count_ );
+        return static_cast<int const volatile &>(use_count_);
     }
 };
 
@@ -179,4 +163,4 @@ public:
 
 } // namespace boost
 
-#endif  // #ifndef BOOST_DETAIL_SP_COUNTED_BASE_GCC_MIPS_HPP_INCLUDED
+#endif // #ifndef BOOST_DETAIL_SP_COUNTED_BASE_GCC_MIPS_HPP_INCLUDED

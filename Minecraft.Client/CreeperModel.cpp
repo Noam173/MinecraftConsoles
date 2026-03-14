@@ -1,13 +1,13 @@
-#include "stdafx.h"
-#include "..\Minecraft.World\Mth.h"
 #include "CreeperModel.h"
+#include "..\Minecraft.World\Mth.h"
 #include "ModelPart.h"
+#include "stdafx.h"
 
 // 4J - added
 void CreeperModel::_init(float g)
 {
     head = new ModelPart(this, 0, 0);
-    head->addBox(-4, - 8, -4, 8, 8, 8, g); // Head
+    head->addBox(-4, -8, -4, 8, 8, 8, g); // Head
     head->setPos(0, 6, 0);
 
     hair = new ModelPart(this, 32, 0);
@@ -34,24 +34,24 @@ void CreeperModel::_init(float g)
     leg3->addBox(-2, 0, -2, 4, 6, 4, g); // Leg3
     leg3->setPos(2, 18, -4);
 
-	// 4J added - compile now to avoid random performance hit first time cubes are rendered
-	head->compile(1.0f/16.0f);
-	hair->compile(1.0f/16.0f);
-	body->compile(1.0f/16.0f);
-	leg0->compile(1.0f/16.0f);
-	leg1->compile(1.0f/16.0f);
-	leg2->compile(1.0f/16.0f);
-	leg3->compile(1.0f/16.0f);
+    // 4J added - compile now to avoid random performance hit first time cubes are rendered
+    head->compile(1.0f / 16.0f);
+    hair->compile(1.0f / 16.0f);
+    body->compile(1.0f / 16.0f);
+    leg0->compile(1.0f / 16.0f);
+    leg1->compile(1.0f / 16.0f);
+    leg2->compile(1.0f / 16.0f);
+    leg3->compile(1.0f / 16.0f);
 }
 
 CreeperModel::CreeperModel() : Model()
 {
-	_init(0);
+    _init(0);
 }
 
 CreeperModel::CreeperModel(float g) : Model()
 {
-	_init(g);
+    _init(g);
 }
 
 void CreeperModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
@@ -68,8 +68,8 @@ void CreeperModel::render(shared_ptr<Entity> entity, float time, float r, float 
 
 void CreeperModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
-    head->yRot = yRot / (float) (180 / PI);
-    head->xRot = xRot / (float) (180 / PI);
+    head->yRot = yRot / (float)(180 / PI);
+    head->xRot = xRot / (float)(180 / PI);
 
     leg0->xRot = (Mth::cos(time * 0.6662f) * 1.4f) * r;
     leg1->xRot = (Mth::cos(time * 0.6662f + PI) * 1.4f) * r;

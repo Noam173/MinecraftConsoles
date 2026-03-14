@@ -14,17 +14,16 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_COVERED_BY_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_COVERED_BY_HPP
 
-
 #include <boost/geometry/algorithms/covered_by.hpp>
+#include <boost/geometry/multi/algorithms/within.hpp>
 #include <boost/geometry/multi/core/closure.hpp>
 #include <boost/geometry/multi/core/point_order.hpp>
 #include <boost/geometry/multi/core/tags.hpp>
-#include <boost/geometry/multi/algorithms/within.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -34,37 +33,28 @@ template <typename Point, typename MultiPolygon>
 struct covered_by<Point, MultiPolygon, point_tag, multi_polygon_tag>
 {
     template <typename Strategy>
-    static inline bool apply(Point const& point, 
-                MultiPolygon const& multi_polygon, Strategy const& strategy)
+    static inline bool apply(Point const &point,
+                             MultiPolygon const &multi_polygon, Strategy const &strategy)
     {
-        return detail::within::geometry_multi_within_code
-            <
-                Point,
-                MultiPolygon,
-                Strategy,
-                detail::within::point_in_polygon
-                        <
-                            Point,
-                            typename boost::range_value<MultiPolygon>::type,
-                            order_as_direction
-                                <
-                                    geometry::point_order<MultiPolygon>::value
-                                >::value,
-                            geometry::closure<MultiPolygon>::value,
-                            Strategy
-                        >
-            >::apply(point, multi_polygon, strategy) >= 0;
+        return detail::within::geometry_multi_within_code<
+                   Point,
+                   MultiPolygon,
+                   Strategy,
+                   detail::within::point_in_polygon<
+                       Point,
+                       typename boost::range_value<MultiPolygon>::type,
+                       order_as_direction<
+                           geometry::point_order<MultiPolygon>::value>::value,
+                       geometry::closure<MultiPolygon>::value,
+                       Strategy>>::apply(point, multi_polygon, strategy) >= 0;
     }
 };
 
-
 } // namespace dispatch
-
 
 #endif // DOXYGEN_NO_DISPATCH
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_COVERED_BY_HPP

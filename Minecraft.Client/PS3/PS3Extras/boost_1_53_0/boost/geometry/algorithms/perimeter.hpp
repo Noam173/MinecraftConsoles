@@ -14,18 +14,18 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_PERIMETER_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_PERIMETER_HPP
 
-
-#include <boost/geometry/core/cs.hpp>
-#include <boost/geometry/core/closure.hpp>
-#include <boost/geometry/geometries/concepts/check.hpp>
-#include <boost/geometry/strategies/default_length_result.hpp>
-#include <boost/geometry/algorithms/length.hpp>
 #include <boost/geometry/algorithms/detail/calculate_null.hpp>
 #include <boost/geometry/algorithms/detail/calculate_sum.hpp>
+#include <boost/geometry/algorithms/length.hpp>
+#include <boost/geometry/core/closure.hpp>
+#include <boost/geometry/core/cs.hpp>
+#include <boost/geometry/geometries/concepts/check.hpp>
+#include <boost/geometry/strategies/default_length_result.hpp>
 // #include <boost/geometry/algorithms/detail/throw_on_empty_input.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
@@ -39,7 +39,7 @@ struct perimeter : detail::calculate_null
     typedef typename default_length_result<Geometry>::type return_type;
 
     template <typename Strategy>
-    static inline return_type apply(Geometry const& geometry, Strategy const& strategy)
+    static inline return_type apply(Geometry const &geometry, Strategy const &strategy)
     {
         return calculate_null::apply<return_type>(geometry, strategy);
     }
@@ -47,36 +47,32 @@ struct perimeter : detail::calculate_null
 
 template <typename Geometry>
 struct perimeter<Geometry, ring_tag>
-    : detail::length::range_length
-        <
-            Geometry,
-            closure<Geometry>::value
-        >
-{};
+    : detail::length::range_length<
+          Geometry,
+          closure<Geometry>::value>
+{
+};
 
 template <typename Polygon>
 struct perimeter<Polygon, polygon_tag> : detail::calculate_polygon_sum
 {
     typedef typename default_length_result<Polygon>::type return_type;
-    typedef detail::length::range_length
-                <
-                    typename ring_type<Polygon>::type,
-                    closure<Polygon>::value
-                > policy;
+    typedef detail::length::range_length<
+        typename ring_type<Polygon>::type,
+        closure<Polygon>::value>
+        policy;
 
     template <typename Strategy>
-    static inline return_type apply(Polygon const& polygon, Strategy const& strategy)
+    static inline return_type apply(Polygon const &polygon, Strategy const &strategy)
     {
         return calculate_polygon_sum::apply<return_type, policy>(polygon, strategy);
     }
 };
 
-
 // box,n-sphere: to be implemented
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
 
 /*!
 \brief \brief_calc{perimeter}
@@ -89,20 +85,18 @@ struct perimeter<Polygon, polygon_tag> : detail::calculate_polygon_sum
 
 \qbk{[include reference/algorithms/perimeter.qbk]}
  */
-template<typename Geometry>
+template <typename Geometry>
 inline typename default_length_result<Geometry>::type perimeter(
-        Geometry const& geometry)
+    Geometry const &geometry)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
     typedef typename point_type<Geometry>::type point_type;
-    typedef typename strategy::distance::services::default_strategy
-        <
-            point_tag, point_type
-        >::type strategy_type;
+    typedef typename strategy::distance::services::default_strategy<
+        point_tag, point_type>::type strategy_type;
 
     // detail::throw_on_empty_input(geometry);
-        
+
     return dispatch::perimeter<Geometry>::apply(geometry, strategy_type());
 }
 
@@ -120,18 +114,18 @@ inline typename default_length_result<Geometry>::type perimeter(
 \qbk{distinguish,with strategy}
 \qbk{[include reference/algorithms/perimeter.qbk]}
  */
-template<typename Geometry, typename Strategy>
+template <typename Geometry, typename Strategy>
 inline typename default_length_result<Geometry>::type perimeter(
-        Geometry const& geometry, Strategy const& strategy)
+    Geometry const &geometry, Strategy const &strategy)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
     // detail::throw_on_empty_input(geometry);
-    
+
     return dispatch::perimeter<Geometry>::apply(geometry, strategy);
 }
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_PERIMETER_HPP
-

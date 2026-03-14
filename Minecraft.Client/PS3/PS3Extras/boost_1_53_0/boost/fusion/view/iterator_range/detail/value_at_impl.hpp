@@ -11,28 +11,30 @@
 #include <boost/fusion/iterator/advance.hpp>
 #include <boost/fusion/iterator/value_of.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct iterator_range_tag;
+namespace fusion
+{
+struct iterator_range_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct value_at_impl;
+
+template <>
+struct value_at_impl<iterator_range_tag>
+{
+    template <typename Seq, typename N>
+    struct apply
     {
-        template <typename Tag>
-        struct value_at_impl;
-
-        template <>
-        struct value_at_impl<iterator_range_tag>
-        {
-            template <typename Seq, typename N>
-            struct apply
-            {
-                typedef typename Seq::begin_type begin_type;
-                typedef typename result_of::advance<begin_type,N>::type pos;
-                typedef typename result_of::value_of<pos>::type type;
-            };
-        };
-    }
-}}
+        typedef typename Seq::begin_type begin_type;
+        typedef typename result_of::advance<begin_type, N>::type pos;
+        typedef typename result_of::value_of<pos>::type type;
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif
-

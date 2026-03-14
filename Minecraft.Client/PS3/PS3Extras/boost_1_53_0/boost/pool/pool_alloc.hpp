@@ -13,7 +13,7 @@
 /*!
   \file
   \brief C++ Standard Library compatible pool-based allocators.
-  \details  This header provides two template types - 
+  \details  This header provides two template types -
   \ref pool_allocator and \ref fast_pool_allocator -
   that can be used for fast and efficient memory allocation
   in conjunction with the C++ Standard Library containers.
@@ -71,8 +71,8 @@ STLport (with any compiler), ver. 4.0 and earlier.
 // new, std::bad_alloc
 #include <new>
 
-#include <boost/throw_exception.hpp>
 #include <boost/pool/poolfwd.hpp>
+#include <boost/throw_exception.hpp>
 
 // boost::singleton_pool
 #include <boost/pool/singleton_pool.hpp>
@@ -80,24 +80,25 @@ STLport (with any compiler), ver. 4.0 and earlier.
 #include <boost/detail/workaround.hpp>
 
 #ifdef BOOST_POOL_INSTRUMENT
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #endif
 
 // The following code will be put into Boost.Config in a later revision
 #if defined(_RWSTD_VER) || defined(__SGI_STL_PORT) || \
     BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
- #define BOOST_NO_PROPER_STL_DEALLOCATE
+#define BOOST_NO_PROPER_STL_DEALLOCATE
 #endif
 
-namespace boost {
+namespace boost
+{
 
 #ifdef BOOST_POOL_INSTRUMENT
 
 template <bool b>
 struct debug_info
 {
-   static unsigned allocated;
+    static unsigned allocated;
 };
 
 template <bool b>
@@ -105,9 +106,9 @@ unsigned debug_info<b>::allocated = 0;
 
 #endif
 
- //! Simple tag type used by pool_allocator as an argument to the
- //! underlying singleton_pool.
- struct pool_allocator_tag
+//! Simple tag type used by pool_allocator as an argument to the
+//! underlying singleton_pool.
+struct pool_allocator_tag
 {
 };
 
@@ -117,10 +118,10 @@ unsigned debug_info<b>::allocated = 0;
 
   <b>T</b> Type of object to allocate/deallocate.
 
-  <b>UserAllocator</B>. Defines the method that the underlying Pool will use to allocate memory from the system. See 
+  <b>UserAllocator</B>. Defines the method that the underlying Pool will use to allocate memory from the system. See
   <a href="boost_pool/pool/pooling.html#boost_pool.pool.pooling.user_allocator">User Allocators</a> for details.
 
-  <b>Mutex</b> Allows the user to determine the type of synchronization to be used on the underlying singleton_pool. 
+  <b>Mutex</b> Allows the user to determine the type of synchronization to be used on the underlying singleton_pool.
 
   <b>NextSize</b> The value of this parameter is passed to the underlying singleton_pool when it is created.
 
@@ -133,26 +134,26 @@ unsigned debug_info<b>::allocated = 0;
   by the allocator can be still used after main() has
   completed, but may mean that some memory checking programs
   will complain about leaks.
- 
-  
+
+
   */
 template <typename T,
-    typename UserAllocator,
-    typename Mutex,
-    unsigned NextSize,
-    unsigned MaxSize >
+          typename UserAllocator,
+          typename Mutex,
+          unsigned NextSize,
+          unsigned MaxSize>
 class pool_allocator
 {
   public:
-    typedef T value_type;  //!< value_type of template parameter T.
-    typedef UserAllocator user_allocator;  //!< allocator that defines the method that the underlying Pool will use to allocate memory from the system.
-    typedef Mutex mutex; //!< typedef mutex publishes the value of the template parameter Mutex.
+    typedef T value_type;                                  //!< value_type of template parameter T.
+    typedef UserAllocator user_allocator;                  //!< allocator that defines the method that the underlying Pool will use to allocate memory from the system.
+    typedef Mutex mutex;                                   //!< typedef mutex publishes the value of the template parameter Mutex.
     BOOST_STATIC_CONSTANT(unsigned, next_size = NextSize); //!< next_size publishes the values of the template parameter NextSize.
 
-    typedef value_type * pointer; //!<
-    typedef const value_type * const_pointer;
-    typedef value_type & reference;
-    typedef const value_type & const_reference;
+    typedef value_type *pointer; //!<
+    typedef const value_type *const_pointer;
+    typedef value_type &reference;
+    typedef const value_type &const_reference;
     typedef typename pool<UserAllocator>::size_type size_type;
     typedef typename pool<UserAllocator>::difference_type difference_type;
 
@@ -165,7 +166,7 @@ class pool_allocator
     template <typename U>
     struct rebind
     { //
-      typedef pool_allocator<U, UserAllocator, Mutex, NextSize, MaxSize> other;
+        typedef pool_allocator<U, UserAllocator, Mutex, NextSize, MaxSize> other;
     };
 
   public:
@@ -177,8 +178,8 @@ class pool_allocator
          initialization. See ticket #2359 for a complete explanation at
          http://svn.boost.org/trac/boost/ticket/2359) .
        */
-      singleton_pool<pool_allocator_tag, sizeof(T), UserAllocator, Mutex,
-                     NextSize, MaxSize>::is_from(0);
+        singleton_pool<pool_allocator_tag, sizeof(T), UserAllocator, Mutex,
+                       NextSize, MaxSize>::is_from(0);
     }
 
     // default copy constructor.
@@ -194,66 +195,84 @@ class pool_allocator
          initialization. See ticket #2359 for a complete explanation
          at http://svn.boost.org/trac/boost/ticket/2359 .
        */
-      singleton_pool<pool_allocator_tag, sizeof(T), UserAllocator, Mutex,
-                     NextSize, MaxSize>::is_from(0);
+        singleton_pool<pool_allocator_tag, sizeof(T), UserAllocator, Mutex,
+                       NextSize, MaxSize>::is_from(0);
     }
 
     // default destructor
 
     static pointer address(reference r)
-    { return &r; }
+    {
+        return &r;
+    }
     static const_pointer address(const_reference s)
-    { return &s; }
+    {
+        return &s;
+    }
     static size_type max_size()
-    { return (std::numeric_limits<size_type>::max)(); }
-    static void construct(const pointer ptr, const value_type & t)
-    { new (ptr) T(t); }
+    {
+        return (std::numeric_limits<size_type>::max)();
+    }
+    static void construct(const pointer ptr, const value_type &t)
+    {
+        new (ptr) T(t);
+    }
     static void destroy(const pointer ptr)
     {
-      ptr->~T();
-      (void) ptr; // avoid unused variable warning.
+        ptr->~T();
+        (void)ptr; // avoid unused variable warning.
     }
 
     bool operator==(const pool_allocator &) const
-    { return true; }
+    {
+        return true;
+    }
     bool operator!=(const pool_allocator &) const
-    { return false; }
+    {
+        return false;
+    }
 
     static pointer allocate(const size_type n)
     {
 #ifdef BOOST_POOL_INSTRUMENT
-       debug_info<true>::allocated += n * sizeof(T);
-       std::cout << "Allocating " << n << " * " << sizeof(T) << " bytes...\n"
-          "Total allocated is now " << debug_info<true>::allocated << std::endl;
+        debug_info<true>::allocated += n * sizeof(T);
+        std::cout << "Allocating " << n << " * " << sizeof(T) << " bytes...\n"
+                                                                 "Total allocated is now "
+                  << debug_info<true>::allocated << std::endl;
 #endif
-      const pointer ret = static_cast<pointer>(
-          singleton_pool<pool_allocator_tag, sizeof(T), UserAllocator, Mutex,
-              NextSize, MaxSize>::ordered_malloc(n) );
-      if ((ret == 0) && n)
-        boost::throw_exception(std::bad_alloc());
-      return ret;
+        const pointer ret = static_cast<pointer>(
+            singleton_pool<pool_allocator_tag, sizeof(T), UserAllocator, Mutex,
+                           NextSize, MaxSize>::ordered_malloc(n));
+        if ((ret == 0) && n)
+        {
+            boost::throw_exception(std::bad_alloc());
+        }
+        return ret;
     }
-    static pointer allocate(const size_type n, const void * const)
-    { //! allocate n bytes
-    //! \param n bytes to allocate.
-    //! \param unused.
-      return allocate(n);
+    static pointer allocate(const size_type n, const void *const)
+    {   //! allocate n bytes
+        //! \param n bytes to allocate.
+        //! \param unused.
+        return allocate(n);
     }
     static void deallocate(const pointer ptr, const size_type n)
-    {  //! Deallocate n bytes from ptr
-       //! \param ptr location to deallocate from.
-       //! \param n number of bytes to deallocate.
+    { //! Deallocate n bytes from ptr
+      //! \param ptr location to deallocate from.
+      //! \param n number of bytes to deallocate.
 #ifdef BOOST_POOL_INSTRUMENT
-       debug_info<true>::allocated -= n * sizeof(T);
-       std::cout << "Deallocating " << n << " * " << sizeof(T) << " bytes...\n"
-          "Total allocated is now " << debug_info<true>::allocated << std::endl;
+        debug_info<true>::allocated -= n * sizeof(T);
+        std::cout << "Deallocating " << n << " * " << sizeof(T) << " bytes...\n"
+                                                                   "Total allocated is now "
+                  << debug_info<true>::allocated << std::endl;
 #endif
 #ifdef BOOST_NO_PROPER_STL_DEALLOCATE
-      if (ptr == 0 || n == 0)
-        return;
+        if (ptr == 0 || n == 0)
+        {
+            return;
+        }
 #endif
-      singleton_pool<pool_allocator_tag, sizeof(T), UserAllocator, Mutex,
-          NextSize, MaxSize>::ordered_free(ptr, n);
+        singleton_pool<pool_allocator_tag, sizeof(T), UserAllocator, Mutex,
+                       NextSize, MaxSize>::ordered_free(ptr, n);
     }
 };
 
@@ -261,27 +280,27 @@ class pool_allocator
 
 Specialization of pool_allocator for type void: required by the standard to make this a conforming allocator type.
 */
-template<
+template <
     typename UserAllocator,
     typename Mutex,
     unsigned NextSize,
     unsigned MaxSize>
 class pool_allocator<void, UserAllocator, Mutex, NextSize, MaxSize>
 {
-public:
-    typedef void*       pointer;
-    typedef const void* const_pointer;
-    typedef void        value_type;
+  public:
+    typedef void *pointer;
+    typedef const void *const_pointer;
+    typedef void value_type;
     //! \brief Nested class rebind allows for transformation from
     //! pool_allocator<T> to pool_allocator<U>.
     //!
     //! Nested class rebind allows for transformation from
     //! pool_allocator<T> to pool_allocator<U> via the member
     //! typedef other.
-    template <class U> 
+    template <class U>
     struct rebind
     {
-       typedef pool_allocator<U, UserAllocator, Mutex, NextSize, MaxSize> other;
+        typedef pool_allocator<U, UserAllocator, Mutex, NextSize, MaxSize> other;
     };
 };
 
@@ -290,46 +309,46 @@ struct fast_pool_allocator_tag
 {
 };
 
- /*! \brief A C++ Standard Library conforming allocator geared towards allocating single chunks.
+/*! \brief A C++ Standard Library conforming allocator geared towards allocating single chunks.
 
-  While class template <tt>pool_allocator</tt> is a more general-purpose solution geared towards
-  efficiently servicing requests for any number of contiguous chunks,
-  <tt>fast_pool_allocator</tt> is also a general-purpose solution,
-  but is geared towards efficiently servicing requests for one chunk at a time;
-  it will work for contiguous chunks, but not as well as <tt>pool_allocator</tt>.
+ While class template <tt>pool_allocator</tt> is a more general-purpose solution geared towards
+ efficiently servicing requests for any number of contiguous chunks,
+ <tt>fast_pool_allocator</tt> is also a general-purpose solution,
+ but is geared towards efficiently servicing requests for one chunk at a time;
+ it will work for contiguous chunks, but not as well as <tt>pool_allocator</tt>.
 
-  If you are seriously concerned about performance,
-  use <tt>fast_pool_allocator</tt> when dealing with containers such as <tt>std::list</tt>,
-  and use <tt>pool_allocator</tt> when dealing with containers such as <tt>std::vector</tt>.
+ If you are seriously concerned about performance,
+ use <tt>fast_pool_allocator</tt> when dealing with containers such as <tt>std::list</tt>,
+ and use <tt>pool_allocator</tt> when dealing with containers such as <tt>std::vector</tt>.
 
-  The template parameters are defined as follows:
+ The template parameters are defined as follows:
 
-  <b>T</b> Type of object to allocate/deallocate.
+ <b>T</b> Type of object to allocate/deallocate.
 
-  <b>UserAllocator</b>. Defines the method that the underlying Pool will use to allocate memory from the system. 
-  See <a href="boost_pool/pool/pooling.html#boost_pool.pool.pooling.user_allocator">User Allocators</a> for details.
+ <b>UserAllocator</b>. Defines the method that the underlying Pool will use to allocate memory from the system.
+ See <a href="boost_pool/pool/pooling.html#boost_pool.pool.pooling.user_allocator">User Allocators</a> for details.
 
-  <b>Mutex</b> Allows the user to determine the type of synchronization to be used on the underlying <tt>singleton_pool</tt>.
+ <b>Mutex</b> Allows the user to determine the type of synchronization to be used on the underlying <tt>singleton_pool</tt>.
 
-  <b>NextSize</b> The value of this parameter is passed to the underlying Pool when it is created.
+ <b>NextSize</b> The value of this parameter is passed to the underlying Pool when it is created.
 
-  <b>MaxSize</b> Limit on the maximum size used.
+ <b>MaxSize</b> Limit on the maximum size used.
 
-   \attention
-  The underlying singleton_pool used by the this allocator
-  constructs a pool instance that
-  <b>is never freed</b>.  This means that memory allocated
-  by the allocator can be still used after main() has
-  completed, but may mean that some memory checking programs
-  will complain about leaks.
- 
- */
+  \attention
+ The underlying singleton_pool used by the this allocator
+ constructs a pool instance that
+ <b>is never freed</b>.  This means that memory allocated
+ by the allocator can be still used after main() has
+ completed, but may mean that some memory checking programs
+ will complain about leaks.
+
+*/
 
 template <typename T,
-    typename UserAllocator,
-    typename Mutex,
-    unsigned NextSize,
-    unsigned MaxSize >
+          typename UserAllocator,
+          typename Mutex,
+          unsigned NextSize,
+          unsigned MaxSize>
 class fast_pool_allocator
 {
   public:
@@ -338,10 +357,10 @@ class fast_pool_allocator
     typedef Mutex mutex;
     BOOST_STATIC_CONSTANT(unsigned, next_size = NextSize);
 
-    typedef value_type * pointer;
-    typedef const value_type * const_pointer;
-    typedef value_type & reference;
-    typedef const value_type & const_reference;
+    typedef value_type *pointer;
+    typedef const value_type *const_pointer;
+    typedef value_type &reference;
+    typedef const value_type &const_reference;
     typedef typename pool<UserAllocator>::size_type size_type;
     typedef typename pool<UserAllocator>::difference_type difference_type;
 
@@ -354,18 +373,18 @@ class fast_pool_allocator
     template <typename U>
     struct rebind
     {
-      typedef fast_pool_allocator<U, UserAllocator, Mutex, NextSize, MaxSize> other;
+        typedef fast_pool_allocator<U, UserAllocator, Mutex, NextSize, MaxSize> other;
     };
 
   public:
     fast_pool_allocator()
     {
-      //! Ensures construction of the underlying singleton_pool IFF an
-      //! instance of this allocator is constructed during global
-      //! initialization. See ticket #2359 for a complete explanation
-      //! at http://svn.boost.org/trac/boost/ticket/2359 .
-      singleton_pool<fast_pool_allocator_tag, sizeof(T),
-                     UserAllocator, Mutex, NextSize, MaxSize>::is_from(0);
+        //! Ensures construction of the underlying singleton_pool IFF an
+        //! instance of this allocator is constructed during global
+        //! initialization. See ticket #2359 for a complete explanation
+        //! at http://svn.boost.org/trac/boost/ticket/2359 .
+        singleton_pool<fast_pool_allocator_tag, sizeof(T),
+                       UserAllocator, Mutex, NextSize, MaxSize>::is_from(0);
     }
 
     // Default copy constructor used.
@@ -377,81 +396,100 @@ class fast_pool_allocator
     fast_pool_allocator(
         const fast_pool_allocator<U, UserAllocator, Mutex, NextSize, MaxSize> &)
     {
-      //! Ensures construction of the underlying singleton_pool IFF an
-      //! instance of this allocator is constructed during global
-      //! initialization. See ticket #2359 for a complete explanation
-      //! at http://svn.boost.org/trac/boost/ticket/2359 .
-      singleton_pool<fast_pool_allocator_tag, sizeof(T),
-                     UserAllocator, Mutex, NextSize, MaxSize>::is_from(0);
+        //! Ensures construction of the underlying singleton_pool IFF an
+        //! instance of this allocator is constructed during global
+        //! initialization. See ticket #2359 for a complete explanation
+        //! at http://svn.boost.org/trac/boost/ticket/2359 .
+        singleton_pool<fast_pool_allocator_tag, sizeof(T),
+                       UserAllocator, Mutex, NextSize, MaxSize>::is_from(0);
     }
 
     // Default destructor used.
 
     static pointer address(reference r)
     {
-      return &r;
+        return &r;
     }
     static const_pointer address(const_reference s)
-    { return &s; }
+    {
+        return &s;
+    }
     static size_type max_size()
-    { return (std::numeric_limits<size_type>::max)(); }
-    void construct(const pointer ptr, const value_type & t)
-    { new (ptr) T(t); }
+    {
+        return (std::numeric_limits<size_type>::max)();
+    }
+    void construct(const pointer ptr, const value_type &t)
+    {
+        new (ptr) T(t);
+    }
     void destroy(const pointer ptr)
     { //! Destroy ptr using destructor.
-      ptr->~T();
-      (void) ptr; // Avoid unused variable warning.
+        ptr->~T();
+        (void)ptr; // Avoid unused variable warning.
     }
 
     bool operator==(const fast_pool_allocator &) const
-    { return true; }
+    {
+        return true;
+    }
     bool operator!=(const fast_pool_allocator &) const
-    { return false; }
+    {
+        return false;
+    }
 
     static pointer allocate(const size_type n)
     {
-      const pointer ret = (n == 1) ?
-          static_cast<pointer>(
-              (singleton_pool<fast_pool_allocator_tag, sizeof(T),
-                  UserAllocator, Mutex, NextSize, MaxSize>::malloc)() ) :
-          static_cast<pointer>(
-              singleton_pool<fast_pool_allocator_tag, sizeof(T),
-                  UserAllocator, Mutex, NextSize, MaxSize>::ordered_malloc(n) );
-      if (ret == 0)
-        boost::throw_exception(std::bad_alloc());
-      return ret;
+        const pointer ret = (n == 1) ? static_cast<pointer>(
+                                           (singleton_pool<fast_pool_allocator_tag, sizeof(T),
+                                                           UserAllocator, Mutex, NextSize, MaxSize>::malloc)())
+                                     : static_cast<pointer>(
+                                           singleton_pool<fast_pool_allocator_tag, sizeof(T),
+                                                          UserAllocator, Mutex, NextSize, MaxSize>::ordered_malloc(n));
+        if (ret == 0)
+        {
+            boost::throw_exception(std::bad_alloc());
+        }
+        return ret;
     }
-    static pointer allocate(const size_type n, const void * const)
+    static pointer allocate(const size_type n, const void *const)
     { //! Allocate memory .
-      return allocate(n);
+        return allocate(n);
     }
     static pointer allocate()
     { //! Allocate memory.
-      const pointer ret = static_cast<pointer>(
-          (singleton_pool<fast_pool_allocator_tag, sizeof(T),
-              UserAllocator, Mutex, NextSize, MaxSize>::malloc)() );
-      if (ret == 0)
-        boost::throw_exception(std::bad_alloc());
-      return ret;
+        const pointer ret = static_cast<pointer>(
+            (singleton_pool<fast_pool_allocator_tag, sizeof(T),
+                            UserAllocator, Mutex, NextSize, MaxSize>::malloc)());
+        if (ret == 0)
+        {
+            boost::throw_exception(std::bad_alloc());
+        }
+        return ret;
     }
     static void deallocate(const pointer ptr, const size_type n)
     { //! Deallocate memory.
 
 #ifdef BOOST_NO_PROPER_STL_DEALLOCATE
-      if (ptr == 0 || n == 0)
-        return;
+        if (ptr == 0 || n == 0)
+        {
+            return;
+        }
 #endif
-      if (n == 1)
-        (singleton_pool<fast_pool_allocator_tag, sizeof(T),
-            UserAllocator, Mutex, NextSize, MaxSize>::free)(ptr);
-      else
-        (singleton_pool<fast_pool_allocator_tag, sizeof(T),
-            UserAllocator, Mutex, NextSize, MaxSize>::free)(ptr, n);
+        if (n == 1)
+        {
+            (singleton_pool<fast_pool_allocator_tag, sizeof(T),
+                            UserAllocator, Mutex, NextSize, MaxSize>::free)(ptr);
+        }
+        else
+        {
+            (singleton_pool<fast_pool_allocator_tag, sizeof(T),
+                            UserAllocator, Mutex, NextSize, MaxSize>::free)(ptr, n);
+        }
     }
     static void deallocate(const pointer ptr)
     { //! deallocate/free
-      (singleton_pool<fast_pool_allocator_tag, sizeof(T),
-          UserAllocator, Mutex, NextSize, MaxSize>::free)(ptr);
+        (singleton_pool<fast_pool_allocator_tag, sizeof(T),
+                        UserAllocator, Mutex, NextSize, MaxSize>::free)(ptr);
     }
 };
 
@@ -459,17 +497,17 @@ class fast_pool_allocator
 
 Specialization of fast_pool_allocator<void> required to make the allocator standard-conforming.
 */
-template<
+template <
     typename UserAllocator,
     typename Mutex,
     unsigned NextSize,
-    unsigned MaxSize >
+    unsigned MaxSize>
 class fast_pool_allocator<void, UserAllocator, Mutex, NextSize, MaxSize>
 {
-public:
-    typedef void*       pointer;
-    typedef const void* const_pointer;
-    typedef void        value_type;
+  public:
+    typedef void *pointer;
+    typedef const void *const_pointer;
+    typedef void value_type;
 
     //! \brief Nested class rebind allows for transformation from
     //! fast_pool_allocator<T> to fast_pool_allocator<U>.
@@ -477,7 +515,8 @@ public:
     //! Nested class rebind allows for transformation from
     //! fast_pool_allocator<T> to fast_pool_allocator<U> via the member
     //! typedef other.
-    template <class U> struct rebind
+    template <class U>
+    struct rebind
     {
         typedef fast_pool_allocator<U, UserAllocator, Mutex, NextSize, MaxSize> other;
     };

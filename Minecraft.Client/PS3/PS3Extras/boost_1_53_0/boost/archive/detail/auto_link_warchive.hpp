@@ -3,7 +3,7 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
@@ -16,17 +16,16 @@
 
 //  See library home page at http://www.boost.org/libs/serialization
 
-//----------------------------------------------------------------------------// 
+//----------------------------------------------------------------------------//
 
 // This header implements separate compilation features as described in
 // http://www.boost.org/more/separate_compilation.html
 
-//  enable automatic library variant selection  ------------------------------// 
+//  enable automatic library variant selection  ------------------------------//
 
 #include <boost/archive/detail/decl.hpp>
 
-#if !defined(BOOST_WARCHIVE_SOURCE) \
-&& !defined(BOOST_ALL_NO_LIB) && !defined(BOOST_SERIALIZATION_NO_LIB)
+#if !defined(BOOST_WARCHIVE_SOURCE) && !defined(BOOST_ALL_NO_LIB) && !defined(BOOST_SERIALIZATION_NO_LIB)
 
 // Set the name of our library, this will get undef'ed by auto_link.hpp
 // once it's done with it:
@@ -36,12 +35,12 @@
 // If we're importing code from a dll, then tell auto_link.hpp about it:
 //
 #if defined(BOOST_ALL_DYN_LINK) || defined(BOOST_SERIALIZATION_DYN_LINK)
-#  define BOOST_DYN_LINK
+#define BOOST_DYN_LINK
 #endif
 //
 // And include the header that does the work:
 //
 #include <boost/config/auto_link.hpp>
-#endif  // auto-linking disabled
+#endif // auto-linking disabled
 
 #endif // ARCHIVE_DETAIL_AUTO_LINK_ARCHIVE_HPP

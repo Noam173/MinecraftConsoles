@@ -1,35 +1,47 @@
-#include "stdafx.h"
-#include "net.minecraft.world.entity.h"
 #include "Sensing.h"
+#include "net.minecraft.world.entity.h"
+#include "stdafx.h"
 
 Sensing::Sensing(Mob *mob)
 {
-	this->mob = mob;
+    this->mob = mob;
 }
 
 void Sensing::tick()
 {
-	seen.clear();
-	unseen.clear();
+    seen.clear();
+    unseen.clear();
 }
 
 bool Sensing::canSee(shared_ptr<Entity> target)
 {
-	//if ( find(seen.begin(), seen.end(), target) != seen.end() ) return true;
-	//if ( find(unseen.begin(), unseen.end(), target) != unseen.end()) return false;
-	for(auto& it : seen)
-	{
-		if(target == it.lock()) return true;
-	}
-	for(auto & it : unseen)
-	{
-		if(target == it.lock()) return false;
-	}
+    // if ( find(seen.begin(), seen.end(), target) != seen.end() ) return true;
+    // if ( find(unseen.begin(), unseen.end(), target) != unseen.end()) return false;
+    for (auto &it : seen)
+    {
+        if (target == it.lock())
+        {
+            return true;
+        }
+    }
+    for (auto &it : unseen)
+    {
+        if (target == it.lock())
+        {
+            return false;
+        }
+    }
 
-	//util.Timer.push("canSee");
-	bool canSee = mob->canSee(target);
-	//util.Timer.pop();
-	if (canSee) seen.push_back(weak_ptr<Entity>(target));
-	else unseen.push_back(weak_ptr<Entity>(target));
-	return canSee;
+    // util.Timer.push("canSee");
+    bool canSee = mob->canSee(target);
+    // util.Timer.pop();
+    if (canSee)
+    {
+        seen.push_back(weak_ptr<Entity>(target));
+    }
+    else
+    {
+        unseen.push_back(weak_ptr<Entity>(target));
+    }
+    return canSee;
 }

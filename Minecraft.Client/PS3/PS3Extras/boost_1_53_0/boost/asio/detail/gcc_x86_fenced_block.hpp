@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_GCC_X86_FENCED_BLOCK_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -21,63 +21,69 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 class gcc_x86_fenced_block
-  : private noncopyable
+    : private noncopyable
 {
-public:
-  enum half_t { half };
-  enum full_t { full };
+  public:
+    enum half_t
+    {
+        half
+    };
+    enum full_t
+    {
+        full
+    };
 
-  // Constructor for a half fenced block.
-  explicit gcc_x86_fenced_block(half_t)
-  {
-  }
+    // Constructor for a half fenced block.
+    explicit gcc_x86_fenced_block(half_t)
+    {
+    }
 
-  // Constructor for a full fenced block.
-  explicit gcc_x86_fenced_block(full_t)
-  {
-    lbarrier();
-  }
+    // Constructor for a full fenced block.
+    explicit gcc_x86_fenced_block(full_t)
+    {
+        lbarrier();
+    }
 
-  // Destructor.
-  ~gcc_x86_fenced_block()
-  {
-    sbarrier();
-  }
+    // Destructor.
+    ~gcc_x86_fenced_block()
+    {
+        sbarrier();
+    }
 
-private:
-  static int barrier()
-  {
-    int r = 0, m = 1;
-    __asm__ __volatile__ (
-        "xchgl %0, %1" :
-        "=r"(r), "=m"(m) :
-        "0"(1), "m"(m) :
-        "memory", "cc");
-    return r;
-  }
+  private:
+    static int barrier()
+    {
+        int r = 0, m = 1;
+        __asm__ __volatile__(
+            "xchgl %0, %1" : "=r"(r), "=m"(m) : "0"(1), "m"(m) : "memory", "cc");
+        return r;
+    }
 
-  static void lbarrier()
-  {
+    static void lbarrier()
+    {
 #if defined(__SSE2__)
-    __asm__ __volatile__ ("lfence" ::: "memory");
-#else // defined(__SSE2__)
-    barrier();
+        __asm__ __volatile__("lfence" ::: "memory");
+#else  // defined(__SSE2__)
+        barrier();
 #endif // defined(__SSE2__)
-  }
+    }
 
-  static void sbarrier()
-  {
+    static void sbarrier()
+    {
 #if defined(__SSE2__)
-    __asm__ __volatile__ ("sfence" ::: "memory");
-#else // defined(__SSE2__)
-    barrier();
+        __asm__ __volatile__("sfence" ::: "memory");
+#else  // defined(__SSE2__)
+        barrier();
 #endif // defined(__SSE2__)
-  }
+    }
 };
 
 } // namespace detail

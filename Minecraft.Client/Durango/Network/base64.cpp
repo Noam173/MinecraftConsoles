@@ -1,4 +1,4 @@
-/* 
+/*
    base64.cpp and base64.h
 
    Copyright (C) 2004-2008 René Nyffenegger
@@ -30,127 +30,130 @@
 #include "base64.h"
 #include <iostream>
 
-static const std::wstring base64_chars = 
-             L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-             L"abcdefghijklmnopqrstuvwxyz"
-             L"0123456789+/";
-
+static const std::wstring base64_chars =
+    L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    L"abcdefghijklmnopqrstuvwxyz"
+    L"0123456789+/";
 
 static inline bool is_base64(wchar_t c)
 {
-  return (isalnum(c) || (c == L'+') || (c == L'/'));
+    return (isalnum(c) || (c == L'+') || (c == L'/'));
 }
 
 // 4J changed to use Platform::String
-Platform::String^ base64_encode(unsigned char* chars_to_encode, unsigned int in_len)
+Platform::String ^ base64_encode(unsigned char *chars_to_encode, unsigned int in_len)
 {
-	std::wstring ret;
-	int i = 0;
-	int j = 0;
-	unsigned char char_array_3[3];
-	unsigned char char_array_4[4];
+    std::wstring ret;
+    int i = 0;
+    int j = 0;
+    unsigned char char_array_3[3];
+    unsigned char char_array_4[4];
 
-	while (in_len--)
-	{
-		char_array_3[i++] = *(chars_to_encode++);
-		if (i == 3)
-		{
-			char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-			char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-			char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-			char_array_4[3] = char_array_3[2] & 0x3f;
+    while (in_len--)
+    {
+        char_array_3[i++] = *(chars_to_encode++);
+        if (i == 3)
+        {
+            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            char_array_4[3] = char_array_3[2] & 0x3f;
 
-			for(int ii = 0; (ii <4) ; ii++)
-			{
-				ret += base64_chars[char_array_4[ii]];
-			}
-			i = 0;
-		}
-	}
+            for (int ii = 0; (ii < 4); ii++)
+            {
+                ret += base64_chars[char_array_4[ii]];
+            }
+            i = 0;
+        }
+    }
 
-	if (i)
-	{
-		for(j = i; j < 3; j++)
-		{
-			char_array_3[j] = '\0';
-		}
+    if (i)
+    {
+        for (j = i; j < 3; j++)
+        {
+            char_array_3[j] = '\0';
+        }
 
-		char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-		char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-		char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-		char_array_4[3] = char_array_3[2] & 0x3f;
+        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+        char_array_4[3] = char_array_3[2] & 0x3f;
 
-		for (j = 0; (j < i + 1); j++)
-		{
-			ret += base64_chars[char_array_4[j]];
-		}
+        for (j = 0; (j < i + 1); j++)
+        {
+            ret += base64_chars[char_array_4[j]];
+        }
 
-		while((i++ < 3))
-		{
-			ret += L'=';
-		}
+        while ((i++ < 3))
+        {
+            ret += L'=';
+        }
+    }
 
-	}
-
-	return ref new Platform::String(ret.c_str());
-
+    return ref new Platform::String(ret.c_str());
 }
 
-void base64_decode(Platform::String ^encoded_string, unsigned char *output, unsigned int out_len)
+void base64_decode(Platform::String ^ encoded_string, unsigned char *output, unsigned int out_len)
 {
-	int in_len = encoded_string->Length();
-	int i = 0;
-	int j = 0;
-	int in_ = 0;
-	unsigned char char_array_4[4];
-	unsigned char char_array_3[3];
+    int in_len = encoded_string->Length();
+    int i = 0;
+    int j = 0;
+    int in_ = 0;
+    unsigned char char_array_4[4];
+    unsigned char char_array_3[3];
 
-	unsigned char *pucOut = output;
+    unsigned char *pucOut = output;
 
-	while (in_len-- && ( encoded_string->Data()[in_] != L'=') && is_base64(encoded_string->Data()[in_]))
-	{
-		char_array_4[i++] = static_cast<unsigned char>(encoded_string->Data()[in_]);
-		in_++;
-		if (i ==4)
-		{
-			for (i = 0; i <4; i++)
-			{
-				char_array_4[i] = static_cast<unsigned char>(base64_chars.find(char_array_4[i]));
-			}
+    while (in_len-- && (encoded_string->Data()[in_] != L'=') && is_base64(encoded_string->Data()[in_]))
+    {
+        char_array_4[i++] = static_cast<unsigned char>(encoded_string->Data()[in_]);
+        in_++;
+        if (i == 4)
+        {
+            for (i = 0; i < 4; i++)
+            {
+                char_array_4[i] = static_cast<unsigned char>(base64_chars.find(char_array_4[i]));
+            }
 
-			char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-			char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-			char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+            char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+            char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
-			for (i = 0; (i < 3); i++)
-			{
-				*pucOut++ = char_array_3[i];
-				if( ( pucOut - output ) >= out_len ) return;
-			}
-			i = 0;
-		}
-	}
+            for (i = 0; (i < 3); i++)
+            {
+                *pucOut++ = char_array_3[i];
+                if ((pucOut - output) >= out_len)
+                {
+                    return;
+                }
+            }
+            i = 0;
+        }
+    }
 
-	if(i)
-	{
-		for (j = i; j <4; j++)
-		{
-			char_array_4[j] = 0;
-		}
+    if (i)
+    {
+        for (j = i; j < 4; j++)
+        {
+            char_array_4[j] = 0;
+        }
 
-		for (j = 0; j <4; j++)
-		{
-			char_array_4[j] = static_cast<unsigned char>(base64_chars.find(char_array_4[j]));
-		}
+        for (j = 0; j < 4; j++)
+        {
+            char_array_4[j] = static_cast<unsigned char>(base64_chars.find(char_array_4[j]));
+        }
 
-		char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-		char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-		char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+        char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+        char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
-		for (j = 0; (j < i - 1); j++)
-		{
-			*pucOut++ = char_array_3[j];
-			if( ( pucOut - output ) >= out_len ) return;
-		}
-	}
+        for (j = 0; (j < i - 1); j++)
+        {
+            *pucOut++ = char_array_3[j];
+            if ((pucOut - output) >= out_len)
+            {
+                return;
+            }
+        }
+    }
 }

@@ -12,72 +12,79 @@
 #define BOOST_ASIO_SSL_DETAIL_STREAM_CORE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if !defined(BOOST_ASIO_ENABLE_OLD_SSL)
-# include <boost/asio/deadline_timer.hpp>
-# include <boost/asio/ssl/detail/engine.hpp>
-# include <boost/asio/buffer.hpp>
+#include <boost/asio/buffer.hpp>
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/ssl/detail/engine.hpp>
 #endif // !defined(BOOST_ASIO_ENABLE_OLD_SSL)
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace ssl {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace ssl
+{
+namespace detail
+{
 
 #if !defined(BOOST_ASIO_ENABLE_OLD_SSL)
 
 struct stream_core
 {
-  // According to the OpenSSL documentation, this is the buffer size that is
-  // sufficient to hold the largest possible TLS record.
-  enum { max_tls_record_size = 17 * 1024 };
+    // According to the OpenSSL documentation, this is the buffer size that is
+    // sufficient to hold the largest possible TLS record.
+    enum
+    {
+        max_tls_record_size = 17 * 1024
+    };
 
-  stream_core(SSL_CTX* context, boost::asio::io_service& io_service)
-    : engine_(context),
-      pending_read_(io_service),
-      pending_write_(io_service),
-      output_buffer_space_(max_tls_record_size),
-      output_buffer_(boost::asio::buffer(output_buffer_space_)),
-      input_buffer_space_(max_tls_record_size),
-      input_buffer_(boost::asio::buffer(input_buffer_space_))
-  {
-    pending_read_.expires_at(boost::posix_time::neg_infin);
-    pending_write_.expires_at(boost::posix_time::neg_infin);
-  }
+    stream_core(SSL_CTX *context, boost::asio::io_service &io_service)
+        : engine_(context),
+          pending_read_(io_service),
+          pending_write_(io_service),
+          output_buffer_space_(max_tls_record_size),
+          output_buffer_(boost::asio::buffer(output_buffer_space_)),
+          input_buffer_space_(max_tls_record_size),
+          input_buffer_(boost::asio::buffer(input_buffer_space_))
+    {
+        pending_read_.expires_at(boost::posix_time::neg_infin);
+        pending_write_.expires_at(boost::posix_time::neg_infin);
+    }
 
-  ~stream_core()
-  {
-  }
+    ~stream_core()
+    {
+    }
 
-  // The SSL engine.
-  engine engine_;
+    // The SSL engine.
+    engine engine_;
 
-  // Timer used for storing queued read operations.
-  boost::asio::deadline_timer pending_read_;
+    // Timer used for storing queued read operations.
+    boost::asio::deadline_timer pending_read_;
 
-  // Timer used for storing queued write operations.
-  boost::asio::deadline_timer pending_write_;
+    // Timer used for storing queued write operations.
+    boost::asio::deadline_timer pending_write_;
 
-  // Buffer space used to prepare output intended for the transport.
-  std::vector<unsigned char> output_buffer_space_; 
+    // Buffer space used to prepare output intended for the transport.
+    std::vector<unsigned char> output_buffer_space_;
 
-  // A buffer that may be used to prepare output intended for the transport.
-  const boost::asio::mutable_buffers_1 output_buffer_; 
+    // A buffer that may be used to prepare output intended for the transport.
+    const boost::asio::mutable_buffers_1 output_buffer_;
 
-  // Buffer space used to read input intended for the engine.
-  std::vector<unsigned char> input_buffer_space_; 
+    // Buffer space used to read input intended for the engine.
+    std::vector<unsigned char> input_buffer_space_;
 
-  // A buffer that may be used to read input intended for the engine.
-  const boost::asio::mutable_buffers_1 input_buffer_;
+    // A buffer that may be used to read input intended for the engine.
+    const boost::asio::mutable_buffers_1 input_buffer_;
 
-  // The buffer pointing to the engine's unconsumed input.
-  boost::asio::const_buffer input_;
+    // The buffer pointing to the engine's unconsumed input.
+    boost::asio::const_buffer input_;
 };
 
 #endif // !defined(BOOST_ASIO_ENABLE_OLD_SSL)

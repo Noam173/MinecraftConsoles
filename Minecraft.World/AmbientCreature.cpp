@@ -8,10 +8,10 @@ AmbientCreature::AmbientCreature(Level *level) : Mob(level)
 
 bool AmbientCreature::canBeLeashed()
 {
-	return false;
+    return false;
 }
 
 bool AmbientCreature::mobInteract(shared_ptr<Player> player)
 {
-	return false;
+    return false;
 }

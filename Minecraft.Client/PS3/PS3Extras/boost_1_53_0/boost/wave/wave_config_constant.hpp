@@ -1,7 +1,7 @@
 /*=============================================================================
     Boost.Wave: A Standard compliant C++ preprocessor library
     Persistent application configuration
-    
+
     http://www.boost.org/
 
     Copyright (c) 2001-2012 Hartmut Kaiser. Distributed under the Boost
@@ -58,34 +58,34 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-#define BOOST_WAVE_CONFIG (                                                   \
-        BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS_CONFIG |                    \
-        BOOST_WAVE_SUPPORT_PRAGMA_ONCE_CONFIG |                               \
-        BOOST_WAVE_SUPPORT_MS_EXTENSIONS_CONFIG |                             \
-        BOOST_WAVE_PREPROCESS_PRAGMA_BODY_CONFIG |                            \
-        BOOST_WAVE_USE_STRICT_LEXER_CONFIG |                                  \
-        BOOST_WAVE_SUPPORT_IMPORT_KEYWORD_CONFIG                              \
-    )                                                                         \
-    /**/
+#define BOOST_WAVE_CONFIG (                            \
+    BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS_CONFIG | \
+    BOOST_WAVE_SUPPORT_PRAGMA_ONCE_CONFIG |            \
+    BOOST_WAVE_SUPPORT_MS_EXTENSIONS_CONFIG |          \
+    BOOST_WAVE_PREPROCESS_PRAGMA_BODY_CONFIG |         \
+    BOOST_WAVE_USE_STRICT_LEXER_CONFIG |               \
+    BOOST_WAVE_SUPPORT_IMPORT_KEYWORD_CONFIG) /**/
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace wave {
+namespace boost
+{
+namespace wave
+{
 
-    ///////////////////////////////////////////////////////////////////////////
-    //  Call this function to test the configuration of the calling application
-    //  against the configuration of the linked library.
-    BOOST_WAVE_DECL bool test_configuration(unsigned int config, 
-        char const* pragma_keyword, char const* string_type);
-        
+///////////////////////////////////////////////////////////////////////////
+//  Call this function to test the configuration of the calling application
+//  against the configuration of the linked library.
+BOOST_WAVE_DECL bool test_configuration(unsigned int config,
+                                        char const *pragma_keyword, char const *string_type);
+
 ///////////////////////////////////////////////////////////////////////////////
-}}  // namespace boost::wave
+} // namespace wave
+} // namespace boost
 
-#define BOOST_WAVE_TEST_CONFIGURATION()                                       \
-        boost::wave::test_configuration(                                      \
-            BOOST_WAVE_CONFIG,                                                \
-            BOOST_WAVE_PRAGMA_KEYWORD,                                        \
-            BOOST_PP_STRINGIZE((BOOST_WAVE_STRINGTYPE))                       \
-        )                                                                     \
-    /**/
-    
+#define BOOST_WAVE_TEST_CONFIGURATION() \
+    boost::wave::test_configuration(    \
+        BOOST_WAVE_CONFIG,              \
+        BOOST_WAVE_PRAGMA_KEYWORD,      \
+        BOOST_PP_STRINGIZE((BOOST_WAVE_STRINGTYPE)) ) /**/
+
 #endif // !BOOST_WAVE_CONFIG_CONSTANT_HPP

@@ -14,14 +14,16 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_SIDE_HPP
 #define BOOST_GEOMETRY_STRATEGIES_SIDE_HPP
 
-
 #include <boost/geometry/strategies/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace strategy { namespace side
+namespace strategy
+{
+namespace side
 {
 
 namespace services
@@ -36,20 +38,16 @@ namespace services
 template <typename Tag, typename CalculationType = void>
 struct default_strategy
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_TYPE
-            , (types<Tag>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_TYPE, (types<Tag>));
 };
-
 
 } // namespace services
 
+} // namespace side
+} // namespace strategy
 
-}} // namespace strategy::side
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_SIDE_HPP

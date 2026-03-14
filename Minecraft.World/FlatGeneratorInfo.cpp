@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "FlatGeneratorInfo.h"
 #include "StringHelpers.h"
 #include "net.minecraft.world.level.levelgen.flat.h"
 #include "net.minecraft.world.level.tile.h"
-#include "FlatGeneratorInfo.h"
+#include "stdafx.h"
 
 const wstring FlatGeneratorInfo::STRUCTURE_VILLAGE = L"village";
 const wstring FlatGeneratorInfo::STRUCTURE_BIOME_SPECIFIC = L"biome_1";
@@ -15,51 +15,51 @@ const wstring FlatGeneratorInfo::STRUCTURE_DUNGEON = L"dungeon";
 
 FlatGeneratorInfo::FlatGeneratorInfo()
 {
-	biome = 0;
+    biome = 0;
 }
 
 FlatGeneratorInfo::~FlatGeneratorInfo()
 {
-	for(auto& layer : layers)
-	{
-		delete layer;
-	}
+    for (auto &layer : layers)
+    {
+        delete layer;
+    }
 }
 
 int FlatGeneratorInfo::getBiome()
 {
-	return biome;
+    return biome;
 }
 
 void FlatGeneratorInfo::setBiome(int biome)
 {
-	this->biome = biome;
+    this->biome = biome;
 }
 
-unordered_map<wstring, unordered_map<wstring, wstring> > *FlatGeneratorInfo::getStructures()
+unordered_map<wstring, unordered_map<wstring, wstring>> *FlatGeneratorInfo::getStructures()
 {
-	return &structures;
+    return &structures;
 }
 
 vector<FlatLayerInfo *> *FlatGeneratorInfo::getLayers()
 {
-	return &layers;
+    return &layers;
 }
 
 void FlatGeneratorInfo::updateLayers()
 {
-	int y = 0;
+    int y = 0;
 
-	for(auto& layer : layers)
-	{
-		layer->setStart(y);
-		y += layer->getHeight();
-	}
+    for (auto &layer : layers)
+    {
+        layer->setStart(y);
+        y += layer->getHeight();
+    }
 }
 
 wstring FlatGeneratorInfo::toString()
 {
-	return L"";
+    return L"";
 #if 0
 	StringBuilder builder = new StringBuilder();
 
@@ -114,7 +114,7 @@ wstring FlatGeneratorInfo::toString()
 
 FlatLayerInfo *FlatGeneratorInfo::getLayerFromString(const wstring &input, int yOffset)
 {
-	return nullptr;
+    return nullptr;
 #if 0
 	std::vector<std::wstring> parts = stringSplit(input, L'x');
 
@@ -151,27 +151,33 @@ FlatLayerInfo *FlatGeneratorInfo::getLayerFromString(const wstring &input, int y
 
 vector<FlatLayerInfo *> *FlatGeneratorInfo::getLayersFromString(const wstring &input)
 {
-	if (input.empty()) return nullptr;
+    if (input.empty())
+    {
+        return nullptr;
+    }
 
-	vector<FlatLayerInfo *> *result = new vector<FlatLayerInfo *>();
-	std::vector<std::wstring> depths = stringSplit(input, L',');
+    vector<FlatLayerInfo *> *result = new vector<FlatLayerInfo *>();
+    std::vector<std::wstring> depths = stringSplit(input, L',');
 
-	int yOffset = 0;
+    int yOffset = 0;
 
-	for(auto& depth : depths)
-	{
-		FlatLayerInfo *layer = getLayerFromString(depth, yOffset);
-		if (layer == nullptr) return nullptr;
-		result->push_back(layer);
-		yOffset += layer->getHeight();
-	}
+    for (auto &depth : depths)
+    {
+        FlatLayerInfo *layer = getLayerFromString(depth, yOffset);
+        if (layer == nullptr)
+        {
+            return nullptr;
+        }
+        result->push_back(layer);
+        yOffset += layer->getHeight();
+    }
 
-	return result;
+    return result;
 }
 
 FlatGeneratorInfo *FlatGeneratorInfo::fromValue(const wstring &input)
 {
-	return getDefault();
+    return getDefault();
 
 #if 0
 	if (input.empty()) return getDefault();
@@ -236,14 +242,14 @@ FlatGeneratorInfo *FlatGeneratorInfo::fromValue(const wstring &input)
 
 FlatGeneratorInfo *FlatGeneratorInfo::getDefault()
 {
-	FlatGeneratorInfo *result = new FlatGeneratorInfo();
+    FlatGeneratorInfo *result = new FlatGeneratorInfo();
 
-	result->setBiome(Biome::plains->id);
-	result->getLayers()->push_back(new FlatLayerInfo(1, Tile::unbreakable_Id));
-	result->getLayers()->push_back(new FlatLayerInfo(2, Tile::dirt_Id));
-	result->getLayers()->push_back(new FlatLayerInfo(1, Tile::grass_Id));
-	result->updateLayers();
-	(* (result->getStructures()) )[STRUCTURE_VILLAGE] = unordered_map<wstring, wstring>();
+    result->setBiome(Biome::plains->id);
+    result->getLayers()->push_back(new FlatLayerInfo(1, Tile::unbreakable_Id));
+    result->getLayers()->push_back(new FlatLayerInfo(2, Tile::dirt_Id));
+    result->getLayers()->push_back(new FlatLayerInfo(1, Tile::grass_Id));
+    result->updateLayers();
+    (*(result->getStructures()))[STRUCTURE_VILLAGE] = unordered_map<wstring, wstring>();
 
-	return result;
+    return result;
 }

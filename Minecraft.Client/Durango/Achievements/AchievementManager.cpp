@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "AchievementManager.h"
+#include "stdafx.h"
 
 using namespace Platform;
 using namespace Windows::Data;
@@ -11,5 +11,4 @@ using namespace Microsoft::WRL::Details;
 using namespace Microsoft::Xbox::Services;
 using namespace Microsoft::Xbox::Services::Achievements;
 
-
-AchievementManager *AchievementManager::m_instance = new AchievementManager(); //Singleton instance of the Achievement Manager
+AchievementManager *AchievementManager::m_instance = new AchievementManager(); // Singleton instance of the Achievement Manager

@@ -1,10 +1,10 @@
-#include "stdafx.h";
 #include "LeashKnotModel.h"
 #include "ModelPart.h"
+#include "stdafx.h";
 
-LeashKnotModel::LeashKnotModel() 
+LeashKnotModel::LeashKnotModel()
 {
-	_init(0, 0, 32, 32);
+    _init(0, 0, 32, 32);
 }
 
 LeashKnotModel::LeashKnotModel(int u, int v, int tw, int th)
@@ -14,7 +14,7 @@ LeashKnotModel::LeashKnotModel(int u, int v, int tw, int th)
 
 void LeashKnotModel::_init(int u, int v, int tw, int th)
 {
-	texWidth = tw;
+    texWidth = tw;
     texHeight = th;
     knot = new ModelPart(this, u, v);
     knot->addBox(-3, -6, -3, 6, 8, 6, 0);

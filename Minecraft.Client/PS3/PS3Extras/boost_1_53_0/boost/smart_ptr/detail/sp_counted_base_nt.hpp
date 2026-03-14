@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -28,17 +28,15 @@ namespace detail
 
 class sp_counted_base
 {
-private:
+  private:
+    sp_counted_base(sp_counted_base const &);
+    sp_counted_base &operator=(sp_counted_base const &);
 
-    sp_counted_base( sp_counted_base const & );
-    sp_counted_base & operator= ( sp_counted_base const & );
+    long use_count_;  // #shared
+    long weak_count_; // #weak + (#shared != 0)
 
-    long use_count_;        // #shared
-    long weak_count_;       // #weak + (#shared != 0)
-
-public:
-
-    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
+  public:
+    sp_counted_base() : use_count_(1), weak_count_(1)
     {
     }
 
@@ -58,8 +56,8 @@ public:
         delete this;
     }
 
-    virtual void * get_deleter( sp_typeinfo const & ti ) = 0;
-    virtual void * get_untyped_deleter() = 0;
+    virtual void *get_deleter(sp_typeinfo const &ti) = 0;
+    virtual void *get_untyped_deleter() = 0;
 
     void add_ref_copy()
     {
@@ -68,14 +66,17 @@ public:
 
     bool add_ref_lock() // true on success
     {
-        if( use_count_ == 0 ) return false;
+        if (use_count_ == 0)
+        {
+            return false;
+        }
         ++use_count_;
         return true;
     }
 
     void release() // nothrow
     {
-        if( --use_count_ == 0 )
+        if (--use_count_ == 0)
         {
             dispose();
             weak_release();
@@ -89,7 +90,7 @@ public:
 
     void weak_release() // nothrow
     {
-        if( --weak_count_ == 0 )
+        if (--weak_count_ == 0)
         {
             destroy();
         }
@@ -105,4 +106,4 @@ public:
 
 } // namespace boost
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_NT_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_NT_HPP_INCLUDED

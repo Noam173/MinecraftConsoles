@@ -12,43 +12,49 @@
 #pragma once
 #endif
 
-#include <boost/preprocessor/repetition/enum_params_with_a_default.hpp>
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/mpl/bool.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/enum_params_with_a_default.hpp>
 
 #if !defined(BOOST_SPIRIT_MAX_LOCALS_SIZE)
-# define BOOST_SPIRIT_MAX_LOCALS_SIZE 10
+#define BOOST_SPIRIT_MAX_LOCALS_SIZE 10
 #else
-# if BOOST_SPIRIT_MAX_LOCALS_SIZE < 3
-#   undef BOOST_SPIRIT_MAX_LOCALS_SIZE
-#   define BOOST_SPIRIT_MAX_LOCALS_SIZE 10
-# endif
+#if BOOST_SPIRIT_MAX_LOCALS_SIZE < 3
+#undef BOOST_SPIRIT_MAX_LOCALS_SIZE
+#define BOOST_SPIRIT_MAX_LOCALS_SIZE 10
+#endif
 #endif
 
-namespace boost { namespace spirit
+namespace boost
 {
-    ///////////////////////////////////////////////////////////////////////////
-    template <
-        BOOST_PP_ENUM_PARAMS_WITH_A_DEFAULT(
-            BOOST_SPIRIT_MAX_LOCALS_SIZE, typename T, mpl::na)
-    >
-    struct locals
-      : mpl::vector<BOOST_PP_ENUM_PARAMS(BOOST_SPIRIT_MAX_LOCALS_SIZE, T)> {};
+namespace spirit
+{
+///////////////////////////////////////////////////////////////////////////
+template <
+    BOOST_PP_ENUM_PARAMS_WITH_A_DEFAULT(
+        BOOST_SPIRIT_MAX_LOCALS_SIZE, typename T, mpl::na)>
+struct locals
+    : mpl::vector<BOOST_PP_ENUM_PARAMS(BOOST_SPIRIT_MAX_LOCALS_SIZE, T)>
+{
+};
 
-    ///////////////////////////////////////////////////////////////////////////
-    namespace detail
-    {
-        template <typename T>
-        struct is_locals
-          : mpl::false_
-        {};
+///////////////////////////////////////////////////////////////////////////
+namespace detail
+{
+template <typename T>
+struct is_locals
+    : mpl::false_
+{
+};
 
-        template <BOOST_PP_ENUM_PARAMS(BOOST_SPIRIT_MAX_LOCALS_SIZE, typename T)>
-        struct is_locals<locals<BOOST_PP_ENUM_PARAMS(BOOST_SPIRIT_MAX_LOCALS_SIZE, T)> >
-          : mpl::true_
-        {};
-    }
-}}
+template <BOOST_PP_ENUM_PARAMS(BOOST_SPIRIT_MAX_LOCALS_SIZE, typename T)>
+struct is_locals<locals<BOOST_PP_ENUM_PARAMS(BOOST_SPIRIT_MAX_LOCALS_SIZE, T)>>
+    : mpl::true_
+{
+};
+} // namespace detail
+} // namespace spirit
+} // namespace boost
 
 #endif

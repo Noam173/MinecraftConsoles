@@ -14,16 +14,16 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_LENGTH_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_LENGTH_HPP
 
-
 #include <boost/range/metafunctions.hpp>
 
 #include <boost/geometry/algorithms/length.hpp>
-#include <boost/geometry/multi/core/tags.hpp>
 #include <boost/geometry/multi/algorithms/detail/multi_sum.hpp>
 #include <boost/geometry/multi/algorithms/num_points.hpp>
+#include <boost/geometry/multi/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
@@ -35,27 +35,21 @@ struct length<MultiLinestring, multi_linestring_tag> : detail::multi_sum
 {
     template <typename Strategy>
     static inline typename default_length_result<MultiLinestring>::type
-    apply(MultiLinestring const& multi, Strategy const& strategy)
+    apply(MultiLinestring const &multi, Strategy const &strategy)
     {
-        return multi_sum::apply
-               <
-                   typename default_length_result<MultiLinestring>::type,
-                   detail::length::range_length
-                   <
-                       typename boost::range_value<MultiLinestring>::type,
-                       closed // no need to close it explicitly
-                   >
-               >(multi, strategy);
-
+        return multi_sum::apply<
+            typename default_length_result<MultiLinestring>::type,
+            detail::length::range_length<
+                typename boost::range_value<MultiLinestring>::type,
+                closed // no need to close it explicitly
+                >>(multi, strategy);
     }
 };
-
 
 } // namespace dispatch
 #endif
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_LENGTH_HPP

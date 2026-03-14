@@ -10,20 +10,19 @@
 #pragma once
 #endif
 
-namespace boost{ namespace math
+namespace boost
 {
-  namespace tools
-  {
-    template <class To, class T>
-    inline To real_cast(T t)
-    {
-       return static_cast<To>(t);
-    }
-  } // namespace tools
+namespace math
+{
+namespace tools
+{
+template <class To, class T>
+inline To real_cast(T t)
+{
+    return static_cast<To>(t);
+}
+} // namespace tools
 } // namespace math
 } // namespace boost
 
 #endif // BOOST_MATH_TOOLS_REAL_CAST_HPP
-
-
-

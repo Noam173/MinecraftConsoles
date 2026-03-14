@@ -3,17 +3,21 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_PARAMETER_SET_060912_HPP
-# define BOOST_PARAMETER_SET_060912_HPP
+#define BOOST_PARAMETER_SET_060912_HPP
 
-# include <boost/detail/workaround.hpp>
+#include <boost/detail/workaround.hpp>
 
-# if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) \
-  && !BOOST_WORKAROUND(__GNUC__, < 3)
-#  include <boost/mpl/insert.hpp>
-#  include <boost/mpl/set/set0.hpp>
-#  include <boost/mpl/has_key.hpp>
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && !BOOST_WORKAROUND(__GNUC__, < 3)
+#include <boost/mpl/has_key.hpp>
+#include <boost/mpl/insert.hpp>
+#include <boost/mpl/set/set0.hpp>
 
-namespace boost { namespace parameter { namespace aux {
+namespace boost
+{
+namespace parameter
+{
+namespace aux
+{
 
 typedef mpl::set0<> set0;
 
@@ -29,17 +33,24 @@ struct has_key_
     typedef typename mpl::has_key<Set, K>::type type;
 };
 
-}}} // namespace boost::parameter::aux
+} // namespace aux
+} // namespace parameter
+} // namespace boost
 
-# else
+#else
 
-#  include <boost/mpl/list.hpp>
-#  include <boost/mpl/end.hpp>
-#  include <boost/mpl/find.hpp>
-#  include <boost/mpl/not.hpp>
-#  include <boost/mpl/push_front.hpp>
+#include <boost/mpl/end.hpp>
+#include <boost/mpl/find.hpp>
+#include <boost/mpl/list.hpp>
+#include <boost/mpl/not.hpp>
+#include <boost/mpl/push_front.hpp>
 
-namespace boost { namespace parameter { namespace aux {
+namespace boost
+{
+namespace parameter
+{
+namespace aux
+{
 
 typedef mpl::list0<> set0;
 
@@ -54,14 +65,14 @@ struct has_key_
 {
     typedef typename mpl::find<Set, K>::type iter;
     typedef mpl::not_<
-        is_same<iter, typename mpl::end<Set>::type> 
-    > type;
+        is_same<iter, typename mpl::end<Set>::type>>
+        type;
 };
 
-}}} // namespace boost::parameter::aux
+} // namespace aux
+} // namespace parameter
+} // namespace boost
 
-# endif
-
+#endif
 
 #endif // BOOST_PARAMETER_SET_060912_HPP
-

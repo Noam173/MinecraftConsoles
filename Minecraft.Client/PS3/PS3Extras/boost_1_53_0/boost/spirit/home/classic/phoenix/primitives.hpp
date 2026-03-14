@@ -12,7 +12,8 @@
 #include <boost/spirit/home/classic/phoenix/actor.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace phoenix {
+namespace phoenix
+{
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -47,43 +48,47 @@ namespace phoenix {
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <int N>
-struct argument {
+struct argument
+{
 
     template <typename TupleT>
-    struct result { typedef typename tuple_element<N, TupleT>::type type; };
+    struct result
+    {
+        typedef typename tuple_element<N, TupleT>::type type;
+    };
 
     template <typename TupleT>
     typename tuple_element<N, TupleT>::type
-    eval(TupleT const& args) const
+    eval(TupleT const &args) const
     {
         return args[tuple_index<N>()];
     }
 };
 
 //////////////////////////////////
-actor<argument<0> > const arg1 = argument<0>();
-actor<argument<1> > const arg2 = argument<1>();
-actor<argument<2> > const arg3 = argument<2>();
+actor<argument<0>> const arg1 = argument<0>();
+actor<argument<1>> const arg2 = argument<1>();
+actor<argument<2>> const arg3 = argument<2>();
 
 #if PHOENIX_LIMIT > 3
-actor<argument<3> > const arg4 = argument<3>();
-actor<argument<4> > const arg5 = argument<4>();
-actor<argument<5> > const arg6 = argument<5>();
+actor<argument<3>> const arg4 = argument<3>();
+actor<argument<4>> const arg5 = argument<4>();
+actor<argument<5>> const arg6 = argument<5>();
 
 #if PHOENIX_LIMIT > 6
-actor<argument<6> > const arg7 = argument<6>();
-actor<argument<7> > const arg8 = argument<7>();
-actor<argument<8> > const arg9 = argument<8>();
+actor<argument<6>> const arg7 = argument<6>();
+actor<argument<7>> const arg8 = argument<7>();
+actor<argument<8>> const arg9 = argument<8>();
 
 #if PHOENIX_LIMIT > 9
-actor<argument<9> > const arg10 = argument<9>();
-actor<argument<10> > const arg11 = argument<10>();
-actor<argument<11> > const arg12 = argument<11>();
+actor<argument<9>> const arg10 = argument<9>();
+actor<argument<10>> const arg11 = argument<10>();
+actor<argument<11>> const arg12 = argument<11>();
 
 #if PHOENIX_LIMIT > 12
-actor<argument<12> > const arg13 = argument<12>();
-actor<argument<13> > const arg14 = argument<13>();
-actor<argument<14> > const arg15 = argument<14>();
+actor<argument<12>> const arg13 = argument<12>();
+actor<argument<13>> const arg14 = argument<13>();
+actor<argument<14>> const arg15 = argument<14>();
 
 #endif
 #endif
@@ -111,19 +116,25 @@ actor<argument<14> > const arg15 = argument<14>();
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename T>
-struct value {
+struct value
+{
 
     typedef typename boost::remove_reference<T>::type plain_t;
 
     template <typename TupleT>
-    struct result { typedef plain_t const type; };
+    struct result
+    {
+        typedef plain_t const type;
+    };
 
     value(plain_t val_)
-    :   val(val_) {}
+        : val(val_)
+    {
+    }
 
     template <typename TupleT>
     plain_t const
-    eval(TupleT const& /*args*/) const
+    eval(TupleT const & /*args*/) const
     {
         return val;
     }
@@ -133,7 +144,7 @@ struct value {
 
 //////////////////////////////////
 template <typename T>
-inline actor<value<T> > const
+inline actor<value<T>> const
 val(T v)
 {
     return value<T>(v);
@@ -141,8 +152,7 @@ val(T v)
 
 //////////////////////////////////
 template <typename BaseT>
-void
-val(actor<BaseT> const& v);     //  This is undefined and not allowed.
+void val(actor<BaseT> const &v); //  This is undefined and not allowed.
 
 ///////////////////////////////////////////////////////////////////////////
 //
@@ -152,20 +162,26 @@ val(actor<BaseT> const& v);     //  This is undefined and not allowed.
 //
 ///////////////////////////////////////////////////////////////////////////
 template <typename T>
-struct as_actor {
+struct as_actor
+{
 
-    typedef actor<value<T> > type;
-    static type convert(T const& x)
-    { return value<T>(x); }
+    typedef actor<value<T>> type;
+    static type convert(T const &x)
+    {
+        return value<T>(x);
+    }
 };
 
 //////////////////////////////////
 template <typename T, int N>
-struct as_actor<T[N]> {
+struct as_actor<T[N]>
+{
 
-    typedef actor<value<T const*> > type;
+    typedef actor<value<T const *>> type;
     static type convert(T const x[N])
-    { return value<T const*>(x); }
+    {
+        return value<T const *>(x);
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -198,26 +214,32 @@ struct as_actor<T[N]> {
 ///////////////////////////////////////////////////////////////////////////////
 #if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
 #pragma warning(push)
-#pragma warning(disable:4512) //assignment operator could not be generated
+#pragma warning(disable : 4512) // assignment operator could not be generated
 #endif
 
 template <typename T>
-struct variable {
+struct variable
+{
 
     template <typename TupleT>
-    struct result { typedef T& type; };
+    struct result
+    {
+        typedef T &type;
+    };
 
-    variable(T& var_)
-    :   var(var_) {}
+    variable(T &var_)
+        : var(var_)
+    {
+    }
 
     template <typename TupleT>
-    T&
-    eval(TupleT const& /*args*/) const
+    T &
+    eval(TupleT const & /*args*/) const
     {
         return var;
     }
 
-    T& var;
+    T &var;
 };
 
 #if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
@@ -226,31 +248,29 @@ struct variable {
 
 //////////////////////////////////
 template <typename T>
-inline actor<variable<T> > const
-var(T& v)
+inline actor<variable<T>> const
+var(T &v)
 {
     return variable<T>(v);
 }
 
 //////////////////////////////////
 template <typename T>
-inline actor<variable<T const> > const
-const_(T const& v)
+inline actor<variable<T const>> const
+const_(T const &v)
 {
     return variable<T const>(v);
 }
 
 //////////////////////////////////
 template <typename BaseT>
-void
-var(actor<BaseT> const& v);     //  This is undefined and not allowed.
+void var(actor<BaseT> const &v); //  This is undefined and not allowed.
 
 //////////////////////////////////
 template <typename BaseT>
-void
-const_(actor<BaseT> const& v);  //  This is undefined and not allowed.
+void const_(actor<BaseT> const &v); //  This is undefined and not allowed.
 
 ///////////////////////////////////////////////////////////////////////////////
-}   //  namespace phoenix
+} //  namespace phoenix
 
 #endif

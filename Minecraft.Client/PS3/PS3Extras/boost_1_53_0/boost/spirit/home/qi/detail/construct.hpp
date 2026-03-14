@@ -14,189 +14,195 @@
 
 #include <boost/config.hpp>
 #include <boost/spirit/home/qi/parse.hpp>
-#include <boost/spirit/home/support/common_terminals.hpp>
 #include <boost/spirit/home/support/attributes_fwd.hpp>
+#include <boost/spirit/home/support/common_terminals.hpp>
 
-namespace boost { namespace spirit { namespace traits
+namespace boost
 {
-    ///////////////////////////////////////////////////////////////////////////
-    //  We provide overloads for the assign_to_attribute_from_iterators
-    //  customization point for all built in types
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<char, Iterator>
+namespace spirit
+{
+namespace traits
+{
+///////////////////////////////////////////////////////////////////////////
+//  We provide overloads for the assign_to_attribute_from_iterators
+//  customization point for all built in types
+///////////////////////////////////////////////////////////////////////////
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<char, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &, char &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const&, char& attr)
-        {
-            attr = *first;
-        }
-    };
+        attr = *first;
+    }
+};
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<signed char, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<signed char, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &, signed char &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const&, signed char& attr)
-        {
-            attr = *first;
-        }
-    };
+        attr = *first;
+    }
+};
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<unsigned char, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<unsigned char, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &, unsigned char &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const&, unsigned char& attr)
-        {
-            attr = *first;
-        }
-    };
+        attr = *first;
+    }
+};
 
-    // wchar_t is intrinsic
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<wchar_t, Iterator>
+// wchar_t is intrinsic
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<wchar_t, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &, wchar_t &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const&, wchar_t& attr)
-        {
-            attr = *first;
-        }
-    };
+        attr = *first;
+    }
+};
 
 #if !defined(BOOST_NO_INTRINSIC_WCHAR_T)
-    // wchar_t is intrinsic, have separate overload for unsigned short
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<unsigned short, Iterator>
+// wchar_t is intrinsic, have separate overload for unsigned short
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<unsigned short, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &, unsigned short &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const&, unsigned short& attr)
-        {
-            attr = *first;
-        }
-    };
+        attr = *first;
+    }
+};
 #endif
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<bool, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<bool, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, bool &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, bool& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, bool_type(), attr);
-        }
-    };
+        Iterator first_ = first;
+        qi::parse(first_, last, bool_type(), attr);
+    }
+};
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<short, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<short, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, short &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, short& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, short_type(), attr);
-        }
-    };
+        Iterator first_ = first;
+        qi::parse(first_, last, short_type(), attr);
+    }
+};
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<int, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<int, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, int &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, int& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, int_type(), attr);
-        }
-    };
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<unsigned int, Iterator>
+        Iterator first_ = first;
+        qi::parse(first_, last, int_type(), attr);
+    }
+};
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<unsigned int, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, unsigned int &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, unsigned int& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, uint_type(), attr);
-        }
-    };
+        Iterator first_ = first;
+        qi::parse(first_, last, uint_type(), attr);
+    }
+};
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<long, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<long, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, long &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, long& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, long_type(), attr);
-        }
-    };
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<unsigned long, Iterator>
+        Iterator first_ = first;
+        qi::parse(first_, last, long_type(), attr);
+    }
+};
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<unsigned long, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, unsigned long &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, unsigned long& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, ulong_type(), attr);
-        }
-    };
+        Iterator first_ = first;
+        qi::parse(first_, last, ulong_type(), attr);
+    }
+};
 
 #ifdef BOOST_HAS_LONG_LONG
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<long_long_type, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<long_long_type, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, long_long_type &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, long_long_type& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, long_long_type(), attr);
-        }
-    };
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<ulong_long_type, Iterator>
+        Iterator first_ = first;
+        qi::parse(first_, last, long_long_type(), attr);
+    }
+};
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<ulong_long_type, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, ulong_long_type &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, ulong_long_type& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, ulong_long_type(), attr);
-        }
-    };
+        Iterator first_ = first;
+        qi::parse(first_, last, ulong_long_type(), attr);
+    }
+};
 #endif
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<float, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<float, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, float &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, float& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, float_type(), attr);
-        }
-    };
+        Iterator first_ = first;
+        qi::parse(first_, last, float_type(), attr);
+    }
+};
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<double, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<double, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, double &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, double& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, double_type(), attr);
-        }
-    };
+        Iterator first_ = first;
+        qi::parse(first_, last, double_type(), attr);
+    }
+};
 
-    template <typename Iterator>
-    struct assign_to_attribute_from_iterators<long double, Iterator>
+template <typename Iterator>
+struct assign_to_attribute_from_iterators<long double, Iterator>
+{
+    static void
+    call(Iterator const &first, Iterator const &last, long double &attr)
     {
-        static void
-        call(Iterator const& first, Iterator const& last, long double& attr)
-        {
-            Iterator first_ = first;
-            qi::parse(first_, last, long_double_type(), attr);
-        }
-    };
+        Iterator first_ = first;
+        qi::parse(first_, last, long_double_type(), attr);
+    }
+};
 
-}}}
+} // namespace traits
+} // namespace spirit
+} // namespace boost
 
 #endif

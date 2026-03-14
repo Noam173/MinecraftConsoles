@@ -19,7 +19,7 @@
 
 #include <boost/spirit/home/classic/iterator/file_iterator.hpp>
 #include <boost/spirit/home/classic/iterator/fixed_size_queue.hpp>
-#include <boost/spirit/home/classic/iterator/position_iterator.hpp>
 #include <boost/spirit/home/classic/iterator/multi_pass.hpp>
+#include <boost/spirit/home/classic/iterator/position_iterator.hpp>
 
 #endif // !defined(BOOST_SPIRIT_ITERATOR_MAIN_HPP)

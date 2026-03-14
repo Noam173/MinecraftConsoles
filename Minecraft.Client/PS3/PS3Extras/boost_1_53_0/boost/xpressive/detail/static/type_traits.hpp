@@ -10,84 +10,85 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <string>
 #include <boost/config.hpp>
-#include <boost/mpl/bool.hpp>
 #include <boost/iterator/iterator_traits.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
+#include <string>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // is_static_xpression
 //
-template<typename T>
+template <typename T>
 struct is_static_xpression
-  : mpl::false_
+    : mpl::false_
 {
 };
 
-template<typename Matcher, typename Next>
-struct is_static_xpression<static_xpression<Matcher, Next> >
-  : mpl::true_
+template <typename Matcher, typename Next>
+struct is_static_xpression<static_xpression<Matcher, Next>>
+    : mpl::true_
 {
 };
 
-template<typename Top, typename Next>
-struct is_static_xpression<stacked_xpression<Top, Next> >
-  : mpl::true_
+template <typename Top, typename Next>
+struct is_static_xpression<stacked_xpression<Top, Next>>
+    : mpl::true_
 {
 };
 
 //////////////////////////////////////////////////////////////////////////
 // is_random
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct is_random
-  : is_convertible
-    <
-        typename iterator_category<BidiIter>::type
-      , std::random_access_iterator_tag
-    >
+    : is_convertible<
+          typename iterator_category<BidiIter>::type, std::random_access_iterator_tag>
 {
 };
 
 //////////////////////////////////////////////////////////////////////////
 // is_string_iterator
 //
-template<typename Iter>
+template <typename Iter>
 struct is_string_iterator
-  : mpl::false_
+    : mpl::false_
 {
 };
 
-template<>
+template <>
 struct is_string_iterator<std::string::iterator>
-  : mpl::true_
+    : mpl::true_
 {
 };
 
-template<>
+template <>
 struct is_string_iterator<std::string::const_iterator>
-  : mpl::true_
+    : mpl::true_
 {
 };
 
 #ifndef BOOST_NO_STD_WSTRING
-template<>
+template <>
 struct is_string_iterator<std::wstring::iterator>
-  : mpl::true_
+    : mpl::true_
 {
 };
 
-template<>
+template <>
 struct is_string_iterator<std::wstring::const_iterator>
-  : mpl::true_
+    : mpl::true_
 {
 };
 #endif
@@ -95,21 +96,26 @@ struct is_string_iterator<std::wstring::const_iterator>
 ///////////////////////////////////////////////////////////////////////////////
 // is_char
 //
-template<typename T>
+template <typename T>
 struct is_char
-  : mpl::false_
-{};
+    : mpl::false_
+{
+};
 
-template<>
+template <>
 struct is_char<char>
-  : mpl::true_
-{};
+    : mpl::true_
+{
+};
 
-template<>
+template <>
 struct is_char<wchar_t>
-  : mpl::true_
-{};
+    : mpl::true_
+{
+};
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

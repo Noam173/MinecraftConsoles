@@ -12,20 +12,23 @@
 #define BOOST_ASIO_SSL_STREAM_SERVICE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if defined(BOOST_ASIO_ENABLE_OLD_SSL)
-# include <boost/asio/ssl/old/stream_service.hpp>
+#include <boost/asio/ssl/old/stream_service.hpp>
 #endif // defined(BOOST_ASIO_ENABLE_OLD_SSL)
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace ssl {
+namespace boost
+{
+namespace asio
+{
+namespace ssl
+{
 
 #if defined(BOOST_ASIO_ENABLE_OLD_SSL)
 

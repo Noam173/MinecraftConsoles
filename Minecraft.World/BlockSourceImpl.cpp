@@ -1,68 +1,68 @@
-#include "stdafx.h"
 #include "BlockSourceImpl.h"
 #include "net.minecraft.world.level.h"
-#include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.level.tile.entity.h"
+#include "net.minecraft.world.level.tile.h"
+#include "stdafx.h"
 
 BlockSourceImpl::BlockSourceImpl(Level *world, int x, int y, int z)
 {
-	this->world = world;
-	this->x = x;
-	this->y = y;
-	this->z = z;
+    this->world = world;
+    this->x = x;
+    this->y = y;
+    this->z = z;
 }
 
 Level *BlockSourceImpl::getWorld()
 {
-	return world;
+    return world;
 }
 
 double BlockSourceImpl::getX()
 {
-	return x + 0.5;
+    return x + 0.5;
 }
 
 double BlockSourceImpl::getY()
 {
-	return y + 0.5;
+    return y + 0.5;
 }
 
 double BlockSourceImpl::getZ()
 {
-	return z + 0.5;
+    return z + 0.5;
 }
 
 int BlockSourceImpl::getBlockX()
 {
-	return x;
+    return x;
 }
 
 int BlockSourceImpl::getBlockY()
 {
-	return y;
+    return y;
 }
 
 int BlockSourceImpl::getBlockZ()
 {
-	return z;
+    return z;
 }
 
 Tile *BlockSourceImpl::getType()
 {
-	return Tile::tiles[world->getTile(x, y, z)];
+    return Tile::tiles[world->getTile(x, y, z)];
 }
 
 int BlockSourceImpl::getData()
 {
-	return world->getData(x, y, z);
+    return world->getData(x, y, z);
 }
 
 Material *BlockSourceImpl::getMaterial()
 {
-	return world->getMaterial(x, y, z);
+    return world->getMaterial(x, y, z);
 }
 
 shared_ptr<TileEntity> BlockSourceImpl::getEntity()
 {
-	return world->getTileEntity(x, y, z);
+    return world->getTileEntity(x, y, z);
 }

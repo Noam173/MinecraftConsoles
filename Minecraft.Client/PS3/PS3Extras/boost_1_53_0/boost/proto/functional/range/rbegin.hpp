@@ -9,43 +9,51 @@
 #ifndef BOOST_PROTO_FUNCTIONAL_RANGE_RBEGIN_HPP_EAN_27_08_2012
 #define BOOST_PROTO_FUNCTIONAL_RANGE_RBEGIN_HPP_EAN_27_08_2012
 
-#include <boost/range/rbegin.hpp>
 #include <boost/proto/proto_fwd.hpp>
+#include <boost/range/rbegin.hpp>
 
-namespace boost { namespace proto { namespace functional
+namespace boost
+{
+namespace proto
+{
+namespace functional
 {
 
-    // A PolymorphicFunctionObject that wraps boost::rbegin()
-    struct rbegin
+// A PolymorphicFunctionObject that wraps boost::rbegin()
+struct rbegin
+{
+    BOOST_PROTO_CALLABLE()
+
+    template <typename Sig>
+    struct result;
+
+    template <typename This, typename Rng>
+    struct result<This(Rng)>
+        : boost::range_reverse_iterator<Rng const>
     {
-        BOOST_PROTO_CALLABLE()
-
-        template<typename Sig>
-        struct result;
-
-        template<typename This, typename Rng>
-        struct result<This(Rng)>
-          : boost::range_reverse_iterator<Rng const>
-        {};
-
-        template<typename This, typename Rng>
-        struct result<This(Rng &)>
-          : boost::range_reverse_iterator<Rng>
-        {};
-
-        template<typename Rng>
-        typename boost::range_reverse_iterator<Rng>::type operator()(Rng &rng) const
-        {
-            return boost::rbegin(rng);
-        }
-
-        template<typename Rng>
-        typename boost::range_reverse_iterator<Rng const>::type operator()(Rng const &rng) const
-        {
-            return boost::rbegin(rng);
-        }
     };
 
-}}}
+    template <typename This, typename Rng>
+    struct result<This(Rng &)>
+        : boost::range_reverse_iterator<Rng>
+    {
+    };
+
+    template <typename Rng>
+    typename boost::range_reverse_iterator<Rng>::type operator()(Rng &rng) const
+    {
+        return boost::rbegin(rng);
+    }
+
+    template <typename Rng>
+    typename boost::range_reverse_iterator<Rng const>::type operator()(Rng const &rng) const
+    {
+        return boost::rbegin(rng);
+    }
+};
+
+} // namespace functional
+} // namespace proto
+} // namespace boost
 
 #endif

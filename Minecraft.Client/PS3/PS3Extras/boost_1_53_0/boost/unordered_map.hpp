@@ -10,7 +10,7 @@
 #define BOOST_UNORDERED_MAP_HPP_INCLUDED
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/unordered/unordered_map.hpp>

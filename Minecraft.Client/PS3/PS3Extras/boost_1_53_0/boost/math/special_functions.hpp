@@ -12,8 +12,8 @@
 #ifndef BOOST_MATH_SPECIAL_FUNCTIONS_HPP
 #define BOOST_MATH_SPECIAL_FUNCTIONS_HPP
 
-#include <boost/math/special_functions/airy.hpp>
 #include <boost/math/special_functions/acosh.hpp>
+#include <boost/math/special_functions/airy.hpp>
 #include <boost/math/special_functions/asinh.hpp>
 #include <boost/math/special_functions/atanh.hpp>
 #include <boost/math/special_functions/bessel.hpp>
@@ -35,6 +35,7 @@
 #include <boost/math/special_functions/factorials.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/math/special_functions/gamma.hpp>
+#include <boost/math/special_functions/hankel.hpp>
 #include <boost/math/special_functions/hermite.hpp>
 #include <boost/math/special_functions/hypot.hpp>
 #include <boost/math/special_functions/jacobi_elliptic.hpp>
@@ -43,22 +44,19 @@
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/math/special_functions/log1p.hpp>
 #include <boost/math/special_functions/math_fwd.hpp>
+#include <boost/math/special_functions/modf.hpp>
 #include <boost/math/special_functions/next.hpp>
 #include <boost/math/special_functions/owens_t.hpp>
+#include <boost/math/special_functions/pow.hpp>
 #include <boost/math/special_functions/powm1.hpp>
+#include <boost/math/special_functions/round.hpp>
 #include <boost/math/special_functions/sign.hpp>
 #include <boost/math/special_functions/sin_pi.hpp>
 #include <boost/math/special_functions/sinc.hpp>
 #include <boost/math/special_functions/sinhc.hpp>
 #include <boost/math/special_functions/spherical_harmonic.hpp>
 #include <boost/math/special_functions/sqrt1pm1.hpp>
-#include <boost/math/special_functions/zeta.hpp>
-#include <boost/math/special_functions/modf.hpp>
-#include <boost/math/special_functions/round.hpp>
 #include <boost/math/special_functions/trunc.hpp>
-#include <boost/math/special_functions/pow.hpp>
-#include <boost/math/special_functions/next.hpp>
-#include <boost/math/special_functions/owens_t.hpp>
-#include <boost/math/special_functions/hankel.hpp>
+#include <boost/math/special_functions/zeta.hpp>
 
 #endif // BOOST_MATH_SPECIAL_FUNCTIONS_HPP

@@ -10,93 +10,93 @@
 #if !defined(BOOST_FUSION_FUNCTIONAL_INVOCATION_INVOKE_FUNCTION_OBJECT_HPP_INCLUDED)
 #if !defined(BOOST_PP_IS_ITERATING)
 
+#include <boost/preprocessor/arithmetic/dec.hpp>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
-#include <boost/preprocessor/arithmetic/dec.hpp>
-#include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/repeat_from_to.hpp>
 
 #include <boost/utility/result_of.hpp>
 
-#include <boost/type_traits/remove_reference.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <boost/type_traits/remove_reference.hpp>
 
 #include <boost/utility/result_of.hpp>
 
-#include <boost/fusion/support/category_of.hpp>
-#include <boost/fusion/sequence/intrinsic/size.hpp>
+#include <boost/fusion/functional/invocation/limits.hpp>
+#include <boost/fusion/iterator/deref.hpp>
+#include <boost/fusion/iterator/next.hpp>
 #include <boost/fusion/sequence/intrinsic/at.hpp>
 #include <boost/fusion/sequence/intrinsic/begin.hpp>
-#include <boost/fusion/iterator/next.hpp>
-#include <boost/fusion/iterator/deref.hpp>
-#include <boost/fusion/functional/invocation/limits.hpp>
+#include <boost/fusion/sequence/intrinsic/size.hpp>
+#include <boost/fusion/support/category_of.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    namespace result_of
-    {
-        template <class Function, class Sequence> struct invoke_function_object;
-    }
+namespace fusion
+{
+namespace result_of
+{
+template <class Function, class Sequence>
+struct invoke_function_object;
+}
 
-    template <class Function, class Sequence>
-    inline typename result_of::invoke_function_object<Function, Sequence>::type
-    invoke_function_object(Function, Sequence &);
+template <class Function, class Sequence>
+inline typename result_of::invoke_function_object<Function, Sequence>::type
+invoke_function_object(Function, Sequence &);
 
-    template <class Function, class Sequence>
-    inline typename result_of::invoke_function_object<Function, Sequence const
-        >::type invoke_function_object(Function, Sequence const &);
+template <class Function, class Sequence>
+inline typename result_of::invoke_function_object<Function, Sequence const>::type invoke_function_object(Function, Sequence const &);
 
-    //----- ---- --- -- - -  -   -
+//----- ---- --- -- - -  -   -
 
-    namespace detail
-    {
-        template<
-            class Function, class Sequence,
-            int N = result_of::size<Sequence>::value,
-            bool RandomAccess = traits::is_random_access<Sequence>::value
-            >
-        struct invoke_function_object_impl;
+namespace detail
+{
+template <
+    class Function, class Sequence,
+    int N = result_of::size<Sequence>::value,
+    bool RandomAccess = traits::is_random_access<Sequence>::value>
+struct invoke_function_object_impl;
 
-        template <class Sequence, int N>
-        struct invoke_function_object_param_types;
+template <class Sequence, int N>
+struct invoke_function_object_param_types;
 
-        #define  BOOST_PP_FILENAME_1 \
-            <boost/fusion/functional/invocation/invoke_function_object.hpp>
-        #define  BOOST_PP_ITERATION_LIMITS \
-            (0, BOOST_FUSION_INVOKE_FUNCTION_OBJECT_MAX_ARITY)
-        #include BOOST_PP_ITERATE()
-    }
+#define BOOST_PP_FILENAME_1 \
+<boost/fusion/functional/invocation/invoke_function_object.hpp>
+#define BOOST_PP_ITERATION_LIMITS \
+    (0, BOOST_FUSION_INVOKE_FUNCTION_OBJECT_MAX_ARITY)
+#include BOOST_PP_ITERATE()
+} // namespace detail
 
-    namespace result_of
-    {
-        template <class Function, class Sequence> struct invoke_function_object
-        {
-            typedef typename detail::invoke_function_object_impl<
-                typename boost::remove_reference<Function>::type, Sequence
-                >::result_type type;
-        };
-    }
+namespace result_of
+{
+template <class Function, class Sequence>
+struct invoke_function_object
+{
+    typedef typename detail::invoke_function_object_impl<
+        typename boost::remove_reference<Function>::type, Sequence>::result_type type;
+};
+} // namespace result_of
 
-    template <class Function, class Sequence>
-    inline typename result_of::invoke_function_object<Function,Sequence>::type
-    invoke_function_object(Function f, Sequence & s)
-    {
-        return detail::invoke_function_object_impl<
-                typename boost::remove_reference<Function>::type,Sequence
-            >::call(f,s);
-    }
+template <class Function, class Sequence>
+inline typename result_of::invoke_function_object<Function, Sequence>::type
+invoke_function_object(Function f, Sequence &s)
+{
+    return detail::invoke_function_object_impl<
+        typename boost::remove_reference<Function>::type, Sequence>::call(f, s);
+}
 
-    template <class Function, class Sequence>
-    inline typename result_of::invoke_function_object<Function,Sequence const>::type
-    invoke_function_object(Function f, Sequence const & s)
-    {
-        return detail::invoke_function_object_impl<
-                typename boost::remove_reference<Function>::type,Sequence const
-            >::call(f,s);
-    }
+template <class Function, class Sequence>
+inline typename result_of::invoke_function_object<Function, Sequence const>::type
+invoke_function_object(Function f, Sequence const &s)
+{
+    return detail::invoke_function_object_impl<
+        typename boost::remove_reference<Function>::type, Sequence const>::call(f, s);
+}
 
-}}
+} // namespace fusion
+} // namespace boost
 
 #define BOOST_FUSION_FUNCTIONAL_INVOCATION_INVOKE_FUNCTION_OBJECT_HPP_INCLUDED
 #else // defined(BOOST_PP_IS_ITERATING)
@@ -107,97 +107,93 @@ namespace boost { namespace fusion
 ///////////////////////////////////////////////////////////////////////////////
 #define N BOOST_PP_ITERATION()
 
-        template <class Function, class Sequence>
-        struct invoke_function_object_impl<Function,Sequence,N,true>
-        {
-        public:
-
-            typedef typename boost::result_of<
-#define M(z,j,data)                                                             \
-        typename result_of::at_c<Sequence,j>::type
-                Function (BOOST_PP_ENUM(N,M,~)) >::type result_type;
+template <class Function, class Sequence>
+struct invoke_function_object_impl<Function, Sequence, N, true>
+{
+  public:
+    typedef typename boost::result_of<
+#define M(z, j, data) \
+    typename result_of::at_c<Sequence, j>::type
+        Function(BOOST_PP_ENUM(N, M, ~))>::type result_type;
 #undef M
 
 #if N > 0
 
-            template <class F>
-            static inline result_type
-            call(F & f, Sequence & s)
-            {
-#define M(z,j,data) fusion::at_c<j>(s)
-                return f( BOOST_PP_ENUM(N,M,~) );
+    template <class F>
+    static inline result_type
+    call(F &f, Sequence &s)
+    {
+#define M(z, j, data) fusion::at_c<j>(s)
+        return f(BOOST_PP_ENUM(N, M, ~));
 #undef M
-            }
+    }
 
 #else
 
-            template <class F>
-            static inline result_type
-            call(F & f, Sequence & /*s*/)
-            {
-                return f();
-            }
+    template <class F>
+    static inline result_type
+    call(F &f, Sequence & /*s*/)
+    {
+        return f();
+    }
 
 #endif
+};
 
-        };
+template <class Function, class Sequence>
+struct invoke_function_object_impl<Function, Sequence, N, false>
+{
+  private:
+    typedef invoke_function_object_param_types<Sequence, N> seq;
 
-        template <class Function, class Sequence>
-        struct invoke_function_object_impl<Function,Sequence,N,false>
-        {
-        private:
-            typedef invoke_function_object_param_types<Sequence,N> seq;
-        public:
-            typedef typename boost::result_of<
-                Function (BOOST_PP_ENUM_PARAMS(N,typename seq::T))
-                >::type result_type;
+  public:
+    typedef typename boost::result_of<
+        Function(BOOST_PP_ENUM_PARAMS(N, typename seq::T))>::type result_type;
 
 #if N > 0
 
-            template <class F>
-            static inline result_type
-            call(F & f, Sequence & s)
-            {
-                typename seq::I0 i0 = fusion::begin(s);
-#define M(z,j,data)                                                             \
-            typename seq::I##j i##j =                                          \
-                fusion::next(BOOST_PP_CAT(i,BOOST_PP_DEC(j)));
-                BOOST_PP_REPEAT_FROM_TO(1,N,M,~)
+    template <class F>
+    static inline result_type
+    call(F &f, Sequence &s)
+    {
+        typename seq::I0 i0 = fusion::begin(s);
+#define M(z, j, data)         \
+    typename seq::I##j i##j = \
+        fusion::next(BOOST_PP_CAT(i, BOOST_PP_DEC(j)));
+        BOOST_PP_REPEAT_FROM_TO(1, N, M, ~)
 #undef M
-                return f( BOOST_PP_ENUM_PARAMS(N,*i) );
-            }
+        return f(BOOST_PP_ENUM_PARAMS(N, *i));
+    }
 
 #else
 
-            template <class F>
-            static inline result_type
-            call(F & f, Sequence & /*s*/)
-            {
-                return f();
-            }
+    template <class F>
+    static inline result_type
+    call(F &f, Sequence & /*s*/)
+    {
+        return f();
+    }
 
 #endif
+};
 
-        };
-
-        template <class Sequence>
-        struct invoke_function_object_param_types<Sequence,N>
-        {
+template <class Sequence>
+struct invoke_function_object_param_types<Sequence, N>
+{
 #if N > 0
-            typedef typename result_of::begin<Sequence>::type I0;
-            typedef typename result_of::deref<I0>::type T0;
+    typedef typename result_of::begin<Sequence>::type I0;
+    typedef typename result_of::deref<I0>::type T0;
 
-#define M(z,i,data)                                                             \
-            typedef typename result_of::next<                                  \
-                BOOST_PP_CAT(I,BOOST_PP_DEC(i))>::type I##i;                   \
-            typedef typename result_of::deref<I##i>::type T##i;
+#define M(z, i, data)                                 \
+    typedef typename result_of::next<                 \
+        BOOST_PP_CAT(I, BOOST_PP_DEC(i))>::type I##i; \
+    typedef typename result_of::deref<I##i>::type T##i;
 
-            BOOST_PP_REPEAT_FROM_TO(1,N,M,~)
+    BOOST_PP_REPEAT_FROM_TO(1, N, M, ~)
 #undef M
 #endif
-        };
+};
 
 #undef N
 #endif // defined(BOOST_PP_IS_ITERATING)
 #endif
-

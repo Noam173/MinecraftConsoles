@@ -5,13 +5,13 @@
 #ifndef BOOST_TYPEOF_STD_deque_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_deque_hpp_INCLUDED
 
-#include <deque>
-#include <boost/typeof/typeof.hpp>
 #include <boost/typeof/std/memory.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <deque>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::deque, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::deque, 2)
 
-#endif//BOOST_TYPEOF_STD_deque_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_deque_hpp_INCLUDED

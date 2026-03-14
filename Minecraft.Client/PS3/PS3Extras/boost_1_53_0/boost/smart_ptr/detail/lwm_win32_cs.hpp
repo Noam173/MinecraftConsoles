@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -18,7 +18,7 @@
 //
 
 #ifdef BOOST_USE_WINDOWS_H
-#  include <windows.h>
+#include <windows.h>
 #endif
 
 namespace boost
@@ -31,11 +31,11 @@ namespace detail
 
 struct critical_section
 {
-    struct critical_section_debug * DebugInfo;
+    struct critical_section_debug *DebugInfo;
     long LockCount;
     long RecursionCount;
-    void * OwningThread;
-    void * LockSemaphore;
+    void *OwningThread;
+    void *LockSemaphore;
 #if defined(_WIN64)
     unsigned __int64 SpinCount;
 #else
@@ -56,15 +56,13 @@ typedef ::CRITICAL_SECTION critical_section;
 
 class lightweight_mutex
 {
-private:
-
+  private:
     critical_section cs_;
 
     lightweight_mutex(lightweight_mutex const &);
-    lightweight_mutex & operator=(lightweight_mutex const &);
+    lightweight_mutex &operator=(lightweight_mutex const &);
 
-public:
-
+  public:
     lightweight_mutex()
     {
         InitializeCriticalSection(&cs_);
@@ -80,16 +78,14 @@ public:
 
     class scoped_lock
     {
-    private:
-
-        lightweight_mutex & m_;
+      private:
+        lightweight_mutex &m_;
 
         scoped_lock(scoped_lock const &);
-        scoped_lock & operator=(scoped_lock const &);
+        scoped_lock &operator=(scoped_lock const &);
 
-    public:
-
-        explicit scoped_lock(lightweight_mutex & m): m_(m)
+      public:
+        explicit scoped_lock(lightweight_mutex &m) : m_(m)
         {
             EnterCriticalSection(&m_.cs_);
         }

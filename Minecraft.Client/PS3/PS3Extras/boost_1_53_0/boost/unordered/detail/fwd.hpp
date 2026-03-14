@@ -7,17 +7,18 @@
 #define BOOST_UNORDERED_FWD_HPP_INCLUDED
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
-
 
 namespace boost
 {
 namespace unordered
 {
-    struct piecewise_construct_t {};
-    const piecewise_construct_t piecewise_construct = piecewise_construct_t();
-}
-}
+struct piecewise_construct_t
+{
+};
+const piecewise_construct_t piecewise_construct = piecewise_construct_t();
+} // namespace unordered
+} // namespace boost
 
 #endif

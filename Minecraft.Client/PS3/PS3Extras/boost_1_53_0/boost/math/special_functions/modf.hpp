@@ -10,61 +10,65 @@
 #pragma once
 #endif
 
-#include <boost/math/tools/config.hpp>
 #include <boost/math/special_functions/trunc.hpp>
+#include <boost/math/tools/config.hpp>
 
-namespace boost{ namespace math{
-
-template <class T, class Policy>
-inline T modf(const T& v, T* ipart, const Policy& pol)
+namespace boost
 {
-   *ipart = trunc(v, pol);
-   return v - *ipart;
-}
-template <class T>
-inline T modf(const T& v, T* ipart)
+namespace math
 {
-   return modf(v, ipart, policies::policy<>());
-}
 
 template <class T, class Policy>
-inline T modf(const T& v, int* ipart, const Policy& pol)
+inline T modf(const T &v, T *ipart, const Policy &pol)
 {
-   *ipart = itrunc(v, pol);
-   return v - *ipart;
+    *ipart = trunc(v, pol);
+    return v - *ipart;
 }
 template <class T>
-inline T modf(const T& v, int* ipart)
+inline T modf(const T &v, T *ipart)
 {
-   return modf(v, ipart, policies::policy<>());
+    return modf(v, ipart, policies::policy<>());
 }
 
 template <class T, class Policy>
-inline T modf(const T& v, long* ipart, const Policy& pol)
+inline T modf(const T &v, int *ipart, const Policy &pol)
 {
-   *ipart = ltrunc(v, pol);
-   return v - *ipart;
+    *ipart = itrunc(v, pol);
+    return v - *ipart;
 }
 template <class T>
-inline T modf(const T& v, long* ipart)
+inline T modf(const T &v, int *ipart)
 {
-   return modf(v, ipart, policies::policy<>());
+    return modf(v, ipart, policies::policy<>());
+}
+
+template <class T, class Policy>
+inline T modf(const T &v, long *ipart, const Policy &pol)
+{
+    *ipart = ltrunc(v, pol);
+    return v - *ipart;
+}
+template <class T>
+inline T modf(const T &v, long *ipart)
+{
+    return modf(v, ipart, policies::policy<>());
 }
 
 #ifdef BOOST_HAS_LONG_LONG
 template <class T, class Policy>
-inline T modf(const T& v, boost::long_long_type* ipart, const Policy& pol)
+inline T modf(const T &v, boost::long_long_type *ipart, const Policy &pol)
 {
-   *ipart = lltrunc(v, pol);
-   return v - *ipart;
+    *ipart = lltrunc(v, pol);
+    return v - *ipart;
 }
 template <class T>
-inline T modf(const T& v, boost::long_long_type* ipart)
+inline T modf(const T &v, boost::long_long_type *ipart)
 {
-   return modf(v, ipart, policies::policy<>());
+    return modf(v, ipart, policies::policy<>());
 }
 #endif
 
-}} // namespaces
+} // namespace math
+} // namespace boost
 
 #endif // BOOST_MATH_MODF_HPP

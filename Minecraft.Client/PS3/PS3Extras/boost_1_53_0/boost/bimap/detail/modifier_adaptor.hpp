@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_DETAIL_MODIFIER_ADAPTOR_HPP
 #define BOOST_BIMAP_DETAIL_MODIFIER_ADAPTOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -20,37 +20,39 @@
 
 #include <functional>
 
-namespace boost {
-namespace bimaps {
-namespace detail {
+namespace boost
+{
+namespace bimaps
+{
+namespace detail
+{
 
 /// \brief A binary to unary functor relation modifier adaptor.
 
-template
-<
+template <
     class Modifier,
     class NewArgument,
     class FirstExtractor,
-    class SecondExtractor 
->
-struct relation_modifier_adaptor :
-    public std::unary_function<NewArgument,bool>,
-    Modifier,
-    FirstExtractor,
-    SecondExtractor
+    class SecondExtractor>
+struct relation_modifier_adaptor : public std::unary_function<NewArgument, bool>,
+                                   Modifier,
+                                   FirstExtractor,
+                                   SecondExtractor
 {
-    relation_modifier_adaptor( const Modifier & m ) : Modifier(m) {}
-    relation_modifier_adaptor( const Modifier & m,
-                               const FirstExtractor & fe,
-                               const SecondExtractor & se ) :
-        Modifier(m), FirstExtractor(fe), SecondExtractor(se) {}
+    relation_modifier_adaptor(const Modifier &m) : Modifier(m)
+    {
+    }
+    relation_modifier_adaptor(const Modifier &m,
+                              const FirstExtractor &fe,
+                              const SecondExtractor &se) : Modifier(m), FirstExtractor(fe), SecondExtractor(se)
+    {
+    }
 
-    void operator()( NewArgument & x ) const
+    void operator()(NewArgument &x) const
     {
         Modifier::operator()(
-            FirstExtractor ::operator()( x ),
-            SecondExtractor::operator()( x )
-        );
+            FirstExtractor ::operator()(x),
+            SecondExtractor::operator()(x));
     }
 };
 
@@ -58,32 +60,30 @@ struct relation_modifier_adaptor :
 // This modifier is equivalent to bind( Modifier, bind( Extractor, _1 ) )
 // It may be a good idea to start using Boost.Bind instead of it.
 
-template
-<
+template <
     class Modifier,
     class NewArgument,
-    class Extractor
->
-struct unary_modifier_adaptor :
-    public std::unary_function<NewArgument,bool>,
-    Modifier,
-    Extractor
+    class Extractor>
+struct unary_modifier_adaptor : public std::unary_function<NewArgument, bool>,
+                                Modifier,
+                                Extractor
 {
-    unary_modifier_adaptor( const Modifier & m ) : Modifier(m) {}
-    unary_modifier_adaptor( const Modifier & m,
-                            const Extractor & fe) :
-        Modifier(m), Extractor(fe) {}
-
-    void operator()( NewArgument & x ) const
+    unary_modifier_adaptor(const Modifier &m) : Modifier(m)
     {
-        Modifier::operator()( Extractor::operator()( x ) );
+    }
+    unary_modifier_adaptor(const Modifier &m,
+                           const Extractor &fe) : Modifier(m), Extractor(fe)
+    {
+    }
+
+    void operator()(NewArgument &x) const
+    {
+        Modifier::operator()(Extractor::operator()(x));
     }
 };
 
-
 } // namespace detail
-} // namespace bimap
+} // namespace bimaps
 } // namespace boost
-
 
 #endif // BOOST_BIMAP_DETAIL_MODIFIER_ADAPTOR_HPP

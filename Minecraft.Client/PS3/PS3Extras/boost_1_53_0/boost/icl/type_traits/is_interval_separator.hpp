@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------+    
+/*-----------------------------------------------------------------------------+
 Copyright (c) 2008-2009: Joachim Faulhaber
 +------------------------------------------------------------------------------+
    Distributed under the Boost Software License, Version 1.0.
@@ -8,16 +8,18 @@ Copyright (c) 2008-2009: Joachim Faulhaber
 #ifndef BOOST_ICL_TYPE_TRAITS_IS_INTERVAL_SEPARATOR_HPP_JOFA_081004
 #define BOOST_ICL_TYPE_TRAITS_IS_INTERVAL_SEPARATOR_HPP_JOFA_081004
 
-namespace boost{ namespace icl
+namespace boost
 {
-    template <class Type> struct is_interval_separator
-    { 
-        typedef is_interval_separator<Type> type;
-        BOOST_STATIC_CONSTANT(bool, value = false); 
-    };
+namespace icl
+{
+template <class Type>
+struct is_interval_separator
+{
+    typedef is_interval_separator<Type> type;
+    BOOST_STATIC_CONSTANT(bool, value = false);
+};
 
-}} // namespace boost icl
+} // namespace icl
+} // namespace boost
 
 #endif
-
-

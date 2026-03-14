@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2004-2008.
 //  Distributed under the Boost Software License, Version 1.0.
-//  (See accompanying file LICENSE_1_0.txt or copy at 
+//  (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -9,7 +9,7 @@
 //
 //  Version     : $Revision: 49312 $
 //
-//  Description : 
+//  Description :
 // ***************************************************************************
 
 #ifndef BOOST_ISTREAM_LINE_ITERATOR_HPP_071894GER
@@ -26,9 +26,11 @@
 
 //____________________________________________________________________________//
 
-namespace boost {
+namespace boost
+{
 
-namespace unit_test {
+namespace unit_test
+{
 
 // ************************************************************************** //
 // **************         basic_istream_line_iterator          ************** //
@@ -36,50 +38,53 @@ namespace unit_test {
 
 // !! Should we support policy based delimitation
 
-template<typename CharT>
+template <typename CharT>
 class basic_istream_line_iterator
-: public input_iterator_facade<basic_istream_line_iterator<CharT>,
-                               std::basic_string<CharT>,
-                               basic_cstring<CharT const> > {
+    : public input_iterator_facade<basic_istream_line_iterator<CharT>,
+                                   std::basic_string<CharT>,
+                                   basic_cstring<CharT const>>
+{
     typedef input_iterator_facade<basic_istream_line_iterator<CharT>,
                                   std::basic_string<CharT>,
-                                  basic_cstring<CharT const> > base;
+                                  basic_cstring<CharT const>>
+        base;
 #ifdef BOOST_CLASSIC_IOSTREAMS
-    typedef std::istream              istream_type;
+    typedef std::istream istream_type;
 #else
     typedef std::basic_istream<CharT> istream_type;
 #endif
-public:
+  public:
     // Constructors
-    basic_istream_line_iterator() {}
-    basic_istream_line_iterator( istream_type& input, CharT delimeter )
-    : m_input_stream( &input ), m_delimeter( delimeter )
+    basic_istream_line_iterator()
+    {
+    }
+    basic_istream_line_iterator(istream_type &input, CharT delimeter)
+        : m_input_stream(&input), m_delimeter(delimeter)
     {
         this->init();
     }
-    explicit basic_istream_line_iterator( istream_type& input )
-    : m_input_stream( &input ) 
-    , m_delimeter( input.widen( '\n' ) )
+    explicit basic_istream_line_iterator(istream_type &input)
+        : m_input_stream(&input), m_delimeter(input.widen('\n'))
     {
         this->init();
     }
 
-private:
+  private:
     friend class input_iterator_core_access;
 
     // increment implementation
-    bool                     get()
+    bool get()
     {
-        return !!std::getline( *m_input_stream, this->m_value, m_delimeter );
+        return !!std::getline(*m_input_stream, this->m_value, m_delimeter);
     }
 
     // Data members
-    istream_type* m_input_stream;
-    CharT         m_delimeter;
+    istream_type *m_input_stream;
+    CharT m_delimeter;
 };
 
-typedef basic_istream_line_iterator<char>       istream_line_iterator;
-typedef basic_istream_line_iterator<wchar_t>    wistream_line_iterator;
+typedef basic_istream_line_iterator<char> istream_line_iterator;
+typedef basic_istream_line_iterator<wchar_t> wistream_line_iterator;
 
 } // namespace unit_test
 
@@ -90,4 +95,3 @@ typedef basic_istream_line_iterator<wchar_t>    wistream_line_iterator;
 #include <boost/test/detail/enable_warnings.hpp>
 
 #endif // BOOST_ISTREAM_LINE_ITERATOR_HPP_071894GER
-

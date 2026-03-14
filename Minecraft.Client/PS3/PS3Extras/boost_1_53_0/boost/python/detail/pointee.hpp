@@ -3,22 +3,31 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef POINTEE_DWA2002323_HPP
-# define POINTEE_DWA2002323_HPP
+#define POINTEE_DWA2002323_HPP
 
-# include <boost/type_traits/object_traits.hpp>
+#include <boost/type_traits/object_traits.hpp>
 
-namespace boost { namespace python { namespace detail { 
+namespace boost
+{
+namespace python
+{
+namespace detail
+{
 
 template <bool is_ptr = true>
 struct pointee_impl
 {
-    template <class T> struct apply : remove_pointer<T> {};
+    template <class T>
+    struct apply : remove_pointer<T>
+    {
+    };
 };
 
 template <>
 struct pointee_impl<false>
 {
-    template <class T> struct apply
+    template <class T>
+    struct apply
     {
         typedef typename T::element_type type;
     };
@@ -30,6 +39,8 @@ struct pointee
 {
 };
 
-}}} // namespace boost::python::detail
+} // namespace detail
+} // namespace python
+} // namespace boost
 
 #endif // POINTEE_DWA2002323_HPP

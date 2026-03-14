@@ -9,23 +9,27 @@
 #ifndef BOOST_RATIO_MPL_NUMERIC_CAST_HPP
 #define BOOST_RATIO_MPL_NUMERIC_CAST_HPP
 
-#include <boost/ratio/ratio.hpp>
 #include <boost/mpl/integral_c.hpp>
-#include <boost/ratio/mpl/rational_c_tag.hpp>
 #include <boost/mpl/numeric_cast.hpp>
+#include <boost/ratio/mpl/rational_c_tag.hpp>
+#include <boost/ratio/ratio.hpp>
 
-namespace boost { 
-namespace mpl {
-
-template<> struct numeric_cast< integral_c_tag,rational_c_tag >
+namespace boost
 {
-    template< typename N > struct apply
-        : ratio< N::value, 1 >
+namespace mpl
+{
+
+template <>
+struct numeric_cast<integral_c_tag, rational_c_tag>
+{
+    template <typename N>
+    struct apply
+        : ratio<N::value, 1>
     {
     };
 };
-    
-}
-}
 
-#endif  // BOOST_RATIO_MPL_NUMERIC_CAST_HPP
+} // namespace mpl
+} // namespace boost
+
+#endif // BOOST_RATIO_MPL_NUMERIC_CAST_HPP

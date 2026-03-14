@@ -1,10 +1,9 @@
-#include "stdafx.h"
 #include "Lighting.h"
 #include "..\Minecraft.World\FloatBuffer.h"
 #include "..\Minecraft.World\Vec3.h"
+#include "stdafx.h"
 
 FloatBuffer *Lighting::lb = new FloatBuffer(16);
-
 
 void Lighting::turnOff()
 {
@@ -39,12 +38,11 @@ void Lighting::turnOn()
 
     glShadeModel(GL_FLAT);
     glLightModel(GL_LIGHT_MODEL_AMBIENT, getBuffer(a, a, a, 1));
-
 }
 
 FloatBuffer *Lighting::getBuffer(double a, double b, double c, double d)
 {
-	return getBuffer(static_cast<float>(a), static_cast<float>(b), static_cast<float>(c), static_cast<float>(d));
+    return getBuffer(static_cast<float>(a), static_cast<float>(b), static_cast<float>(c), static_cast<float>(d));
 }
 
 FloatBuffer *Lighting::getBuffer(float a, float b, float c, float d)
@@ -55,11 +53,11 @@ FloatBuffer *Lighting::getBuffer(float a, float b, float c, float d)
     return lb;
 }
 
-void Lighting::turnOnGui() 
+void Lighting::turnOnGui()
 {
-	glPushMatrix();
-	glRotatef(-30, 0, 1, 0);
-	glRotatef(165, 1, 0, 0);
-	turnOn();
-	glPopMatrix();
+    glPushMatrix();
+    glRotatef(-30, 0, 1, 0);
+    glRotatef(165, 1, 0, 0);
+    turnOn();
+    glPopMatrix();
 }

@@ -8,8 +8,8 @@
 #define FUSION_MPL_09172006_2049
 
 // The fusion <--> MPL link headers
-#include <boost/fusion/iterator/mpl.hpp>
 #include <boost/fusion/adapted/mpl.hpp>
+#include <boost/fusion/iterator/mpl.hpp>
 
 #include <boost/fusion/mpl/at.hpp>
 #include <boost/fusion/mpl/back.hpp>

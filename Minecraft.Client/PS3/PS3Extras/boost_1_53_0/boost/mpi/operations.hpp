@@ -19,16 +19,20 @@
 #define BOOST_MPI_IS_MPI_OP_HPP
 
 #include <boost/mpi/config.hpp>
+#include <boost/mpi/datatype.hpp>
+#include <boost/mpl/and.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/mpi/datatype.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <functional>
 
-namespace boost { namespace mpi {
+namespace boost
+{
+namespace mpi
+{
 
-template<typename Op, typename T> struct is_mpi_op;
+template <typename Op, typename T>
+struct is_mpi_op;
 
 /**
  * @brief Determine if a function object type is commutative.
@@ -40,8 +44,10 @@ template<typename Op, typename T> struct is_mpi_op;
  * should specialize @c is_commutative and derive from the class @c
  * mpl::true_.
  */
-template<typename Op, typename T>
-struct is_commutative : public mpl::false_ { };
+template <typename Op, typename T>
+struct is_commutative : public mpl::false_
+{
+};
 
 /**************************************************************************
  * Function objects for MPI operations not in <functional> header         *
@@ -54,14 +60,14 @@ struct is_commutative : public mpl::false_ { };
  *  it is given. When used with MPI and a type @c T that has an
  *  associated, built-in MPI data type, translates to @c MPI_MAX.
  */
-template<typename T>
+template <typename T>
 struct maximum : public std::binary_function<T, T, T>
 {
-  /** @returns the maximum of x and y. */
-  const T& operator()(const T& x, const T& y) const
-  {
-    return x < y? y : x;
-  }
+    /** @returns the maximum of x and y. */
+    const T &operator()(const T &x, const T &y) const
+    {
+        return x < y ? y : x;
+    }
 };
 
 /**
@@ -71,16 +77,15 @@ struct maximum : public std::binary_function<T, T, T>
  *  it is given. When used with MPI and a type @c T that has an
  *  associated, built-in MPI data type, translates to @c MPI_MIN.
  */
-template<typename T>
+template <typename T>
 struct minimum : public std::binary_function<T, T, T>
 {
-  /** @returns the minimum of x and y. */
-  const T& operator()(const T& x, const T& y) const
-  {
-    return x < y? x : y;
-  }
+    /** @returns the minimum of x and y. */
+    const T &operator()(const T &x, const T &y) const
+    {
+        return x < y ? x : y;
+    }
 };
-
 
 /**
  *  @brief Compute the bitwise AND of two integral values.
@@ -89,14 +94,14 @@ struct minimum : public std::binary_function<T, T, T>
  *  values it is given. When used with MPI and a type @c T that has an
  *  associated, built-in MPI data type, translates to @c MPI_BAND.
  */
-template<typename T>
+template <typename T>
 struct bitwise_and : public std::binary_function<T, T, T>
 {
-  /** @returns @c x & y. */
-  T operator()(const T& x, const T& y) const
-  {
-    return x & y;
-  }
+    /** @returns @c x & y. */
+    T operator()(const T &x, const T &y) const
+    {
+        return x & y;
+    }
 };
 
 /**
@@ -106,14 +111,14 @@ struct bitwise_and : public std::binary_function<T, T, T>
  *  values it is given. When used with MPI and a type @c T that has an
  *  associated, built-in MPI data type, translates to @c MPI_BOR.
  */
-template<typename T>
+template <typename T>
 struct bitwise_or : public std::binary_function<T, T, T>
 {
-  /** @returns the @c x | y. */
-  T operator()(const T& x, const T& y) const
-  {
-    return x | y;
-  }
+    /** @returns the @c x | y. */
+    T operator()(const T &x, const T &y) const
+    {
+        return x | y;
+    }
 };
 
 /**
@@ -123,14 +128,14 @@ struct bitwise_or : public std::binary_function<T, T, T>
  *  two values it is given. When used with MPI and a type @c T that has
  *  an associated, built-in MPI data type, translates to @c MPI_LXOR.
  */
-template<typename T>
+template <typename T>
 struct logical_xor : public std::binary_function<T, T, T>
 {
-  /** @returns the logical exclusive OR of x and y. */
-  T operator()(const T& x, const T& y) const
-  {
-    return (x || y) && !(x && y);
-  }
+    /** @returns the logical exclusive OR of x and y. */
+    T operator()(const T &x, const T &y) const
+    {
+        return (x || y) && !(x && y);
+    }
 };
 
 /**
@@ -141,14 +146,14 @@ struct logical_xor : public std::binary_function<T, T, T>
  *  has an associated, built-in MPI data type, translates to @c
  *  MPI_BXOR.
  */
-template<typename T>
+template <typename T>
 struct bitwise_xor : public std::binary_function<T, T, T>
 {
-  /** @returns @c x ^ y. */
-  T operator()(const T& x, const T& y) const
-  {
-    return x ^ y;
-  }
+    /** @returns @c x ^ y. */
+    T operator()(const T &x, const T &y) const
+    {
+        return x ^ y;
+    }
 };
 
 /**************************************************************************
@@ -173,150 +178,188 @@ struct bitwise_xor : public std::binary_function<T, T, T>
  *  function objects that are class templates with a single template
  *  parameter, it may be easier to specialize @c is_builtin_mpi_op.
  */
-template<typename Op, typename T>
-struct is_mpi_op : public mpl::false_ { };
+template <typename Op, typename T>
+struct is_mpi_op : public mpl::false_
+{
+};
 
 /// INTERNAL ONLY
-template<typename T>
+template <typename T>
 struct is_mpi_op<maximum<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_floating_point_datatype<T> >
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_floating_point_datatype<T>>
 {
-  static MPI_Op op() { return MPI_MAX; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
-struct is_mpi_op<minimum<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_floating_point_datatype<T> >
-{
-  static MPI_Op op() { return MPI_MIN; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
- struct is_mpi_op<std::plus<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_floating_point_datatype<T>,
-                           is_mpi_complex_datatype<T> >
-{
-  static MPI_Op op() { return MPI_SUM; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
- struct is_mpi_op<std::multiplies<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_floating_point_datatype<T>,
-                           is_mpi_complex_datatype<T> >
-{
-  static MPI_Op op() { return MPI_PROD; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
- struct is_mpi_op<std::logical_and<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_logical_datatype<T> >
-{
-  static MPI_Op op() { return MPI_LAND; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
- struct is_mpi_op<std::logical_or<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_logical_datatype<T> >
-{
-  static MPI_Op op() { return MPI_LOR; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
- struct is_mpi_op<logical_xor<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_logical_datatype<T> >
-{
-  static MPI_Op op() { return MPI_LXOR; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
- struct is_mpi_op<bitwise_and<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_byte_datatype<T> >
-{
-  static MPI_Op op() { return MPI_BAND; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
- struct is_mpi_op<bitwise_or<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_byte_datatype<T> >
-{
-  static MPI_Op op() { return MPI_BOR; }
-};
-
-/// INTERNAL ONLY
-template<typename T>
- struct is_mpi_op<bitwise_xor<T>, T>
-  : public boost::mpl::or_<is_mpi_integer_datatype<T>,
-                           is_mpi_byte_datatype<T> >
-{
-  static MPI_Op op() { return MPI_BXOR; }
-};
-
-namespace detail {
-  // A helper class used to create user-defined MPI_Ops
-  template<typename Op, typename T>
-  class user_op
-  {
-  public:
-    explicit user_op(Op& op)
+    static MPI_Op op()
     {
-      BOOST_MPI_CHECK_RESULT(MPI_Op_create,
-                             (&user_op<Op, T>::perform,
-                              is_commutative<Op, T>::value,
-                              &mpi_op));
+        return MPI_MAX;
+    }
+};
 
-      op_ptr = &op;
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<minimum<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_floating_point_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_MIN;
+    }
+};
+
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<std::plus<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_floating_point_datatype<T>,
+                             is_mpi_complex_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_SUM;
+    }
+};
+
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<std::multiplies<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_floating_point_datatype<T>,
+                             is_mpi_complex_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_PROD;
+    }
+};
+
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<std::logical_and<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_logical_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_LAND;
+    }
+};
+
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<std::logical_or<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_logical_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_LOR;
+    }
+};
+
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<logical_xor<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_logical_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_LXOR;
+    }
+};
+
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<bitwise_and<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_byte_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_BAND;
+    }
+};
+
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<bitwise_or<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_byte_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_BOR;
+    }
+};
+
+/// INTERNAL ONLY
+template <typename T>
+struct is_mpi_op<bitwise_xor<T>, T>
+    : public boost::mpl::or_<is_mpi_integer_datatype<T>,
+                             is_mpi_byte_datatype<T>>
+{
+    static MPI_Op op()
+    {
+        return MPI_BXOR;
+    }
+};
+
+namespace detail
+{
+// A helper class used to create user-defined MPI_Ops
+template <typename Op, typename T>
+class user_op
+{
+  public:
+    explicit user_op(Op &op)
+    {
+        BOOST_MPI_CHECK_RESULT(MPI_Op_create,
+                               (&user_op<Op, T>::perform,
+                                is_commutative<Op, T>::value,
+                                &mpi_op));
+
+        op_ptr = &op;
     }
 
     ~user_op()
     {
-      if (std::uncaught_exception()) {
-        // Ignore failure cases: there are obviously other problems
-        // already, and we don't want to cause program termination if
-        // MPI_Op_free fails.
-        MPI_Op_free(&mpi_op);
-      } else {
-        BOOST_MPI_CHECK_RESULT(MPI_Op_free, (&mpi_op));
-      }
+        if (std::uncaught_exception())
+        {
+            // Ignore failure cases: there are obviously other problems
+            // already, and we don't want to cause program termination if
+            // MPI_Op_free fails.
+            MPI_Op_free(&mpi_op);
+        }
+        else
+        {
+            BOOST_MPI_CHECK_RESULT(MPI_Op_free, (&mpi_op));
+        }
     }
 
-    MPI_Op& get_mpi_op()
+    MPI_Op &get_mpi_op()
     {
-      return mpi_op;
+        return mpi_op;
     }
 
   private:
     MPI_Op mpi_op;
-    static Op* op_ptr;
+    static Op *op_ptr;
 
-    static void BOOST_MPI_CALLING_CONVENTION perform(void* vinvec, void* voutvec, int* plen, MPI_Datatype*)
+    static void BOOST_MPI_CALLING_CONVENTION perform(void *vinvec, void *voutvec, int *plen, MPI_Datatype *)
     {
-      T* invec = static_cast<T*>(vinvec);
-      T* outvec = static_cast<T*>(voutvec);
-      std::transform(invec, invec + *plen, outvec, outvec, *op_ptr);
+        T *invec = static_cast<T *>(vinvec);
+        T *outvec = static_cast<T *>(voutvec);
+        std::transform(invec, invec + *plen, outvec, outvec, *op_ptr);
     }
-  };
+};
 
-  template<typename Op, typename T> Op* user_op<Op, T>::op_ptr = 0;
+template <typename Op, typename T>
+Op *user_op<Op, T>::op_ptr = 0;
 
 } // end namespace detail
 
-} } // end namespace boost::mpi
+} // namespace mpi
+} // namespace boost
 
 #endif // BOOST_MPI_GET_MPI_OP_HPP

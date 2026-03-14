@@ -7,16 +7,19 @@
 //  producing this work.
 
 #ifndef ERRORS_DWA052500_H_
-# define ERRORS_DWA052500_H_
+#define ERRORS_DWA052500_H_
 
-# include <boost/python/detail/prefix.hpp>
-# include <boost/function/function0.hpp>
+#include <boost/function/function0.hpp>
+#include <boost/python/detail/prefix.hpp>
 
-namespace boost { namespace python {
+namespace boost
+{
+namespace python
+{
 
 struct BOOST_PYTHON_DECL_EXCEPTION error_already_set
 {
-  virtual ~error_already_set();
+    virtual ~error_already_set();
 };
 
 // Handles exceptions caught just before returning to Python code.
@@ -29,7 +32,13 @@ bool handle_exception(T f)
     return handle_exception_impl(function0<void>(boost::ref(f)));
 }
 
-namespace detail { inline void rethrow() { throw; } }
+namespace detail
+{
+inline void rethrow()
+{
+    throw;
+}
+} // namespace detail
 
 inline void handle_exception()
 {
@@ -39,17 +48,20 @@ inline void handle_exception()
 BOOST_PYTHON_DECL void throw_error_already_set();
 
 template <class T>
-inline T* expect_non_null(T* x)
+inline T *expect_non_null(T *x)
 {
     if (x == 0)
+    {
         throw_error_already_set();
+    }
     return x;
 }
 
 // Return source if it is an instance of pytype; throw an appropriate
 // exception otherwise.
-BOOST_PYTHON_DECL PyObject* pytype_check(PyTypeObject* pytype, PyObject* source);
+BOOST_PYTHON_DECL PyObject *pytype_check(PyTypeObject *pytype, PyObject *source);
 
-}} // namespace boost::python
+} // namespace python
+} // namespace boost
 
 #endif // ERRORS_DWA052500_H_

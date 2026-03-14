@@ -10,23 +10,28 @@
 
 #include <boost/fusion/container/map/detail/value_of_impl.hpp>
 
-namespace boost { namespace fusion { namespace extension
+namespace boost
 {
-    template <typename>
-    struct value_of_data_impl;
+namespace fusion
+{
+namespace extension
+{
+template <typename>
+struct value_of_data_impl;
 
-    template <>
-    struct value_of_data_impl<map_iterator_tag>
+template <>
+struct value_of_data_impl<map_iterator_tag>
+{
+    template <typename It>
+    struct apply
     {
-        template <typename It>
-        struct apply
-        {
-            typedef typename
-                value_of_impl<map_iterator_tag>::
-                    template apply<It>::type::second_type
-            type;
-        };
+        typedef typename value_of_impl<map_iterator_tag>::
+            template apply<It>::type::second_type
+                type;
     };
-}}}
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

@@ -15,60 +15,60 @@ namespace lexer
 {
 namespace detail
 {
-template<typename Type>
+template <typename Type>
 class ptr_vector
 {
-public:
+  public:
     typedef std::vector<Type *> vector;
 
-    ptr_vector ()
+    ptr_vector()
     {
     }
 
-    ~ptr_vector ()
+    ~ptr_vector()
     {
-        clear ();
+        clear();
     }
 
-    vector *operator -> ()
+    vector *operator->()
     {
         return &_vector;
     }
 
-    const vector *operator -> () const
+    const vector *operator->() const
     {
         return &_vector;
     }
 
-    vector &operator * ()
+    vector &operator*()
     {
         return _vector;
     }
 
-    const vector &operator * () const
+    const vector &operator*() const
     {
         return _vector;
     }
 
-    Type * &operator [] (const std::size_t index_)
+    Type *&operator[](const std::size_t index_)
     {
         return _vector[index_];
     }
 
-    Type * const &operator [] (const std::size_t index_) const
+    Type *const &operator[](const std::size_t index_) const
     {
         return _vector[index_];
     }
 
-    bool operator == (const ptr_vector &rhs_) const
+    bool operator==(const ptr_vector &rhs_) const
     {
-        bool equal_ = _vector.size () == rhs_._vector.size ();
+        bool equal_ = _vector.size() == rhs_._vector.size();
 
         if (equal_)
         {
-            typename vector::const_iterator lhs_iter_ = _vector.begin ();
-            typename vector::const_iterator end_ = _vector.end ();
-            typename vector::const_iterator rhs_iter_ = rhs_._vector.begin ();
+            typename vector::const_iterator lhs_iter_ = _vector.begin();
+            typename vector::const_iterator end_ = _vector.end();
+            typename vector::const_iterator rhs_iter_ = rhs_._vector.begin();
 
             for (; equal_ && lhs_iter_ != end_; ++lhs_iter_, ++rhs_iter_)
             {
@@ -76,15 +76,15 @@ public:
             }
         }
 
-        return  equal_;
+        return equal_;
     }
 
-    void clear ()
+    void clear()
     {
-        if (!_vector.empty ())
+        if (!_vector.empty())
         {
-            Type **iter_ = &_vector.front ();
-            Type **end_ = iter_ + _vector.size ();
+            Type **iter_ = &_vector.front();
+            Type **end_ = iter_ + _vector.size();
 
             for (; iter_ != end_; ++iter_)
             {
@@ -92,17 +92,17 @@ public:
             }
         }
 
-        _vector.clear ();
+        _vector.clear();
     }
 
-private:
+  private:
     vector _vector;
 
-    ptr_vector (const ptr_vector &); // No copy construction.
-    ptr_vector &operator = (const ptr_vector &); // No assignment.
+    ptr_vector(const ptr_vector &);            // No copy construction.
+    ptr_vector &operator=(const ptr_vector &); // No assignment.
 };
-}
-}
-}
+} // namespace detail
+} // namespace lexer
+} // namespace boost
 
 #endif

@@ -9,54 +9,52 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_SELECT_RINGS_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_SELECT_RINGS_HPP
 
-
 #include <boost/range.hpp>
 
 #include <boost/geometry/algorithms/detail/overlay/select_rings.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
+{
+namespace overlay
 {
 
 namespace dispatch
 {
 
-    template <typename Multi>
-    struct select_rings<multi_polygon_tag, Multi>
+template <typename Multi>
+struct select_rings<multi_polygon_tag, Multi>
+{
+    template <typename Geometry, typename Map>
+    static inline void apply(Multi const &multi, Geometry const &geometry,
+                             ring_identifier id, Map &map, bool midpoint)
     {
-        template <typename Geometry, typename Map>
-        static inline void apply(Multi const& multi, Geometry const& geometry,
-                    ring_identifier id, Map& map, bool midpoint)
+        typedef typename boost::range_iterator<
+            Multi const>::type iterator_type;
+
+        typedef select_rings<polygon_tag, typename boost::range_value<Multi>::type> per_polygon;
+
+        id.multi_index = 0;
+        for (iterator_type it = boost::begin(multi); it != boost::end(multi); ++it)
         {
-            typedef typename boost::range_iterator
-                <
-                    Multi const
-                >::type iterator_type;
-
-            typedef select_rings<polygon_tag, typename boost::range_value<Multi>::type> per_polygon;
-
-            id.multi_index = 0;
-            for (iterator_type it = boost::begin(multi); it != boost::end(multi); ++it)
-            {
-                id.ring_index = -1;
-                per_polygon::apply(*it, geometry, id, map, midpoint);
-                id.multi_index++;
-            }
+            id.ring_index = -1;
+            per_polygon::apply(*it, geometry, id, map, midpoint);
+            id.multi_index++;
         }
-    };
-}
+    }
+};
+} // namespace dispatch
 
-
-}} // namespace detail::overlay
+} // namespace overlay
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_SELECT_RINGS_HPP

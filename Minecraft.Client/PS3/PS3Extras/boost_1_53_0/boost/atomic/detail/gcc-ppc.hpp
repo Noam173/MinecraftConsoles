@@ -7,9 +7,9 @@
 //  See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 
-#include <cstddef>
-#include <boost/cstdint.hpp>
 #include <boost/atomic/detail/config.hpp>
+#include <boost/cstdint.hpp>
+#include <cstddef>
 
 #ifdef BOOST_ATOMIC_HAS_PRAGMA_ONCE
 #pragma once
@@ -57,60 +57,70 @@
     to pose a problem.
 */
 
-namespace boost {
-namespace atomics {
-namespace detail {
+namespace boost
+{
+namespace atomics
+{
+namespace detail
+{
 
 inline void
 ppc_fence_before(memory_order order)
 {
-    switch(order) {
-        case memory_order_release:
-        case memory_order_acq_rel:
+    switch (order)
+    {
+    case memory_order_release:
+    case memory_order_acq_rel:
 #if defined(__powerpc64__)
-            __asm__ __volatile__ ("lwsync" ::: "memory");
-            break;
+        __asm__ __volatile__("lwsync" ::: "memory");
+        break;
 #endif
-        case memory_order_seq_cst:
-            __asm__ __volatile__ ("sync" ::: "memory");
-        default:;
+    case memory_order_seq_cst:
+        __asm__ __volatile__("sync" ::: "memory");
+    default:;
     }
 }
 
 inline void
 ppc_fence_after(memory_order order)
 {
-    switch(order) {
-        case memory_order_acquire:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __asm__ __volatile__ ("isync");
-        case memory_order_consume:
-            __asm__ __volatile__ ("" ::: "memory");
-        default:;
+    switch (order)
+    {
+    case memory_order_acquire:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __asm__ __volatile__("isync");
+    case memory_order_consume:
+        __asm__ __volatile__("" ::: "memory");
+    default:;
     }
 }
 
 inline void
 ppc_fence_after_store(memory_order order)
 {
-    switch(order) {
-        case memory_order_seq_cst:
-            __asm__ __volatile__ ("sync");
-        default:;
+    switch (order)
+    {
+    case memory_order_seq_cst:
+        __asm__ __volatile__("sync");
+    default:;
     }
 }
 
-}
-}
+} // namespace detail
+} // namespace atomics
 
-class atomic_flag {
-private:
-    atomic_flag(const atomic_flag &) /* = delete */ ;
-    atomic_flag & operator=(const atomic_flag &) /* = delete */ ;
+class atomic_flag
+{
+  private:
+    atomic_flag(const atomic_flag &) /* = delete */;
+    atomic_flag &operator=(const atomic_flag &) /* = delete */;
     uint32_t v_;
-public:
-    atomic_flag(void) : v_(false) {}
+
+  public:
+    atomic_flag(void) : v_(false)
+    {
+    }
 
     void
     clear(memory_order order = memory_order_seq_cst) volatile
@@ -125,15 +135,14 @@ public:
     {
         uint32_t original;
         atomics::detail::ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (1)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(1)
+            : "cr0");
         atomics::detail::ppc_fence_after(order);
         return original;
     }
@@ -173,46 +182,54 @@ in-line for Apple
 #if !defined(__APPLE__)
 
 #define BOOST_ATOMIC_ASM_SLOWPATH_CLEAR \
-    "9:\n" \
-    ".subsection 2\n" \
-    "2: addi %1,0,0\n" \
-    "b 9b\n" \
-    ".previous\n" \
+    "9:\n"                              \
+    ".subsection 2\n"                   \
+    "2: addi %1,0,0\n"                  \
+    "b 9b\n"                            \
+    ".previous\n"
 
 #else
 
 #define BOOST_ATOMIC_ASM_SLOWPATH_CLEAR \
-    "b 9f\n" \
-    "2: addi %1,0,0\n" \
-    "9:\n" \
+    "b 9f\n"                            \
+    "2: addi %1,0,0\n"                  \
+    "9:\n"
 
 #endif
 
-namespace boost {
-namespace atomics {
-namespace detail {
+namespace boost
+{
+namespace atomics
+{
+namespace detail
+{
 
 /* integral types */
 
-template<typename T>
-class base_atomic<T, int, 1, true> {
+template <typename T>
+class base_atomic<T, int, 1, true>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef int32_t storage_type;
     typedef T difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
             : "+m"(v_)
-            : "r" (v)
-        );
+            : "r"(v));
         ppc_fence_after_store(order);
     }
 
@@ -220,14 +237,13 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v;
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
-            : "=&r" (v)
-            : "m" (v_)
-        );
+            : "=&r"(v)
+            : "m"(v_));
         ppc_fence_after(order);
         return v;
     }
@@ -237,22 +253,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -266,22 +281,24 @@ public:
             "stwcx. %4,%y2\n"
             "bne- 2f\n"
             "addi %1,0,1\n"
-            "1:"
-            BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            "1:" BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -298,14 +315,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -314,15 +334,15 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "add %1,%0,%3\n"
             "extsb %1, %1\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -333,15 +353,15 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "sub %1,%0,%3\n"
             "extsb %1, %1\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -352,14 +372,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "and %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -370,14 +390,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "or %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -388,14 +408,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "xor %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -408,31 +428,36 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T>
-class base_atomic<T, int, 1, false> {
+template <typename T>
+class base_atomic<T, int, 1, false>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint32_t storage_type;
     typedef T difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
             : "+m"(v_)
-            : "r" (v)
-        );
+            : "r"(v));
         ppc_fence_after_store(order);
     }
 
@@ -440,14 +465,13 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v;
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
-            : "=&r" (v)
-            : "m" (v_)
-        );
+            : "=&r"(v)
+            : "m"(v_));
         ppc_fence_after(order);
         return v;
     }
@@ -457,22 +481,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -489,20 +512,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -519,14 +545,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -535,15 +564,15 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "add %1,%0,%3\n"
             "rlwinm %1, %1, 0, 0xff\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -554,15 +583,15 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "sub %1,%0,%3\n"
             "rlwinm %1, %1, 0, 0xff\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -573,14 +602,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "and %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -591,14 +620,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "or %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -609,14 +638,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "xor %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -629,31 +658,36 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T>
-class base_atomic<T, int, 2, true> {
+template <typename T>
+class base_atomic<T, int, 2, true>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef int32_t storage_type;
     typedef T difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
             : "+m"(v_)
-            : "r" (v)
-        );
+            : "r"(v));
         ppc_fence_after_store(order);
     }
 
@@ -661,14 +695,13 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v;
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
-            : "=&r" (v)
-            : "m" (v_)
-        );
+            : "=&r"(v)
+            : "m"(v_));
         ppc_fence_after(order);
         return v;
     }
@@ -678,22 +711,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -710,20 +742,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -740,14 +775,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -756,15 +794,15 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "add %1,%0,%3\n"
             "extsh %1, %1\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -775,15 +813,15 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "sub %1,%0,%3\n"
             "extsh %1, %1\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -794,14 +832,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "and %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -812,14 +850,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "or %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -830,14 +868,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "xor %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -850,31 +888,36 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T>
-class base_atomic<T, int, 2, false> {
+template <typename T>
+class base_atomic<T, int, 2, false>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint32_t storage_type;
     typedef T difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
             : "+m"(v_)
-            : "r" (v)
-        );
+            : "r"(v));
         ppc_fence_after_store(order);
     }
 
@@ -882,14 +925,13 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v;
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
-            : "=&r" (v)
-            : "m" (v_)
-        );
+            : "=&r"(v)
+            : "m"(v_));
         ppc_fence_after(order);
         return v;
     }
@@ -899,22 +941,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -931,20 +972,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -961,14 +1005,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -977,15 +1024,15 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "add %1,%0,%3\n"
             "rlwinm %1, %1, 0, 0xffff\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -996,15 +1043,15 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "sub %1,%0,%3\n"
             "rlwinm %1, %1, 0, 0xffff\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1015,14 +1062,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "and %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1033,14 +1080,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "or %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1051,14 +1098,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "xor %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1071,20 +1118,26 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T, int, 4, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, int, 4, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef T difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
@@ -1098,14 +1151,13 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v = const_cast<const volatile value_type &>(v_);
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "+b"(v)
             :
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
         return v;
     }
@@ -1115,22 +1167,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1147,20 +1198,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1177,14 +1231,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -1193,14 +1250,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "add %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1211,14 +1268,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "sub %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1229,14 +1286,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "and %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1247,14 +1304,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "or %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1265,14 +1322,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "xor %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1285,22 +1342,28 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
 #if defined(__powerpc64__)
 
-template<typename T, bool Sign>
-class base_atomic<T, int, 8, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, int, 8, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef T difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
@@ -1314,14 +1377,13 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v = const_cast<const volatile value_type &>(v_);
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "cmpd %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "+b"(v)
             :
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
         return v;
     }
@@ -1331,22 +1393,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y1\n"
             "stdcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1363,20 +1424,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1393,14 +1457,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -1409,14 +1476,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y2\n"
             "add %1,%0,%3\n"
             "stdcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1427,14 +1494,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y2\n"
             "sub %1,%0,%3\n"
             "stdcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1445,14 +1512,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y2\n"
             "and %1,%0,%3\n"
             "stdcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1463,14 +1530,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y2\n"
             "or %1,%0,%3\n"
             "stdcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1481,14 +1548,14 @@ public:
     {
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y2\n"
             "xor %1,%0,%3\n"
             "stdcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1501,9 +1568,9 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
@@ -1513,23 +1580,28 @@ private:
 
 #if !defined(__powerpc64__)
 
-template<bool Sign>
-class base_atomic<void *, void *, 4, Sign> {
+template <bool Sign>
+class base_atomic<void *, void *, 4, Sign>
+{
     typedef base_atomic this_type;
-    typedef void * value_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+    typedef void *value_type;
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
-            : "+m" (v_)
-            : "r" (v)
-        );
+            : "+m"(v_)
+            : "r"(v));
         ppc_fence_after_store(order);
     }
 
@@ -1537,15 +1609,14 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v;
-        __asm__ (
+        __asm__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "=r"(v)
             : "m"(v_)
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
         return v;
     }
@@ -1555,22 +1626,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1587,20 +1657,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1617,14 +1690,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -1635,30 +1711,35 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T *, void *, 4, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T *, void *, 4, Sign>
+{
     typedef base_atomic this_type;
-    typedef T * value_type;
+    typedef T *value_type;
     typedef ptrdiff_t difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
-            : "+m" (v_)
-            : "r" (v)
-        );
+            : "+m"(v_)
+            : "r"(v));
         ppc_fence_after_store(order);
     }
 
@@ -1666,15 +1747,14 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v;
-        __asm__ (
+        __asm__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "=r"(v)
             : "m"(v_)
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
         return v;
     }
@@ -1684,22 +1764,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1716,20 +1795,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1746,14 +1828,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -1763,14 +1848,14 @@ public:
         v = v * sizeof(*v_);
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "add %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1782,14 +1867,14 @@ public:
         v = v * sizeof(*v_);
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y2\n"
             "sub %1,%0,%3\n"
             "stwcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -1802,31 +1887,36 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_POINTER_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
 #else
 
-template<bool Sign>
-class base_atomic<void *, void *, 8, Sign> {
+template <bool Sign>
+class base_atomic<void *, void *, 8, Sign>
+{
     typedef base_atomic this_type;
-    typedef void * value_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+    typedef void *value_type;
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "std %1, %0\n"
-            : "+m" (v_)
-            : "r" (v)
-        );
+            : "+m"(v_)
+            : "r"(v));
         ppc_fence_after_store(order);
     }
 
@@ -1834,15 +1924,14 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v;
-        __asm__ (
+        __asm__(
             "ld %0, %1\n"
             "cmpd %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "=r"(v)
             : "m"(v_)
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
         return v;
     }
@@ -1852,22 +1941,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y1\n"
             "stdcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1884,20 +1972,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -1914,14 +2005,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -1932,30 +2026,35 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T *, void *, 8, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T *, void *, 8, Sign>
+{
     typedef base_atomic this_type;
-    typedef T * value_type;
+    typedef T *value_type;
     typedef ptrdiff_t difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "std %1, %0\n"
-            : "+m" (v_)
-            : "r" (v)
-        );
+            : "+m"(v_)
+            : "r"(v));
         ppc_fence_after_store(order);
     }
 
@@ -1963,15 +2062,14 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         value_type v;
-        __asm__ (
+        __asm__(
             "ld %0, %1\n"
             "cmpd %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "=r"(v)
             : "m"(v_)
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
         return v;
     }
@@ -1981,22 +2079,21 @@ public:
     {
         value_type original;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y1\n"
             "stdcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (v)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(v)
+            : "cr0");
         ppc_fence_after(order);
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -2013,20 +2110,23 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -2043,14 +2143,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected), "=&b" (success), "+Z"(v_)
-            : "b" (expected), "b" (desired)
-            : "cr0"
-        );
+            : "=&b"(expected), "=&b"(success), "+Z"(v_)
+            : "b"(expected), "b"(desired)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         return success;
     }
 
@@ -2060,14 +2163,14 @@ public:
         v = v * sizeof(*v_);
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y2\n"
             "add %1,%0,%3\n"
             "stdcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -2079,14 +2182,14 @@ public:
         v = v * sizeof(*v_);
         value_type original, tmp;
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y2\n"
             "sub %1,%0,%3\n"
             "stdcx. %1,%y2\n"
             "bne- 1b\n"
-            : "=&b" (original), "=&b" (tmp), "+Z"(v_)
-            : "b" (v)
+            : "=&b"(original), "=&b"(tmp), "+Z"(v_)
+            : "b"(v)
             : "cc");
         ppc_fence_after(order);
         return original;
@@ -2099,9 +2202,9 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_POINTER_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
@@ -2109,29 +2212,32 @@ private:
 
 /* generic */
 
-template<typename T, bool Sign>
-class base_atomic<T, void, 1, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, void, 1, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint32_t storage_type;
-public:
-    explicit base_atomic(value_type const& v)
+
+  public:
+    explicit base_atomic(value_type const &v)
     {
         memcpy(&v_, &v, sizeof(value_type));
     }
-    base_atomic(void) {}
+    base_atomic(void)
+    {
+    }
 
     void
-    store(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    store(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0;
         memcpy(&tmp, &v, sizeof(value_type));
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
-            : "+m" (v_)
-            : "r" (tmp)
-        );
+            : "+m"(v_)
+            : "r"(tmp));
         ppc_fence_after_store(order);
     }
 
@@ -2139,15 +2245,14 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         storage_type tmp;
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "=r"(tmp)
             : "m"(v_)
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
 
         value_type v;
@@ -2156,20 +2261,19 @@ public:
     }
 
     value_type
-    exchange(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    exchange(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0, original;
         memcpy(&tmp, &v, sizeof(value_type));
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (tmp)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(tmp)
+            : "cr0");
         ppc_fence_after(order);
         value_type res;
         memcpy(&res, &original, sizeof(value_type));
@@ -2178,8 +2282,8 @@ public:
 
     bool
     compare_exchange_weak(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -2199,22 +2303,25 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected_s), "=&b" (success), "+Z"(v_)
-            : "b" (expected_s), "b" (desired_s)
-            : "cr0"
-        );
+            : "=&b"(expected_s), "=&b"(success), "+Z"(v_)
+            : "b"(expected_s), "b"(desired_s)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         memcpy(&expected, &expected_s, sizeof(value_type));
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -2234,14 +2341,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected_s), "=&b" (success), "+Z"(v_)
-            : "b" (expected_s), "b" (desired_s)
-            : "cr0"
-        );
+            : "=&b"(expected_s), "=&b"(success), "+Z"(v_)
+            : "b"(expected_s), "b"(desired_s)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         memcpy(&expected, &expected_s, sizeof(value_type));
         return success;
     }
@@ -2253,35 +2363,38 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T, void, 2, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, void, 2, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint32_t storage_type;
-public:
-    explicit base_atomic(value_type const& v)
+
+  public:
+    explicit base_atomic(value_type const &v)
     {
         memcpy(&v_, &v, sizeof(value_type));
     }
-    base_atomic(void) {}
+    base_atomic(void)
+    {
+    }
 
     void
-    store(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    store(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0;
         memcpy(&tmp, &v, sizeof(value_type));
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
-            : "+m" (v_)
-            : "r" (tmp)
-        );
+            : "+m"(v_)
+            : "r"(tmp));
         ppc_fence_after_store(order);
     }
 
@@ -2289,15 +2402,14 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         storage_type tmp;
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "=r"(tmp)
             : "m"(v_)
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
 
         value_type v;
@@ -2306,20 +2418,19 @@ public:
     }
 
     value_type
-    exchange(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    exchange(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0, original;
         memcpy(&tmp, &v, sizeof(value_type));
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (tmp)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(tmp)
+            : "cr0");
         ppc_fence_after(order);
         value_type res;
         memcpy(&res, &original, sizeof(value_type));
@@ -2328,8 +2439,8 @@ public:
 
     bool
     compare_exchange_weak(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -2349,22 +2460,25 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected_s), "=&b" (success), "+Z"(v_)
-            : "b" (expected_s), "b" (desired_s)
-            : "cr0"
-        );
+            : "=&b"(expected_s), "=&b"(success), "+Z"(v_)
+            : "b"(expected_s), "b"(desired_s)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         memcpy(&expected, &expected_s, sizeof(value_type));
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -2384,14 +2498,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected_s), "=&b" (success), "+Z"(v_)
-            : "b" (expected_s), "b" (desired_s)
-            : "cr0"
-        );
+            : "=&b"(expected_s), "=&b"(success), "+Z"(v_)
+            : "b"(expected_s), "b"(desired_s)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         memcpy(&expected, &expected_s, sizeof(value_type));
         return success;
     }
@@ -2403,35 +2520,38 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T, void, 4, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, void, 4, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint32_t storage_type;
-public:
-    explicit base_atomic(value_type const& v) : v_(0)
+
+  public:
+    explicit base_atomic(value_type const &v) : v_(0)
     {
         memcpy(&v_, &v, sizeof(value_type));
     }
-    base_atomic(void) {}
+    base_atomic(void)
+    {
+    }
 
     void
-    store(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    store(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0;
         memcpy(&tmp, &v, sizeof(value_type));
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "stw %1, %0\n"
-            : "+m" (v_)
-            : "r" (tmp)
-        );
+            : "+m"(v_)
+            : "r"(tmp));
         ppc_fence_after_store(order);
     }
 
@@ -2439,15 +2559,14 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         storage_type tmp;
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "lwz %0, %1\n"
             "cmpw %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "=r"(tmp)
             : "m"(v_)
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
 
         value_type v;
@@ -2456,20 +2575,19 @@ public:
     }
 
     value_type
-    exchange(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    exchange(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0, original;
         memcpy(&tmp, &v, sizeof(value_type));
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "lwarx %0,%y1\n"
             "stwcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (tmp)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(tmp)
+            : "cr0");
         ppc_fence_after(order);
         value_type res;
         memcpy(&res, &original, sizeof(value_type));
@@ -2478,8 +2596,8 @@ public:
 
     bool
     compare_exchange_weak(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -2499,22 +2617,25 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected_s), "=&b" (success), "+Z"(v_)
-            : "b" (expected_s), "b" (desired_s)
-            : "cr0"
-        );
+            : "=&b"(expected_s), "=&b"(success), "+Z"(v_)
+            : "b"(expected_s), "b"(desired_s)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         memcpy(&expected, &expected_s, sizeof(value_type));
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -2534,14 +2655,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected_s), "=&b" (success), "+Z"(v_)
-            : "b" (expected_s), "b" (desired_s)
-            : "cr0"
-        );
+            : "=&b"(expected_s), "=&b"(success), "+Z"(v_)
+            : "b"(expected_s), "b"(desired_s)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         memcpy(&expected, &expected_s, sizeof(value_type));
         return success;
     }
@@ -2553,37 +2677,40 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
 #if defined(__powerpc64__)
 
-template<typename T, bool Sign>
-class base_atomic<T, void, 8, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, void, 8, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint64_t storage_type;
-public:
-    explicit base_atomic(value_type const& v) : v_(0)
+
+  public:
+    explicit base_atomic(value_type const &v) : v_(0)
     {
         memcpy(&v_, &v, sizeof(value_type));
     }
-    base_atomic(void) {}
+    base_atomic(void)
+    {
+    }
 
     void
-    store(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    store(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp;
         memcpy(&tmp, &v, sizeof(value_type));
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "std %1, %0\n"
-            : "+m" (v_)
-            : "r" (tmp)
-        );
+            : "+m"(v_)
+            : "r"(tmp));
         ppc_fence_after_store(order);
     }
 
@@ -2591,15 +2718,14 @@ public:
     load(memory_order order = memory_order_seq_cst) const volatile
     {
         storage_type tmp;
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
             "ld %0, %1\n"
             "cmpd %0, %0\n"
             "bne- 1f\n"
             "1:\n"
             : "=r"(tmp)
             : "m"(v_)
-            : "cr0"
-        );
+            : "cr0");
         ppc_fence_after(order);
 
         value_type v;
@@ -2608,20 +2734,19 @@ public:
     }
 
     value_type
-    exchange(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    exchange(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0, original;
         memcpy(&tmp, &v, sizeof(value_type));
         ppc_fence_before(order);
-        __asm__ (
+        __asm__(
             "1:\n"
             "ldarx %0,%y1\n"
             "stdcx. %2,%y1\n"
             "bne- 1b\n"
-            : "=&b" (original), "+Z"(v_)
-            : "b" (tmp)
-            : "cr0"
-        );
+            : "=&b"(original), "+Z"(v_)
+            : "b"(tmp)
+            : "cr0");
         ppc_fence_after(order);
         value_type res;
         memcpy(&res, &original, sizeof(value_type));
@@ -2630,8 +2755,8 @@ public:
 
     bool
     compare_exchange_weak(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -2651,22 +2776,25 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected_s), "=&b" (success), "+Z"(v_)
-            : "b" (expected_s), "b" (desired_s)
-            : "cr0"
-        );
+            : "=&b"(expected_s), "=&b"(success), "+Z"(v_)
+            : "b"(expected_s), "b"(desired_s)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         memcpy(&expected, &expected_s, sizeof(value_type));
         return success;
     }
 
     bool
     compare_exchange_strong(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -2686,14 +2814,17 @@ public:
             "1:"
 
             BOOST_ATOMIC_ASM_SLOWPATH_CLEAR
-            : "=&b" (expected_s), "=&b" (success), "+Z"(v_)
-            : "b" (expected_s), "b" (desired_s)
-            : "cr0"
-        );
+            : "=&b"(expected_s), "=&b"(success), "+Z"(v_)
+            : "b"(expected_s), "b"(desired_s)
+            : "cr0");
         if (success)
+        {
             ppc_fence_after(success_order);
+        }
         else
+        {
             ppc_fence_after(failure_order);
+        }
         memcpy(&expected, &expected_s, sizeof(value_type));
         return success;
     }
@@ -2705,33 +2836,34 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 #endif
 
-}
-}
+} // namespace detail
+} // namespace atomics
 
 #define BOOST_ATOMIC_THREAD_FENCE 2
 inline void
 atomic_thread_fence(memory_order order)
 {
-    switch(order) {
-        case memory_order_acquire:
-            __asm__ __volatile__ ("isync" ::: "memory");
-            break;
-        case memory_order_release:
+    switch (order)
+    {
+    case memory_order_acquire:
+        __asm__ __volatile__("isync" ::: "memory");
+        break;
+    case memory_order_release:
 #if defined(__powerpc64__)
-            __asm__ __volatile__ ("lwsync" ::: "memory");
-            break;
+        __asm__ __volatile__("lwsync" ::: "memory");
+        break;
 #endif
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __asm__ __volatile__ ("sync" ::: "memory");
-        default:;
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __asm__ __volatile__("sync" ::: "memory");
+    default:;
     }
 }
 
@@ -2739,18 +2871,19 @@ atomic_thread_fence(memory_order order)
 inline void
 atomic_signal_fence(memory_order order)
 {
-    switch(order) {
-        case memory_order_acquire:
-        case memory_order_release:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __asm__ __volatile__ ("" ::: "memory");
-            break;
-        default:;
+    switch (order)
+    {
+    case memory_order_acquire:
+    case memory_order_release:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __asm__ __volatile__("" ::: "memory");
+        break;
+    default:;
     }
 }
 
-}
+} // namespace boost
 
 #endif /* !defined(BOOST_ATOMIC_FORCE_FALLBACK) */
 

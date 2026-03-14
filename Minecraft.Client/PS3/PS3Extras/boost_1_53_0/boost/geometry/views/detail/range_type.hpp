@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_VIEWS_DETAIL_RANGE_TYPE_HPP
 #define BOOST_GEOMETRY_VIEWS_DETAIL_RANGE_TYPE_HPP
 
-
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits.hpp>
 
@@ -24,25 +23,21 @@
 
 #include <boost/geometry/views/box_view.hpp>
 
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
 template <typename GeometryTag, typename Geometry>
 struct range_type
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_OR_NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE
-            , (types<Geometry>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_OR_NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE, (types<Geometry>));
 };
-
 
 template <typename Geometry>
 struct range_type<ring_tag, Geometry>
@@ -56,7 +51,6 @@ struct range_type<linestring_tag, Geometry>
     typedef Geometry type;
 };
 
-
 template <typename Geometry>
 struct range_type<polygon_tag, Geometry>
 {
@@ -69,14 +63,12 @@ struct range_type<box_tag, Geometry>
     typedef box_view<Geometry> type;
 };
 
-
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
 // Will probably be replaced by the more generic "view_as", therefore in detail
 namespace detail
 {
-
 
 /*!
 \brief Meta-function defining a type which is a boost-range.
@@ -91,16 +83,14 @@ namespace detail
 template <typename Geometry>
 struct range_type
 {
-    typedef typename dispatch::range_type
-        <
-            typename tag<Geometry>::type,
-            Geometry
-        >::type type;
+    typedef typename dispatch::range_type<
+        typename tag<Geometry>::type,
+        Geometry>::type type;
 };
 
-}
+} // namespace detail
 
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_VIEWS_DETAIL_RANGE_TYPE_HPP

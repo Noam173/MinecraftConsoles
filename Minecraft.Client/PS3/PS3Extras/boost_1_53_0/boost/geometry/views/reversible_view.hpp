@@ -14,10 +14,9 @@
 #ifndef BOOST_GEOMETRY_VIEWS_REVERSIBLE_VIEW_HPP
 #define BOOST_GEOMETRY_VIEWS_REVERSIBLE_VIEW_HPP
 
-
-#include <boost/version.hpp>
 #include <boost/range.hpp>
 #include <boost/range/adaptor/reversed.hpp>
+#include <boost/version.hpp>
 
 #include <boost/geometry/core/ring_type.hpp>
 #include <boost/geometry/core/tag.hpp>
@@ -25,14 +24,20 @@
 
 #include <boost/geometry/views/identity_view.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
 \brief Flag for iterating a reversible_view in forward or reverse direction
 \ingroup views
 */
-enum iterate_direction { iterate_forward, iterate_reverse };
+enum iterate_direction
+{
+    iterate_forward,
+    iterate_reverse
+};
 
 /*!
 \brief View on a range, reversing direction if necessary
@@ -41,9 +46,9 @@ enum iterate_direction { iterate_forward, iterate_reverse };
 \ingroup views
 */
 template <typename Range, iterate_direction Direction>
-struct reversible_view {};
-
-
+struct reversible_view
+{
+};
 
 #ifndef DOXYGEN_NO_SPECIALIZATIONS
 
@@ -52,7 +57,6 @@ struct reversible_view<Range, iterate_forward>
 {
     typedef identity_view<Range> type;
 };
-
 
 template <typename Range>
 struct reversible_view<Range, iterate_reverse>
@@ -67,8 +71,7 @@ struct reversible_view<Range, iterate_reverse>
 
 #endif // DOXYGEN_NO_SPECIALIZATIONS
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_VIEWS_REVERSIBLE_VIEW_HPP

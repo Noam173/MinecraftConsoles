@@ -5,8 +5,8 @@
 #ifndef BOOST_TYPEOF_STD_functional_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_functional_hpp_INCLUDED
 
-#include <functional>
 #include <boost/typeof/typeof.hpp>
+#include <functional>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -31,11 +31,11 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::unary_negate, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::binary_negate, 1)
 
 #if defined(__MWERKS__) && defined(_MSL_EXTENDED_BINDERS)
-    BOOST_TYPEOF_REGISTER_TEMPLATE(std::binder1st, 2)
-    BOOST_TYPEOF_REGISTER_TEMPLATE(std::binder2nd, 2)
+BOOST_TYPEOF_REGISTER_TEMPLATE(std::binder1st, 2)
+BOOST_TYPEOF_REGISTER_TEMPLATE(std::binder2nd, 2)
 #else
-    BOOST_TYPEOF_REGISTER_TEMPLATE(std::binder1st, 1)
-    BOOST_TYPEOF_REGISTER_TEMPLATE(std::binder2nd, 1)
+BOOST_TYPEOF_REGISTER_TEMPLATE(std::binder1st, 1)
+BOOST_TYPEOF_REGISTER_TEMPLATE(std::binder2nd, 1)
 #endif
 
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::pointer_to_unary_function, 2)
@@ -46,10 +46,10 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::mem_fun_ref_t, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::mem_fun1_ref_t, 3)
 
 #if !BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
-    BOOST_TYPEOF_REGISTER_TEMPLATE(std::const_mem_fun_t, 2)
-    BOOST_TYPEOF_REGISTER_TEMPLATE(std::const_mem_fun1_t, 3)
-    BOOST_TYPEOF_REGISTER_TEMPLATE(std::const_mem_fun_ref_t, 2)
-    BOOST_TYPEOF_REGISTER_TEMPLATE(std::const_mem_fun1_ref_t, 3)
-#endif//BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
+BOOST_TYPEOF_REGISTER_TEMPLATE(std::const_mem_fun_t, 2)
+BOOST_TYPEOF_REGISTER_TEMPLATE(std::const_mem_fun1_t, 3)
+BOOST_TYPEOF_REGISTER_TEMPLATE(std::const_mem_fun_ref_t, 2)
+BOOST_TYPEOF_REGISTER_TEMPLATE(std::const_mem_fun1_ref_t, 3)
+#endif // BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
 
-#endif//BOOST_TYPEOF_STD_functional_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_functional_hpp_INCLUDED

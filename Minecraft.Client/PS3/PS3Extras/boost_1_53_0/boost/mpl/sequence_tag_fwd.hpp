@@ -4,8 +4,8 @@
 
 // Copyright Aleksey Gurtovoy 2000-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -14,13 +14,18 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
-namespace boost { namespace mpl {
+namespace boost
+{
+namespace mpl
+{
 
 struct nested_begin_end_tag;
 struct non_sequence_tag;
 
-template< typename Sequence > struct sequence_tag;
+template <typename Sequence>
+struct sequence_tag;
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_SEQUENCE_TAG_FWD_HPP_INCLUDED

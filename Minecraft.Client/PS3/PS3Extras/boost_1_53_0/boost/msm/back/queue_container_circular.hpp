@@ -13,20 +13,25 @@
 
 #include <boost/circular_buffer.hpp>
 
-namespace boost { namespace msm { namespace back
+namespace boost
 {
-    struct queue_container_circular
+namespace msm
+{
+namespace back
+{
+struct queue_container_circular
+{
+    typedef int queue_container_policy;
+
+    template <class Element>
+    struct In
     {
-        typedef int queue_container_policy;
-
-        template <class Element>
-        struct In 
-        {
-            typedef typename boost::circular_buffer<Element> type;
-        };
+        typedef typename boost::circular_buffer<Element> type;
     };
+};
 
-} } }//boost::msm::back
+} // namespace back
+} // namespace msm
+} // namespace boost
 
-
-#endif //BOOST_MSM_BACK_QUEUE_CONTAINER_CIRCULAR_H
+#endif // BOOST_MSM_BACK_QUEUE_CONTAINER_CIRCULAR_H

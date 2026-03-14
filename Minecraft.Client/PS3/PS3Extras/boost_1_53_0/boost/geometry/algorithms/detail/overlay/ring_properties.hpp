@@ -9,18 +9,19 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_RING_PROPERTIES_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_RING_PROPERTIES_HPP
 
-
 #include <boost/geometry/algorithms/area.hpp>
-#include <boost/geometry/algorithms/within.hpp>
 #include <boost/geometry/algorithms/detail/point_on_border.hpp>
+#include <boost/geometry/algorithms/within.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
+{
+namespace overlay
 {
 
 template <typename Point>
@@ -44,19 +45,13 @@ struct ring_properties
     std::vector<ring_identifier> children;
 
     inline ring_properties()
-        : area(area_type())
-        , within_code(-1)
-        , reversed(false)
-        , discarded(false)
-        , parent_area(-1)
-    {}
+        : area(area_type()), within_code(-1), reversed(false), discarded(false), parent_area(-1)
+    {
+    }
 
     template <typename RingOrBox>
-    inline ring_properties(RingOrBox const& ring_or_box, bool midpoint)
-        : within_code(-1)
-        , reversed(false)
-        , discarded(false)
-        , parent_area(-1)
+    inline ring_properties(RingOrBox const &ring_or_box, bool midpoint)
+        : within_code(-1), reversed(false), discarded(false), parent_area(-1)
     {
         this->area = geometry::area(ring_or_box);
         geometry::point_on_border(this->point, ring_or_box, midpoint);
@@ -68,11 +63,11 @@ struct ring_properties
     }
 };
 
-}} // namespace detail::overlay
+} // namespace overlay
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_RING_PROPERTIES_HPP

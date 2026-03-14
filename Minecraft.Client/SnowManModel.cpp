@@ -1,7 +1,7 @@
-#include "stdafx.h"
 #include "SnowmanModel.h"
 #include "..\Minecraft.World\Mth.h"
 #include "ModelPart.h"
+#include "stdafx.h"
 
 SnowManModel::SnowManModel() : Model()
 {
@@ -26,47 +26,45 @@ SnowManModel::SnowManModel() : Model()
 
     piece2 = (new ModelPart(this, 0, 36))->setTexSize(64, 64);
     piece2->addBox(-6, -12, -6, 12, 12, 12, g - 0.5f); // lower body
-    piece2->setPos(0, 0 + yOffset + 20, 0);  
+    piece2->setPos(0, 0 + yOffset + 20, 0);
 
-	// 4J added - compile now to avoid random performance hit first time cubes are rendered
-	head->compile(1.0f/16.0f);
-	arm1->compile(1.0f/16.0f);
-	arm2->compile(1.0f/16.0f);
-	piece1->compile(1.0f/16.0f);
-	piece2->compile(1.0f/16.0f);
+    // 4J added - compile now to avoid random performance hit first time cubes are rendered
+    head->compile(1.0f / 16.0f);
+    arm1->compile(1.0f / 16.0f);
+    arm2->compile(1.0f / 16.0f);
+    piece1->compile(1.0f / 16.0f);
+    piece2->compile(1.0f / 16.0f);
 }
 
 void SnowManModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
     Model::setupAnim(time, r, bob, yRot, xRot, scale, entity);
-	head->yRot = yRot / (float) (180 / PI);
-	head->xRot = xRot / (float) (180 / PI);
-    piece1->yRot = (yRot / (float) (180 / PI)) * 0.25f;
+    head->yRot = yRot / (float)(180 / PI);
+    head->xRot = xRot / (float)(180 / PI);
+    piece1->yRot = (yRot / (float)(180 / PI)) * 0.25f;
 
-	float s = Mth::sin(piece1->yRot);
-	float c = Mth::cos(piece1->yRot);
+    float s = Mth::sin(piece1->yRot);
+    float c = Mth::cos(piece1->yRot);
 
-	arm1->zRot = 1;
-	arm2->zRot = -1;
-	arm1->yRot = 0 + piece1->yRot;
-	arm2->yRot = PI + piece1->yRot;
+    arm1->zRot = 1;
+    arm2->zRot = -1;
+    arm1->yRot = 0 + piece1->yRot;
+    arm2->yRot = PI + piece1->yRot;
 
-	arm1->x = (c) * 5;
-	arm1->z = (-s) * 5;
-	
-	arm2->x = (-c) * 5;
-	arm2->z = (s) * 5;
+    arm1->x = (c) * 5;
+    arm1->z = (-s) * 5;
+
+    arm2->x = (-c) * 5;
+    arm2->z = (s) * 5;
 }
 
-void SnowManModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled) 
+void SnowManModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
-	setupAnim(time, r, bob, yRot, xRot, scale, entity);
+    setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
-	piece1->render(scale,usecompiled);
-	piece2->render(scale,usecompiled);
-	head->render(scale,usecompiled);
-	arm1->render(scale,usecompiled);
-	arm2->render(scale,usecompiled);
+    piece1->render(scale, usecompiled);
+    piece2->render(scale, usecompiled);
+    head->render(scale, usecompiled);
+    arm1->render(scale, usecompiled);
+    arm2->render(scale, usecompiled);
 }
-
-

@@ -12,4 +12,3 @@
 #include <boost/chrono/config.hpp>
 #include <boost/chrono/detail/inlined/posix/thread_clock.hpp>
 #include <cassert>
-

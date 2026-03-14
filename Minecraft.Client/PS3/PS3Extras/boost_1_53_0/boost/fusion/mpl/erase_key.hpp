@@ -7,33 +7,33 @@
 #if !defined(FUSION_ERASE_KEY_10022005_1907)
 #define FUSION_ERASE_KEY_10022005_1907
 
-#include <boost/mpl/erase_key.hpp>
-#include <boost/fusion/support/tag_of.hpp>
 #include <boost/fusion/algorithm/transformation/erase_key.hpp>
 #include <boost/fusion/sequence/convert.hpp>
+#include <boost/fusion/support/tag_of.hpp>
+#include <boost/mpl/erase_key.hpp>
 
-namespace boost { namespace mpl
+namespace boost
 {
-    template <typename Tag>
-    struct erase_key_impl;
+namespace mpl
+{
+template <typename Tag>
+struct erase_key_impl;
 
-    template <>
-    struct erase_key_impl<fusion::fusion_sequence_tag>
+template <>
+struct erase_key_impl<fusion::fusion_sequence_tag>
+{
+    template <typename Sequence, typename Key>
+    struct apply
     {
-        template <typename Sequence, typename Key>
-        struct apply
-        {
-            typedef typename
-                fusion::result_of::erase_key<Sequence, Key>::type
+        typedef typename fusion::result_of::erase_key<Sequence, Key>::type
             result;
 
-            typedef typename
-                fusion::result_of::convert<
-                    typename fusion::detail::tag_of<Sequence>::type, result>::type
+        typedef typename fusion::result_of::convert<
+            typename fusion::detail::tag_of<Sequence>::type, result>::type
             type;
-        };
     };
-}}
+};
+} // namespace mpl
+} // namespace boost
 
 #endif
-

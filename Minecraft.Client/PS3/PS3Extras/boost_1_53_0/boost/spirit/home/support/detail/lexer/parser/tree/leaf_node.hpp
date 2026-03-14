@@ -7,8 +7,8 @@
 #define BOOST_LEXER_LEAF_NODE_HPP
 
 #include "../../consts.hpp" // null_token
-#include "node.hpp"
 #include "../../size_t.hpp"
+#include "node.hpp"
 
 namespace boost
 {
@@ -18,50 +18,50 @@ namespace detail
 {
 class leaf_node : public node
 {
-public:
-    leaf_node (const std::size_t token_, const bool greedy_) :
-        node (token_ == null_token),
-        _token (token_),
-        _set_greedy (!greedy_),
-        _greedy (greedy_)
+  public:
+    leaf_node(const std::size_t token_, const bool greedy_) : node(token_ == null_token),
+                                                              _token(token_),
+                                                              _set_greedy(!greedy_),
+                                                              _greedy(greedy_)
     {
         if (!_nullable)
         {
-            _firstpos.push_back (this);
-            _lastpos.push_back (this);
+            _firstpos.push_back(this);
+            _lastpos.push_back(this);
         }
     }
 
-    virtual ~leaf_node ()
+    virtual ~leaf_node()
     {
     }
 
-    virtual void append_followpos (const node_vector &followpos_)
+    virtual void append_followpos(const node_vector &followpos_)
     {
-        for (node_vector::const_iterator iter_ = followpos_.begin (),
-            end_ = followpos_.end (); iter_ != end_; ++iter_)
+        for (node_vector::const_iterator iter_ = followpos_.begin(),
+                                         end_ = followpos_.end();
+             iter_ != end_; ++iter_)
         {
-            _followpos.push_back (*iter_);
+            _followpos.push_back(*iter_);
         }
     }
 
-    virtual type what_type () const
+    virtual type what_type() const
     {
         return LEAF;
     }
 
-    virtual bool traverse (const_node_stack &/*node_stack_*/,
-        bool_stack &/*perform_op_stack_*/) const
+    virtual bool traverse(const_node_stack & /*node_stack_*/,
+                          bool_stack & /*perform_op_stack_*/) const
     {
         return false;
     }
 
-    virtual std::size_t token () const
+    virtual std::size_t token() const
     {
         return _token;
     }
 
-    virtual void greedy (const bool greedy_)
+    virtual void greedy(const bool greedy_)
     {
         if (!_set_greedy)
         {
@@ -70,38 +70,38 @@ public:
         }
     }
 
-    virtual bool greedy () const
+    virtual bool greedy() const
     {
         return _greedy;
     }
 
-    virtual const node_vector &followpos () const
+    virtual const node_vector &followpos() const
     {
         return _followpos;
     }
 
-    virtual node_vector &followpos ()
+    virtual node_vector &followpos()
     {
         return _followpos;
     }
 
-private:
+  private:
     std::size_t _token;
     bool _set_greedy;
     bool _greedy;
     node_vector _followpos;
 
-    virtual void copy_node (node_ptr_vector &node_ptr_vector_,
-        node_stack &new_node_stack_, bool_stack &/*perform_op_stack_*/,
-        bool &/*down_*/) const
+    virtual void copy_node(node_ptr_vector &node_ptr_vector_,
+                           node_stack &new_node_stack_, bool_stack & /*perform_op_stack_*/,
+                           bool & /*down_*/) const
     {
-        node_ptr_vector_->push_back (static_cast<leaf_node *>(0));
-        node_ptr_vector_->back () = new leaf_node (_token, _greedy);
-        new_node_stack_.push (node_ptr_vector_->back ());
+        node_ptr_vector_->push_back(static_cast<leaf_node *>(0));
+        node_ptr_vector_->back() = new leaf_node(_token, _greedy);
+        new_node_stack_.push(node_ptr_vector_->back());
     }
 };
-}
-}
-}
+} // namespace detail
+} // namespace lexer
+} // namespace boost
 
 #endif

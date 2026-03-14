@@ -27,11 +27,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////
 #if !defined(BOOST_SPIRIT_DEBUG_FLAGS_NONE)
-#define BOOST_SPIRIT_DEBUG_FLAGS_NONE         0x0000  // no diagnostics at all
+#define BOOST_SPIRIT_DEBUG_FLAGS_NONE 0x0000 // no diagnostics at all
 #endif
 
 #if !defined(BOOST_SPIRIT_DEBUG_FLAGS_MAX)
-#define BOOST_SPIRIT_DEBUG_FLAGS_MAX          0xFFFF  // print maximal diagnostics
+#define BOOST_SPIRIT_DEBUG_FLAGS_MAX 0xFFFF // print maximal diagnostics
 #endif
 
 #if !defined(BOOST_SPIRIT_DEBUG_FLAGS)
@@ -78,4 +78,4 @@
 #define BOOST_SPIRIT_DEBUG_TRACE_GRAMMAR_NAME(r, n, t)
 #endif // !defined(BOOST_SPIRIT_DEBUG_TRACE_GRAMMAR_NAME)
 
-#endif  // !defined(BOOST_SPIRIT_MINIMAL_DEBUG_HPP)
+#endif // !defined(BOOST_SPIRIT_MINIMAL_DEBUG_HPP)

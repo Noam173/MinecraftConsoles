@@ -14,13 +14,12 @@
 #ifndef BOOST_GEOMETRY_VIEWS_IDENTITY_VIEW_HPP
 #define BOOST_GEOMETRY_VIEWS_IDENTITY_VIEW_HPP
 
-
 #include <boost/range.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 /*!
 \brief View on a range, not modifying anything
@@ -33,21 +32,34 @@ struct identity_view
     typedef typename boost::range_iterator<Range const>::type const_iterator;
     typedef typename boost::range_iterator<Range>::type iterator;
 
-    explicit inline identity_view(Range& r)
+    explicit inline identity_view(Range &r)
         : m_range(r)
-    {}
+    {
+    }
 
-    inline const_iterator begin() const { return boost::begin(m_range); }
-    inline const_iterator end() const { return boost::end(m_range); }
+    inline const_iterator begin() const
+    {
+        return boost::begin(m_range);
+    }
+    inline const_iterator end() const
+    {
+        return boost::end(m_range);
+    }
 
-    inline iterator begin() { return boost::begin(m_range); }
-    inline iterator end() { return boost::end(m_range); }
-private :
-    Range& m_range;
+    inline iterator begin()
+    {
+        return boost::begin(m_range);
+    }
+    inline iterator end()
+    {
+        return boost::end(m_range);
+    }
+
+  private:
+    Range &m_range;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_VIEWS_IDENTITY_VIEW_HPP

@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------+    
+/*-----------------------------------------------------------------------------+
 Copyright (c) 2010-2010: Joachim Faulhaber
 +------------------------------------------------------------------------------+
    Distributed under the Boost Software License, Version 1.0.
@@ -10,17 +10,19 @@ Copyright (c) 2010-2010: Joachim Faulhaber
 
 #include <boost/icl/type_traits/is_interval.hpp>
 
-namespace boost{ namespace icl
+namespace boost
+{
+namespace icl
 {
 
-template <class Type> struct is_continuous_interval
-{ 
+template <class Type>
+struct is_continuous_interval
+{
     typedef is_continuous_interval<Type> type;
     BOOST_STATIC_CONSTANT(bool, value = false);
 };
 
-}} // namespace boost icl
+} // namespace icl
+} // namespace boost
 
 #endif
-
-

@@ -1,7 +1,7 @@
 /*=============================================================================
     Copyright (c) 2009 Hartmut Kaiser
 
-    Distributed under the Boost Software License, Version 1.0. (See accompanying 
+    Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
 
@@ -10,36 +10,39 @@
 
 #include <boost/fusion/sequence/intrinsic/at.hpp>
 
-namespace boost { namespace fusion 
+namespace boost
 {
-    struct nview_tag;
+namespace fusion
+{
+struct nview_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct at_impl;
+
+template <>
+struct at_impl<nview_tag>
+{
+    template <typename Sequence, typename N>
+    struct apply
     {
-        template<typename Tag>
-        struct at_impl;
+        typedef typename Sequence::sequence_type sequence_type;
+        typedef typename Sequence::index_type index_type;
 
-        template<>
-        struct at_impl<nview_tag>
+        typedef typename result_of::at<index_type, N>::type index;
+        typedef typename result_of::at<sequence_type, index>::type type;
+
+        static type
+        call(Sequence &seq)
         {
-            template<typename Sequence, typename N>
-            struct apply
-            {
-                typedef typename Sequence::sequence_type sequence_type;
-                typedef typename Sequence::index_type index_type;
+            return fusion::at<index>(seq.seq);
+        }
+    };
+};
+} // namespace extension
 
-                typedef typename result_of::at<index_type, N>::type index;
-                typedef typename result_of::at<sequence_type, index>::type type;
-
-                static type 
-                call(Sequence& seq)
-                {
-                    return fusion::at<index>(seq.seq);
-                }
-            };
-        };
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif

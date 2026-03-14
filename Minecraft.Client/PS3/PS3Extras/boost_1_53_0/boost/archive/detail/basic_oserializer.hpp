@@ -3,22 +3,22 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // basic_oserializer.hpp: extenstion of type_info required for serialization.
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
-#include <cstddef> // NULL
 #include <boost/config.hpp>
 #include <boost/noncopyable.hpp>
+#include <cstddef> // NULL
 
 #include <boost/archive/basic_archive.hpp>
 #include <boost/archive/detail/auto_link_archive.hpp>
@@ -27,49 +27,54 @@
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
 #ifdef BOOST_MSVC
-#  pragma warning(push)
-#  pragma warning(disable : 4511 4512)
+#pragma warning(push)
+#pragma warning(disable : 4511 4512)
 #endif
 
-namespace boost {
-namespace serialization {
-    class extended_type_info;
+namespace boost
+{
+namespace serialization
+{
+class extended_type_info;
 } // namespace serialization
 
 // forward declarations
-namespace archive {
-namespace detail {
+namespace archive
+{
+namespace detail
+{
 
 class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_oarchive;
 class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_pointer_oserializer;
 
-class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_oserializer : 
-    public basic_serializer
+class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_oserializer : public basic_serializer
 {
-private:
+  private:
     basic_pointer_oserializer *m_bpos;
-protected:
+
+  protected:
     explicit basic_oserializer(
-        const boost::serialization::extended_type_info & type_
-    );
-    // account for bogus gcc warning
-    #if defined(__GNUC__)
+        const boost::serialization::extended_type_info &type_);
+// account for bogus gcc warning
+#if defined(__GNUC__)
     virtual
-    #endif
-    ~basic_oserializer();
-public:
-    bool serialized_as_pointer() const {
+#endif
+        ~basic_oserializer();
+  public:
+    bool serialized_as_pointer() const
+    {
         return m_bpos != NULL;
     }
-    void set_bpos(basic_pointer_oserializer *bpos){
+    void set_bpos(basic_pointer_oserializer *bpos)
+    {
         m_bpos = bpos;
     }
-    const basic_pointer_oserializer * get_bpos() const {
+    const basic_pointer_oserializer *get_bpos() const
+    {
         return m_bpos;
     }
     virtual void save_object_data(
-        basic_oarchive & ar, const void * x
-    ) const = 0;
+        basic_oarchive &ar, const void *x) const = 0;
     // returns true if class_info should be saved
     virtual bool class_info() const = 0;
     // returns true if objects should be tracked
@@ -81,7 +86,7 @@ public:
 };
 
 } // namespace detail
-} // namespace serialization
+} // namespace archive
 } // namespace boost
 
 #ifdef BOOST_MSVC

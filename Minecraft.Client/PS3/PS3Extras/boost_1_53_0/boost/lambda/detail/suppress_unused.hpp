@@ -13,15 +13,20 @@
 #ifndef BOOST_LAMBDA_SUPRESS_UNUSED_HPP
 #define BOOST_LAMBDA_SUPRESS_UNUSED_HPP
 
-namespace boost { 
-namespace lambda {
-namespace detail {
+namespace boost
+{
+namespace lambda
+{
+namespace detail
+{
 
-template<class T>
-inline void suppress_unused_variable_warnings(const T&) {}
+template <class T>
+inline void suppress_unused_variable_warnings(const T &)
+{
+}
 
-}
-}
-}
+} // namespace detail
+} // namespace lambda
+} // namespace boost
 
 #endif

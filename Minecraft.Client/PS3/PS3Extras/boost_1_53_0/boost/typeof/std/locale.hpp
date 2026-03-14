@@ -5,8 +5,8 @@
 #ifndef BOOST_TYPEOF_STD_locale_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_locale_hpp_INCLUDED
 
-#include <locale>
 #include <boost/typeof/typeof.hpp>
+#include <locale>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -37,4 +37,4 @@ BOOST_TYPEOF_REGISTER_TYPE(std::messages_base)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::messages, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::messages_byname, 1)
 
-#endif//BOOST_TYPEOF_STD_locale_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_locale_hpp_INCLUDED

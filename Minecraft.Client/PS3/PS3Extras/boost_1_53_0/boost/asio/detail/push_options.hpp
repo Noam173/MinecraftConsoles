@@ -18,8 +18,7 @@
 
 // Digital Mars C++
 
-#elif defined(__INTEL_COMPILER) || defined(__ICL) \
-  || defined(__ICC) || defined(__ECC)
+#elif defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
 
 // Intel C++
 
@@ -27,21 +26,21 @@
 
 // GNU C++
 
-# if defined(__MINGW32__) || defined(__CYGWIN__)
-#  pragma pack (push, 8)
-# endif
+#if defined(__MINGW32__) || defined(__CYGWIN__)
+#pragma pack(push, 8)
+#endif
 
-# if defined(__OBJC__)
-#  if !defined(__APPLE_CC__) || (__APPLE_CC__ <= 1)
-#   if !defined(BOOST_ASIO_DISABLE_OBJC_WORKAROUND)
-#    if !defined(Protocol) && !defined(id)
-#     define Protocol cpp_Protocol
-#     define id cpp_id
-#     define BOOST_ASIO_OBJC_WORKAROUND
-#    endif
-#   endif
-#  endif
-# endif
+#if defined(__OBJC__)
+#if !defined(__APPLE_CC__) || (__APPLE_CC__ <= 1)
+#if !defined(BOOST_ASIO_DISABLE_OBJC_WORKAROUND)
+#if !defined(Protocol) && !defined(id)
+#define Protocol cpp_Protocol
+#define id cpp_id
+#define BOOST_ASIO_OBJC_WORKAROUND
+#endif
+#endif
+#endif
+#endif
 
 #elif defined(__KCC)
 
@@ -63,12 +62,12 @@
 
 // Borland C++
 
-# pragma option push -a8 -b -Ve- -Vx- -w-inl -vi-
-# pragma nopushoptwarn
-# pragma nopackwarning
-# if !defined(__MT__)
-#  error Multithreaded RTL must be selected.
-# endif // !defined(__MT__)
+#pragma option push -a8 -b -Ve- -Vx - -w -inl -vi-
+#pragma nopushoptwarn
+#pragma nopackwarning
+#if !defined(__MT__)
+#error Multithreaded RTL must be selected.
+#endif // !defined(__MT__)
 
 #elif defined(__MWERKS__)
 
@@ -97,31 +96,31 @@
 // Must remain the last #elif since some other vendors (Metrowerks, for example)
 // also #define _MSC_VER
 
-# pragma warning (disable:4103)
-# pragma warning (push)
-# pragma warning (disable:4127)
-# pragma warning (disable:4180)
-# pragma warning (disable:4244)
-# pragma warning (disable:4355)
-# pragma warning (disable:4512)
-# pragma warning (disable:4675)
-# if defined(_M_IX86) && defined(_Wp64)
+#pragma warning(disable : 4103)
+#pragma warning(push)
+#pragma warning(disable : 4127)
+#pragma warning(disable : 4180)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4355)
+#pragma warning(disable : 4512)
+#pragma warning(disable : 4675)
+#if defined(_M_IX86) && defined(_Wp64)
 // The /Wp64 option is broken. If you want to check 64 bit portability, use a
 // 64 bit compiler!
-#  pragma warning (disable:4311)
-#  pragma warning (disable:4312)
-# endif // defined(_M_IX86) && defined(_Wp64)
-# pragma pack (push, 8)
+#pragma warning(disable : 4311)
+#pragma warning(disable : 4312)
+#endif // defined(_M_IX86) && defined(_Wp64)
+#pragma pack(push, 8)
 // Note that if the /Og optimisation flag is enabled with MSVC6, the compiler
 // has a tendency to incorrectly optimise away some calls to member template
 // functions, even though those functions contain code that should not be
 // optimised away! Therefore we will always disable this optimisation option
 // for the MSVC6 compiler.
-# if (_MSC_VER < 1300)
-#  pragma optimize ("g", off)
-# endif
-# if !defined(_MT)
-#  error Multithreaded RTL must be selected.
-# endif // !defined(_MT)
+#if (_MSC_VER < 1300)
+#pragma optimize("g", off)
+#endif
+#if !defined(_MT)
+#error Multithreaded RTL must be selected.
+#endif // !defined(_MT)
 
 #endif

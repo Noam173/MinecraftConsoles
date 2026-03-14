@@ -11,8 +11,8 @@
 #ifndef BOOST_THREAD_NULL_MUTEX_HPP
 #define BOOST_THREAD_NULL_MUTEX_HPP
 
-#include <boost/thread/detail/delete.hpp>
 #include <boost/chrono/chrono.hpp>
+#include <boost/thread/detail/delete.hpp>
 
 /// \file
 /// Describes null_mutex class
@@ -20,13 +20,12 @@
 namespace boost
 {
 
-  /// Implements a mutex that simulates a mutex without doing any operation and
-  /// simulates a successful operation.
-  class null_mutex
-  {
+/// Implements a mutex that simulates a mutex without doing any operation and
+/// simulates a successful operation.
+class null_mutex
+{
   public:
-
-    BOOST_THREAD_NO_COPYABLE( null_mutex) /*< no copyable >*/
+    BOOST_THREAD_NO_COPYABLE(null_mutex) /*< no copyable >*/
 
     /// Simulates a mutex lock() operation. Empty function.
     void lock()
@@ -37,7 +36,7 @@ namespace boost
     /// Equivalent to "return true;"
     bool try_lock()
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex unlock() operation.
@@ -52,7 +51,7 @@ namespace boost
     template <typename Clock, typename Duration>
     bool try_lock_until(chrono::time_point<Clock, Duration> const &)
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex try_lock_for() operation.
@@ -60,7 +59,7 @@ namespace boost
     template <typename Rep, typename Period>
     bool try_lock_for(chrono::duration<Rep, Period> const &)
     {
-      return true;
+        return true;
     }
 #endif
 
@@ -74,7 +73,7 @@ namespace boost
     /// Equivalent to "return true;"
     bool try_lock_shared()
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex unlock_shared() operation.
@@ -88,14 +87,14 @@ namespace boost
     template <typename Clock, typename Duration>
     bool try_lock_shared_until(chrono::time_point<Clock, Duration> const &)
     {
-      return true;
+        return true;
     }
     /// Simulates a mutex try_lock_shared_for() operation.
     /// Equivalent to "return true;"
     template <typename Rep, typename Period>
     bool try_lock_shared_for(chrono::duration<Rep, Period> const &)
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex lock_upgrade() operation.
@@ -108,7 +107,7 @@ namespace boost
     /// Equivalent to "return true;"
     bool try_lock_upgrade()
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex unlock_upgrade() operation.
@@ -122,7 +121,7 @@ namespace boost
     template <typename Clock, typename Duration>
     bool try_lock_upgrade_until(chrono::time_point<Clock, Duration> const &)
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex try_lock_upgrade_for() operation.
@@ -130,14 +129,14 @@ namespace boost
     template <typename Rep, typename Period>
     bool try_lock_upgrade_for(chrono::duration<Rep, Period> const &)
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex try_unlock_shared_and_lock() operation.
     /// Equivalent to "return true;"
     bool try_unlock_shared_and_lock()
     {
-      return true;
+        return true;
     }
 
 #ifdef BOOST_THREAD_USES_CHRONO
@@ -146,7 +145,7 @@ namespace boost
     template <typename Clock, typename Duration>
     bool try_unlock_shared_and_lock_until(chrono::time_point<Clock, Duration> const &)
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex try_unlock_shared_and_lock_for() operation.
@@ -154,7 +153,7 @@ namespace boost
     template <typename Rep, typename Period>
     bool try_unlock_shared_and_lock_for(chrono::duration<Rep, Period> const &)
     {
-      return true;
+        return true;
     }
 #endif
 
@@ -168,7 +167,7 @@ namespace boost
     /// Equivalent to "return true;"
     bool try_unlock_shared_and_lock_upgrade()
     {
-      return true;
+        return true;
     }
 
 #ifdef BOOST_THREAD_USES_CHRONO
@@ -177,7 +176,7 @@ namespace boost
     template <typename Clock, typename Duration>
     bool try_unlock_shared_and_lock_upgrade_until(chrono::time_point<Clock, Duration> const &)
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex try_unlock_shared_and_lock_upgrade_for() operation.
@@ -185,7 +184,7 @@ namespace boost
     template <typename Rep, typename Period>
     bool try_unlock_shared_and_lock_upgrade_for(chrono::duration<Rep, Period> const &)
     {
-      return true;
+        return true;
     }
 #endif
 
@@ -205,7 +204,7 @@ namespace boost
     /// Equivalent to "return true;"
     bool try_unlock_upgrade_and_lock()
     {
-      return true;
+        return true;
     }
 
 #ifdef BOOST_THREAD_USES_CHRONO
@@ -214,7 +213,7 @@ namespace boost
     template <typename Clock, typename Duration>
     bool try_unlock_upgrade_and_lock_until(chrono::time_point<Clock, Duration> const &)
     {
-      return true;
+        return true;
     }
 
     /// Simulates a mutex try_unlock_upgrade_and_lock_for() operation.
@@ -222,7 +221,7 @@ namespace boost
     template <typename Rep, typename Period>
     bool try_unlock_upgrade_and_lock_for(chrono::duration<Rep, Period> const &)
     {
-      return true;
+        return true;
     }
 #endif
 
@@ -231,10 +230,8 @@ namespace boost
     void unlock_upgrade_and_lock_shared()
     {
     }
+};
 
-  };
-
-} //namespace boost {
-
+} // namespace boost
 
 #endif

@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "lce_filesystem.h"
+#include "stdafx.h"
 
 #ifdef _WINDOWS64
 #include <windows.h>
@@ -7,40 +7,40 @@
 
 #include <stdio.h>
 
-bool FileOrDirectoryExists(const char* path)
+bool FileOrDirectoryExists(const char *path)
 {
 #ifdef _WINDOWS64
     DWORD attribs = GetFileAttributesA(path);
     return (attribs != INVALID_FILE_ATTRIBUTES);
 #else
-    #error "FileOrDirectoryExists not implemented for this platform"
+#error "FileOrDirectoryExists not implemented for this platform"
     return false;
 #endif
 }
 
-bool FileExists(const char* path)
+bool FileExists(const char *path)
 {
 #ifdef _WINDOWS64
     DWORD attribs = GetFileAttributesA(path);
     return (attribs != INVALID_FILE_ATTRIBUTES && !(attribs & FILE_ATTRIBUTE_DIRECTORY));
 #else
-    #error "FileExists not implemented for this platform"
+#error "FileExists not implemented for this platform"
     return false;
 #endif
 }
 
-bool DirectoryExists(const char* path)
+bool DirectoryExists(const char *path)
 {
 #ifdef _WINDOWS64
     DWORD attribs = GetFileAttributesA(path);
     return (attribs != INVALID_FILE_ATTRIBUTES && (attribs & FILE_ATTRIBUTE_DIRECTORY));
 #else
-    #error "DirectoryExists not implemented for this platform"
+#error "DirectoryExists not implemented for this platform"
     return false;
 #endif
 }
 
-bool GetFirstFileInDirectory(const char* directory, char* outFilePath, size_t outFilePathSize)
+bool GetFirstFileInDirectory(const char *directory, char *outFilePath, size_t outFilePathSize)
 {
 #ifdef _WINDOWS64
     char searchPath[MAX_PATH];
@@ -68,7 +68,7 @@ bool GetFirstFileInDirectory(const char* directory, char* outFilePath, size_t ou
     FindClose(hFind);
     return false; // No files found in the directory
 #else
-    #error "GetFirstFileInDirectory not implemented for this platform"
+#error "GetFirstFileInDirectory not implemented for this platform"
     return false;
 #endif
 }

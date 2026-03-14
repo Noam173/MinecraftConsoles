@@ -5,13 +5,13 @@
 #ifndef BOOST_TYPEOF_STD_queue_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_queue_hpp_INCLUDED
 
-#include <queue>
-#include <boost/typeof/typeof.hpp>
 #include <boost/typeof/std/memory.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <queue>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::queue, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::queue, 2)
 
-#endif//BOOST_TYPEOF_STD_queue_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_queue_hpp_INCLUDED

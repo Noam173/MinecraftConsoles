@@ -17,7 +17,7 @@ With these techniques, the code could be simplified.
 
 #if defined(__vms) && defined(__DECCXX) && !__IEEE_FLOAT
 // The VAX floating point formats are used (for float and double)
-#   define BOOST_FPCLASSIFY_VAX_FORMAT
+#define BOOST_FPCLASSIFY_VAX_FORMAT
 #endif
 
 #include <cstring>
@@ -29,85 +29,97 @@ With these techniques, the code could be simplified.
 #include <boost/type_traits/is_floating_point.hpp>
 
 #ifdef BOOST_NO_STDC_NAMESPACE
-  namespace std{ using ::memcpy; }
+namespace std
+{
+using ::memcpy;
+}
 #endif
 
 #ifndef FP_NORMAL
 
-#define FP_ZERO        0
-#define FP_NORMAL      1
-#define FP_INFINITE    2
-#define FP_NAN         3
-#define FP_SUBNORMAL   4
+#define FP_ZERO 0
+#define FP_NORMAL 1
+#define FP_INFINITE 2
+#define FP_NAN 3
+#define FP_SUBNORMAL 4
 
 #else
 
 #define BOOST_HAS_FPCLASSIFY
 
 #ifndef fpclassify
-#  if (defined(__GLIBCPP__) || defined(__GLIBCXX__)) \
-         && defined(_GLIBCXX_USE_C99_MATH) \
-         && !(defined(_GLIBCXX_USE_C99_FP_MACROS_DYNAMIC) \
-         && (_GLIBCXX_USE_C99_FP_MACROS_DYNAMIC != 0))
-#     ifdef _STLP_VENDOR_CSTD
-#        if _STLPORT_VERSION >= 0x520
-#           define BOOST_FPCLASSIFY_PREFIX ::__std_alias:: 
-#        else
-#           define BOOST_FPCLASSIFY_PREFIX ::_STLP_VENDOR_CSTD:: 
-#        endif
-#     else
-#        define BOOST_FPCLASSIFY_PREFIX ::std::
-#     endif
-#  else
-#     undef BOOST_HAS_FPCLASSIFY
-#     define BOOST_FPCLASSIFY_PREFIX
-#  endif
+#if (defined(__GLIBCPP__) || defined(__GLIBCXX__)) && defined(_GLIBCXX_USE_C99_MATH) && !(defined(_GLIBCXX_USE_C99_FP_MACROS_DYNAMIC) && (_GLIBCXX_USE_C99_FP_MACROS_DYNAMIC != 0))
+#ifdef _STLP_VENDOR_CSTD
+#if _STLPORT_VERSION >= 0x520
+#define BOOST_FPCLASSIFY_PREFIX ::__std_alias::
+#else
+#define BOOST_FPCLASSIFY_PREFIX ::_STLP_VENDOR_CSTD::
+#endif
+#else
+#define BOOST_FPCLASSIFY_PREFIX ::std::
+#endif
+#else
+#undef BOOST_HAS_FPCLASSIFY
+#define BOOST_FPCLASSIFY_PREFIX
+#endif
 #elif (defined(__HP_aCC) && !defined(__hppa))
 // aCC 6 appears to do "#define fpclassify fpclassify" which messes us up a bit!
-#  define BOOST_FPCLASSIFY_PREFIX ::
+#define BOOST_FPCLASSIFY_PREFIX ::
 #else
-#  define BOOST_FPCLASSIFY_PREFIX
+#define BOOST_FPCLASSIFY_PREFIX
 #endif
 
 #ifdef __MINGW32__
-#  undef BOOST_HAS_FPCLASSIFY
+#undef BOOST_HAS_FPCLASSIFY
 #endif
 
 #endif
 
+//------------------------------------------------------------------------------
+
+namespace boost
+{
+namespace math
+{
+namespace detail
+{
 
 //------------------------------------------------------------------------------
 
-namespace boost {
-namespace math {
-namespace detail {
-
-//------------------------------------------------------------------------------
-
-/* 
+/*
 The following classes are used to tag the different methods that are used
 for floating point classification
 */
 
-struct native_tag {};
+struct native_tag
+{
+};
 template <bool has_limits>
-struct generic_tag {};
-struct ieee_tag {};
-struct ieee_copy_all_bits_tag : public ieee_tag {};
-struct ieee_copy_leading_bits_tag : public ieee_tag {};
+struct generic_tag
+{
+};
+struct ieee_tag
+{
+};
+struct ieee_copy_all_bits_tag : public ieee_tag
+{
+};
+struct ieee_copy_leading_bits_tag : public ieee_tag
+{
+};
 
 #ifdef BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS
 //
 // These helper functions are used only when numeric_limits<>
 // members are not compile time constants:
 //
-inline bool is_generic_tag_false(const generic_tag<false>*)
+inline bool is_generic_tag_false(const generic_tag<false> *)
 {
-   return true;
+    return true;
 }
-inline bool is_generic_tag_false(const void*)
+inline bool is_generic_tag_false(const void *)
 {
-   return false;
+    return false;
 }
 #endif
 
@@ -122,26 +134,36 @@ Note that the C++ type long double can be implemented
 both as double precision and extended double precision.
 */
 
-struct unknown_precision{};
-struct single_precision {};
-struct double_precision {};
-struct extended_double_precision {};
+struct unknown_precision
+{
+};
+struct single_precision
+{
+};
+struct double_precision
+{
+};
+struct extended_double_precision
+{
+};
 
 // native_tag version --------------------------------------------------------------
 
-template<class T> struct fp_traits_native
+template <class T>
+struct fp_traits_native
 {
     typedef native_tag method;
 };
 
 // generic_tag version -------------------------------------------------------------
 
-template<class T, class U> struct fp_traits_non_native
+template <class T, class U>
+struct fp_traits_non_native
 {
 #ifndef BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS
-   typedef generic_tag<std::numeric_limits<T>::is_specialized> method;
+    typedef generic_tag<std::numeric_limits<T>::is_specialized> method;
 #else
-   typedef generic_tag<false> method;
+    typedef generic_tag<false> method;
 #endif
 };
 
@@ -174,48 +196,54 @@ Static function members:
 
 #ifndef BOOST_FPCLASSIFY_VAX_FORMAT
 
-template<> struct fp_traits_non_native<float, single_precision>
+template <>
+struct fp_traits_non_native<float, single_precision>
 {
     typedef ieee_copy_all_bits_tag method;
 
-    BOOST_STATIC_CONSTANT(uint32_t, sign        = 0x80000000u);
-    BOOST_STATIC_CONSTANT(uint32_t, exponent    = 0x7f800000);
-    BOOST_STATIC_CONSTANT(uint32_t, flag        = 0x00000000);
+    BOOST_STATIC_CONSTANT(uint32_t, sign = 0x80000000u);
+    BOOST_STATIC_CONSTANT(uint32_t, exponent = 0x7f800000);
+    BOOST_STATIC_CONSTANT(uint32_t, flag = 0x00000000);
     BOOST_STATIC_CONSTANT(uint32_t, significand = 0x007fffff);
 
     typedef uint32_t bits;
-    static void get_bits(float x, uint32_t& a) { std::memcpy(&a, &x, 4); }
-    static void set_bits(float& x, uint32_t a) { std::memcpy(&x, &a, 4); }
+    static void get_bits(float x, uint32_t &a)
+    {
+        std::memcpy(&a, &x, 4);
+    }
+    static void set_bits(float &x, uint32_t a)
+    {
+        std::memcpy(&x, &a, 4);
+    }
 };
 
 // ieee_tag version, double (64 bits) ----------------------------------------------
 
-#if defined(BOOST_NO_INT64_T) || defined(BOOST_NO_INCLASS_MEMBER_INITIALIZATION) \
-   || defined(__BORLANDC__) || defined(__CODEGEAR__)
+#if defined(BOOST_NO_INT64_T) || defined(BOOST_NO_INCLASS_MEMBER_INITIALIZATION) || defined(__BORLANDC__) || defined(__CODEGEAR__)
 
-template<> struct fp_traits_non_native<double, double_precision>
+template <>
+struct fp_traits_non_native<double, double_precision>
 {
     typedef ieee_copy_leading_bits_tag method;
 
-    BOOST_STATIC_CONSTANT(uint32_t, sign        = 0x80000000u);
-    BOOST_STATIC_CONSTANT(uint32_t, exponent    = 0x7ff00000);
-    BOOST_STATIC_CONSTANT(uint32_t, flag        = 0);
+    BOOST_STATIC_CONSTANT(uint32_t, sign = 0x80000000u);
+    BOOST_STATIC_CONSTANT(uint32_t, exponent = 0x7ff00000);
+    BOOST_STATIC_CONSTANT(uint32_t, flag = 0);
     BOOST_STATIC_CONSTANT(uint32_t, significand = 0x000fffff);
 
     typedef uint32_t bits;
 
-    static void get_bits(double x, uint32_t& a)
+    static void get_bits(double x, uint32_t &a)
     {
-        std::memcpy(&a, reinterpret_cast<const unsigned char*>(&x) + offset_, 4);
+        std::memcpy(&a, reinterpret_cast<const unsigned char *>(&x) + offset_, 4);
     }
 
-    static void set_bits(double& x, uint32_t a)
+    static void set_bits(double &x, uint32_t a)
     {
-        std::memcpy(reinterpret_cast<unsigned char*>(&x) + offset_, &a, 4);
+        std::memcpy(reinterpret_cast<unsigned char *>(&x) + offset_, &a, 4);
     }
 
-private:
-
+  private:
 #if defined(BOOST_BIG_ENDIAN)
     BOOST_STATIC_CONSTANT(int, offset_ = 0);
 #elif defined(BOOST_LITTLE_ENDIAN)
@@ -229,53 +257,58 @@ private:
 
 #else
 
-template<> struct fp_traits_non_native<double, double_precision>
+template <>
+struct fp_traits_non_native<double, double_precision>
 {
     typedef ieee_copy_all_bits_tag method;
 
-    static const uint64_t sign     = ((uint64_t)0x80000000u) << 32;
+    static const uint64_t sign = ((uint64_t)0x80000000u) << 32;
     static const uint64_t exponent = ((uint64_t)0x7ff00000) << 32;
-    static const uint64_t flag     = 0;
-    static const uint64_t significand
-        = (((uint64_t)0x000fffff) << 32) + ((uint64_t)0xffffffffu);
+    static const uint64_t flag = 0;
+    static const uint64_t significand = (((uint64_t)0x000fffff) << 32) + ((uint64_t)0xffffffffu);
 
     typedef uint64_t bits;
-    static void get_bits(double x, uint64_t& a) { std::memcpy(&a, &x, 8); }
-    static void set_bits(double& x, uint64_t a) { std::memcpy(&x, &a, 8); }
+    static void get_bits(double x, uint64_t &a)
+    {
+        std::memcpy(&a, &x, 8);
+    }
+    static void set_bits(double &x, uint64_t a)
+    {
+        std::memcpy(&x, &a, 8);
+    }
 };
 
 #endif
 
-#endif  // #ifndef BOOST_FPCLASSIFY_VAX_FORMAT
+#endif // #ifndef BOOST_FPCLASSIFY_VAX_FORMAT
 
 // long double (64 bits) -------------------------------------------------------
 
-#if defined(BOOST_NO_INT64_T) || defined(BOOST_NO_INCLASS_MEMBER_INITIALIZATION)\
-   || defined(__BORLANDC__) || defined(__CODEGEAR__)
+#if defined(BOOST_NO_INT64_T) || defined(BOOST_NO_INCLASS_MEMBER_INITIALIZATION) || defined(__BORLANDC__) || defined(__CODEGEAR__)
 
-template<> struct fp_traits_non_native<long double, double_precision>
+template <>
+struct fp_traits_non_native<long double, double_precision>
 {
     typedef ieee_copy_leading_bits_tag method;
 
-    BOOST_STATIC_CONSTANT(uint32_t, sign        = 0x80000000u);
-    BOOST_STATIC_CONSTANT(uint32_t, exponent    = 0x7ff00000);
-    BOOST_STATIC_CONSTANT(uint32_t, flag        = 0);
+    BOOST_STATIC_CONSTANT(uint32_t, sign = 0x80000000u);
+    BOOST_STATIC_CONSTANT(uint32_t, exponent = 0x7ff00000);
+    BOOST_STATIC_CONSTANT(uint32_t, flag = 0);
     BOOST_STATIC_CONSTANT(uint32_t, significand = 0x000fffff);
 
     typedef uint32_t bits;
 
-    static void get_bits(long double x, uint32_t& a)
+    static void get_bits(long double x, uint32_t &a)
     {
-        std::memcpy(&a, reinterpret_cast<const unsigned char*>(&x) + offset_, 4);
+        std::memcpy(&a, reinterpret_cast<const unsigned char *>(&x) + offset_, 4);
     }
 
-    static void set_bits(long double& x, uint32_t a)
+    static void set_bits(long double &x, uint32_t a)
     {
-        std::memcpy(reinterpret_cast<unsigned char*>(&x) + offset_, &a, 4);
+        std::memcpy(reinterpret_cast<unsigned char *>(&x) + offset_, &a, 4);
     }
 
-private:
-
+  private:
 #if defined(BOOST_BIG_ENDIAN)
     BOOST_STATIC_CONSTANT(int, offset_ = 0);
 #elif defined(BOOST_LITTLE_ENDIAN)
@@ -289,55 +322,57 @@ private:
 
 #else
 
-template<> struct fp_traits_non_native<long double, double_precision>
+template <>
+struct fp_traits_non_native<long double, double_precision>
 {
     typedef ieee_copy_all_bits_tag method;
 
-    static const uint64_t sign     = (uint64_t)0x80000000u << 32;
+    static const uint64_t sign = (uint64_t)0x80000000u << 32;
     static const uint64_t exponent = (uint64_t)0x7ff00000 << 32;
-    static const uint64_t flag     = 0;
-    static const uint64_t significand
-        = ((uint64_t)0x000fffff << 32) + (uint64_t)0xffffffffu;
+    static const uint64_t flag = 0;
+    static const uint64_t significand = ((uint64_t)0x000fffff << 32) + (uint64_t)0xffffffffu;
 
     typedef uint64_t bits;
-    static void get_bits(long double x, uint64_t& a) { std::memcpy(&a, &x, 8); }
-    static void set_bits(long double& x, uint64_t a) { std::memcpy(&x, &a, 8); }
+    static void get_bits(long double x, uint64_t &a)
+    {
+        std::memcpy(&a, &x, 8);
+    }
+    static void set_bits(long double &x, uint64_t a)
+    {
+        std::memcpy(&x, &a, 8);
+    }
 };
 
 #endif
 
-
 // long double (>64 bits), x86 and x64 -----------------------------------------
 
-#if defined(__i386) || defined(__i386__) || defined(_M_IX86) \
-    || defined(__amd64) || defined(__amd64__)  || defined(_M_AMD64) \
-    || defined(__x86_64) || defined(__x86_64__) || defined(_M_X64)
+#if defined(__i386) || defined(__i386__) || defined(_M_IX86) || defined(__amd64) || defined(__amd64__) || defined(_M_AMD64) || defined(__x86_64) || defined(__x86_64__) || defined(_M_X64)
 
 // Intel extended double precision format (80 bits)
 
-template<>
+template <>
 struct fp_traits_non_native<long double, extended_double_precision>
 {
     typedef ieee_copy_leading_bits_tag method;
 
-    BOOST_STATIC_CONSTANT(uint32_t, sign        = 0x80000000u);
-    BOOST_STATIC_CONSTANT(uint32_t, exponent    = 0x7fff0000);
-    BOOST_STATIC_CONSTANT(uint32_t, flag        = 0x00008000);
+    BOOST_STATIC_CONSTANT(uint32_t, sign = 0x80000000u);
+    BOOST_STATIC_CONSTANT(uint32_t, exponent = 0x7fff0000);
+    BOOST_STATIC_CONSTANT(uint32_t, flag = 0x00008000);
     BOOST_STATIC_CONSTANT(uint32_t, significand = 0x00007fff);
 
     typedef uint32_t bits;
 
-    static void get_bits(long double x, uint32_t& a)
+    static void get_bits(long double x, uint32_t &a)
     {
-        std::memcpy(&a, reinterpret_cast<const unsigned char*>(&x) + 6, 4);
+        std::memcpy(&a, reinterpret_cast<const unsigned char *>(&x) + 6, 4);
     }
 
-    static void set_bits(long double& x, uint32_t a)
+    static void set_bits(long double &x, uint32_t a)
     {
-        std::memcpy(reinterpret_cast<unsigned char*>(&x) + 6, &a, 4);
+        std::memcpy(reinterpret_cast<unsigned char *>(&x) + 6, &a, 4);
     }
 };
-
 
 // long double (>64 bits), Itanium ---------------------------------------------
 
@@ -351,37 +386,35 @@ struct fp_traits_non_native<long double, extended_double_precision>
 // the Intel extended double precision format (80 bits) and
 // the IEEE extended double precision format with 15 exponent bits (128 bits).
 
-
 // long double (>64 bits), PowerPC ---------------------------------------------
 
-#elif defined(__powerpc) || defined(__powerpc__) || defined(__POWERPC__) \
-    || defined(__ppc) || defined(__ppc__) || defined(__PPC__)
+#elif defined(__powerpc) || defined(__powerpc__) || defined(__POWERPC__) || defined(__ppc) || defined(__ppc__) || defined(__PPC__)
 
 // PowerPC extended double precision format (128 bits)
 
-template<>
+template <>
 struct fp_traits_non_native<long double, extended_double_precision>
 {
     typedef ieee_copy_leading_bits_tag method;
 
-    BOOST_STATIC_CONSTANT(uint32_t, sign        = 0x80000000u);
-    BOOST_STATIC_CONSTANT(uint32_t, exponent    = 0x7ff00000);
-    BOOST_STATIC_CONSTANT(uint32_t, flag        = 0x00000000);
+    BOOST_STATIC_CONSTANT(uint32_t, sign = 0x80000000u);
+    BOOST_STATIC_CONSTANT(uint32_t, exponent = 0x7ff00000);
+    BOOST_STATIC_CONSTANT(uint32_t, flag = 0x00000000);
     BOOST_STATIC_CONSTANT(uint32_t, significand = 0x000fffff);
 
     typedef uint32_t bits;
 
-    static void get_bits(long double x, uint32_t& a)
+    static void get_bits(long double x, uint32_t &a)
     {
-        std::memcpy(&a, reinterpret_cast<const unsigned char*>(&x) + offset_, 4);
+        std::memcpy(&a, reinterpret_cast<const unsigned char *>(&x) + offset_, 4);
     }
 
-    static void set_bits(long double& x, uint32_t a)
+    static void set_bits(long double &x, uint32_t a)
     {
-        std::memcpy(reinterpret_cast<unsigned char*>(&x) + offset_, &a, 4);
+        std::memcpy(reinterpret_cast<unsigned char *>(&x) + offset_, &a, 4);
     }
 
-private:
+  private:
 
 #if defined(BOOST_BIG_ENDIAN)
     BOOST_STATIC_CONSTANT(int, offset_ = 0);
@@ -392,11 +425,9 @@ private:
 #endif
 };
 
-
 // long double (>64 bits), Motorola 68K ----------------------------------------
 
-#elif defined(__m68k) || defined(__m68k__) \
-    || defined(__mc68000) || defined(__mc68000__) \
+#elif defined(__m68k) || defined(__m68k__) || defined(__mc68000) || defined(__mc68000__)
 
 // Motorola extended double precision format (96 bits)
 
@@ -404,35 +435,34 @@ private:
 // except that 1) it is big-endian, 2) the 3rd and 4th byte are padding, and
 // 3) the flag bit is not set for infinity
 
-template<>
+template <>
 struct fp_traits_non_native<long double, extended_double_precision>
 {
     typedef ieee_copy_leading_bits_tag method;
 
-    BOOST_STATIC_CONSTANT(uint32_t, sign        = 0x80000000u);
-    BOOST_STATIC_CONSTANT(uint32_t, exponent    = 0x7fff0000);
-    BOOST_STATIC_CONSTANT(uint32_t, flag        = 0x00008000);
+    BOOST_STATIC_CONSTANT(uint32_t, sign = 0x80000000u);
+    BOOST_STATIC_CONSTANT(uint32_t, exponent = 0x7fff0000);
+    BOOST_STATIC_CONSTANT(uint32_t, flag = 0x00008000);
     BOOST_STATIC_CONSTANT(uint32_t, significand = 0x00007fff);
 
     // copy 1st, 2nd, 5th and 6th byte. 3rd and 4th byte are padding.
 
     typedef uint32_t bits;
 
-    static void get_bits(long double x, uint32_t& a)
+    static void get_bits(long double x, uint32_t &a)
     {
         std::memcpy(&a, &x, 2);
-        std::memcpy(reinterpret_cast<unsigned char*>(&a) + 2,
-               reinterpret_cast<const unsigned char*>(&x) + 4, 2);
+        std::memcpy(reinterpret_cast<unsigned char *>(&a) + 2,
+                    reinterpret_cast<const unsigned char *>(&x) + 4, 2);
     }
 
-    static void set_bits(long double& x, uint32_t a)
+    static void set_bits(long double &x, uint32_t a)
     {
         std::memcpy(&x, &a, 2);
-        std::memcpy(reinterpret_cast<unsigned char*>(&x) + 4,
-               reinterpret_cast<const unsigned char*>(&a) + 2, 2);
+        std::memcpy(reinterpret_cast<unsigned char *>(&x) + 4,
+                    reinterpret_cast<const unsigned char *>(&a) + 2, 2);
     }
 };
-
 
 // long double (>64 bits), All other processors --------------------------------
 
@@ -440,29 +470,29 @@ struct fp_traits_non_native<long double, extended_double_precision>
 
 // IEEE extended double precision format with 15 exponent bits (128 bits)
 
-template<>
+template <>
 struct fp_traits_non_native<long double, extended_double_precision>
 {
     typedef ieee_copy_leading_bits_tag method;
 
-    BOOST_STATIC_CONSTANT(uint32_t, sign        = 0x80000000u);
-    BOOST_STATIC_CONSTANT(uint32_t, exponent    = 0x7fff0000);
-    BOOST_STATIC_CONSTANT(uint32_t, flag        = 0x00000000);
+    BOOST_STATIC_CONSTANT(uint32_t, sign = 0x80000000u);
+    BOOST_STATIC_CONSTANT(uint32_t, exponent = 0x7fff0000);
+    BOOST_STATIC_CONSTANT(uint32_t, flag = 0x00000000);
     BOOST_STATIC_CONSTANT(uint32_t, significand = 0x0000ffff);
 
     typedef uint32_t bits;
 
-    static void get_bits(long double x, uint32_t& a)
+    static void get_bits(long double x, uint32_t &a)
     {
-        std::memcpy(&a, reinterpret_cast<const unsigned char*>(&x) + offset_, 4);
+        std::memcpy(&a, reinterpret_cast<const unsigned char *>(&x) + offset_, 4);
     }
 
-    static void set_bits(long double& x, uint32_t a)
+    static void set_bits(long double &x, uint32_t a)
     {
-        std::memcpy(reinterpret_cast<unsigned char*>(&x) + offset_, &a, 4);
+        std::memcpy(reinterpret_cast<unsigned char *>(&x) + offset_, &a, 4);
     }
 
-private:
+  private:
 
 #if defined(BOOST_BIG_ENDIAN)
     BOOST_STATIC_CONSTANT(int, offset_ = 0);
@@ -480,32 +510,38 @@ private:
 // size_to_precision is a type switch for converting a C++ floating point type
 // to the corresponding precision type.
 
-template<int n, bool fp> struct size_to_precision
+template <int n, bool fp>
+struct size_to_precision
 {
-   typedef unknown_precision type;
+    typedef unknown_precision type;
 };
 
-template<> struct size_to_precision<4, true>
+template <>
+struct size_to_precision<4, true>
 {
     typedef single_precision type;
 };
 
-template<> struct size_to_precision<8, true>
+template <>
+struct size_to_precision<8, true>
 {
     typedef double_precision type;
 };
 
-template<> struct size_to_precision<10, true>
+template <>
+struct size_to_precision<10, true>
 {
     typedef extended_double_precision type;
 };
 
-template<> struct size_to_precision<12, true>
+template <>
+struct size_to_precision<12, true>
 {
     typedef extended_double_precision type;
 };
 
-template<> struct size_to_precision<16, true>
+template <>
+struct size_to_precision<16, true>
 {
     typedef extended_double_precision type;
 };
@@ -521,17 +557,17 @@ struct select_native
     typedef BOOST_DEDUCED_TYPENAME size_to_precision<sizeof(T), ::boost::is_floating_point<T>::value>::type precision;
     typedef fp_traits_non_native<T, precision> type;
 };
-template<>
+template <>
 struct select_native<float>
 {
     typedef fp_traits_native<float> type;
 };
-template<>
+template <>
 struct select_native<double>
 {
     typedef fp_traits_native<double> type;
 };
-template<>
+template <>
 struct select_native<long double>
 {
     typedef fp_traits_native<long double> type;
@@ -541,16 +577,12 @@ struct select_native<long double>
 
 // fp_traits is a type switch that selects the right fp_traits_non_native
 
-#if (defined(BOOST_MATH_USE_C99) && !(defined(__GNUC__) && (__GNUC__ < 4))) \
-   && !defined(__hpux) \
-   && !defined(__DECCXX)\
-   && !defined(__osf__) \
-   && !defined(__SGI_STL_PORT) && !defined(_STLPORT_VERSION)\
-   && !defined(BOOST_MATH_DISABLE_STD_FPCLASSIFY)
-#  define BOOST_MATH_USE_STD_FPCLASSIFY
+#if (defined(BOOST_MATH_USE_C99) && !(defined(__GNUC__) && (__GNUC__ < 4))) && !defined(__hpux) && !defined(__DECCXX) && !defined(__osf__) && !defined(__SGI_STL_PORT) && !defined(_STLPORT_VERSION) && !defined(BOOST_MATH_DISABLE_STD_FPCLASSIFY)
+#define BOOST_MATH_USE_STD_FPCLASSIFY
 #endif
 
-template<class T> struct fp_traits
+template <class T>
+struct fp_traits
 {
     typedef BOOST_DEDUCED_TYPENAME size_to_precision<sizeof(T), ::boost::is_floating_point<T>::value>::type precision;
 #if defined(BOOST_MATH_USE_STD_FPCLASSIFY) && !defined(BOOST_MATH_DISABLE_STD_FPCLASSIFY)
@@ -563,8 +595,8 @@ template<class T> struct fp_traits
 
 //------------------------------------------------------------------------------
 
-}   // namespace detail
-}   // namespace math
-}   // namespace boost
+} // namespace detail
+} // namespace math
+} // namespace boost
 
 #endif

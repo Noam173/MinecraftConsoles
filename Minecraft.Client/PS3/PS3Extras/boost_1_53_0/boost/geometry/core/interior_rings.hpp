@@ -20,16 +20,17 @@
 #include <boost/range.hpp>
 #include <boost/type_traits/remove_const.hpp>
 
+#include <boost/geometry/core/interior_type.hpp>
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
-#include <boost/geometry/core/interior_type.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace traits
 {
-
 
 /*!
     \brief Traits class defining access to interior_rings of a polygon
@@ -45,50 +46,37 @@ namespace traits
 template <typename Geometry>
 struct interior_rings
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE
-            , (types<Geometry>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE, (types<Geometry>));
 };
 
-
 } // namespace traits
-
-
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace core_dispatch
 {
 
-template
-<
+template <
     typename GeometryTag,
-    typename Geometry
->
-struct interior_rings {};
-
+    typename Geometry>
+struct interior_rings
+{
+};
 
 template <typename Polygon>
 struct interior_rings<polygon_tag, Polygon>
 {
     static inline
-    typename geometry::interior_return_type<Polygon>::type
-                apply(Polygon& polygon)
+        typename geometry::interior_return_type<Polygon>::type
+        apply(Polygon &polygon)
     {
-        return traits::interior_rings
-            <
-                typename boost::remove_const<Polygon>::type
-            >::get(polygon);
+        return traits::interior_rings<
+            typename boost::remove_const<Polygon>::type>::get(polygon);
     }
 };
 
-
 } // namespace core_dispatch
 #endif
-
-
 
 /*!
 \brief Function to get the interior rings of a polygon (non const version)
@@ -100,15 +88,12 @@ struct interior_rings<polygon_tag, Polygon>
 */
 
 template <typename Polygon>
-inline typename interior_return_type<Polygon>::type interior_rings(Polygon& polygon)
+inline typename interior_return_type<Polygon>::type interior_rings(Polygon &polygon)
 {
-    return core_dispatch::interior_rings
-        <
-            typename tag<Polygon>::type,
-            Polygon
-        >::apply(polygon);
+    return core_dispatch::interior_rings<
+        typename tag<Polygon>::type,
+        Polygon>::apply(polygon);
 }
-
 
 /*!
 \brief Function to get the interior rings of a polygon (const version)
@@ -122,18 +107,14 @@ inline typename interior_return_type<Polygon>::type interior_rings(Polygon& poly
 */
 template <typename Polygon>
 inline typename interior_return_type<Polygon const>::type interior_rings(
-            Polygon const& polygon)
+    Polygon const &polygon)
 {
-    return core_dispatch::interior_rings
-        <
-            typename tag<Polygon>::type,
-            Polygon const
-        >::apply(polygon);
+    return core_dispatch::interior_rings<
+        typename tag<Polygon>::type,
+        Polygon const>::apply(polygon);
 }
 
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_CORE_INTERIOR_RINGS_HPP

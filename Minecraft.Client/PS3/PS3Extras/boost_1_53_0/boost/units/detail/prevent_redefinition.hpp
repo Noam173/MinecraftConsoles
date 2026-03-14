@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -13,39 +13,63 @@
 
 #include <boost/mpl/long.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units {
+namespace units
+{
 
-namespace detail {
+namespace detail
+{
 
-struct no { no() {} char dummy; };
-struct yes { no dummy[2]; };
+struct no
+{
+    no()
+    {
+    }
+    char dummy;
+};
+struct yes
+{
+    no dummy[2];
+};
 
-template<bool> struct ordinal_has_already_been_defined;
+template <bool>
+struct ordinal_has_already_been_defined;
 
-template<>
-struct ordinal_has_already_been_defined<true>   { };
+template <>
+struct ordinal_has_already_been_defined<true>
+{
+};
 
-template<>
-struct ordinal_has_already_been_defined<false>  { typedef void type; };
+template <>
+struct ordinal_has_already_been_defined<false>
+{
+    typedef void type;
+};
 
-}
+} // namespace detail
 
 /// This must be in namespace boost::units so that ADL
 /// will work.  we need a mangled name because it must
 /// be found by ADL
 /// INTERNAL ONLY
-template<class T>
-detail::no 
-boost_units_is_registered(const T&) 
-{ detail::no result; return(result); }
+template <class T>
+detail::no
+boost_units_is_registered(const T &)
+{
+    detail::no result;
+    return (result);
+}
 
 /// INTERNAL ONLY
-template<class T>
-detail::no 
-boost_units_unit_is_registered(const T&) 
-{ detail::no result; return(result); }
+template <class T>
+detail::no
+boost_units_unit_is_registered(const T &)
+{
+    detail::no result;
+    return (result);
+}
 
 } // namespace units
 

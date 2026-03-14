@@ -14,14 +14,13 @@
 #ifndef BOOST_GEOMETRY_UTIL_PROMOTE_FLOATING_POINT_HPP
 #define BOOST_GEOMETRY_UTIL_PROMOTE_FLOATING_POINT_HPP
 
-
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 /*!
     \brief Meta-function converting, if necessary, to "a floating point" type
@@ -34,17 +33,13 @@ namespace boost { namespace geometry
 template <typename T, typename PromoteIntegerTo = double>
 struct promote_floating_point
 {
-    typedef typename
-        boost::mpl::if_
-        <
-            boost::is_integral<T>,
-            PromoteIntegerTo,
-            T
-        >::type type;
+    typedef typename boost::mpl::if_<
+        boost::is_integral<T>,
+        PromoteIntegerTo,
+        T>::type type;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_PROMOTE_FLOATING_POINT_HPP

@@ -12,14 +12,14 @@
 
 namespace boost
 {
-  namespace chrono
-  {
+namespace chrono
+{
 
-    template<class Clock, class CharT>
-    struct clock_string;
+template <class Clock, class CharT>
+struct clock_string;
 
-  } // chrono
+} // namespace chrono
 
-} // boost
+} // namespace boost
 
-#endif  // BOOST_CHRONO_CLOCK_STRING_HPP
+#endif // BOOST_CHRONO_CLOCK_STRING_HPP

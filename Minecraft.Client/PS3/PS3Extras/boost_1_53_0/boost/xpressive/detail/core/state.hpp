@@ -10,34 +10,35 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/noncopyable.hpp>
-#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/access.hpp>
 #include <boost/xpressive/detail/core/action.hpp>
-#include <boost/xpressive/detail/core/sub_match_vector.hpp>
-#include <boost/xpressive/detail/utility/sequence_stack.hpp>
 #include <boost/xpressive/detail/core/regex_impl.hpp>
+#include <boost/xpressive/detail/core/sub_match_vector.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
+#include <boost/xpressive/detail/utility/sequence_stack.hpp>
 #include <boost/xpressive/regex_constants.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // match_context
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct match_context
 {
     typedef typename iterator_value<BidiIter>::type char_type;
 
     match_context()
-      : results_ptr_(0)
-      , prev_context_(0)
-      , next_ptr_(0)
-      , traits_(0)
+        : results_ptr_(0), prev_context_(0), next_ptr_(0), traits_(0)
     {
     }
 
@@ -82,15 +83,7 @@ struct match_flags
     bool match_partial_;
 
     explicit match_flags(regex_constants::match_flag_type flags)
-      : match_all_(false)
-      , match_prev_avail_(0 != (flags & regex_constants::match_prev_avail))
-      , match_bol_(match_prev_avail_ || 0 == (flags & regex_constants::match_not_bol))
-      , match_eol_(0 == (flags & regex_constants::match_not_eol))
-      , match_not_bow_(!match_prev_avail_ && 0 != (flags & regex_constants::match_not_bow))
-      , match_not_eow_(0 != (flags & regex_constants::match_not_eow))
-      , match_not_null_(0 != (flags & regex_constants::match_not_null))
-      , match_continuous_(0 != (flags & regex_constants::match_continuous))
-      , match_partial_(0 != (flags & regex_constants::match_partial))
+        : match_all_(false), match_prev_avail_(0 != (flags & regex_constants::match_prev_avail)), match_bol_(match_prev_avail_ || 0 == (flags & regex_constants::match_not_bol)), match_eol_(0 == (flags & regex_constants::match_not_eol)), match_not_bow_(!match_prev_avail_ && 0 != (flags & regex_constants::match_not_bow)), match_not_eow_(0 != (flags & regex_constants::match_not_eow)), match_not_null_(0 != (flags & regex_constants::match_not_null)), match_continuous_(0 != (flags & regex_constants::match_continuous)), match_partial_(0 != (flags & regex_constants::match_partial))
     {
     }
 };
@@ -98,9 +91,9 @@ struct match_flags
 ///////////////////////////////////////////////////////////////////////////////
 // match_state
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct match_state
-  : noncopyable
+    : noncopyable
 {
     typedef BidiIter iterator;
     typedef core_access<BidiIter> access;
@@ -131,28 +124,13 @@ struct match_state
 
     ///////////////////////////////////////////////////////////////////////////////
     //
-    match_state
-    (
-        BidiIter begin
-      , BidiIter end
-      , match_results &what
-      , regex_impl const &impl
-      , regex_constants::match_flag_type flags
-    )
-      : cur_(begin)
-      , sub_matches_(0)
-      , mark_count_(0)
-      , begin_(begin)
-      , end_(end)
-      , flags_(flags)
-      , found_partial_match_(false)
-      , context_() // zero-initializes the fields of context_
-      , extras_(&core_access<BidiIter>::get_extras(what))
-      , action_list_()
-      , action_list_tail_(&action_list_.next)
-      , action_args_(&core_access<BidiIter>::get_action_args(what))
-      , attr_context_() // zero-initializes the fields of attr_context_
-      , next_search_(begin)
+    match_state(
+        BidiIter begin, BidiIter end, match_results &what, regex_impl const &impl, regex_constants::match_flag_type flags)
+        : cur_(begin), sub_matches_(0), mark_count_(0), begin_(begin), end_(end), flags_(flags), found_partial_match_(false), context_() // zero-initializes the fields of context_
+          ,
+          extras_(&core_access<BidiIter>::get_extras(what)), action_list_(), action_list_tail_(&action_list_.next), action_args_(&core_access<BidiIter>::get_action_args(what)), attr_context_() // zero-initializes the fields of attr_context_
+          ,
+          next_search_(begin)
     {
         // reclaim any cached memory in the match_results struct
         this->extras_->sub_match_stack_.unwind();
@@ -211,7 +189,7 @@ struct match_state
     bool pop_context(regex_impl const &impl, bool success)
     {
         match_context &context = *this->context_.prev_context_;
-        if(!success)
+        if (!success)
         {
             match_results &what = *context.results_ptr_;
             this->uninit_(impl, what);
@@ -272,14 +250,13 @@ struct match_state
         sub0.matched = false;
     }
 
-    template<typename Traits>
+    template <typename Traits>
     Traits const &get_traits() const
     {
         return static_cast<traits_holder<Traits> const *>(this->context_.traits_)->traits();
     }
 
-private:
-
+  private:
     void init_(regex_impl const &impl, match_results &what)
     {
         regex_id_type const id = impl.xpr_.get();
@@ -311,7 +288,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 // memento
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct memento
 {
     sub_match_impl<BidiIter> *old_sub_matches_;
@@ -324,17 +301,12 @@ struct memento
 ///////////////////////////////////////////////////////////////////////////////
 // save_sub_matches
 //
-template<typename BidiIter>
+template <typename BidiIter>
 inline memento<BidiIter> save_sub_matches(match_state<BidiIter> &state)
 {
     memento<BidiIter> mem =
-    {
-        state.extras_->sub_match_stack_.push_sequence(state.mark_count_, sub_match_impl<BidiIter>(state.begin_))
-      , state.context_.results_ptr_->nested_results().size()
-      , state.action_list_.next
-      , state.action_list_tail_
-      , state.attr_context_
-    };
+        {
+            state.extras_->sub_match_stack_.push_sequence(state.mark_count_, sub_match_impl<BidiIter>(state.begin_)), state.context_.results_ptr_->nested_results().size(), state.action_list_.next, state.action_list_tail_, state.attr_context_};
     state.action_list_.next = 0;
     state.action_list_tail_ = &state.action_list_.next;
     std::copy(state.sub_matches_, state.sub_matches_ + state.mark_count_, mem.old_sub_matches_);
@@ -344,7 +316,7 @@ inline memento<BidiIter> save_sub_matches(match_state<BidiIter> &state)
 ///////////////////////////////////////////////////////////////////////////////
 // restore_action_queue
 //
-template<typename BidiIter>
+template <typename BidiIter>
 inline void restore_action_queue(memento<BidiIter> const &mem, match_state<BidiIter> &state)
 {
     state.action_list_.next = mem.action_list_head_;
@@ -355,7 +327,7 @@ inline void restore_action_queue(memento<BidiIter> const &mem, match_state<BidiI
 ///////////////////////////////////////////////////////////////////////////////
 // restore_sub_matches
 //
-template<typename BidiIter>
+template <typename BidiIter>
 inline void restore_sub_matches(memento<BidiIter> const &mem, match_state<BidiIter> &state)
 {
     typedef core_access<BidiIter> access;
@@ -370,18 +342,18 @@ inline void restore_sub_matches(memento<BidiIter> const &mem, match_state<BidiIt
 ///////////////////////////////////////////////////////////////////////////////
 // reclaim_sub_matches
 //
-template<typename BidiIter>
+template <typename BidiIter>
 inline void reclaim_sub_matches(memento<BidiIter> const &mem, match_state<BidiIter> &state, bool success)
 {
     std::size_t count = state.context_.results_ptr_->nested_results().size() - mem.nested_results_count_;
-    if(count == 0)
+    if (count == 0)
     {
         state.extras_->sub_match_stack_.unwind_to(mem.old_sub_matches_);
     }
     // else we have we must orphan this block of backrefs because we are using the stack
     // space above it.
 
-    if(!success)
+    if (!success)
     {
         state.attr_context_ = mem.attr_context_;
     }
@@ -390,12 +362,14 @@ inline void reclaim_sub_matches(memento<BidiIter> const &mem, match_state<BidiIt
 ///////////////////////////////////////////////////////////////////////////////
 // traits_cast
 //
-template<typename Traits, typename BidiIter>
+template <typename Traits, typename BidiIter>
 inline Traits const &traits_cast(match_state<BidiIter> const &state)
 {
     return state.template get_traits<Traits>();
 }
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

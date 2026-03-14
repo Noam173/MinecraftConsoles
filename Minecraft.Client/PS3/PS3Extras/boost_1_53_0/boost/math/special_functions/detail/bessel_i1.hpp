@@ -10,15 +10,20 @@
 #pragma once
 #endif
 
-#include <boost/math/tools/rational.hpp>
-#include <boost/math/tools/big_constant.hpp>
 #include <boost/assert.hpp>
+#include <boost/math/tools/big_constant.hpp>
+#include <boost/math/tools/rational.hpp>
 
 // Modified Bessel function of the first kind of order one
 // minimax rational approximations on intervals, see
 // Blair and Edwards, Chalk River Report AECL-4928, 1974
 
-namespace boost { namespace math { namespace detail{
+namespace boost
+{
+namespace math
+{
+namespace detail
+{
 
 template <typename T>
 T bessel_i1(T x);
@@ -26,23 +31,25 @@ T bessel_i1(T x);
 template <class T>
 struct bessel_i1_initializer
 {
-   struct init
-   {
-      init()
-      {
-         do_init();
-      }
-      static void do_init()
-      {
-         bessel_i1(T(1));
-      }
-      void force_instantiate()const{}
-   };
-   static const init initializer;
-   static void force_instantiate()
-   {
-      initializer.force_instantiate();
-   }
+    struct init
+    {
+        init()
+        {
+            do_init();
+        }
+        static void do_init()
+        {
+            bessel_i1(T(1));
+        }
+        void force_instantiate() const
+        {
+        }
+    };
+    static const init initializer;
+    static void force_instantiate()
+    {
+        initializer.force_instantiate();
+    }
 };
 
 template <class T>
@@ -108,14 +115,14 @@ T bessel_i1(T x)
     {
         return static_cast<T>(0);
     }
-    if (w <= 15)                        // w in (0, 15]
+    if (w <= 15) // w in (0, 15]
     {
         T y = x * x;
         r = evaluate_polynomial(P1, y) / evaluate_polynomial(Q1, y);
         factor = w;
         value = factor * r;
     }
-    else                                // w in (15, \infty)
+    else // w in (15, \infty)
     {
         T y = 1 / w - T(1) / 15;
         r = evaluate_polynomial(P2, y) / evaluate_polynomial(Q2, y);
@@ -125,12 +132,13 @@ T bessel_i1(T x)
 
     if (x < 0)
     {
-        value *= -value;                 // odd function
+        value *= -value; // odd function
     }
     return value;
 }
 
-}}} // namespaces
+} // namespace detail
+} // namespace math
+} // namespace boost
 
 #endif // BOOST_MATH_BESSEL_I1_HPP
-

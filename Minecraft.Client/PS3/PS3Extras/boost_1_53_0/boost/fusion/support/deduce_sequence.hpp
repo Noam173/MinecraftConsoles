@@ -9,44 +9,51 @@
 #if !defined(BOOST_FUSION_SUPPORT_DEDUCE_SEQUENCE_HPP_INCLUDED)
 #define BOOST_FUSION_SUPPORT_DEDUCE_SEQUENCE_HPP_INCLUDED
 
-#include <boost/fusion/support/deduce.hpp>
-#include <boost/fusion/container/vector/convert.hpp>
-#include <boost/fusion/view/transform_view.hpp>
 #include <boost/config.hpp>
+#include <boost/fusion/container/vector/convert.hpp>
+#include <boost/fusion/support/deduce.hpp>
+#include <boost/fusion/view/transform_view.hpp>
 
-
-namespace boost { namespace fusion { namespace traits
+namespace boost
 {
-    template <class Sequence> struct deduce_sequence;
+namespace fusion
+{
+namespace traits
+{
+template <class Sequence>
+struct deduce_sequence;
 
-    namespace detail
+namespace detail
+{
+struct deducer
+{
+    template <typename Sig>
+    struct result;
+
+    template <class Self, typename T>
+    struct result<Self(T)>
+        : fusion::traits::deduce<T>
     {
-        struct deducer
-        {
-            template <typename Sig>
-            struct result;
+    };
 
-            template <class Self, typename T>
-            struct result< Self(T) >
-                : fusion::traits::deduce<T>
-            { };
-
-            // never called, but needed for decltype-based result_of (C++0x)
+    // never called, but needed for decltype-based result_of (C++0x)
 #ifndef BOOST_NO_RVALUE_REFERENCES
-            template <typename T>
-            typename result< deducer(T) >::type
-            operator()(T&&) const;
+    template <typename T>
+    typename result<deducer(T)>::type
+    operator()(T &&) const;
 #endif
-        };
-    }
+};
+} // namespace detail
 
-    template <class Sequence>
-    struct deduce_sequence
-        : result_of::as_vector<
-            fusion::transform_view<Sequence, detail::deducer> >
-    { };
+template <class Sequence>
+struct deduce_sequence
+    : result_of::as_vector<
+          fusion::transform_view<Sequence, detail::deducer>>
+{
+};
 
-}}}
+} // namespace traits
+} // namespace fusion
+} // namespace boost
 
 #endif
-

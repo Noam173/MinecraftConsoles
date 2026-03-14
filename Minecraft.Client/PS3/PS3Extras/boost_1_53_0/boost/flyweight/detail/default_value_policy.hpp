@@ -9,7 +9,7 @@
 #ifndef BOOST_FLYWEIGHT_DETAIL_DEFAULT_VALUE_POLICY_HPP
 #define BOOST_FLYWEIGHT_DETAIL_DEFAULT_VALUE_POLICY_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -19,37 +19,49 @@
 /* Default value policy: the key is the same as the value.
  */
 
-namespace boost{
-
-namespace flyweights{
-
-namespace detail{
-
-template<typename Value>
-struct default_value_policy:value_marker
+namespace boost
 {
-  typedef Value key_type;
-  typedef Value value_type;
 
-  struct rep_type
-  {
-  /* template ctors */
+namespace flyweights
+{
+
+namespace detail
+{
+
+template <typename Value>
+struct default_value_policy : value_marker
+{
+    typedef Value key_type;
+    typedef Value value_type;
+
+    struct rep_type
+    {
+        /* template ctors */
 
 #define BOOST_FLYWEIGHT_PERFECT_FWD_NAME explicit rep_type
 #define BOOST_FLYWEIGHT_PERFECT_FWD_BODY(n) \
-  :x(BOOST_PP_ENUM_PARAMS(n,t)){}
+  :x(BOOST_PP_ENUM_PARAMS(n,t))             \
+    {                                       \
+    }
 #include <boost/flyweight/detail/perfect_fwd.hpp>
 
-    operator const value_type&()const{return x;}
+        operator const value_type &() const
+        {
+            return x;
+        }
 
-    value_type x;
-  };
+        value_type x;
+    };
 
-  static void construct_value(const rep_type&){}
-  static void copy_value(const rep_type&){}
+    static void construct_value(const rep_type &)
+    {
+    }
+    static void copy_value(const rep_type &)
+    {
+    }
 };
 
-} /* namespace flyweights::detail */
+} // namespace detail
 
 } /* namespace flyweights */
 

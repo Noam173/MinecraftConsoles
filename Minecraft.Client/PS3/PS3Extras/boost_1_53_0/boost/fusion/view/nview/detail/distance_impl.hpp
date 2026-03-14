@@ -10,35 +10,37 @@
 
 #include <boost/fusion/iterator/distance.hpp>
 
-namespace boost { namespace fusion 
+namespace boost
 {
-    struct nview_iterator_tag;
+namespace fusion
+{
+struct nview_iterator_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct distance_impl;
+
+template <>
+struct distance_impl<nview_iterator_tag>
+{
+    template <typename First, typename Last>
+    struct apply
+        : result_of::distance<typename First::first_type, typename Last::first_type>
     {
-        template<typename Tag>
-        struct distance_impl;
+        typedef typename result_of::distance<
+            typename First::first_type, typename Last::first_type>::type type;
 
-        template<>
-        struct distance_impl<nview_iterator_tag>
+        static type
+        call(First const & /*first*/, Last const & /*last*/)
         {
-            template<typename First, typename Last>
-            struct apply
-              : result_of::distance<typename First::first_type, typename Last::first_type>
-            {
-                typedef typename result_of::distance<
-                    typename First::first_type, typename Last::first_type
-                >::type type;
+            return type();
+        }
+    };
+};
+} // namespace extension
 
-                static type
-                call(First const& /*first*/, Last const& /*last*/)
-                {
-                    return type();
-                }
-            };
-        };
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif

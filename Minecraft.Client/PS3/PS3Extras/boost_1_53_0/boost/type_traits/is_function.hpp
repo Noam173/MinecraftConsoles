@@ -11,15 +11,15 @@
 #ifndef BOOST_TT_IS_FUNCTION_HPP_INCLUDED
 #define BOOST_TT_IS_FUNCTION_HPP_INCLUDED
 
-#include <boost/type_traits/is_reference.hpp>
-#include <boost/type_traits/detail/false_result.hpp>
 #include <boost/config.hpp>
+#include <boost/type_traits/detail/false_result.hpp>
+#include <boost/type_traits/is_reference.hpp>
 
 #if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_TT_TEST_MS_FUNC_SIGS)
-#   include <boost/type_traits/detail/is_function_ptr_helper.hpp>
+#include <boost/type_traits/detail/is_function_ptr_helper.hpp>
 #else
-#   include <boost/type_traits/detail/is_function_ptr_tester.hpp>
-#   include <boost/type_traits/detail/yes_no_type.hpp>
+#include <boost/type_traits/detail/is_function_ptr_tester.hpp>
+#include <boost/type_traits/detail/yes_no_type.hpp>
 #endif
 
 // should be the last #include
@@ -31,14 +31,16 @@
 // except that some compilers erroneously allow conversions from
 // function pointers to void*.
 
-namespace boost {
+namespace boost
+{
 
-#if !defined( __CODEGEARC__ )
+#if !defined(__CODEGEARC__)
 
-namespace detail {
+namespace detail
+{
 
 #if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_TT_TEST_MS_FUNC_SIGS)
-template<bool is_ref = true>
+template <bool is_ref = true>
 struct is_function_chooser
     : public ::boost::type_traits::false_result
 {
@@ -47,16 +49,16 @@ struct is_function_chooser
 template <>
 struct is_function_chooser<false>
 {
-    template< typename T > struct result_
-        : public ::boost::type_traits::is_function_ptr_helper<T*>
+    template <typename T>
+    struct result_
+        : public ::boost::type_traits::is_function_ptr_helper<T *>
     {
     };
 };
 
 template <typename T>
 struct is_function_impl
-    : public is_function_chooser< ::boost::is_reference<T>::value >
-        ::BOOST_NESTED_TEMPLATE result_<T>
+    : public is_function_chooser<::boost::is_reference<T>::value>::BOOST_NESTED_TEMPLATE result_<T>
 {
 };
 
@@ -67,13 +69,11 @@ struct is_function_impl
 {
 #if BOOST_WORKAROUND(BOOST_MSVC_FULL_VER, >= 140050000)
 #pragma warning(push)
-#pragma warning(disable:6334)
+#pragma warning(disable : 6334)
 #endif
-    static T* t;
+    static T *t;
     BOOST_STATIC_CONSTANT(
-        bool, value = sizeof(::boost::type_traits::is_function_ptr_tester(t))
-        == sizeof(::boost::type_traits::yes_type)
-        );
+        bool, value = sizeof(::boost::type_traits::is_function_ptr_tester(t)) == sizeof(::boost::type_traits::yes_type));
 #if BOOST_WORKAROUND(BOOST_MSVC_FULL_VER, >= 140050000)
 #pragma warning(pop)
 #endif
@@ -81,12 +81,14 @@ struct is_function_impl
 
 #if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 template <typename T>
-struct is_function_impl<T&> : public false_type
-{};
+struct is_function_impl<T &> : public false_type
+{
+};
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
 template <typename T>
-struct is_function_impl<T&&> : public false_type
-{};
+struct is_function_impl<T &&> : public false_type
+{
+};
 #endif
 #endif
 
@@ -96,12 +98,12 @@ struct is_function_impl<T&&> : public false_type
 
 #endif // !defined( __CODEGEARC__ )
 
-#if defined( __CODEGEARC__ )
-BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_function,T,__is_function(T))
+#if defined(__CODEGEARC__)
+BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_function, T, __is_function(T))
 #else
-BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_function,T,::boost::detail::is_function_impl<T>::value)
+BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_function, T, ::boost::detail::is_function_impl<T>::value)
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
-BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_1(typename T,is_function,T&&,false)
+BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_1(typename T, is_function, T &&, false)
 #endif
 #endif
 } // namespace boost

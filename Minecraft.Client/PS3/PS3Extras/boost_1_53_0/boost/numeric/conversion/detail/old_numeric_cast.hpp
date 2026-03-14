@@ -46,12 +46,12 @@
 #ifndef BOOST_OLD_NUMERIC_CAST_HPP
 #define BOOST_OLD_NUMERIC_CAST_HPP
 
-# include <boost/config.hpp>
-# include <cassert>
-# include <typeinfo>
-# include <boost/type.hpp>
-# include <boost/limits.hpp>
-# include <boost/numeric/conversion/converter_policies.hpp>
+#include <boost/config.hpp>
+#include <boost/limits.hpp>
+#include <boost/numeric/conversion/converter_policies.hpp>
+#include <boost/type.hpp>
+#include <cassert>
+#include <typeinfo>
 
 //  It has been demonstrated numerous times that MSVC 6.0 fails silently at link
 //  time if you use a template function which has template parameters that don't
@@ -60,15 +60,15 @@
 //  TODO: Add this to config.hpp?
 //  FLC: This macro is repeated in boost/cast.hpp but only locally (is undefined at the bottom)
 //       so is OK to reproduce it here.
-# if defined(BOOST_MSVC) && BOOST_MSVC < 1300
-#  define BOOST_EXPLICIT_DEFAULT_TARGET , ::boost::type<Target>* = 0
-# else
-#  define BOOST_EXPLICIT_DEFAULT_TARGET
-# endif
+#if defined(BOOST_MSVC) && BOOST_MSVC < 1300
+#define BOOST_EXPLICIT_DEFAULT_TARGET , ::boost::type<Target> * = 0
+#else
+#define BOOST_EXPLICIT_DEFAULT_TARGET
+#endif
 
 namespace boost
 {
-  using numeric::bad_numeric_cast;
+using numeric::bad_numeric_cast;
 
 //  LEGACY numeric_cast [only for some old broken compilers] --------------------------------------//
 
@@ -78,262 +78,276 @@ namespace boost
 
 #if !defined(BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS) || defined(BOOST_SGI_CPP_LIMITS)
 
-    namespace detail
+namespace detail
+{
+template <class T>
+struct signed_numeric_limits : std::numeric_limits<T>
+{
+    static inline T min BOOST_PREVENT_MACRO_SUBSTITUTION()
     {
-      template <class T>
-      struct signed_numeric_limits : std::numeric_limits<T>
-      {
-             static inline T min BOOST_PREVENT_MACRO_SUBSTITUTION ()
-         {
-             return (std::numeric_limits<T>::min)() >= 0
-                     // unary minus causes integral promotion, thus the static_cast<>
-                     ? static_cast<T>(-(std::numeric_limits<T>::max)())
-                     : (std::numeric_limits<T>::min)();
-         };
-      };
+        return (std::numeric_limits<T>::min)() >= 0
+                   // unary minus causes integral promotion, thus the static_cast<>
+                   ? static_cast<T>(-(std::numeric_limits<T>::max)())
+                   : (std::numeric_limits<T>::min)();
+    };
+};
 
-      // Move to namespace boost in utility.hpp?
-      template <class T, bool specialized>
-      struct fixed_numeric_limits_base
-          : public if_true< std::numeric_limits<T>::is_signed >
-           ::BOOST_NESTED_TEMPLATE then< signed_numeric_limits<T>,
-                            std::numeric_limits<T>
-                   >::type
-      {};
+// Move to namespace boost in utility.hpp?
+template <class T, bool specialized>
+struct fixed_numeric_limits_base
+    : public if_true<std::numeric_limits<T>::is_signed>::BOOST_NESTED_TEMPLATE then<signed_numeric_limits<T>,
+                                                                                    std::numeric_limits<T>>::type
+{
+};
 
-      template <class T>
-      struct fixed_numeric_limits
-          : fixed_numeric_limits_base<T,(std::numeric_limits<T>::is_specialized)>
-      {};
+template <class T>
+struct fixed_numeric_limits
+    : fixed_numeric_limits_base<T, (std::numeric_limits<T>::is_specialized)>
+{
+};
 
-# ifdef BOOST_HAS_LONG_LONG
-      // cover implementations which supply no specialization for long
-      // long / unsigned long long. Not intended to be full
-      // numeric_limits replacements, but good enough for numeric_cast<>
-      template <>
-      struct fixed_numeric_limits_base< ::boost::long_long_type, false>
-      {
-          BOOST_STATIC_CONSTANT(bool, is_specialized = true);
-          BOOST_STATIC_CONSTANT(bool, is_signed = true);
-          static  ::boost::long_long_type max BOOST_PREVENT_MACRO_SUBSTITUTION ()
-          {
-#  ifdef LONGLONG_MAX
-              return LONGLONG_MAX;
-#  else
-              return 9223372036854775807LL; // hope this is portable
-#  endif
-          }
+#ifdef BOOST_HAS_LONG_LONG
+// cover implementations which supply no specialization for long
+// long / unsigned long long. Not intended to be full
+// numeric_limits replacements, but good enough for numeric_cast<>
+template <>
+struct fixed_numeric_limits_base<::boost::long_long_type, false>
+{
+    BOOST_STATIC_CONSTANT(bool, is_specialized = true);
+    BOOST_STATIC_CONSTANT(bool, is_signed = true);
+    static ::boost::long_long_type max BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+#ifdef LONGLONG_MAX
+        return LONGLONG_MAX;
+#else
+        return 9223372036854775807LL; // hope this is portable
+#endif
+    }
 
-          static  ::boost::long_long_type min BOOST_PREVENT_MACRO_SUBSTITUTION ()
-          {
-#  ifdef LONGLONG_MIN
-              return LONGLONG_MIN;
-#  else
-               return -( 9223372036854775807LL )-1; // hope this is portable
-#  endif
-          }
-      };
+    static ::boost::long_long_type min BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+#ifdef LONGLONG_MIN
+        return LONGLONG_MIN;
+#else
+        return -(9223372036854775807LL) - 1; // hope this is portable
+#endif
+    }
+};
 
-      template <>
-      struct fixed_numeric_limits_base< ::boost::ulong_long_type, false>
-      {
-          BOOST_STATIC_CONSTANT(bool, is_specialized = true);
-          BOOST_STATIC_CONSTANT(bool, is_signed = false);
-          static  ::boost::ulong_long_type max BOOST_PREVENT_MACRO_SUBSTITUTION ()
-          {
-#  ifdef ULONGLONG_MAX
-              return ULONGLONG_MAX;
-#  else
-              return 0xffffffffffffffffULL; // hope this is portable
-#  endif
-          }
+template <>
+struct fixed_numeric_limits_base<::boost::ulong_long_type, false>
+{
+    BOOST_STATIC_CONSTANT(bool, is_specialized = true);
+    BOOST_STATIC_CONSTANT(bool, is_signed = false);
+    static ::boost::ulong_long_type max BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+#ifdef ULONGLONG_MAX
+        return ULONGLONG_MAX;
+#else
+        return 0xffffffffffffffffULL; // hope this is portable
+#endif
+    }
 
-          static  ::boost::ulong_long_type min BOOST_PREVENT_MACRO_SUBSTITUTION () { return 0; }
-      };
-# endif
-    } // namespace detail
+    static ::boost::ulong_long_type min BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+        return 0;
+    }
+};
+#endif
+} // namespace detail
 
 // less_than_type_min -
-  //    x_is_signed should be numeric_limits<X>::is_signed
-  //    y_is_signed should be numeric_limits<Y>::is_signed
-  //    y_min should be numeric_limits<Y>::min()
-  //
-  //    check(x, y_min) returns true iff x < y_min without invoking comparisons
-  //    between signed and unsigned values.
-  //
-  //    "poor man's partial specialization" is in use here.
-    template <bool x_is_signed, bool y_is_signed>
-    struct less_than_type_min
+//    x_is_signed should be numeric_limits<X>::is_signed
+//    y_is_signed should be numeric_limits<Y>::is_signed
+//    y_min should be numeric_limits<Y>::min()
+//
+//    check(x, y_min) returns true iff x < y_min without invoking comparisons
+//    between signed and unsigned values.
+//
+//    "poor man's partial specialization" is in use here.
+template <bool x_is_signed, bool y_is_signed>
+struct less_than_type_min
+{
+    template <class X, class Y>
+    static bool check(X x, Y y_min)
     {
-        template <class X, class Y>
-        static bool check(X x, Y y_min)
-            { return x < y_min; }
-    };
+        return x < y_min;
+    }
+};
 
-    template <>
-    struct less_than_type_min<false, true>
+template <>
+struct less_than_type_min<false, true>
+{
+    template <class X, class Y>
+    static bool check(X, Y)
     {
-        template <class X, class Y>
-        static bool check(X, Y)
-            { return false; }
-    };
+        return false;
+    }
+};
 
-    template <>
-    struct less_than_type_min<true, false>
+template <>
+struct less_than_type_min<true, false>
+{
+    template <class X, class Y>
+    static bool check(X x, Y)
     {
-        template <class X, class Y>
-        static bool check(X x, Y)
-            { return x < 0; }
-    };
+        return x < 0;
+    }
+};
 
-  // greater_than_type_max -
-  //    same_sign should be:
-  //            numeric_limits<X>::is_signed == numeric_limits<Y>::is_signed
-  //    y_max should be numeric_limits<Y>::max()
-  //
-  //    check(x, y_max) returns true iff x > y_max without invoking comparisons
-  //    between signed and unsigned values.
-  //
-  //    "poor man's partial specialization" is in use here.
-    template <bool same_sign, bool x_is_signed>
-    struct greater_than_type_max;
+// greater_than_type_max -
+//    same_sign should be:
+//            numeric_limits<X>::is_signed == numeric_limits<Y>::is_signed
+//    y_max should be numeric_limits<Y>::max()
+//
+//    check(x, y_max) returns true iff x > y_max without invoking comparisons
+//    between signed and unsigned values.
+//
+//    "poor man's partial specialization" is in use here.
+template <bool same_sign, bool x_is_signed>
+struct greater_than_type_max;
 
-    template<>
-    struct greater_than_type_max<true, true>
+template <>
+struct greater_than_type_max<true, true>
+{
+    template <class X, class Y>
+    static inline bool check(X x, Y y_max)
     {
-        template <class X, class Y>
-        static inline bool check(X x, Y y_max)
-            { return x > y_max; }
-    };
+        return x > y_max;
+    }
+};
 
-    template <>
-    struct greater_than_type_max<false, true>
+template <>
+struct greater_than_type_max<false, true>
+{
+    // What does the standard say about this? I think it's right, and it
+    // will work with every compiler I know of.
+    template <class X, class Y>
+    static inline bool check(X x, Y)
     {
-        // What does the standard say about this? I think it's right, and it
-        // will work with every compiler I know of.
-        template <class X, class Y>
-        static inline bool check(X x, Y)
-            { return x >= 0 && static_cast<X>(static_cast<Y>(x)) != x; }
+        return x >= 0 && static_cast<X>(static_cast<Y>(x)) != x;
+    }
 
-# if defined(BOOST_MSVC) && BOOST_MSVC < 1300
-        // MSVC6 can't static_cast  unsigned __int64 -> floating types
-#  define BOOST_UINT64_CAST(src_type)                                   \
-        static inline bool check(src_type x, unsigned __int64)          \
-        {                                                               \
-            if (x < 0) return false;                                    \
-            unsigned __int64 y = static_cast<unsigned __int64>(x);      \
-            bool odd = y & 0x1;                                         \
-            __int64 div2 = static_cast<__int64>(y >> 1);                \
-            return ((static_cast<src_type>(div2) * 2.0) + odd) != x;    \
-        }
+#if defined(BOOST_MSVC) && BOOST_MSVC < 1300
+    // MSVC6 can't static_cast  unsigned __int64 -> floating types
+#define BOOST_UINT64_CAST(src_type)                              \
+    static inline bool check(src_type x, unsigned __int64)       \
+    {                                                            \
+        if (x < 0)                                               \
+            return false;                                        \
+        unsigned __int64 y = static_cast<unsigned __int64>(x);   \
+        bool odd = y & 0x1;                                      \
+        __int64 div2 = static_cast<__int64>(y >> 1);             \
+        return ((static_cast<src_type>(div2) * 2.0) + odd) != x; \
+    }
 
-        BOOST_UINT64_CAST(long double);
-        BOOST_UINT64_CAST(double);
-        BOOST_UINT64_CAST(float);
-#  undef BOOST_UINT64_CAST
-# endif
-    };
+    BOOST_UINT64_CAST(long double);
+    BOOST_UINT64_CAST(double);
+    BOOST_UINT64_CAST(float);
+#undef BOOST_UINT64_CAST
+#endif
+};
 
-    template<>
-    struct greater_than_type_max<true, false>
+template <>
+struct greater_than_type_max<true, false>
+{
+    template <class X, class Y>
+    static inline bool check(X x, Y y_max)
     {
-        template <class X, class Y>
-        static inline bool check(X x, Y y_max)
-            { return x > y_max; }
-    };
+        return x > y_max;
+    }
+};
 
-    template <>
-    struct greater_than_type_max<false, false>
+template <>
+struct greater_than_type_max<false, false>
+{
+    // What does the standard say about this? I think it's right, and it
+    // will work with every compiler I know of.
+    template <class X, class Y>
+    static inline bool check(X x, Y)
     {
-        // What does the standard say about this? I think it's right, and it
-        // will work with every compiler I know of.
-        template <class X, class Y>
-        static inline bool check(X x, Y)
-            { return static_cast<X>(static_cast<Y>(x)) != x; }
-    };
+        return static_cast<X>(static_cast<Y>(x)) != x;
+    }
+};
 
 #else // use #pragma hacks if available
 
-  namespace detail
-  {
-# if BOOST_MSVC
-#  pragma warning(push)
-#  pragma warning(disable : 4018)
-#  pragma warning(disable : 4146)
+namespace detail
+{
+#if BOOST_MSVC
+#pragma warning(push)
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4146)
 #elif defined(__BORLANDC__)
-#  pragma option push -w-8041
-# endif
+#pragma option push -w-8041
+#endif
 
-       // Move to namespace boost in utility.hpp?
-       template <class T>
-       struct fixed_numeric_limits : public std::numeric_limits<T>
-       {
-           static inline T min BOOST_PREVENT_MACRO_SUBSTITUTION ()
-           {
-               return std::numeric_limits<T>::is_signed && (std::numeric_limits<T>::min)() >= 0
-                   ? T(-(std::numeric_limits<T>::max)()) : (std::numeric_limits<T>::min)();
-           }
-       };
+// Move to namespace boost in utility.hpp?
+template <class T>
+struct fixed_numeric_limits : public std::numeric_limits<T>
+{
+    static inline T min BOOST_PREVENT_MACRO_SUBSTITUTION()
+    {
+        return std::numeric_limits<T>::is_signed && (std::numeric_limits<T>::min)() >= 0
+                   ? T(-(std::numeric_limits<T>::max)())
+                   : (std::numeric_limits<T>::min)();
+    }
+};
 
-# if BOOST_MSVC
-#  pragma warning(pop)
+#if BOOST_MSVC
+#pragma warning(pop)
 #elif defined(__BORLANDC__)
-#  pragma option pop
-# endif
-  } // namespace detail
+#pragma option pop
+#endif
+} // namespace detail
 
 #endif
 
-    template<typename Target, typename Source>
-    inline Target numeric_cast(Source arg BOOST_EXPLICIT_DEFAULT_TARGET)
-    {
-        // typedefs abbreviating respective trait classes
-        typedef detail::fixed_numeric_limits<Source> arg_traits;
-        typedef detail::fixed_numeric_limits<Target> result_traits;
+template <typename Target, typename Source>
+inline Target numeric_cast(Source arg BOOST_EXPLICIT_DEFAULT_TARGET)
+{
+    // typedefs abbreviating respective trait classes
+    typedef detail::fixed_numeric_limits<Source> arg_traits;
+    typedef detail::fixed_numeric_limits<Target> result_traits;
 
-#if defined(BOOST_STRICT_CONFIG) \
-    || (!defined(__HP_aCC) || __HP_aCC > 33900) \
-         && (!defined(BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS) \
-             || defined(BOOST_SGI_CPP_LIMITS))
-        // typedefs that act as compile time assertions
-        // (to be replaced by boost compile time assertions
-        // as and when they become available and are stable)
-        typedef bool argument_must_be_numeric[arg_traits::is_specialized];
-        typedef bool result_must_be_numeric[result_traits::is_specialized];
+#if defined(BOOST_STRICT_CONFIG) || (!defined(__HP_aCC) || __HP_aCC > 33900) && (!defined(BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS) || defined(BOOST_SGI_CPP_LIMITS))
+    // typedefs that act as compile time assertions
+    // (to be replaced by boost compile time assertions
+    // as and when they become available and are stable)
+    typedef bool argument_must_be_numeric[arg_traits::is_specialized];
+    typedef bool result_must_be_numeric[result_traits::is_specialized];
 
-        const bool arg_is_signed = arg_traits::is_signed;
-        const bool result_is_signed = result_traits::is_signed;
-        const bool same_sign = arg_is_signed == result_is_signed;
+    const bool arg_is_signed = arg_traits::is_signed;
+    const bool result_is_signed = result_traits::is_signed;
+    const bool same_sign = arg_is_signed == result_is_signed;
 
-        if (less_than_type_min<arg_is_signed, result_is_signed>::check(arg, (result_traits::min)())
-            || greater_than_type_max<same_sign, arg_is_signed>::check(arg, (result_traits::max)())
-            )
+    if (less_than_type_min<arg_is_signed, result_is_signed>::check(arg, (result_traits::min)()) || greater_than_type_max<same_sign, arg_is_signed>::check(arg, (result_traits::max)()))
 
 #else // We need to use #pragma hacks if available
 
-# if BOOST_MSVC
-#  pragma warning(push)
-#  pragma warning(disable : 4018)
+#if BOOST_MSVC
+#pragma warning(push)
+#pragma warning(disable : 4018)
 #elif defined(__BORLANDC__)
 #pragma option push -w-8012
-# endif
-        if ((arg < 0 && !result_traits::is_signed)  // loss of negative range
-             || (arg_traits::is_signed && arg < (result_traits::min)())  // underflow
-             || arg > (result_traits::max)())            // overflow
-# if BOOST_MSVC
-#  pragma warning(pop)
+#endif
+    if ((arg < 0 && !result_traits::is_signed)                     // loss of negative range
+        || (arg_traits::is_signed && arg < (result_traits::min)()) // underflow
+        || arg > (result_traits::max)())                           // overflow
+#if BOOST_MSVC
+#pragma warning(pop)
 #elif defined(__BORLANDC__)
 #pragma option pop
-# endif
 #endif
-        {
-            throw bad_numeric_cast();
-        }
-        return static_cast<Target>(arg);
-    } // numeric_cast
+#endif
+    {
+        throw bad_numeric_cast();
+    }
+    return static_cast<Target>(arg);
+} // numeric_cast
 
-#  undef BOOST_EXPLICIT_DEFAULT_TARGET
+#undef BOOST_EXPLICIT_DEFAULT_TARGET
 
 } // namespace boost
 
-#endif  // BOOST_OLD_NUMERIC_CAST_HPP
+#endif // BOOST_OLD_NUMERIC_CAST_HPP

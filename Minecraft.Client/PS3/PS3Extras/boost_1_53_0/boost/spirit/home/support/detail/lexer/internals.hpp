@@ -25,36 +25,35 @@ struct internals
     bool _seen_BOL_assertion;
     bool _seen_EOL_assertion;
 
-    internals () :
-        _seen_BOL_assertion (false),
-        _seen_EOL_assertion (false)
+    internals() : _seen_BOL_assertion(false),
+                  _seen_EOL_assertion(false)
     {
     }
 
-    void clear ()
+    void clear()
     {
-        _lookup.clear ();
-        _dfa_alphabet.clear ();
-        _dfa.clear ();
+        _lookup.clear();
+        _dfa_alphabet.clear();
+        _dfa.clear();
         _seen_BOL_assertion = false;
         _seen_EOL_assertion = false;
     }
 
-    void swap (internals &internals_)
+    void swap(internals &internals_)
     {
-        _lookup->swap (*internals_._lookup);
-        _dfa_alphabet.swap (internals_._dfa_alphabet);
-        _dfa->swap (*internals_._dfa);
-        std::swap (_seen_BOL_assertion, internals_._seen_BOL_assertion);
-        std::swap (_seen_EOL_assertion, internals_._seen_EOL_assertion);
+        _lookup->swap(*internals_._lookup);
+        _dfa_alphabet.swap(internals_._dfa_alphabet);
+        _dfa->swap(*internals_._dfa);
+        std::swap(_seen_BOL_assertion, internals_._seen_BOL_assertion);
+        std::swap(_seen_EOL_assertion, internals_._seen_EOL_assertion);
     }
 
-private:
-    internals (const internals &); // No copy construction.
-    internals &operator = (const internals &); // No assignment.
+  private:
+    internals(const internals &);            // No copy construction.
+    internals &operator=(const internals &); // No assignment.
 };
-}
-}
-}
+} // namespace detail
+} // namespace lexer
+} // namespace boost
 
 #endif

@@ -5,10 +5,10 @@
 #ifndef BOOST_TYPEOF_STD_sstream_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_sstream_hpp_INCLUDED
 
-#include <sstream>
-#include <boost/typeof/typeof.hpp>
-#include <boost/typeof/std/string.hpp>
 #include <boost/typeof/std/memory.hpp>
+#include <boost/typeof/std/string.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <sstream>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -29,4 +29,4 @@ BOOST_TYPEOF_REGISTER_TYPE(std::istringstream)
 BOOST_TYPEOF_REGISTER_TYPE(std::ostringstream)
 BOOST_TYPEOF_REGISTER_TYPE(std::stringstream)
 
-#endif//BOOST_TYPEOF_STD_sstream_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_sstream_hpp_INCLUDED

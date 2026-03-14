@@ -12,7 +12,7 @@
 #define BOOST_RANGE_MUTABLE_ITERATOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/range/config.hpp>
@@ -21,44 +21,46 @@
 #include <boost/range/detail/iterator.hpp>
 #else
 
-#include <boost/range/detail/extract_optional_type.hpp>
 #include <boost/iterator/iterator_traits.hpp>
+#include <boost/range/detail/extract_optional_type.hpp>
 #include <cstddef>
 #include <utility>
 
 namespace boost
 {
-    //////////////////////////////////////////////////////////////////////////
-    // default
-    //////////////////////////////////////////////////////////////////////////
-    
-    namespace range_detail {
-        BOOST_RANGE_EXTRACT_OPTIONAL_TYPE( iterator )
-    }
+//////////////////////////////////////////////////////////////////////////
+// default
+//////////////////////////////////////////////////////////////////////////
 
-    template< typename C >
-    struct range_mutable_iterator : range_detail::extract_iterator<C>
-    {};
-    
-    //////////////////////////////////////////////////////////////////////////
-    // pair
-    //////////////////////////////////////////////////////////////////////////
+namespace range_detail
+{
+BOOST_RANGE_EXTRACT_OPTIONAL_TYPE(iterator)
+}
 
-    template< typename Iterator >
-    struct range_mutable_iterator< std::pair<Iterator,Iterator> >
-    {
-        typedef Iterator type;
-    };
+template <typename C>
+struct range_mutable_iterator : range_detail::extract_iterator<C>
+{
+};
 
-    //////////////////////////////////////////////////////////////////////////
-    // array
-    //////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// pair
+//////////////////////////////////////////////////////////////////////////
 
-    template< typename T, std::size_t sz >
-    struct range_mutable_iterator< T[sz] >
-    {
-        typedef T* type;
-    };
+template <typename Iterator>
+struct range_mutable_iterator<std::pair<Iterator, Iterator>>
+{
+    typedef Iterator type;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// array
+//////////////////////////////////////////////////////////////////////////
+
+template <typename T, std::size_t sz>
+struct range_mutable_iterator<T[sz]>
+{
+    typedef T *type;
+};
 
 } // namespace boost
 

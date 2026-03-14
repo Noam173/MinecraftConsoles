@@ -24,14 +24,14 @@ namespace boost
 namespace detail
 {
 
-inline void atomic_increment( int * pw )
+inline void atomic_increment(int *pw)
 {
     // ++*pw;
 
     _Asm_fetchadd(_FASZ_W, _SEM_REL, pw, +1, _LDHINT_NONE);
-} 
+}
 
-inline int atomic_decrement( int * pw )
+inline int atomic_decrement(int *pw)
 {
     // return --*pw;
 
@@ -40,24 +40,24 @@ inline int atomic_decrement( int * pw )
     {
         _Asm_mf();
     }
-    
+
     return r - 1;
 }
 
-inline int atomic_conditional_increment( int * pw )
+inline int atomic_conditional_increment(int *pw)
 {
     // if( *pw != 0 ) ++*pw;
     // return *pw;
 
     int v = *pw;
-    
+
     for (;;)
     {
         if (0 == v)
         {
             return 0;
         }
-        
+
         _Asm_mov_to_ar(_AREG_CCV,
                        v,
                        (_UP_CALL_FENCE | _UP_SYS_FENCE | _DOWN_CALL_FENCE | _DOWN_SYS_FENCE));
@@ -66,24 +66,22 @@ inline int atomic_conditional_increment( int * pw )
         {
             return r + 1;
         }
-        
+
         v = r;
     }
 }
 
 class sp_counted_base
 {
-private:
+  private:
+    sp_counted_base(sp_counted_base const &);
+    sp_counted_base &operator=(sp_counted_base const &);
 
-    sp_counted_base( sp_counted_base const & );
-    sp_counted_base & operator= ( sp_counted_base const & );
+    int use_count_;  // #shared
+    int weak_count_; // #weak + (#shared != 0)
 
-    int use_count_;        // #shared
-    int weak_count_;       // #weak + (#shared != 0)
-
-public:
-
-    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
+  public:
+    sp_counted_base() : use_count_(1), weak_count_(1)
     {
     }
 
@@ -103,22 +101,22 @@ public:
         delete this;
     }
 
-    virtual void * get_deleter( sp_typeinfo const & ti ) = 0;
-    virtual void * get_untyped_deleter() = 0;
+    virtual void *get_deleter(sp_typeinfo const &ti) = 0;
+    virtual void *get_untyped_deleter() = 0;
 
     void add_ref_copy()
     {
-        atomic_increment( &use_count_ );
+        atomic_increment(&use_count_);
     }
 
     bool add_ref_lock() // true on success
     {
-        return atomic_conditional_increment( &use_count_ ) != 0;
+        return atomic_conditional_increment(&use_count_) != 0;
     }
 
     void release() // nothrow
     {
-        if( atomic_decrement( &use_count_ ) == 0 )
+        if (atomic_decrement(&use_count_) == 0)
         {
             dispose();
             weak_release();
@@ -127,12 +125,12 @@ public:
 
     void weak_add_ref() // nothrow
     {
-        atomic_increment( &weak_count_ );
+        atomic_increment(&weak_count_);
     }
 
     void weak_release() // nothrow
     {
-        if( atomic_decrement( &weak_count_ ) == 0 )
+        if (atomic_decrement(&weak_count_) == 0)
         {
             destroy();
         }
@@ -140,7 +138,7 @@ public:
 
     long use_count() const // nothrow
     {
-        return static_cast<int const volatile &>( use_count_ ); // TODO use ld.acq here
+        return static_cast<int const volatile &>(use_count_); // TODO use ld.acq here
     }
 };
 
@@ -148,4 +146,4 @@ public:
 
 } // namespace boost
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_ACC_IA64_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_ACC_IA64_HPP_INCLUDED

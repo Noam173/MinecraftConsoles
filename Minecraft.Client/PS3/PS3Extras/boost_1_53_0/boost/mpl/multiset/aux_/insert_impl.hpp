@@ -4,8 +4,8 @@
 
 // Copyright Aleksey Gurtovoy 2003-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -14,21 +14,26 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
+#include <boost/mpl/insert_fwd.hpp>
 #include <boost/mpl/multiset/aux_/item.hpp>
 #include <boost/mpl/multiset/aux_/tag.hpp>
-#include <boost/mpl/insert_fwd.hpp>
 
-namespace boost { namespace mpl {
-
-template<>
-struct insert_impl< aux::multiset_tag >
+namespace boost
 {
-    template< typename Set, typename Key, typename unused_ > struct apply
+namespace mpl
+{
+
+template <>
+struct insert_impl<aux::multiset_tag>
+{
+    template <typename Set, typename Key, typename unused_>
+    struct apply
     {
-        typedef ms_item<Key,Set> type;
+        typedef ms_item<Key, Set> type;
     };
 };
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_MULTISET_AUX_INSERT_IMPL_HPP_INCLUDED

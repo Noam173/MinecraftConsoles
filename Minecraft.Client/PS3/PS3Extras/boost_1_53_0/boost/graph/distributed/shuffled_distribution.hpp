@@ -9,11 +9,16 @@
 #error "Parallel BGL files should not be included unless <boost/graph/use_mpi.hpp> has been included"
 #endif
 
-# include <boost/assert.hpp>
-# include <boost/iterator/counting_iterator.hpp>
-# include <vector>
+#include <boost/assert.hpp>
+#include <boost/iterator/counting_iterator.hpp>
+#include <vector>
 
-namespace boost { namespace graph { namespace distributed {
+namespace boost
+{
+namespace graph
+{
+namespace distributed
+{
 
 template <class BaseDistribution>
 struct shuffled_distribution : BaseDistribution
@@ -21,14 +26,12 @@ struct shuffled_distribution : BaseDistribution
     typedef std::size_t size_type;
 
     template <class ProcessGroup>
-    shuffled_distribution(ProcessGroup const& pg, BaseDistribution const& base)
-      : BaseDistribution(base)
-      , n(num_processes(pg))
-      , mapping_(make_counting_iterator(size_type(0)), make_counting_iterator(n))
-      , reverse_mapping(mapping_)
-    {}
+    shuffled_distribution(ProcessGroup const &pg, BaseDistribution const &base)
+        : BaseDistribution(base), n(num_processes(pg)), mapping_(make_counting_iterator(size_type(0)), make_counting_iterator(n)), reverse_mapping(mapping_)
+    {
+    }
 
-    std::vector<size_type> const& mapping() const
+    std::vector<size_type> const &mapping() const
     {
         return mapping_;
     }
@@ -41,18 +44,18 @@ struct shuffled_distribution : BaseDistribution
         reverse_mapping.resize(mapping_.size());
 
         for (std::vector<size_t>::iterator i(mapping_.begin());
-            i != mapping_.end(); ++i)
+             i != mapping_.end(); ++i)
         {
             reverse_mapping[*i] = i - mapping_.begin();
         }
     }
 
-    BaseDistribution& base()
+    BaseDistribution &base()
     {
         return *this;
     }
 
-    BaseDistribution const& base() const
+    BaseDistribution const &base() const
     {
         return *this;
     }
@@ -64,7 +67,7 @@ struct shuffled_distribution : BaseDistribution
     }
 
     template <class T>
-    size_type operator()(T const& value) const
+    size_type operator()(T const &value) const
     {
         return mapping_[base()(value)];
     }
@@ -92,23 +95,24 @@ struct shuffled_distribution : BaseDistribution
     }
 
     template <class Archive>
-    void serialize(Archive& ar, unsigned long /*version*/)
+    void serialize(Archive &ar, unsigned long /*version*/)
     {
-        ar & serialization::make_nvp("base", base());
+        ar &serialization::make_nvp("base", base());
     }
 
-    void clear() 
+    void clear()
     {
         base().clear();
     }
 
-private:
+  private:
     size_type n;
     std::vector<size_type> mapping_;
     std::vector<size_type> reverse_mapping;
 };
 
-}}} // namespace boost::graph::distributed
+} // namespace distributed
+} // namespace graph
+} // namespace boost
 
 #endif // BOOST_SHUFFLED_DISTRIBUTION_070923_HPP
-

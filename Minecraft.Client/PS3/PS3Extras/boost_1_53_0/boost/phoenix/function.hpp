@@ -7,9 +7,9 @@
 #ifndef BOOST_PHOENIX_FUNCTION_HPP
 #define BOOST_PHOENIX_FUNCTION_HPP
 
-#include <boost/phoenix/version.hpp>
-#include <boost/phoenix/function/function.hpp>
 #include <boost/phoenix/function/adapt_callable.hpp>
 #include <boost/phoenix/function/adapt_function.hpp>
+#include <boost/phoenix/function/function.hpp>
+#include <boost/phoenix/version.hpp>
 
 #endif

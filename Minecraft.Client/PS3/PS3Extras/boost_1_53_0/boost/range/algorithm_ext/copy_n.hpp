@@ -9,20 +9,20 @@
 #ifndef BOOST_RANGE_ALGORITHM_COPY_N_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_COPY_N_HPP_INCLUDED
 
+#include <algorithm>
 #include <boost/assert.hpp>
 #include <boost/concept_check.hpp>
 #include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/concepts.hpp>
 #include <boost/range/distance.hpp>
+#include <boost/range/end.hpp>
 #include <boost/range/iterator.hpp>
 #include <boost/range/iterator_range.hpp>
-#include <algorithm>
 
 namespace boost
 {
-    namespace range
-    {
+namespace range
+{
 
 /// \brief template function copy
 ///
@@ -31,23 +31,25 @@ namespace boost
 /// \pre SinglePassRange is a model of the SinglePassRangeConcept
 /// \pre OutputIterator is a model of the OutputIteratorConcept
 /// \pre 0 <= n <= distance(rng)
-template< class SinglePassRange, class Size, class OutputIterator >
-inline OutputIterator copy_n(const SinglePassRange& rng, Size n, OutputIterator out)
+template <class SinglePassRange, class Size, class OutputIterator>
+inline OutputIterator copy_n(const SinglePassRange &rng, Size n, OutputIterator out)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( SinglePassRangeConcept<const SinglePassRange> ));
-    BOOST_ASSERT( n <= static_cast<Size>(::boost::distance(rng)) );
-    BOOST_ASSERT( n >= static_cast<Size>(0) );
+    BOOST_RANGE_CONCEPT_ASSERT((SinglePassRangeConcept<const SinglePassRange>));
+    BOOST_ASSERT(n <= static_cast<Size>(::boost::distance(rng)));
+    BOOST_ASSERT(n >= static_cast<Size>(0));
 
     BOOST_DEDUCED_TYPENAME range_iterator<const SinglePassRange>::type source = ::boost::begin(rng);
 
     for (Size i = 0; i < n; ++i, ++out, ++source)
+    {
         *out = *source;
+    }
 
     return out;
 }
 
-    } // namespace range
-    using ::boost::range::copy_n;
+} // namespace range
+using ::boost::range::copy_n;
 } // namespace boost
 
 #endif // include guard

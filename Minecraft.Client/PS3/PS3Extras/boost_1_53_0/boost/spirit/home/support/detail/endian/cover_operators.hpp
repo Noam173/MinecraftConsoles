@@ -23,93 +23,160 @@
 #pragma once
 #endif
 
-# ifndef BOOST_MINIMAL_INTEGER_COVER_OPERATORS
-#   include <boost/operators.hpp>
-# endif
+#ifndef BOOST_MINIMAL_INTEGER_COVER_OPERATORS
+#include <boost/operators.hpp>
+#endif
 
 #include <iosfwd>
 
-namespace boost { namespace spirit
+namespace boost
 {
-  namespace endian
-  {
+namespace spirit
+{
+namespace endian
+{
 
-  // A class that adds integer operators to an integer cover class
+// A class that adds integer operators to an integer cover class
 
-    template <typename T, typename IntegerType>
-    class cover_operators
-#    ifndef BOOST_MINIMAL_INTEGER_COVER_OPERATORS
-      : boost::operators<T>
-#    endif
+template <typename T, typename IntegerType>
+class cover_operators
+#ifndef BOOST_MINIMAL_INTEGER_COVER_OPERATORS
+    : boost::operators<T>
+#endif
+{
+    // The other operations take advantage of the type conversion that's
+    // built into unary +.
+
+    // Unary operations.
+    friend IntegerType operator+(const T &x)
     {
-      // The other operations take advantage of the type conversion that's
-      // built into unary +.
+        return x;
+    }
+#ifndef BOOST_MINIMAL_INTEGER_COVER_OPERATORS
+    friend IntegerType operator-(const T &x)
+    {
+        return -+x;
+    }
+    friend IntegerType operator~(const T &x)
+    {
+        return ~+x;
+    }
+    friend IntegerType operator!(const T &x)
+    {
+        return !+x;
+    }
 
-      // Unary operations.
-      friend IntegerType operator+(const T& x) { return x; }
-#   ifndef BOOST_MINIMAL_INTEGER_COVER_OPERATORS
-      friend IntegerType operator-(const T& x) { return -+x; }
-      friend IntegerType operator~(const T& x) { return ~+x; }
-      friend IntegerType operator!(const T& x) { return !+x; }
+    // The basic ordering operations.
+    friend bool operator==(const T &x, IntegerType y)
+    {
+        return +x == y;
+    }
+    friend bool operator<(const T &x, IntegerType y)
+    {
+        return +x < y;
+    }
+#endif
 
-      // The basic ordering operations.
-      friend bool operator==(const T& x, IntegerType y) { return +x == y; }
-      friend bool operator<(const T& x, IntegerType y) { return +x < y; }
-#   endif
-      
-      // The basic arithmetic operations.
-      friend T& operator+=(T& x, IntegerType y) { return x = +x + y; }
-      friend T& operator-=(T& x, IntegerType y) { return x = +x - y; }
-      friend T& operator*=(T& x, IntegerType y) { return x = +x * y; }
-      friend T& operator/=(T& x, IntegerType y) { return x = +x / y; }
-      friend T& operator%=(T& x, IntegerType y) { return x = +x % y; }
-      friend T& operator&=(T& x, IntegerType y) { return x = +x & y; }
-      friend T& operator|=(T& x, IntegerType y) { return x = +x | y; }
-      friend T& operator^=(T& x, IntegerType y) { return x = +x ^ y; }
-      friend T& operator<<=(T& x, IntegerType y) { return x = +x << y; }
-      friend T& operator>>=(T& x, IntegerType y) { return x = +x >> y; }
-      
-      // A few binary arithmetic operations not covered by operators base class.
-      friend IntegerType operator<<(const T& x, IntegerType y) { return +x << y; }
-      friend IntegerType operator>>(const T& x, IntegerType y) { return +x >> y; }
-      
-      // Auto-increment and auto-decrement can be defined in terms of the
-      // arithmetic operations.
-      friend T& operator++(T& x) { return x += 1; }
-      friend T& operator--(T& x) { return x -= 1; }
+    // The basic arithmetic operations.
+    friend T &operator+=(T &x, IntegerType y)
+    {
+        return x = +x + y;
+    }
+    friend T &operator-=(T &x, IntegerType y)
+    {
+        return x = +x - y;
+    }
+    friend T &operator*=(T &x, IntegerType y)
+    {
+        return x = +x * y;
+    }
+    friend T &operator/=(T &x, IntegerType y)
+    {
+        return x = +x / y;
+    }
+    friend T &operator%=(T &x, IntegerType y)
+    {
+        return x = +x % y;
+    }
+    friend T &operator&=(T &x, IntegerType y)
+    {
+        return x = +x & y;
+    }
+    friend T &operator|=(T &x, IntegerType y)
+    {
+        return x = +x | y;
+    }
+    friend T &operator^=(T &x, IntegerType y)
+    {
+        return x = +x ^ y;
+    }
+    friend T &operator<<=(T &x, IntegerType y)
+    {
+        return x = +x << y;
+    }
+    friend T &operator>>=(T &x, IntegerType y)
+    {
+        return x = +x >> y;
+    }
 
-#   ifdef BOOST_MINIMAL_INTEGER_COVER_OPERATORS
-      friend T operator++(T& x, int)
-      { 
+    // A few binary arithmetic operations not covered by operators base class.
+    friend IntegerType operator<<(const T &x, IntegerType y)
+    {
+        return +x << y;
+    }
+    friend IntegerType operator>>(const T &x, IntegerType y)
+    {
+        return +x >> y;
+    }
+
+    // Auto-increment and auto-decrement can be defined in terms of the
+    // arithmetic operations.
+    friend T &operator++(T &x)
+    {
+        return x += 1;
+    }
+    friend T &operator--(T &x)
+    {
+        return x -= 1;
+    }
+
+#ifdef BOOST_MINIMAL_INTEGER_COVER_OPERATORS
+    friend T operator++(T &x, int)
+    {
         T tmp(x);
         x += 1;
         return tmp;
-      }
-      friend T operator--(T& x, int)
-      { 
+    }
+    friend T operator--(T &x, int)
+    {
         T tmp(x);
         x -= 1;
         return tmp;
-      }
-#   endif
+    }
+#endif
 
-#   ifndef BOOST_NO_IO_COVER_OPERATORS
-  // TODO: stream I/O needs to be templatized on the stream type, so will
-  // work with wide streams, etc.
+#ifndef BOOST_NO_IO_COVER_OPERATORS
+    // TODO: stream I/O needs to be templatized on the stream type, so will
+    // work with wide streams, etc.
 
-      // Stream input and output.
-      friend std::ostream& operator<<(std::ostream& s, const T& x)
-        { return s << +x; }
-      friend std::istream& operator>>(std::istream& s, T& x)
+    // Stream input and output.
+    friend std::ostream &operator<<(std::ostream &s, const T &x)
+    {
+        return s << +x;
+    }
+    friend std::istream &operator>>(std::istream &s, T &x)
+    {
+        IntegerType i;
+        if (s >> i)
         {
-          IntegerType i;
-          if (s >> i)
             x = i;
-          return s;
         }
-#   endif
-    };
-  } // namespace endian
-}} // namespace boost::spirit
+        return s;
+    }
+#endif
+};
+} // namespace endian
+} // namespace spirit
+} // namespace boost
 
 #endif // BOOST_SPIRIT_INTEGER_COVER_OPERATORS_HPP

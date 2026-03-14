@@ -3,31 +3,36 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef OPERATOR_ID_DWA2002531_HPP
-# define OPERATOR_ID_DWA2002531_HPP
+#define OPERATOR_ID_DWA2002531_HPP
 
-namespace boost { namespace python { namespace detail {
+namespace boost
+{
+namespace python
+{
+namespace detail
+{
 
 enum operator_id
-{ 
-    op_add, 
-    op_sub, 
-    op_mul, 
-    op_div, 
-    op_mod, 
+{
+    op_add,
+    op_sub,
+    op_mul,
+    op_div,
+    op_mod,
     op_divmod,
-    op_pow, 
-    op_lshift, 
-    op_rshift, 
-    op_and, 
-    op_xor, 
-    op_or, 
-    op_neg, 
-    op_pos, 
-    op_abs, 
-    op_invert, 
-    op_int, 
-    op_long, 
-    op_float, 
+    op_pow,
+    op_lshift,
+    op_rshift,
+    op_and,
+    op_xor,
+    op_or,
+    op_neg,
+    op_pos,
+    op_abs,
+    op_invert,
+    op_int,
+    op_long,
+    op_float,
     op_str,
     op_cmp,
     op_gt,
@@ -54,10 +59,13 @@ enum operator_id
 #endif
     op_repr
 #if PY_VERSION_HEX >= 0x03000000
-    ,op_truediv
+        ,
+    op_truediv
 #endif
 };
 
-}}} // namespace boost::python::detail
+} // namespace detail
+} // namespace python
+} // namespace boost
 
 #endif // OPERATOR_ID_DWA2002531_HPP

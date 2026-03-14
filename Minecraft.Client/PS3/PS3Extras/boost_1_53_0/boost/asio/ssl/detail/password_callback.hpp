@@ -12,54 +12,58 @@
 #define BOOST_ASIO_SSL_DETAIL_PASSWORD_CALLBACK_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if !defined(BOOST_ASIO_ENABLE_OLD_SSL)
-# include <cstddef>
-# include <string>
-# include <boost/asio/ssl/context_base.hpp>
+#include <boost/asio/ssl/context_base.hpp>
+#include <cstddef>
+#include <string>
 #endif // !defined(BOOST_ASIO_ENABLE_OLD_SSL)
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace ssl {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace ssl
+{
+namespace detail
+{
 
 #if !defined(BOOST_ASIO_ENABLE_OLD_SSL)
 
 class password_callback_base
 {
-public:
-  virtual ~password_callback_base()
-  {
-  }
+  public:
+    virtual ~password_callback_base()
+    {
+    }
 
-  virtual std::string call(std::size_t size,
-      context_base::password_purpose purpose) = 0;
+    virtual std::string call(std::size_t size,
+                             context_base::password_purpose purpose) = 0;
 };
 
 template <typename PasswordCallback>
 class password_callback : public password_callback_base
 {
-public:
-  explicit password_callback(PasswordCallback callback)
-    : callback_(callback)
-  {
-  }
+  public:
+    explicit password_callback(PasswordCallback callback)
+        : callback_(callback)
+    {
+    }
 
-  virtual std::string call(std::size_t size,
-      context_base::password_purpose purpose)
-  {
-    return callback_(size, purpose);
-  }
+    virtual std::string call(std::size_t size,
+                             context_base::password_purpose purpose)
+    {
+        return callback_(size, purpose);
+    }
 
-private:
-  PasswordCallback callback_;
+  private:
+    PasswordCallback callback_;
 };
 
 #endif // !defined(BOOST_ASIO_ENABLE_OLD_SSL)

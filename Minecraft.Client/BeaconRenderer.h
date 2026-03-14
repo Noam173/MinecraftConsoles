@@ -5,9 +5,9 @@ class BeaconTileEntity;
 
 class BeaconRenderer : public TileEntityRenderer
 {
-private:
+  private:
     static ResourceLocation BEAM_LOCATION;
 
-public:
+  public:
     virtual void render(shared_ptr<TileEntity> _beacon, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled);
 };

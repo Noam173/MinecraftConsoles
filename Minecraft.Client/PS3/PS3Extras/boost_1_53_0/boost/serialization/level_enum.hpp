@@ -3,21 +3,23 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // level_enum.hpp:
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
-namespace boost {
-namespace serialization {
+namespace boost
+{
+namespace serialization
+{
 
 // for each class used in the program, specify which level
 // of serialization should be implemented
@@ -37,12 +39,12 @@ enum level_type
     primitive_type = 1,
     // Serialize the objects of this type using the objects "serialize"
     // function or template. This permits values to be written/read
-    // to/from archives but includes no class or version information. 
+    // to/from archives but includes no class or version information.
     object_serializable = 2,
     ///////////////////////////////////////////////////////////////////
     // once an object is serialized at one of the above levels, the
     // corresponding archives cannot be read if the implementation level
-    // for the archive object is changed.  
+    // for the archive object is changed.
     ///////////////////////////////////////////////////////////////////
     // Add class information to the archive.  Class information includes
     // implementation level, class version and class name if available

@@ -9,22 +9,25 @@
 #ifndef BOOST_RATIO_MPL_LCM_HPP
 #define BOOST_RATIO_MPL_LCM_HPP
 
-#include <boost/ratio/ratio.hpp>
-#include <boost/ratio/mpl/numeric_cast.hpp>
 #include <boost/ratio/detail/mpl/lcm.hpp>
+#include <boost/ratio/mpl/numeric_cast.hpp>
+#include <boost/ratio/ratio.hpp>
 
-namespace boost { 
-namespace mpl {
-
-template<>
-struct lcm_impl< rational_c_tag,rational_c_tag >
+namespace boost
 {
-    template< typename R1, typename R2 > struct apply
+namespace mpl
+{
+
+template <>
+struct lcm_impl<rational_c_tag, rational_c_tag>
+{
+    template <typename R1, typename R2>
+    struct apply
         : ratio_lcm<R1, R2>
     {
     };
-};    
-}
-}
+};
+} // namespace mpl
+} // namespace boost
 
-#endif  // BOOST_RATIO_MPL_LCM_HPP
+#endif // BOOST_RATIO_MPL_LCM_HPP

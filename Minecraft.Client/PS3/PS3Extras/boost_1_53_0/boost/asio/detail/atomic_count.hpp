@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_ATOMIC_COUNT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -20,24 +20,39 @@
 #if !defined(BOOST_HAS_THREADS) || defined(BOOST_ASIO_DISABLE_THREADS)
 // Nothing to include.
 #elif defined(BOOST_ASIO_HAS_STD_ATOMIC)
-# include <atomic>
+#include <atomic>
 #else // defined(BOOST_ASIO_HAS_STD_ATOMIC)
-# include <boost/detail/atomic_count.hpp>
+#include <boost/detail/atomic_count.hpp>
 #endif // defined(BOOST_ASIO_HAS_STD_ATOMIC)
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 #if !defined(BOOST_HAS_THREADS) || defined(BOOST_ASIO_DISABLE_THREADS)
 typedef long atomic_count;
-inline void increment(atomic_count& a, long b) { a += b; }
+inline void increment(atomic_count &a, long b)
+{
+    a += b;
+}
 #elif defined(BOOST_ASIO_HAS_STD_ATOMIC)
 typedef std::atomic<long> atomic_count;
-inline void increment(atomic_count& a, long b) { a += b; }
-#else // defined(BOOST_ASIO_HAS_STD_ATOMIC)
+inline void increment(atomic_count &a, long b)
+{
+    a += b;
+}
+#else  // defined(BOOST_ASIO_HAS_STD_ATOMIC)
 typedef boost::detail::atomic_count atomic_count;
-inline void increment(atomic_count& a, long b) { while (b > 0) ++a, --b; }
+inline void increment(atomic_count &a, long b)
+{
+    while (b > 0)
+    {
+        ++a, --b;
+    }
+}
 #endif // defined(BOOST_ASIO_HAS_STD_ATOMIC)
 
 } // namespace detail

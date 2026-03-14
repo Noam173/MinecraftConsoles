@@ -11,15 +11,15 @@
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/fusion/adapted/struct/detail/define_struct_inline.hpp>
 
-#define BOOST_FUSION_DEFINE_TPL_STRUCT_INLINE(                                  \
-    TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES)                                      \
-                                                                                \
-    BOOST_FUSION_DEFINE_TPL_STRUCT_INLINE_IMPL(                                 \
-        TEMPLATE_PARAMS_SEQ,                                                    \
-        NAME,                                                                   \
+#define BOOST_FUSION_DEFINE_TPL_STRUCT_INLINE(  \
+    TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES)      \
+                                                \
+    BOOST_FUSION_DEFINE_TPL_STRUCT_INLINE_IMPL( \
+        TEMPLATE_PARAMS_SEQ,                    \
+        NAME,                                   \
         ATTRIBUTES)
 
-#define BOOST_FUSION_DEFINE_STRUCT_INLINE(NAME, ATTRIBUTES)                     \
-    BOOST_FUSION_DEFINE_STRUCT_INLINE_IMPL(NAME, ATTRIBUTES)                    \
+#define BOOST_FUSION_DEFINE_STRUCT_INLINE(NAME, ATTRIBUTES) \
+    BOOST_FUSION_DEFINE_STRUCT_INLINE_IMPL(NAME, ATTRIBUTES)
 
 #endif

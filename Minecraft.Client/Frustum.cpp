@@ -1,40 +1,38 @@
-#include "stdafx.h"
-#include "..\Minecraft.World\FloatBuffer.h"
 #include "Frustum.h"
+#include "..\Minecraft.World\FloatBuffer.h"
+#include "stdafx.h"
 
 Frustum *Frustum::frustum = new Frustum();
 
 Frustum::Frustum()
-{	
-	_proj = MemoryTracker::createFloatBuffer(16);
-	_modl = MemoryTracker::createFloatBuffer(16);
-	_clip = MemoryTracker::createFloatBuffer(16);
+{
+    _proj = MemoryTracker::createFloatBuffer(16);
+    _modl = MemoryTracker::createFloatBuffer(16);
+    _clip = MemoryTracker::createFloatBuffer(16);
 }
 
 Frustum::~Frustum()
 {
-	delete _proj;
-	delete _modl;
-	delete _clip;
+    delete _proj;
+    delete _modl;
+    delete _clip;
 }
-
 
 FrustumData *Frustum::getFrustum()
 {
-	frustum->calculateFrustum();
+    frustum->calculateFrustum();
     return frustum;
 }
 
-
-    ///////////////////////////////// NORMALIZE PLANE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-    /////
-    /////	This normalizes a plane (A side) from a given frustum.
-    /////
-    ///////////////////////////////// NORMALIZE PLANE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+///////////////////////////////// NORMALIZE PLANE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+/////
+/////	This normalizes a plane (A side) from a given frustum.
+/////
+///////////////////////////////// NORMALIZE PLANE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
 void Frustum::normalizePlane(float **frustum, int side)
 {
-    float magnitude = (float) sqrt(frustum[side][A] * frustum[side][A] + frustum[side][B] * frustum[side][B] + frustum[side][C] * frustum[side][C]);
+    float magnitude = (float)sqrt(frustum[side][A] * frustum[side][A] + frustum[side][B] * frustum[side][B] + frustum[side][C] * frustum[side][C]);
 
     // Then we divide the plane's values by it's magnitude.
     // This makes it easier to work with.
@@ -58,7 +56,7 @@ void Frustum::calculateFrustum()
     // By passing in GL_MODELVIEW_MATRIX, we can abstract our model view matrix.
     // This also stores it in an array of [16].
     glGetFloat(GL_MODELVIEW_MATRIX, _modl);
-        
+
     _proj->flip()->limit(16);
     _proj->get(&proj);
     _modl->flip()->limit(16);

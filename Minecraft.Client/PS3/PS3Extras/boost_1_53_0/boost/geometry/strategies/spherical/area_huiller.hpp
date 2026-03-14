@@ -9,21 +9,20 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_SPHERICAL_AREA_HUILLER_HPP
 #define BOOST_GEOMETRY_STRATEGIES_SPHERICAL_AREA_HUILLER_HPP
 
-
-
 #include <boost/geometry/strategies/spherical/distance_haversine.hpp>
 
 #include <boost/geometry/core/radian_access.hpp>
 #include <boost/geometry/util/math.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace strategy { namespace area
+namespace strategy
 {
-
-
+namespace area
+{
 
 /*!
 \brief Area calculation by spherical excess / Huiller's formula
@@ -58,58 +57,52 @@ could be solved.
 }
 
 */
-template
-<
+template <
     typename PointOfSegment,
-    typename CalculationType = void
->
+    typename CalculationType = void>
 class huiller
 {
-typedef typename boost::mpl::if_c
-    <
+    typedef typename boost::mpl::if_c<
         boost::is_void<CalculationType>::type::value,
-        typename select_most_precise
-            <
-                typename coordinate_type<PointOfSegment>::type,
-                double
-            >::type,
-        CalculationType
-    >::type calculation_type;
+        typename select_most_precise<
+            typename coordinate_type<PointOfSegment>::type,
+            double>::type,
+        CalculationType>::type calculation_type;
 
-protected :
+  protected:
     struct excess_sum
     {
         calculation_type sum;
 
         // Distances are calculated on unit sphere here
         strategy::distance::haversine<PointOfSegment, PointOfSegment>
-                distance_over_unit_sphere;
-
+            distance_over_unit_sphere;
 
         inline excess_sum()
-            : sum(0)
-            , distance_over_unit_sphere(1)
-        {}
+            : sum(0), distance_over_unit_sphere(1)
+        {
+        }
         inline calculation_type area(calculation_type radius) const
         {
-            return - sum * radius * radius;
+            return -sum * radius * radius;
         }
     };
 
-public :
+  public:
     typedef calculation_type return_type;
     typedef PointOfSegment segment_point_type;
     typedef excess_sum state_type;
 
     inline huiller(calculation_type radius = 1.0)
         : m_radius(radius)
-    {}
-
-    inline void apply(PointOfSegment const& p1,
-                PointOfSegment const& p2,
-                excess_sum& state) const
     {
-        if (! geometry::math::equals(get<0>(p1), get<0>(p2)))
+    }
+
+    inline void apply(PointOfSegment const &p1,
+                      PointOfSegment const &p2,
+                      excess_sum &state) const
+    {
+        if (!geometry::math::equals(get<0>(p1), get<0>(p2)))
         {
             calculation_type const half = 0.5;
             calculation_type const two = 2.0;
@@ -129,10 +122,7 @@ public :
 
             // E: spherical excess, using l'Huiller's formula
             // [tg(e / 4)]2   =   tg[s / 2]  tg[(s-a) / 2]  tg[(s-b) / 2]  tg[(s-c) / 2]
-            calculation_type E = four * atan(sqrt(geometry::math::abs(tan(s / two)
-                    * tan((s - a) / two)
-                    * tan((s - b) / two)
-                    * tan((s - c) / two))));
+            calculation_type E = four * atan(sqrt(geometry::math::abs(tan(s / two) * tan((s - a) / two) * tan((s - b) / two) * tan((s - c) / two))));
 
             E = geometry::math::abs(E);
 
@@ -142,12 +132,12 @@ public :
             // TODO: check this / enhance this, should be more robust. See also the "grow" for ll
             // TODO: use minmax or "smaller"/"compare" strategy for this
             calculation_type lon1 = geometry::get_as_radian<0>(p1) < 0
-                ? geometry::get_as_radian<0>(p1) + two_pi
-                : geometry::get_as_radian<0>(p1);
+                                        ? geometry::get_as_radian<0>(p1) + two_pi
+                                        : geometry::get_as_radian<0>(p1);
 
             calculation_type lon2 = geometry::get_as_radian<0>(p2) < 0
-                ? geometry::get_as_radian<0>(p2) + two_pi
-                : geometry::get_as_radian<0>(p2);
+                                        ? geometry::get_as_radian<0>(p2) + two_pi
+                                        : geometry::get_as_radian<0>(p2);
 
             if (lon2 < lon1)
             {
@@ -158,12 +148,12 @@ public :
         }
     }
 
-    inline return_type result(excess_sum const& state) const
+    inline return_type result(excess_sum const &state) const
     {
         return state.area(m_radius);
     }
 
-private :
+  private:
     /// Radius of the sphere
     calculation_type m_radius;
 };
@@ -172,7 +162,6 @@ private :
 
 namespace services
 {
-
 
 template <typename Point>
 struct default_strategy<spherical_equatorial_tag, Point>
@@ -191,12 +180,10 @@ struct default_strategy<spherical_polar_tag, Point>
 
 #endif // DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
 
+} // namespace area
+} // namespace strategy
 
-}} // namespace strategy::area
-
-
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_SPHERICAL_AREA_HUILLER_HPP

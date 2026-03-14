@@ -9,38 +9,41 @@
 
 #include <boost/mpl/prior.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct single_view_iterator_tag;
+namespace fusion
+{
+struct single_view_iterator_tag;
 
-    template <typename Sequence, typename Pos>
-    struct single_view_iterator;
+template <typename Sequence, typename Pos>
+struct single_view_iterator;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct prior_impl;
+
+template <>
+struct prior_impl<single_view_iterator_tag>
+{
+    template <typename Iterator>
+    struct apply
     {
-        template <typename Tag>
-        struct prior_impl;
+        typedef single_view_iterator<
+            typename Iterator::single_view_type,
+            typename mpl::prior<typename Iterator::position>::type>
+            type;
 
-        template <>
-        struct prior_impl<single_view_iterator_tag>
+        static type
+        call(Iterator const &i)
         {
-            template <typename Iterator>
-            struct apply 
-            {
-                typedef single_view_iterator<
-                    typename Iterator::single_view_type,
-                    typename mpl::prior<typename Iterator::position>::type>
-                type;
+            return type(i.view);
+        }
+    };
+};
+} // namespace extension
 
-                static type
-                call(Iterator const& i)
-                {
-                    return type(i.view);
-                }
-            };
-        };
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif

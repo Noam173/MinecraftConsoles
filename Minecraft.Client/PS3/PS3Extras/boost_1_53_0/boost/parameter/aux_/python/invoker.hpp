@@ -3,16 +3,23 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_PARAMETER_INVOKER_051210_HPP
-# define BOOST_PARAMETER_INVOKER_051210_HPP
+#define BOOST_PARAMETER_INVOKER_051210_HPP
 
-# include <boost/mpl/begin.hpp>
-# include <boost/mpl/next.hpp>
-# include <boost/mpl/deref.hpp>
-# include <boost/mpl/size.hpp>
-# include <boost/parameter/keyword.hpp>
-# include <boost/preprocessor/iteration/iterate.hpp>
+#include <boost/mpl/begin.hpp>
+#include <boost/mpl/deref.hpp>
+#include <boost/mpl/next.hpp>
+#include <boost/mpl/size.hpp>
+#include <boost/parameter/keyword.hpp>
+#include <boost/preprocessor/iteration/iterate.hpp>
 
-namespace boost { namespace parameter { namespace python { namespace aux {
+namespace boost
+{
+namespace parameter
+{
+namespace python
+{
+namespace aux
+{
 
 template <long Arity, class M, class R, class Args>
 struct invoker;
@@ -24,8 +31,8 @@ struct make_invoker
     struct apply
     {
         typedef invoker<
-            mpl::size<Args>::value, M, R, Args
-        > type;
+            mpl::size<Args>::value, M, R, Args>
+            type;
     };
 };
 
@@ -39,8 +46,8 @@ struct make_member_invoker
     struct apply
     {
         typedef member_invoker<
-            mpl::size<Args>::value, M, R, T, Args
-        > type;
+            mpl::size<Args>::value, M, R, T, Args>
+            type;
     };
 };
 
@@ -54,8 +61,8 @@ struct make_call_invoker
     struct apply
     {
         typedef call_invoker<
-            mpl::size<Args>::value, T, R, Args
-        > type;
+            mpl::size<Args>::value, T, R, Args>
+            type;
     };
 };
 
@@ -69,8 +76,8 @@ struct make_init_invoker
     struct apply
     {
         typedef init_invoker<
-            mpl::size<Args>::value, T, Args
-        > type;
+            mpl::size<Args>::value, T, Args>
+            type;
     };
 };
 
@@ -86,7 +93,7 @@ struct invoker<0, M, R, Args>
 template <class M, class R, class T, class Args>
 struct member_invoker<0, M, R, T, Args>
 {
-    static R execute(T& self)
+    static R execute(T &self)
     {
         return M()(boost::type<R>(), self);
     }
@@ -95,7 +102,7 @@ struct member_invoker<0, M, R, T, Args>
 template <class T, class R, class Args>
 struct call_invoker<0, T, R, Args>
 {
-    static R execute(T& self)
+    static R execute(T &self)
     {
         return self();
     }
@@ -104,29 +111,31 @@ struct call_invoker<0, T, R, Args>
 template <class T, class Args>
 struct init_invoker<0, T, Args>
 {
-    static T* execute(T& self)
+    static T *execute(T &self)
     {
         return new T;
     }
 };
 
-# define BOOST_PP_ITERATION_PARAMS_1 (4, \
-    (1, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/aux_/python/invoker_iterate.hpp>, 1))
-# include BOOST_PP_ITERATE()
+#define BOOST_PP_ITERATION_PARAMS_1 (4, \
+                                     (1, BOOST_PARAMETER_MAX_ARITY, <boost / parameter / aux_ / python / invoker_iterate.hpp>, 1))
+#include BOOST_PP_ITERATE()
 
-# define BOOST_PP_ITERATION_PARAMS_1 (4, \
-    (1, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/aux_/python/invoker_iterate.hpp>, 2))
-# include BOOST_PP_ITERATE()
+#define BOOST_PP_ITERATION_PARAMS_1 (4, \
+                                     (1, BOOST_PARAMETER_MAX_ARITY, <boost / parameter / aux_ / python / invoker_iterate.hpp>, 2))
+#include BOOST_PP_ITERATE()
 
-# define BOOST_PP_ITERATION_PARAMS_1 (4, \
-    (1, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/aux_/python/invoker_iterate.hpp>, 3))
-# include BOOST_PP_ITERATE()
+#define BOOST_PP_ITERATION_PARAMS_1 (4, \
+                                     (1, BOOST_PARAMETER_MAX_ARITY, <boost / parameter / aux_ / python / invoker_iterate.hpp>, 3))
+#include BOOST_PP_ITERATE()
 
-# define BOOST_PP_ITERATION_PARAMS_1 (4, \
-    (1, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/aux_/python/invoker_iterate.hpp>, 4))
-# include BOOST_PP_ITERATE()
+#define BOOST_PP_ITERATION_PARAMS_1 (4, \
+                                     (1, BOOST_PARAMETER_MAX_ARITY, <boost / parameter / aux_ / python / invoker_iterate.hpp>, 4))
+#include BOOST_PP_ITERATE()
 
-}}}} // namespace boost::parameter::python::aux
+} // namespace aux
+} // namespace python
+} // namespace parameter
+} // namespace boost
 
 #endif // BOOST_PARAMETER_INVOKER_051210_HPP
-

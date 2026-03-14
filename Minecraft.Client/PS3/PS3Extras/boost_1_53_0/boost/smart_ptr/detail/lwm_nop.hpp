@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -25,8 +25,7 @@ namespace detail
 
 class lightweight_mutex
 {
-public:
-
+  public:
     typedef lightweight_mutex scoped_lock;
 };
 

@@ -21,8 +21,10 @@
 
 #include <boost/random/detail/disable_warnings.hpp>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
 /**
  * Instantiations of class template random_number_generator model a
@@ -32,10 +34,10 @@ namespace random {
  *
  * The template parameter IntType shall denote some integer-like value type.
  */
-template<class URNG, class IntType = long>
+template <class URNG, class IntType = long>
 class random_number_generator
 {
-public:
+  public:
     typedef URNG base_type;
     typedef IntType argument_type;
     typedef IntType result_type;
@@ -44,7 +46,9 @@ public:
      * \uniform_random_number_generator as the underlying source of
      * random numbers.
      */
-    random_number_generator(base_type& rng) : _rng(rng) {}
+    random_number_generator(base_type &rng) : _rng(rng)
+    {
+    }
 
     // compiler-generated copy ctor is fine
     // assignment is disallowed because there is a reference member
@@ -55,11 +59,11 @@ public:
     result_type operator()(argument_type n)
     {
         BOOST_ASSERT(n > 0);
-        return uniform_int_distribution<IntType>(0, n-1)(_rng);
+        return uniform_int_distribution<IntType>(0, n - 1)(_rng);
     }
 
-private:
-    base_type& _rng;
+  private:
+    base_type &_rng;
 };
 
 } // namespace random

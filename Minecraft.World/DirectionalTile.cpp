@@ -8,5 +8,5 @@ DirectionalTile::DirectionalTile(int id, Material *material, bool isSolidRender)
 
 int DirectionalTile::getDirection(int data)
 {
-	return data & DIRECTION_MASK;
+    return data & DIRECTION_MASK;
 }

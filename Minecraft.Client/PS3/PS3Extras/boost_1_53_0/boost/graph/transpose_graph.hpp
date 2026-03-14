@@ -12,28 +12,28 @@
 #define BOOST_GRAPH_TRANSPOSE_HPP
 
 #include <boost/config.hpp>
+#include <boost/graph/copy.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/reverse_graph.hpp>
-#include <boost/graph/copy.hpp>
 
+namespace boost
+{
 
-namespace boost {
-
-  template <class VertexListGraph, class MutableGraph> 
-  void transpose_graph(const VertexListGraph& G, MutableGraph& G_T)
-  {
+template <class VertexListGraph, class MutableGraph>
+void transpose_graph(const VertexListGraph &G, MutableGraph &G_T)
+{
     reverse_graph<VertexListGraph> R(G);
     copy_graph(R, G_T);
-  }
-  
-  template <class VertexListGraph, class MutableGraph, 
-    class P, class T, class R> 
-  void transpose_graph(const VertexListGraph& G, MutableGraph& G_T,
-                       const bgl_named_params<P, T, R>& params)
-  {
+}
+
+template <class VertexListGraph, class MutableGraph,
+          class P, class T, class R>
+void transpose_graph(const VertexListGraph &G, MutableGraph &G_T,
+                     const bgl_named_params<P, T, R> &params)
+{
     reverse_graph<VertexListGraph> Rev(G);
     copy_graph(Rev, G_T, params);
-  }
+}
 
 } // namespace boost
 

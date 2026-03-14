@@ -1,6 +1,6 @@
-#include "stdafx.h"
-#include "net.minecraft.world.item.enchantment.h"
 #include "EnchantmentInstance.h"
+#include "net.minecraft.world.item.enchantment.h"
+#include "stdafx.h"
 
 EnchantmentInstance::EnchantmentInstance(Enchantment *enchantment, int level) : WeighedRandomItem(enchantment->getFrequency()), enchantment(enchantment), level(level)
 {
@@ -13,5 +13,5 @@ EnchantmentInstance::EnchantmentInstance(int id, int level) : WeighedRandomItem(
 // 4J Added
 EnchantmentInstance *EnchantmentInstance::copy()
 {
-	return new EnchantmentInstance((Enchantment *)enchantment, static_cast<int>(level));
+    return new EnchantmentInstance((Enchantment *)enchantment, static_cast<int>(level));
 }

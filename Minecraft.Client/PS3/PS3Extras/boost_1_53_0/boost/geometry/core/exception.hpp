@@ -16,7 +16,9 @@
 
 #include <exception>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
@@ -26,8 +28,8 @@ namespace boost { namespace geometry
     are derived from exception, so it might be convenient to catch it.
 */
 class exception : public std::exception
-{};
-
+{
+};
 
 /*!
 \brief Empty Input Exception
@@ -44,17 +46,18 @@ class exception : public std::exception
  */
 class empty_input_exception : public geometry::exception
 {
-public:
+  public:
+    inline empty_input_exception()
+    {
+    }
 
-    inline empty_input_exception() {}
-
-    virtual char const* what() const throw()
+    virtual char const *what() const throw()
     {
         return "Boost.Geometry Empty-Input exception";
     }
 };
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_CORE_EXCEPTION_HPP

@@ -12,21 +12,22 @@
 #define BOOST_RANGE_CONST_REVERSE_ITERATOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/range/reverse_iterator.hpp>
 
 namespace boost
 {
-    //
-    // This interface is deprecated, use range_reverse_iterator<const T>
-    //
-    
-    template< typename C >
-    struct range_const_reverse_iterator : range_reverse_iterator<const C>
-    { };
-    
+//
+// This interface is deprecated, use range_reverse_iterator<const T>
+//
+
+template <typename C>
+struct range_const_reverse_iterator : range_reverse_iterator<const C>
+{
+};
+
 } // namespace boost
 
 #endif

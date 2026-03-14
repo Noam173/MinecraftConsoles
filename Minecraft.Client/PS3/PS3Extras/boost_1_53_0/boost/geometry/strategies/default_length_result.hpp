@@ -14,12 +14,12 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_DEFAULT_LENGTH_RESULT_HPP
 #define BOOST_GEOMETRY_STRATEGIES_DEFAULT_LENGTH_RESULT_HPP
 
-
 #include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/util/select_most_precise.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
@@ -33,14 +33,12 @@ namespace boost { namespace geometry
 template <typename Geometry>
 struct default_length_result
 {
-    typedef typename select_most_precise
-        <
-            typename coordinate_type<Geometry>::type,
-            long double
-        >::type type;
+    typedef typename select_most_precise<
+        typename coordinate_type<Geometry>::type,
+        long double>::type type;
 };
 
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_DEFAULT_LENGTH_RESULT_HPP

@@ -7,55 +7,62 @@
 #ifndef BOOST_PHOENIX_CORE_NOTHING_HPP
 #define BOOST_PHOENIX_CORE_NOTHING_HPP
 
-#include <boost/phoenix/core/limits.hpp>
 #include <boost/mpl/void.hpp>
 #include <boost/phoenix/core/actor.hpp>
 #include <boost/phoenix/core/call.hpp>
 #include <boost/phoenix/core/expression.hpp>
+#include <boost/phoenix/core/limits.hpp>
 #include <boost/phoenix/core/value.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
 {
-    /////////////////////////////////////////////////////////////////////////////
-    //
-    //  null_actor
-    //
-    //      An actor that does nothing (a "bum", if you will :-).
-    //
-    /////////////////////////////////////////////////////////////////////////////
-    
-    namespace detail
+namespace phoenix
+{
+/////////////////////////////////////////////////////////////////////////////
+//
+//  null_actor
+//
+//      An actor that does nothing (a "bum", if you will :-).
+//
+/////////////////////////////////////////////////////////////////////////////
+
+namespace detail
+{
+struct nothing
+{
+};
+} // namespace detail
+
+namespace expression
+{
+struct null
+    : expression::value<detail::nothing>
+{
+};
+} // namespace expression
+
+template <typename Dummy>
+struct is_custom_terminal<detail::nothing, Dummy>
+    : mpl::true_
+{
+};
+
+template <typename Dummy>
+struct custom_terminal<detail::nothing, Dummy>
+{
+    typedef void result_type;
+
+    template <typename Context>
+    void operator()(detail::nothing, Context &) const
     {
-        struct nothing {};
     }
-    
-    namespace expression
-    {
-        struct null
-            : expression::value<detail::nothing>
-        {};
-    }
-    
-    template<typename Dummy>
-    struct is_custom_terminal<detail::nothing, Dummy>
-      : mpl::true_
-    {};
+};
 
-    template<typename Dummy>
-    struct custom_terminal<detail::nothing, Dummy>
-    {
-        typedef void result_type;
-
-        template <typename Context>
-        void operator()(detail::nothing, Context &) const
-        {
-        }
-    };
-
-    typedef expression::null::type nothing_type;
+typedef expression::null::type nothing_type;
 #ifndef BOOST_PHOENIX_NO_PREDEFINED_TERMINALS
-    nothing_type const nothing = {{{}}};
+nothing_type const nothing = {{{}}};
 #endif
-}}
+} // namespace phoenix
+} // namespace boost
 
 #endif

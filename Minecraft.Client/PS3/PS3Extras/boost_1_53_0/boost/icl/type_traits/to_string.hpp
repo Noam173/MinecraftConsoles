@@ -16,19 +16,21 @@ Function-templates for discrete Datatypes like int, unsigned or
 #ifndef BOOST_ICL_TO_STRING_HPP_JOFA_000712
 #define BOOST_ICL_TO_STRING_HPP_JOFA_000712
 
+#include <sstream>
 #include <stdio.h>
 #include <string>
-#include <sstream>
 
-namespace boost{ namespace icl
-{    
+namespace boost
+{
+namespace icl
+{
 
 /// Static class template for the string representation of values
 template <class Type>
 struct to_string
 {
     /** Converts all values of types to std::string that implement an operator << */
-    static std::string apply(const Type& value)
+    static std::string apply(const Type &value)
     {
         std::stringstream repr;
         repr << value;
@@ -36,8 +38,7 @@ struct to_string
     }
 };
 
-}} // namespace boost icl
+} // namespace icl
+} // namespace boost
 
 #endif
-
-

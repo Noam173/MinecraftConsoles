@@ -5,9 +5,9 @@
 #ifndef BOOST_TYPEOF_STD_iostream_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_iostream_hpp_INCLUDED
 
-#include <iostream>
-#include <boost/typeof/typeof.hpp>
 #include <boost/typeof/std/string.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <iostream>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -15,4 +15,4 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::fpos, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::basic_ios, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::basic_ios, 2)
 
-#endif//BOOST_TYPEOF_STD_iostream_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_iostream_hpp_INCLUDED

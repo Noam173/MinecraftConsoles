@@ -7,33 +7,37 @@
 #if !defined(BOOST_FUSION_SEGMENTED_END_HPP_INCLUDED)
 #define BOOST_FUSION_SEGMENTED_END_HPP_INCLUDED
 
-#include <boost/fusion/sequence/intrinsic/detail/segmented_end_impl.hpp>
-#include <boost/fusion/iterator/segmented_iterator.hpp>
 #include <boost/fusion/container/list/cons.hpp>
+#include <boost/fusion/iterator/segmented_iterator.hpp>
+#include <boost/fusion/sequence/intrinsic/detail/segmented_end_impl.hpp>
 
-namespace boost { namespace fusion { namespace detail
+namespace boost
 {
-    //auto segmented_end( seq )
-    //{
-    //    return make_segmented_iterator( segmented_end_impl( seq ) );
-    //}
+namespace fusion
+{
+namespace detail
+{
+// auto segmented_end( seq )
+//{
+//     return make_segmented_iterator( segmented_end_impl( seq ) );
+// }
 
-    template <typename Sequence, typename Nil = fusion::nil>
-    struct segmented_end
-    {
-        typedef
-            segmented_iterator<
-                typename segmented_end_impl<Sequence, Nil>::type
-            >
+template <typename Sequence, typename Nil = fusion::nil>
+struct segmented_end
+{
+    typedef segmented_iterator<
+        typename segmented_end_impl<Sequence, Nil>::type>
         type;
 
-        static type call(Sequence & seq)
-        {
-            return type(
-                segmented_end_impl<Sequence, Nil>::call(seq, Nil()));
-        }
-    };
+    static type call(Sequence &seq)
+    {
+        return type(
+            segmented_end_impl<Sequence, Nil>::call(seq, Nil()));
+    }
+};
 
-}}}
+} // namespace detail
+} // namespace fusion
+} // namespace boost
 
 #endif

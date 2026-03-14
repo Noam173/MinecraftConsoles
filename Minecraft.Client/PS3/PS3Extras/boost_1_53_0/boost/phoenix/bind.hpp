@@ -10,11 +10,11 @@
 #ifdef BOOST_PHOENIX_USE_V2_OVER_V3
 #include <boost/spirit/home/phoenix/core.hpp>
 #else
-#include <boost/phoenix/version.hpp>
 #include <boost/phoenix/bind/bind_function.hpp>
 #include <boost/phoenix/bind/bind_function_object.hpp>
 #include <boost/phoenix/bind/bind_member_function.hpp>
 #include <boost/phoenix/bind/bind_member_variable.hpp>
+#include <boost/phoenix/version.hpp>
 #endif
 
 #endif

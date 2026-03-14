@@ -17,16 +17,18 @@
 #ifndef BOOST_RANDOM_UNIFORM_ON_SPHERE_HPP
 #define BOOST_RANDOM_UNIFORM_ON_SPHERE_HPP
 
-#include <vector>
-#include <algorithm>     // std::transform
-#include <functional>    // std::bind2nd, std::divides
+#include <algorithm> // std::transform
 #include <boost/assert.hpp>
 #include <boost/random/detail/config.hpp>
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/normal_distribution.hpp>
+#include <functional> // std::bind2nd, std::divides
+#include <vector>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
 /**
  * Instantiations of class template uniform_on_sphere model a
@@ -34,19 +36,18 @@ namespace random {
  * numbers uniformly distributed on the unit sphere of arbitrary
  * dimension @c dim. The @c Cont template parameter must be a STL-like
  * container type with begin and end operations returning non-const
- * ForwardIterators of type @c Cont::iterator. 
+ * ForwardIterators of type @c Cont::iterator.
  */
-template<class RealType = double, class Cont = std::vector<RealType> >
+template <class RealType = double, class Cont = std::vector<RealType>>
 class uniform_on_sphere
 {
-public:
+  public:
     typedef RealType input_type;
     typedef Cont result_type;
 
     class param_type
     {
-    public:
-
+      public:
         typedef uniform_on_sphere distribution_type;
 
         /**
@@ -59,7 +60,10 @@ public:
         }
 
         /** Returns the dimension of the sphere. */
-        int dim() const { return _dim; }
+        int dim() const
+        {
+            return _dim;
+        }
 
         /** Writes the parameters to a @c std::ostream. */
         BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(os, param_type, parm)
@@ -77,12 +81,14 @@ public:
 
         /** Returns true if the two sets of parameters are equal. */
         BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(param_type, lhs, rhs)
-        { return lhs._dim == rhs._dim; }
+        {
+            return lhs._dim == rhs._dim;
+        }
 
         /** Returns true if the two sets of parameters are different. */
         BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(param_type)
 
-    private:
+      private:
         int _dim;
     };
 
@@ -93,23 +99,33 @@ public:
      * Requires: dim >= 0
      */
     explicit uniform_on_sphere(int dim_arg = 2)
-      : _container(dim_arg), _dim(dim_arg) { }
+        : _container(dim_arg), _dim(dim_arg)
+    {
+    }
 
     /**
      * Constructs a @c uniform_on_sphere distribution from its parameters.
      */
-    explicit uniform_on_sphere(const param_type& parm)
-      : _container(parm.dim()), _dim(parm.dim()) { }
+    explicit uniform_on_sphere(const param_type &parm)
+        : _container(parm.dim()), _dim(parm.dim())
+    {
+    }
 
     // compiler-generated copy ctor and assignment operator are fine
 
     /** Returns the dimension of the sphere. */
-    int dim() const { return _dim; }
+    int dim() const
+    {
+        return _dim;
+    }
 
     /** Returns the parameters of the distribution. */
-    param_type param() const { return param_type(_dim); }
+    param_type param() const
+    {
+        return param_type(_dim);
+    }
     /** Sets the parameters of the distribution. */
-    void param(const param_type& parm)
+    void param(const param_type &parm)
     {
         _dim = parm.dim();
         _container.resize(_dim);
@@ -123,10 +139,11 @@ public:
      * dist.min() <= x <= dist.max() where x is any value produced
      * by the distribution.
      */
-    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION () const
+    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION() const
     {
         result_type result(_dim);
-        if(_dim != 0) {
+        if (_dim != 0)
+        {
             result.front() = RealType(-1.0);
         }
         return result;
@@ -139,10 +156,11 @@ public:
      * dist.min() <= x <= dist.max() where x is any value produced
      * by the distribution.
      */
-    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION () const
+    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION() const
     {
         result_type result(_dim);
-        if(_dim != 0) {
+        if (_dim != 0)
+        {
             result.front() = RealType(1.0);
         }
         return result;
@@ -152,19 +170,23 @@ public:
      * Effects: Subsequent uses of the distribution do not depend
      * on values produced by any engine prior to invoking reset.
      */
-    void reset() { _normal.reset(); }
+    void reset()
+    {
+        _normal.reset();
+    }
 
     /**
      * Returns a point uniformly distributed over the surface of
      * a sphere of dimension dim().
      */
-    template<class Engine>
-    const result_type & operator()(Engine& eng)
+    template <class Engine>
+    const result_type &operator()(Engine &eng)
     {
         RealType sqsum = 0;
-        for(typename Cont::iterator it = _container.begin();
-            it != _container.end();
-            ++it) {
+        for (typename Cont::iterator it = _container.begin();
+             it != _container.end();
+             ++it)
+        {
             RealType val = _normal(eng);
             *it = val;
             sqsum += val * val;
@@ -180,8 +202,8 @@ public:
      * Returns a point uniformly distributed over the surface of
      * a sphere of dimension param.dim().
      */
-    template<class Engine>
-    result_type operator()(Engine& eng, const param_type& parm) const
+    template <class Engine>
+    result_type operator()(Engine &eng, const param_type &parm) const
     {
         return uniform_on_sphere(parm)(eng);
     }
@@ -206,7 +228,9 @@ public:
      * sequences of values, given equal generators.
      */
     BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(uniform_on_sphere, lhs, rhs)
-    { return lhs._dim == rhs._dim && lhs._normal == rhs._normal; }
+    {
+        return lhs._dim == rhs._dim && lhs._normal == rhs._normal;
+    }
 
     /**
      * Returns true if the two distributions may produce different
@@ -214,7 +238,7 @@ public:
      */
     BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(uniform_on_sphere)
 
-private:
+  private:
     normal_distribution<RealType> _normal;
     result_type _container;
     int _dim;

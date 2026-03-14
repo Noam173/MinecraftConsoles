@@ -18,8 +18,8 @@
 #include <boost/mpl/if.hpp>
 #include <boost/range/functions.hpp>
 #include <boost/range/metafunctions.hpp>
-#include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
 
 #include <boost/geometry/core/closure.hpp>
 #include <boost/geometry/core/exterior_ring.hpp>
@@ -44,41 +44,40 @@
 #include <boost/geometry/views/closeable_view.hpp>
 #include <boost/geometry/views/reversible_view.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace area
+namespace detail
+{
+namespace area
 {
 
 struct box_area
 {
     template <typename Box, typename Strategy>
     static inline typename coordinate_type<Box>::type
-    apply(Box const& box, Strategy const&)
+    apply(Box const &box, Strategy const &)
     {
         // Currently only works for 2D Cartesian boxes
         assert_dimension<Box, 2>();
 
-        return (get<max_corner, 0>(box) - get<min_corner, 0>(box))
-             * (get<max_corner, 1>(box) - get<min_corner, 1>(box));
+        return (get<max_corner, 0>(box) - get<min_corner, 0>(box)) * (get<max_corner, 1>(box) - get<min_corner, 1>(box));
     }
 };
 
-
-template
-<
+template <
     iterate_direction Direction,
-    closure_selector Closure
->
+    closure_selector Closure>
 struct ring_area
 {
     template <typename Ring, typename Strategy>
     static inline typename Strategy::return_type
-    apply(Ring const& ring, Strategy const& strategy)
+    apply(Ring const &ring, Strategy const &strategy)
     {
-        BOOST_CONCEPT_ASSERT( (geometry::concept::AreaStrategy<Strategy>) );
+        BOOST_CONCEPT_ASSERT((geometry::concept ::AreaStrategy<Strategy>));
         assert_dimension<Ring, 2>();
 
         // Ignore warning (because using static method sometimes) on strategy
@@ -87,17 +86,14 @@ struct ring_area
         // An open ring has at least three points,
         // A closed ring has at least four points,
         // if not, there is no (zero) area
-        if (int(boost::size(ring))
-                < core_detail::closure::minimum_ring_size<Closure>::value)
+        if (int(boost::size(ring)) < core_detail::closure::minimum_ring_size<Closure>::value)
         {
             return typename Strategy::return_type();
         }
 
         typedef typename reversible_view<Ring const, Direction>::type rview_type;
-        typedef typename closeable_view
-            <
-                rview_type const, Closure
-            >::type view_type;
+        typedef typename closeable_view<
+            rview_type const, Closure>::type view_type;
         typedef typename boost::range_iterator<view_type const>::type iterator_type;
 
         rview_type rview(ring);
@@ -107,8 +103,8 @@ struct ring_area
         iterator_type end = boost::end(view);
 
         for (iterator_type previous = it++;
-            it != end;
-            ++previous, ++it)
+             it != end;
+             ++previous, ++it)
         {
             strategy.apply(*previous, *it, state);
         }
@@ -117,44 +113,41 @@ struct ring_area
     }
 };
 
-
-}} // namespace detail::area
-
+} // namespace area
+} // namespace detail
 
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-template
-<
+template <
     typename Geometry,
-    typename Tag = typename tag<Geometry>::type
->
+    typename Tag = typename tag<Geometry>::type>
 struct area : detail::calculate_null
 {
     template <typename Strategy>
-    static inline typename Strategy::return_type apply(Geometry const& geometry, Strategy const& strategy)
+    static inline typename Strategy::return_type apply(Geometry const &geometry, Strategy const &strategy)
     {
         return calculate_null::apply<typename Strategy::return_type>(geometry, strategy);
     }
 };
 
-
 template <BOOST_VARIANT_ENUM_PARAMS(typename T)>
 struct area<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>, void>
 {
     template <typename Strategy>
-    struct visitor: boost::static_visitor<typename Strategy::return_type>
+    struct visitor : boost::static_visitor<typename Strategy::return_type>
     {
-        Strategy const& m_strategy;
+        Strategy const &m_strategy;
 
-        visitor(Strategy const& strategy): m_strategy(strategy) {}
+        visitor(Strategy const &strategy) : m_strategy(strategy)
+        {
+        }
 
         template <typename Geometry>
-        typename Strategy::return_type operator()(Geometry const& geometry) const
+        typename Strategy::return_type operator()(Geometry const &geometry) const
         {
             return dispatch::area<Geometry>::apply(geometry, m_strategy);
         }
@@ -162,50 +155,41 @@ struct area<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>, void>
 
     template <typename Variant, typename Strategy>
     static inline typename Strategy::return_type
-    apply(Variant const& variant_geometry, Strategy const& strategy)
+    apply(Variant const &variant_geometry, Strategy const &strategy)
     {
         return boost::apply_visitor(visitor<Strategy>(strategy), variant_geometry);
     }
 };
 
-
 template <typename Geometry>
 struct area<Geometry, box_tag> : detail::area::box_area
-{};
-
+{
+};
 
 template <typename Ring>
 struct area<Ring, ring_tag>
-    : detail::area::ring_area
-        <
-            order_as_direction<geometry::point_order<Ring>::value>::value,
-            geometry::closure<Ring>::value
-        >
-{};
-
+    : detail::area::ring_area<
+          order_as_direction<geometry::point_order<Ring>::value>::value,
+          geometry::closure<Ring>::value>
+{
+};
 
 template <typename Polygon>
 struct area<Polygon, polygon_tag> : detail::calculate_polygon_sum
 {
     template <typename Strategy>
-    static inline typename Strategy::return_type apply(Polygon const& polygon, Strategy const& strategy)
+    static inline typename Strategy::return_type apply(Polygon const &polygon, Strategy const &strategy)
     {
         return calculate_polygon_sum::apply<
             typename Strategy::return_type,
-            detail::area::ring_area
-                <
-                    order_as_direction<geometry::point_order<Polygon>::value>::value,
-                    geometry::closure<Polygon>::value
-                >
-            >(polygon, strategy);
+            detail::area::ring_area<
+                order_as_direction<geometry::point_order<Polygon>::value>::value,
+                geometry::closure<Polygon>::value>>(polygon, strategy);
     }
 };
 
-
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
-
 
 /*!
 \brief \brief_calc{area}
@@ -229,19 +213,17 @@ and Geographic as well.
 \qbk{[area] [area_output]}
 */
 template <typename Geometry>
-inline typename default_area_result<Geometry>::type area(Geometry const& geometry)
+inline typename default_area_result<Geometry>::type area(Geometry const &geometry)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
     typedef typename point_type<Geometry>::type point_type;
-    typedef typename strategy::area::services::default_strategy
-        <
-            typename cs_tag<point_type>::type,
-            point_type
-        >::type strategy_type;
+    typedef typename strategy::area::services::default_strategy<
+        typename cs_tag<point_type>::type,
+        point_type>::type strategy_type;
 
     // detail::throw_on_empty_input(geometry);
-        
+
     return dispatch::area<Geometry>::apply(geometry, strategy_type());
 }
 
@@ -271,17 +253,16 @@ inline typename default_area_result<Geometry>::type area(Geometry const& geometr
  */
 template <typename Geometry, typename Strategy>
 inline typename Strategy::return_type area(
-        Geometry const& geometry, Strategy const& strategy)
+    Geometry const &geometry, Strategy const &strategy)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
     // detail::throw_on_empty_input(geometry);
-    
+
     return dispatch::area<Geometry>::apply(geometry, strategy);
 }
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_AREA_HPP

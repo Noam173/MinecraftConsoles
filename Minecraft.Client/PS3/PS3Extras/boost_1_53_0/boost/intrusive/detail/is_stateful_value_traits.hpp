@@ -19,17 +19,22 @@
 
 #include <boost/intrusive/detail/mpl.hpp>
 
-namespace boost {
-namespace intrusive {
-namespace detail {
+namespace boost
+{
+namespace intrusive
+{
+namespace detail
+{
 
-template<class ValueTraits>
+template <class ValueTraits>
 struct is_stateful_value_traits
 {
-   static const bool value = !detail::is_empty_class<ValueTraits>::value;
+    static const bool value = !detail::is_empty_class<ValueTraits>::value;
 };
 
-}}}
+} // namespace detail
+} // namespace intrusive
+} // namespace boost
 
 #else
 
@@ -38,40 +43,41 @@ struct is_stateful_value_traits
 BOOST_INTRUSIVE_CREATE_FUNCTION_DETECTOR(to_node_ptr, boost_intrusive)
 BOOST_INTRUSIVE_CREATE_FUNCTION_DETECTOR(to_value_ptr, boost_intrusive)
 
-namespace boost {
-namespace intrusive {
-namespace detail {
+namespace boost
+{
+namespace intrusive
+{
+namespace detail
+{
 
-template<class ValueTraits>
+template <class ValueTraits>
 struct is_stateful_value_traits
 {
-   typedef typename ValueTraits::node_ptr       node_ptr;
-   typedef typename ValueTraits::pointer        pointer;
-   typedef typename ValueTraits::value_type     value_type;
-   typedef typename ValueTraits::const_node_ptr const_node_ptr;
-   typedef typename ValueTraits::const_pointer  const_pointer;
+    typedef typename ValueTraits::node_ptr node_ptr;
+    typedef typename ValueTraits::pointer pointer;
+    typedef typename ValueTraits::value_type value_type;
+    typedef typename ValueTraits::const_node_ptr const_node_ptr;
+    typedef typename ValueTraits::const_pointer const_pointer;
 
-   typedef ValueTraits value_traits;
+    typedef ValueTraits value_traits;
 
-   static const bool value =
-      (boost::intrusive::function_detector::NonStaticFunction ==
-         (BOOST_INTRUSIVE_DETECT_FUNCTION(ValueTraits, boost_intrusive, node_ptr, to_node_ptr, (value_type&) )))
-      ||
-      (boost::intrusive::function_detector::NonStaticFunction ==
-         (BOOST_INTRUSIVE_DETECT_FUNCTION(ValueTraits, boost_intrusive, pointer, to_value_ptr, (node_ptr) )))
-      ||
-      (boost::intrusive::function_detector::NonStaticFunction ==
-         (BOOST_INTRUSIVE_DETECT_FUNCTION(ValueTraits, boost_intrusive, const_node_ptr, to_node_ptr, (const value_type&) )))
-      ||
-      (boost::intrusive::function_detector::NonStaticFunction ==
-         (BOOST_INTRUSIVE_DETECT_FUNCTION(ValueTraits, boost_intrusive, const_pointer, to_value_ptr, (const_node_ptr) )))
-      ;
+    static const bool value =
+        (boost::intrusive::function_detector::NonStaticFunction ==
+         (BOOST_INTRUSIVE_DETECT_FUNCTION(ValueTraits, boost_intrusive, node_ptr, to_node_ptr, (value_type &)))) ||
+        (boost::intrusive::function_detector::NonStaticFunction ==
+         (BOOST_INTRUSIVE_DETECT_FUNCTION(ValueTraits, boost_intrusive, pointer, to_value_ptr, (node_ptr)))) ||
+        (boost::intrusive::function_detector::NonStaticFunction ==
+         (BOOST_INTRUSIVE_DETECT_FUNCTION(ValueTraits, boost_intrusive, const_node_ptr, to_node_ptr, (const value_type &)))) ||
+        (boost::intrusive::function_detector::NonStaticFunction ==
+         (BOOST_INTRUSIVE_DETECT_FUNCTION(ValueTraits, boost_intrusive, const_pointer, to_value_ptr, (const_node_ptr))));
 };
 
-}}}
+} // namespace detail
+} // namespace intrusive
+} // namespace boost
 
 #endif
 
 #include <boost/intrusive/detail/config_end.hpp>
 
-#endif   //@ifndef BOOST_INTRUSIVE_DETAIL_IS_STATEFUL_VALUE_TRAITS_HPP
+#endif //@ifndef BOOST_INTRUSIVE_DETAIL_IS_STATEFUL_VALUE_TRAITS_HPP

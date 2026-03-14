@@ -10,7 +10,7 @@
 //
 // To switch between launching the threads during the static initalisation phase and launching the treads
 // in main, flip the INIT_IN_STATIC_PHASE define.
-// 
+//
 // =================================================================================================================================
 
 #include "IThread.h"
@@ -18,63 +18,63 @@
 
 void Wait(int a_MilliSeconds);
 
-#define INIT_IN_STATIC_PHASE	0
+#define INIT_IN_STATIC_PHASE 0
 const int g_NumThreads = 4;
 
 class MultiThreadedAllocator
 {
-public:
-	static void WorkerThread()
-	{
-		for (int i = 0; i != 1000; ++i)
-		{
-			void* mem1 = malloc(10);
-			Wait(10);
-			free(mem1);
-			Wait(10);
-		}
-	}
+  public:
+    static void WorkerThread()
+    {
+        for (int i = 0; i != 1000; ++i)
+        {
+            void *mem1 = malloc(10);
+            Wait(10);
+            free(mem1);
+            Wait(10);
+        }
+    }
 
-	MultiThreadedAllocator()
-	{
-		for (int i = 0; i != g_NumThreads; ++i)
-		{
-			m_Threads[i] = CreateThread();
-			m_Threads[i]->Fork(WorkerThread);
-		}
-	}
+    MultiThreadedAllocator()
+    {
+        for (int i = 0; i != g_NumThreads; ++i)
+        {
+            m_Threads[i] = CreateThread();
+            m_Threads[i]->Fork(WorkerThread);
+        }
+    }
 
-	~MultiThreadedAllocator()
-	{
-		WaitForThreads();
-		for (int i = 0; i != g_NumThreads; ++i)
-		{
-			DestroyThread(m_Threads[i]);
-		}
-	}
+    ~MultiThreadedAllocator()
+    {
+        WaitForThreads();
+        for (int i = 0; i != g_NumThreads; ++i)
+        {
+            DestroyThread(m_Threads[i]);
+        }
+    }
 
-private:
-	void WaitForThreads()
-	{
-		for (int i = 0; i != g_NumThreads; ++i)
-		{
-			m_Threads[i]->Join();
-		}
-	}
+  private:
+    void WaitForThreads()
+    {
+        for (int i = 0; i != g_NumThreads; ++i)
+        {
+            m_Threads[i]->Join();
+        }
+    }
 
-private:
-	IThread* m_Threads[g_NumThreads];
+  private:
+    IThread *m_Threads[g_NumThreads];
 };
 
 #if INIT_IN_STATIC_PHASE
-static MultiThreadedAllocator* g_Allocator = new MultiThreadedAllocator();
+static MultiThreadedAllocator *g_Allocator = new MultiThreadedAllocator();
 #endif
 
 void RunHeapInspectorServer()
 {
 #if !INIT_IN_STATIC_PHASE
-	MultiThreadedAllocator* g_Allocator = new MultiThreadedAllocator();
+    MultiThreadedAllocator *g_Allocator = new MultiThreadedAllocator();
 #endif
 
-	delete g_Allocator;
+    delete g_Allocator;
 }

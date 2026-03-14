@@ -8,17 +8,16 @@
 // For more information, see http://www.boost.org/libs/assign/
 //
 
-
 #ifndef BOOST_ASSIGN_HPP
 #define BOOST_ASSIGN_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/assign/std.hpp>
-#include <boost/assign/list_of.hpp>
-#include <boost/assign/list_inserter.hpp>
 #include <boost/assign/assignment_exception.hpp>
+#include <boost/assign/list_inserter.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/assign/std.hpp>
 
 #endif

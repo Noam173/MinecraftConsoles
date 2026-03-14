@@ -7,17 +7,21 @@
 #define BOOST_MATH_COMPLEX_FABS_INCLUDED
 
 #ifndef BOOST_MATH_HYPOT_INCLUDED
-#  include <boost/math/special_functions/hypot.hpp>
+#include <boost/math/special_functions/hypot.hpp>
 #endif
 
-namespace boost{ namespace math{
-
-template<class T> 
-inline T fabs(const std::complex<T>& z)
+namespace boost
 {
-   return ::boost::math::hypot(z.real(), z.imag());
+namespace math
+{
+
+template <class T>
+inline T fabs(const std::complex<T> &z)
+{
+    return ::boost::math::hypot(z.real(), z.imag());
 }
 
-} } // namespaces
+} // namespace math
+} // namespace boost
 
 #endif // BOOST_MATH_COMPLEX_FABS_INCLUDED

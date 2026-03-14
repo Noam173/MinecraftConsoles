@@ -8,22 +8,22 @@
 
 #include "char_traits.hpp"
 // memcpy
-#include <cstring>
-#include <fstream>
 #include "size_t.hpp"
 #include "state_machine.hpp"
+#include <cstring>
+#include <fstream>
 
 namespace boost
 {
 namespace lexer
 {
-template<typename CharT, typename Traits = char_traits<CharT> >
+template <typename CharT, typename Traits = char_traits<CharT>>
 class basic_file_input
 {
-public:
+  public:
     class iterator
     {
-    public:
+      public:
 #if defined _MSC_VER && _MSC_VER <= 1200
         friend basic_file_input;
 #else
@@ -39,42 +39,40 @@ public:
             std::size_t state;
 
             // Construct in end() state.
-            data () :
-                id (0),
-                unique_id (npos),
-                state (npos)
+            data() : id(0),
+                     unique_id(npos),
+                     state(npos)
             {
             }
 
-            bool operator == (const data &rhs_) const
+            bool operator==(const data &rhs_) const
             {
                 return id == rhs_.id && unique_id == rhs_.unique_id &&
-                    start == rhs_.start && end == rhs_.end &&
-                    state == rhs_.state;
+                       start == rhs_.start && end == rhs_.end &&
+                       state == rhs_.state;
             }
         };
 
-        iterator () :
-            _input (0)
+        iterator() : _input(0)
         {
         }
 
-        bool operator == (const iterator &rhs_) const
+        bool operator==(const iterator &rhs_) const
         {
             return _data == rhs_._data;
         }
 
-        bool operator != (const iterator &rhs_) const
+        bool operator!=(const iterator &rhs_) const
         {
             return !(*this == rhs_);
         }
 
-        data &operator * ()
+        data &operator*()
         {
             return _data;
         }
 
-        data *operator -> ()
+        data *operator->()
         {
             return &_data;
         }
@@ -82,39 +80,38 @@ public:
         // Let compiler generate operator = ().
 
         // prefix version
-        iterator &operator ++ ()
+        iterator &operator++()
         {
-            next_token ();
+            next_token();
             return *this;
         }
 
         // postfix version
-        iterator operator ++ (int)
+        iterator operator++(int)
         {
             iterator iter_ = *this;
 
-            next_token ();
+            next_token();
             return iter_;
         }
 
-        void next_token ()
+        void next_token()
         {
             const detail::internals &internals_ =
-                _input->_state_machine->data ();
+                _input->_state_machine->data();
 
             _data.start = _data.end;
 
-            if (internals_._dfa->size () == 1)
+            if (internals_._dfa->size() == 1)
             {
-                _data.id = _input->next (&internals_._lookup->front ()->
-                    front (), internals_._dfa_alphabet.front (),
-                    &internals_._dfa->front ()->front (), _data.start,
-                    _data.end, _data.unique_id);
+                _data.id = _input->next(&internals_._lookup->front()->front(), internals_._dfa_alphabet.front(),
+                                        &internals_._dfa->front()->front(), _data.start,
+                                        _data.end, _data.unique_id);
             }
             else
             {
-                _data.id = _input->next (internals_, _data.state, _data.start,
-                    _data.end, _data.unique_id);
+                _data.id = _input->next(internals_, _data.state, _data.start,
+                                        _data.end, _data.unique_id);
             }
 
             if (_data.id == 0)
@@ -126,7 +123,7 @@ public:
             }
         }
 
-    private:
+      private:
         // Not owner (obviously!)
         basic_file_input *_input;
         data _data;
@@ -139,23 +136,22 @@ public:
 #endif
 
     // Make it explict that we are NOT taking a copy of state_machine_!
-    basic_file_input (const basic_state_machine<CharT> *state_machine_,
-        std::basic_ifstream<CharT> *is_,
-        const std::streamsize buffer_size_ = 4096,
-        const std::streamsize buffer_increment_ = 1024) :
-        _state_machine (state_machine_),
-        _stream (is_),
-        _buffer_size (buffer_size_),
-        _buffer_increment (buffer_increment_),
-        _buffer (_buffer_size, '!')
+    basic_file_input(const basic_state_machine<CharT> *state_machine_,
+                     std::basic_ifstream<CharT> *is_,
+                     const std::streamsize buffer_size_ = 4096,
+                     const std::streamsize buffer_increment_ = 1024) : _state_machine(state_machine_),
+                                                                       _stream(is_),
+                                                                       _buffer_size(buffer_size_),
+                                                                       _buffer_increment(buffer_increment_),
+                                                                       _buffer(_buffer_size, '!')
     {
-        _start_buffer = &_buffer.front ();
-        _end_buffer = _start_buffer + _buffer.size ();
+        _start_buffer = &_buffer.front();
+        _end_buffer = _start_buffer + _buffer.size();
         _start_token = _end_buffer;
         _end_token = _end_buffer;
     }
 
-    iterator begin ()
+    iterator begin()
     {
         iterator iter_;
 
@@ -169,7 +165,7 @@ public:
         return iter_;
     }
 
-    iterator end ()
+    iterator end()
     {
         iterator iter_;
 
@@ -179,17 +175,17 @@ public:
         return iter_;
     }
 
-    void flush ()
+    void flush()
     {
         // This temporary is mandatory, otherwise the
         // pointer calculations won't work!
         const CharT *temp_ = _end_buffer;
 
         _start_token = _end_token = _end_buffer;
-        reload_buffer (temp_, true, _end_token);
+        reload_buffer(temp_, true, _end_token);
     }
 
-private:
+  private:
     typedef std::basic_istream<CharT> istream;
     typedef std::vector<CharT> buffer;
 
@@ -204,17 +200,16 @@ private:
     const CharT *_end_token;
     CharT *_end_buffer;
 
-    std::size_t next (const detail::internals &internals_,
-        std::size_t &start_state_, const CharT * &start_, const CharT * &end_,
-        std::size_t &unique_id_)
+    std::size_t next(const detail::internals &internals_,
+                     std::size_t &start_state_, const CharT *&start_, const CharT *&end_,
+                     std::size_t &unique_id_)
     {
         _start_token = _end_token;
 
 again:
-        const std::size_t * lookup_ = &internals_._lookup[start_state_]->
-            front ();
+        const std::size_t *lookup_ = &internals_._lookup[start_state_]->front();
         std::size_t dfa_alphabet_ = internals_._dfa_alphabet[start_state_];
-        const std::size_t *dfa_ = &internals_._dfa[start_state_]->front ();
+        const std::size_t *dfa_ = &internals_._dfa[start_state_]->front();
         const std::size_t *ptr_ = dfa_ + dfa_alphabet_;
         const CharT *curr_ = _start_token;
         bool end_state_ = *ptr_ != 0;
@@ -226,7 +221,7 @@ again:
         {
             if (curr_ >= _end_buffer)
             {
-                if (!reload_buffer (curr_, end_state_, end_token_))
+                if (!reload_buffer(curr_, end_state_, end_token_))
                 {
                     // EOF
                     break;
@@ -237,7 +232,7 @@ again:
             const std::size_t EOL_state_ = ptr_[eol_index];
 
             if (BOL_state_ && (_start_token == _start_buffer ||
-                *(_start_token - 1) == '\n'))
+                               *(_start_token - 1) == '\n'))
             {
                 ptr_ = &dfa_[BOL_state_ * dfa_alphabet_];
             }
@@ -248,8 +243,7 @@ again:
             else
             {
                 const std::size_t state_ =
-                    ptr_[lookup_[static_cast<typename Traits::index_type>
-                        (*curr_++)]];
+                    ptr_[lookup_[static_cast<typename Traits::index_type>(*curr_++)]];
 
                 if (state_ == 0)
                 {
@@ -297,7 +291,10 @@ again:
             // return longest match
             _end_token = end_token_;
 
-            if (id_ == 0) goto again;
+            if (id_ == 0)
+            {
+                goto again;
+            }
         }
         else
         {
@@ -313,9 +310,9 @@ again:
         return id_;
     }
 
-    std::size_t next (const std::size_t * const lookup_,
-        const std::size_t dfa_alphabet_, const std::size_t * const dfa_,
-        const CharT * &start_, const CharT * &end_, std::size_t &unique_id_)
+    std::size_t next(const std::size_t *const lookup_,
+                     const std::size_t dfa_alphabet_, const std::size_t *const dfa_,
+                     const CharT *&start_, const CharT *&end_, std::size_t &unique_id_)
     {
         _start_token = _end_token;
 
@@ -330,7 +327,7 @@ again:
         {
             if (curr_ >= _end_buffer)
             {
-                if (!reload_buffer (curr_, end_state_, end_token_))
+                if (!reload_buffer(curr_, end_state_, end_token_))
                 {
                     // EOF
                     break;
@@ -341,7 +338,7 @@ again:
             const std::size_t EOL_state_ = ptr_[eol_index];
 
             if (BOL_state_ && (_start_token == _start_buffer ||
-                *(_start_token - 1) == '\n'))
+                               *(_start_token - 1) == '\n'))
             {
                 ptr_ = &dfa_[BOL_state_ * dfa_alphabet_];
             }
@@ -352,8 +349,7 @@ again:
             else
             {
                 const std::size_t state_ =
-                    ptr_[lookup_[static_cast<typename Traits::index_type>
-                        (*curr_++)]];
+                    ptr_[lookup_[static_cast<typename Traits::index_type>(*curr_++)]];
 
                 if (state_ == 0)
                 {
@@ -413,26 +409,26 @@ again:
         return id_;
     }
 
-    bool reload_buffer (const CharT * &curr_, const bool end_state_,
-        const CharT * &end_token_)
+    bool reload_buffer(const CharT *&curr_, const bool end_state_,
+                       const CharT *&end_token_)
     {
-        bool success_ = !_stream->eof ();
+        bool success_ = !_stream->eof();
 
         if (success_)
         {
             const CharT *old_start_token_ = _start_token;
-            std::size_t old_size_ = _buffer.size ();
+            std::size_t old_size_ = _buffer.size();
             std::size_t count_ = 0;
 
             if (_start_token - 1 == _start_buffer)
             {
                 // Run out of buffer space, so increase.
-                _buffer.resize (old_size_ + _buffer_increment, '!');
-                _start_buffer = &_buffer.front ();
+                _buffer.resize(old_size_ + _buffer_increment, '!');
+                _start_buffer = &_buffer.front();
                 _start_token = _start_buffer + 1;
-                _stream->read (_start_buffer + old_size_,
-                    _buffer_increment);
-                count_ = _stream->gcount ();
+                _stream->read(_start_buffer + old_size_,
+                              _buffer_increment);
+                count_ = _stream->gcount();
                 _end_buffer = _start_buffer + old_size_ + count_;
             }
             else if (_start_token < _end_buffer)
@@ -441,19 +437,17 @@ again:
                 // Some systems have memcpy in namespace std.
                 using namespace std;
 
-                memcpy (_start_buffer, _start_token - 1, (len_ + 1) *
-                    sizeof (CharT));
-                _stream->read (_start_buffer + len_ + 1,
-                    static_cast<std::streamsize> (_buffer.size () - len_ - 1));
-                count_ = _stream->gcount ();
+                memcpy(_start_buffer, _start_token - 1, (len_ + 1) * sizeof(CharT));
+                _stream->read(_start_buffer + len_ + 1,
+                              static_cast<std::streamsize>(_buffer.size() - len_ - 1));
+                count_ = _stream->gcount();
                 _start_token = _start_buffer + 1;
                 _end_buffer = _start_buffer + len_ + 1 + count_;
             }
             else
             {
-                _stream->read (_start_buffer, static_cast<std::streamsize>
-                    (_buffer.size ()));
-                count_ = _stream->gcount ();
+                _stream->read(_start_buffer, static_cast<std::streamsize>(_buffer.size()));
+                count_ = _stream->gcount();
                 _start_token = _start_buffer;
                 _end_buffer = _start_buffer + count_;
             }
@@ -461,7 +455,7 @@ again:
             if (end_state_)
             {
                 end_token_ = _start_token +
-                    (end_token_ - old_start_token_);
+                             (end_token_ - old_start_token_);
             }
 
             curr_ = _start_token + (curr_ - old_start_token_);
@@ -471,13 +465,13 @@ again:
     }
 
     // Disallow copying of buffer
-    basic_file_input (const basic_file_input &);
-    const basic_file_input &operator = (const basic_file_input &);
+    basic_file_input(const basic_file_input &);
+    const basic_file_input &operator=(const basic_file_input &);
 };
 
 typedef basic_file_input<char> file_input;
 typedef basic_file_input<wchar_t> wfile_input;
-}
-}
+} // namespace lexer
+} // namespace boost
 
 #endif

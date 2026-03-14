@@ -7,8 +7,10 @@
 #ifndef BOOST_COROUTINES_FLAGS_H
 #define BOOST_COROUTINES_FLAGS_H
 
-namespace boost {
-namespace coroutines {
+namespace boost
+{
+namespace coroutines
+{
 
 enum flag_unwind_t
 {
@@ -22,6 +24,7 @@ enum flag_fpu_t
     fpu_not_preserved
 };
 
-}}
+} // namespace coroutines
+} // namespace boost
 
 #endif // BOOST_COROUTINES_FLAGS_H

@@ -8,20 +8,20 @@
 #ifndef BOOST_ACCUMULATORS_FRAMEWORK_EXTERNAL_HPP_EAN_01_12_2005
 #define BOOST_ACCUMULATORS_FRAMEWORK_EXTERNAL_HPP_EAN_01_12_2005
 
-#include <boost/mpl/apply.hpp>
 #include <boost/accumulators/framework/accumulators/external_accumulator.hpp>
+#include <boost/mpl/apply.hpp>
 
-//namespace boost { namespace accumulators
+// namespace boost { namespace accumulators
 //{
 //
 /////////////////////////////////////////////////////////////////////////////////
 //// external
 ////
-//template<typename Type>
-//struct external
+// template<typename Type>
+// struct external
 //{
-//};
+// };
 //
-//}} // namespace boost::accumulators
+// }} // namespace boost::accumulators
 
 #endif

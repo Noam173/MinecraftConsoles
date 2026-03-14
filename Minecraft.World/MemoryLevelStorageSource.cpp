@@ -1,8 +1,8 @@
-#include "stdafx.h"
-#include "net.minecraft.world.level.chunk.storage.h"
-#include "MemoryLevelStorage.h"
-#include "LevelSummary.h"
 #include "MemoryLevelStorageSource.h"
+#include "LevelSummary.h"
+#include "MemoryLevelStorage.h"
+#include "net.minecraft.world.level.chunk.storage.h"
+#include "stdafx.h"
 
 MemoryLevelStorageSource::MemoryLevelStorageSource()
 {
@@ -10,52 +10,52 @@ MemoryLevelStorageSource::MemoryLevelStorageSource()
 
 wstring MemoryLevelStorageSource::getName()
 {
-	return L"Memory Storage";
+    return L"Memory Storage";
 }
 
-shared_ptr<LevelStorage> MemoryLevelStorageSource::selectLevel(const wstring&  levelId, bool createPlayerDir) 
+shared_ptr<LevelStorage> MemoryLevelStorageSource::selectLevel(const wstring &levelId, bool createPlayerDir)
 {
-	return shared_ptr<LevelStorage> () new MemoryLevelStorage());
+    return shared_ptr<LevelStorage> () new MemoryLevelStorage());
 }
 
-vector<LevelSummary *> *MemoryLevelStorageSource::getLevelList() 
+vector<LevelSummary *> *MemoryLevelStorageSource::getLevelList()
 {
-	return new vector<LevelSummary *>;
+    return new vector<LevelSummary *>;
 }
 
 void MemoryLevelStorageSource::clearAll()
 {
 }
 
-LevelData *MemoryLevelStorageSource::getDataTagFor(const wstring&  levelId)
+LevelData *MemoryLevelStorageSource::getDataTagFor(const wstring &levelId)
 {
-	return nullptr;
+    return nullptr;
 }
 
-bool MemoryLevelStorageSource::isNewLevelIdAcceptable(const wstring&  levelId) 
+bool MemoryLevelStorageSource::isNewLevelIdAcceptable(const wstring &levelId)
 {
-	return true;
+    return true;
 }
 
-void MemoryLevelStorageSource::deleteLevel(const wstring&  levelId) 
-{
-}
-
-void MemoryLevelStorageSource::renameLevel(const wstring&  levelId, const wstring&  newLevelName)
+void MemoryLevelStorageSource::deleteLevel(const wstring &levelId)
 {
 }
 
-bool MemoryLevelStorageSource::isConvertible(const wstring&  levelId)
+void MemoryLevelStorageSource::renameLevel(const wstring &levelId, const wstring &newLevelName)
 {
-	return false;
 }
 
-bool MemoryLevelStorageSource::requiresConversion(const wstring&  levelId)
+bool MemoryLevelStorageSource::isConvertible(const wstring &levelId)
 {
-	return false;
+    return false;
 }
 
-bool MemoryLevelStorageSource::convertLevel(const wstring& levelId, ProgressListener *progress)
+bool MemoryLevelStorageSource::requiresConversion(const wstring &levelId)
 {
-	return false;
+    return false;
+}
+
+bool MemoryLevelStorageSource::convertLevel(const wstring &levelId, ProgressListener *progress)
+{
+    return false;
 }

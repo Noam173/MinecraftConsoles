@@ -9,66 +9,71 @@
 #ifndef BOOST_MPI_DETAIL_MPI_DATATYPE_OARCHIVE_HPP
 #define BOOST_MPI_DETAIL_MPI_DATATYPE_OARCHIVE_HPP
 
-#include <boost/type_traits/is_enum.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/archive/detail/oserializer.hpp>
-#include <boost/archive/detail/auto_link_archive.hpp>
 #include <boost/archive/basic_archive.hpp>
+#include <boost/archive/detail/auto_link_archive.hpp>
+#include <boost/archive/detail/oserializer.hpp>
+#include <boost/archive/detail/register_archive.hpp>
+#include <boost/integer.hpp>
+#include <boost/mpi/datatype_fwd.hpp>
 #include <boost/mpi/detail/ignore_skeleton_oarchive.hpp>
 #include <boost/mpi/detail/mpi_datatype_primitive.hpp>
-#include <boost/mpi/datatype_fwd.hpp>
 #include <boost/mpl/assert.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/static_assert.hpp>
-#include <boost/integer.hpp>
-#include <boost/archive/detail/register_archive.hpp>
+#include <boost/type_traits/is_enum.hpp>
 
-namespace boost { namespace mpi { namespace detail {
-
+namespace boost
+{
+namespace mpi
+{
+namespace detail
+{
 
 // an archive wrapper that stores only the data members but not the
 // special types defined by the serialization library
 // to define the data skeletons (classes, pointers, container sizes, ...)
 
 class mpi_datatype_oarchive
-  : public mpi_datatype_primitive,
-    public ignore_skeleton_oarchive<mpi_datatype_oarchive>
+    : public mpi_datatype_primitive,
+      public ignore_skeleton_oarchive<mpi_datatype_oarchive>
 {
-public:
+  public:
     template <class T>
-    mpi_datatype_oarchive(const T& x)
-         :  mpi_datatype_primitive(&x) // register address
-        {
-          BOOST_MPL_ASSERT((is_mpi_datatype<T>));
-          *this << x;                   // serialize the object
-        }
-        
+    mpi_datatype_oarchive(const T &x)
+        : mpi_datatype_primitive(&x) // register address
+    {
+        BOOST_MPL_ASSERT((is_mpi_datatype<T>));
+        *this << x; // serialize the object
+    }
+
     // intermediate level to support override of operators
-    // for templates in the absence of partial function 
+    // for templates in the absence of partial function
     // template ordering
-    template<class T>
-    void save_override(T const& t, BOOST_PFTO int)
+    template <class T>
+    void save_override(T const &t, BOOST_PFTO int)
     {
-      save_enum(t,boost::is_enum<T>());
+        save_enum(t, boost::is_enum<T>());
     }
 
-    template<class T>
-    void save_enum(T const& t, mpl::false_)
+    template <class T>
+    void save_enum(T const &t, mpl::false_)
     {
-      ignore_skeleton_oarchive<mpi_datatype_oarchive>::save_override(t, 0);
+        ignore_skeleton_oarchive<mpi_datatype_oarchive>::save_override(t, 0);
     }
 
-    template<class T>
-    void save_enum(T const& t, mpl::true_)
+    template <class T>
+    void save_enum(T const &t, mpl::true_)
     {
-      // select the right sized integer for the enum
-      typedef typename boost::uint_t<8*sizeof(T)>::least int_type;
-      BOOST_STATIC_ASSERT((sizeof(T)==sizeof(int_type)));
-      this->save(*reinterpret_cast<int_type const*>(&t));
+        // select the right sized integer for the enum
+        typedef typename boost::uint_t<8 * sizeof(T)>::least int_type;
+        BOOST_STATIC_ASSERT((sizeof(T) == sizeof(int_type)));
+        this->save(*reinterpret_cast<int_type const *>(&t));
     }
-
 };
 
-} } } // end namespace boost::mpi::detail
+} // namespace detail
+} // namespace mpi
+} // namespace boost
 
 // required by export
 BOOST_SERIALIZATION_REGISTER_ARCHIVE(boost::mpi::detail::mpi_datatype_oarchive)

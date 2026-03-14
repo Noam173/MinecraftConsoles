@@ -8,41 +8,43 @@
 #if !defined(BOOST_FUSION_NVIEW_DEREF_IMPL_SEP_24_2009_0818AM)
 #define BOOST_FUSION_NVIEW_DEREF_IMPL_SEP_24_2009_0818AM
 
-#include <boost/fusion/iterator/deref.hpp>
 #include <boost/fusion/container/vector.hpp>
+#include <boost/fusion/iterator/deref.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct nview_iterator_tag;
+namespace fusion
+{
+struct nview_iterator_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct deref_impl;
+
+template <>
+struct deref_impl<nview_iterator_tag>
+{
+    template <typename Iterator>
+    struct apply
     {
-        template<typename Tag>
-        struct deref_impl;
+        typedef typename Iterator::first_type first_type;
+        typedef typename Iterator::sequence_type sequence_type;
 
-        template<>
-        struct deref_impl<nview_iterator_tag>
+        typedef typename result_of::deref<first_type>::type index;
+        typedef typename result_of::at<
+            typename sequence_type::sequence_type, index>::type type;
+
+        static type call(Iterator const &i)
         {
-            template<typename Iterator>
-            struct apply
-            {
-                typedef typename Iterator::first_type first_type;
-                typedef typename Iterator::sequence_type sequence_type;
+            return at<index>(i.seq.seq);
+        }
+    };
+};
 
-                typedef typename result_of::deref<first_type>::type index;
-                typedef typename result_of::at<
-                    typename sequence_type::sequence_type, index>::type type;
+} // namespace extension
 
-                static type call(Iterator const& i)
-                {
-                    return at<index>(i.seq.seq);
-                }
-            };
-        };
-
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif
-

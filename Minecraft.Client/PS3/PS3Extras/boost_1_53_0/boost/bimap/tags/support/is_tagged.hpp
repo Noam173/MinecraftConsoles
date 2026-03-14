@@ -12,14 +12,14 @@
 #ifndef BOOST_BIMAP_TAGS_SUPPORT_IS_TAGGED_HPP
 #define BOOST_BIMAP_TAGS_SUPPORT_IS_TAGGED_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
-#include <boost/mpl/bool.hpp>
 #include <boost/bimap/tags/tagged.hpp>
+#include <boost/mpl/bool.hpp>
 
 /** \struct boost::bimaps::tags::support::is_tagged
 \brief Type trait to check if a type is tagged.
@@ -37,21 +37,26 @@ See also tagged.
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace tags {
-namespace support {
-
+namespace boost
+{
+namespace bimaps
+{
+namespace tags
+{
+namespace support
+{
 
 // is_tagged metafunction
 
-template< class Type >
-struct is_tagged :
-    ::boost::mpl::false_ {};
+template <class Type>
+struct is_tagged : ::boost::mpl::false_
+{
+};
 
-template< class Type, class Tag >
-struct is_tagged< tagged< Type, Tag > > :
-    ::boost::mpl::true_ {};
+template <class Type, class Tag>
+struct is_tagged<tagged<Type, Tag>> : ::boost::mpl::true_
+{
+};
 
 } // namespace support
 } // namespace tags
@@ -61,4 +66,3 @@ struct is_tagged< tagged< Type, Tag > > :
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_TAGS_SUPPORT_IS_TAGGED_HPP
-

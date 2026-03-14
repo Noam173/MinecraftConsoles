@@ -18,13 +18,17 @@
 #include "boost/mpl/bool_fwd.hpp"
 
 #if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
-#   include "boost/mpl/bool.hpp"
+#include "boost/mpl/bool.hpp"
 #else
-#   include "boost/type_traits/is_base_and_derived.hpp"
+#include "boost/type_traits/is_base_and_derived.hpp"
 #endif
 
-namespace boost {
-namespace detail { namespace variant {
+namespace boost
+{
+namespace detail
+{
+namespace variant
+{
 
 ///////////////////////////////////////////////////////////////////////////////
 // (detail) tag recursive_flag
@@ -70,7 +74,7 @@ struct is_recursive_flag
 };
 
 template <typename T>
-struct is_recursive_flag< recursive_flag<T> >
+struct is_recursive_flag<recursive_flag<T>>
     : mpl::true_
 {
 };
@@ -79,7 +83,7 @@ struct is_recursive_flag< recursive_flag<T> >
 
 template <typename T>
 struct is_recursive_flag
-    : is_base_and_derived< recursive_flag_tag,T >
+    : is_base_and_derived<recursive_flag_tag, T>
 {
 };
 
@@ -93,10 +97,7 @@ struct is_recursive_flag
 // (i.e., not a reference or pointer) *and* NoWrapper is false_.
 //
 template <
-      typename T
-    , typename RecursiveVariant
-    , typename NoWrapper = mpl::false_
-    >
+    typename T, typename RecursiveVariant, typename NoWrapper = mpl::false_>
 struct enable_recursive;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -105,12 +106,11 @@ struct enable_recursive;
 // Same behavior as enable_recursive metafunction (see above).
 //
 template <
-      typename RecursiveVariant
-    , typename NoWrapper = mpl::false_
-    >
+    typename RecursiveVariant, typename NoWrapper = mpl::false_>
 struct quoted_enable_recursive;
 
-}} // namespace detail::variant
+} // namespace variant
+} // namespace detail
 } // namespace boost
 
 #endif // BOOST_VARIANT_DETAIL_ENABLE_RECURSIVE_FWD_HPP

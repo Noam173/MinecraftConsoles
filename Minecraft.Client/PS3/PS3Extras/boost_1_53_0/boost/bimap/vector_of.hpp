@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_VECTOR_OF_HPP
 #define BOOST_BIMAP_VECTOR_OF_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -29,17 +29,18 @@
 #include <boost/bimap/tags/support/value_type_of.hpp>
 
 #include <boost/bimap/detail/generate_index_binder.hpp>
-#include <boost/bimap/detail/generate_view_binder.hpp>
 #include <boost/bimap/detail/generate_relation_binder.hpp>
+#include <boost/bimap/detail/generate_view_binder.hpp>
 
 #include <boost/multi_index/random_access_index.hpp>
 
 #include <boost/bimap/views/vector_map_view.hpp>
 #include <boost/bimap/views/vector_set_view.hpp>
 
-namespace boost {
-namespace bimaps {
-
+namespace boost
+{
+namespace bimaps
+{
 
 /// \brief Set Type Specification
 /**
@@ -105,7 +106,7 @@ BOOST_STATIC_ASSERT
 See also vector_of_relation.
                                                                         **/
 
-template< class Type >
+template <class Type>
 struct vector_of : public ::boost::bimaps::detail::set_type_of_tag
 {
     /// User type, can be tagged
@@ -115,11 +116,10 @@ struct vector_of : public ::boost::bimaps::detail::set_type_of_tag
     typedef BOOST_DEDUCED_TYPENAME ::boost::bimaps::tags::support::
         value_type_of<user_type>::type value_type;
 
-
     struct lazy_concept_checked
     {
-        BOOST_CLASS_REQUIRE ( value_type,
-                              boost, AssignableConcept );
+        BOOST_CLASS_REQUIRE(value_type,
+                            boost, AssignableConcept);
 
         typedef vector_of type;
     };
@@ -127,24 +127,20 @@ struct vector_of : public ::boost::bimaps::detail::set_type_of_tag
     BOOST_BIMAP_GENERATE_INDEX_BINDER_0CP_NO_EXTRACTOR(
 
         // binds to
-        multi_index::random_access
-    )
+        multi_index::random_access)
 
     BOOST_BIMAP_GENERATE_MAP_VIEW_BINDER(
 
         // binds to
-        views::vector_map_view
-    )
+        views::vector_map_view)
 
     BOOST_BIMAP_GENERATE_SET_VIEW_BINDER(
 
         // binds to
-        views::vector_set_view
-    )
+        views::vector_set_view)
 
     typedef mpl::bool_<true> mutable_key;
 };
-
 
 /// \brief Set Of Relation Specification
 /**
@@ -170,17 +166,13 @@ struct vector_of_relation : public ::boost::bimaps::detail::set_type_of_relation
     BOOST_BIMAP_GENERATE_RELATION_BINDER_0CP(
 
         // binds to
-        vector_of
-    )
+        vector_of)
 
-    typedef mpl::bool_<true>  left_mutable_key;
+    typedef mpl::bool_<true> left_mutable_key;
     typedef mpl::bool_<true> right_mutable_key;
 };
-
 
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_VECTOR_OF_HPP
-

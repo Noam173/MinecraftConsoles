@@ -26,8 +26,9 @@
 
 #include <boost/geometry/geometries/concepts/point_concept.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace model
@@ -48,106 +49,92 @@ namespace model
 [link geometry.reference.concepts.concept_ring Ring Concept]
 }
 */
-template
-<
+template <
     typename Point,
     bool ClockWise = true, bool Closed = true,
-    template<typename, typename> class Container = std::vector,
-    template<typename> class Allocator = std::allocator
->
-class ring : public Container<Point, Allocator<Point> >
+    template <typename, typename> class Container = std::vector,
+    template <typename> class Allocator = std::allocator>
+class ring : public Container<Point, Allocator<Point>>
 {
-    BOOST_CONCEPT_ASSERT( (concept::Point<Point>) );
+    BOOST_CONCEPT_ASSERT((concept ::Point<Point>));
 
-    typedef Container<Point, Allocator<Point> > base_type;
+    typedef Container<Point, Allocator<Point>> base_type;
 
-public :
+  public:
     /// \constructor_default{ring}
     inline ring()
         : base_type()
-    {}
+    {
+    }
 
     /// \constructor_begin_end{ring}
     template <typename Iterator>
     inline ring(Iterator begin, Iterator end)
         : base_type(begin, end)
-    {}
+    {
+    }
 };
 
 } // namespace model
-
 
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 namespace traits
 {
 
-template
-<
+template <
     typename Point,
     bool ClockWise, bool Closed,
-    template<typename, typename> class Container,
-    template<typename> class Allocator
->
-struct tag<model::ring<Point, ClockWise, Closed, Container, Allocator> >
+    template <typename, typename> class Container,
+    template <typename> class Allocator>
+struct tag<model::ring<Point, ClockWise, Closed, Container, Allocator>>
 {
     typedef ring_tag type;
 };
 
-
-template
-<
+template <
     typename Point,
     bool Closed,
-    template<typename, typename> class Container,
-    template<typename> class Allocator
->
-struct point_order<model::ring<Point, false, Closed, Container, Allocator> >
+    template <typename, typename> class Container,
+    template <typename> class Allocator>
+struct point_order<model::ring<Point, false, Closed, Container, Allocator>>
 {
     static const order_selector value = counterclockwise;
 };
 
-
-template
-<
+template <
     typename Point,
     bool Closed,
-    template<typename, typename> class Container,
-    template<typename> class Allocator
->
-struct point_order<model::ring<Point, true, Closed, Container, Allocator> >
+    template <typename, typename> class Container,
+    template <typename> class Allocator>
+struct point_order<model::ring<Point, true, Closed, Container, Allocator>>
 {
     static const order_selector value = clockwise;
 };
 
-template
-<
+template <
     typename Point,
     bool PointOrder,
-    template<typename, typename> class Container,
-    template<typename> class Allocator
->
-struct closure<model::ring<Point, PointOrder, true, Container, Allocator> >
+    template <typename, typename> class Container,
+    template <typename> class Allocator>
+struct closure<model::ring<Point, PointOrder, true, Container, Allocator>>
 {
     static const closure_selector value = closed;
 };
 
-template
-<
+template <
     typename Point,
     bool PointOrder,
-    template<typename, typename> class Container,
-    template<typename> class Allocator
->
-struct closure<model::ring<Point, PointOrder, false, Container, Allocator> >
+    template <typename, typename> class Container,
+    template <typename> class Allocator>
+struct closure<model::ring<Point, PointOrder, false, Container, Allocator>>
 {
     static const closure_selector value = open;
 };
 
-
 } // namespace traits
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_RING_HPP

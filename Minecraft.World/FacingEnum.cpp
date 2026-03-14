@@ -9,39 +9,39 @@ FacingEnum *FacingEnum::SOUTH = new FacingEnum(3, 2, 0, 0, 1);
 FacingEnum *FacingEnum::EAST = new FacingEnum(4, 5, -1, 0, 0);
 FacingEnum *FacingEnum::WEST = new FacingEnum(5, 4, 1, 0, 0);
 
-FacingEnum *FacingEnum::BY_DATA[6] = {FacingEnum::DOWN,FacingEnum::UP,FacingEnum::NORTH,FacingEnum::SOUTH,FacingEnum::EAST,FacingEnum::WEST};
+FacingEnum *FacingEnum::BY_DATA[6] = {FacingEnum::DOWN, FacingEnum::UP, FacingEnum::NORTH, FacingEnum::SOUTH, FacingEnum::EAST, FacingEnum::WEST};
 
 FacingEnum::FacingEnum(int dataValue, int oppositeIndex, int stepX, int stepY, int stepZ)
-	: dataValue(dataValue), oppositeIndex(oppositeIndex), stepX(stepX), stepY(stepY), stepZ(stepZ)
+    : dataValue(dataValue), oppositeIndex(oppositeIndex), stepX(stepX), stepY(stepY), stepZ(stepZ)
 {
 }
 
 int FacingEnum::getDataValue()
 {
-	return dataValue;
+    return dataValue;
 }
 
 FacingEnum *FacingEnum::getOpposite()
 {
-	return BY_DATA[oppositeIndex];
+    return BY_DATA[oppositeIndex];
 }
 
 int FacingEnum::getStepX()
 {
-	return stepX;
+    return stepX;
 }
 
 int FacingEnum::getStepY()
 {
-	return stepY;
+    return stepY;
 }
 
 int FacingEnum::getStepZ()
 {
-	return stepZ;
+    return stepZ;
 }
 
 FacingEnum *FacingEnum::fromData(int data)
 {
-	return BY_DATA[data % 6];
+    return BY_DATA[data % 6];
 }

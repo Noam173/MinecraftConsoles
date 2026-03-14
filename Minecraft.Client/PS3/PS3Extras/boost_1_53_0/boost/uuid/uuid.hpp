@@ -32,60 +32,83 @@
 #ifndef BOOST_UUID_HPP
 #define BOOST_UUID_HPP
 
-#include <boost/config.hpp>
-#include <stddef.h>
-#include <boost/cstdint.hpp>
 #include <algorithm>
+#include <boost/config.hpp>
 #include <boost/config.hpp> // for static assert
+#include <boost/cstdint.hpp>
+#include <stddef.h>
 #ifndef BOOST_UUID_NO_TYPE_TRAITS
-#include <boost/type_traits/is_pod.hpp>
 #include <boost/type_traits/integral_constant.hpp>
+#include <boost/type_traits/is_pod.hpp>
 #endif
 
 #if defined(_MSC_VER)
-#pragma warning(push) // Save warning settings.
+#pragma warning(push)           // Save warning settings.
 #pragma warning(disable : 4996) // Disable deprecated std::swap_ranges, std::equal
 #endif
 
 #ifdef BOOST_NO_STDC_NAMESPACE
-namespace std {
-    using ::size_t;
-    using ::ptrdiff_t;
-} //namespace std
-#endif //BOOST_NO_STDC_NAMESPACE
+namespace std
+{
+using ::ptrdiff_t;
+using ::size_t;
+} // namespace std
+#endif // BOOST_NO_STDC_NAMESPACE
 
-namespace boost {
-namespace uuids {
+namespace boost
+{
+namespace uuids
+{
 
 struct uuid
 {
-public:
+  public:
     typedef uint8_t value_type;
-    typedef uint8_t& reference;
-    typedef uint8_t const& const_reference;
-    typedef uint8_t* iterator;
-    typedef uint8_t const* const_iterator;
+    typedef uint8_t &reference;
+    typedef uint8_t const &const_reference;
+    typedef uint8_t *iterator;
+    typedef uint8_t const *const_iterator;
     typedef std::size_t size_type;
     typedef std::ptrdiff_t difference_type;
 
     // This does not work on some compilers
-    // They seem to want the variable definec in 
+    // They seem to want the variable definec in
     // a cpp file
-    //BOOST_STATIC_CONSTANT(size_type, static_size = 16);
-    static size_type static_size() { return 16; }
+    // BOOST_STATIC_CONSTANT(size_type, static_size = 16);
+    static size_type static_size()
+    {
+        return 16;
+    }
 
-public:
-    iterator begin() { return data; } /* throw() */
-    const_iterator begin() const { return data; } /* throw() */
-    iterator end() { return data+size(); } /* throw() */
-    const_iterator end() const { return data+size(); } /* throw() */
+  public:
+    iterator begin()
+    {
+        return data;
+    } /* throw() */
+    const_iterator begin() const
+    {
+        return data;
+    } /* throw() */
+    iterator end()
+    {
+        return data + size();
+    } /* throw() */
+    const_iterator end() const
+    {
+        return data + size();
+    } /* throw() */
 
-    size_type size() const { return static_size(); } /* throw() */
+    size_type size() const
+    {
+        return static_size();
+    } /* throw() */
 
     bool is_nil() const /* throw() */
     {
-        for(size_t i=0; i<static_size(); i++) {
-            if (data[i] != 0U) {
+        for (size_t i = 0; i < static_size(); i++)
+        {
+            if (data[i] != 0U)
+            {
                 return false;
             }
         }
@@ -94,29 +117,36 @@ public:
 
     enum variant_type
     {
-        variant_ncs, // NCS backward compatibility
-        variant_rfc_4122, // defined in RFC 4122 document
+        variant_ncs,       // NCS backward compatibility
+        variant_rfc_4122,  // defined in RFC 4122 document
         variant_microsoft, // Microsoft Corporation backward compatibility
-        variant_future // future definition
+        variant_future     // future definition
     };
     variant_type variant() const /* throw() */
     {
         // variant is stored in octet 7
         // which is index 8, since indexes count backwards
         unsigned char octet7 = data[8]; // octet 7 is array index 8
-        if ( (octet7 & 0x80) == 0x00 ) { // 0b0xxxxxxx
+        if ((octet7 & 0x80) == 0x00)
+        { // 0b0xxxxxxx
             return variant_ncs;
-        } else if ( (octet7 & 0xC0) == 0x80 ) { // 0b10xxxxxx
+        }
+        else if ((octet7 & 0xC0) == 0x80)
+        { // 0b10xxxxxx
             return variant_rfc_4122;
-        } else if ( (octet7 & 0xE0) == 0xC0 ) { // 0b110xxxxx
+        }
+        else if ((octet7 & 0xE0) == 0xC0)
+        { // 0b110xxxxx
             return variant_microsoft;
-        } else {
-            //assert( (octet7 & 0xE0) == 0xE0 ) // 0b111xxxx
+        }
+        else
+        {
+            // assert( (octet7 & 0xE0) == 0xE0 ) // 0b111xxxx
             return variant_future;
         }
     }
-    
-    enum version_type 
+
+    enum version_type
     {
         version_unknown = -1,
         version_time_based = 1,
@@ -127,74 +157,85 @@ public:
     };
     version_type version() const /* throw() */
     {
-        //version is stored in octet 9
-        // which is index 6, since indexes count backwards
+        // version is stored in octet 9
+        //  which is index 6, since indexes count backwards
         unsigned char octet9 = data[6];
-        if ( (octet9 & 0xF0) == 0x10 ) {
+        if ((octet9 & 0xF0) == 0x10)
+        {
             return version_time_based;
-        } else if ( (octet9 & 0xF0) == 0x20 ) {
+        }
+        else if ((octet9 & 0xF0) == 0x20)
+        {
             return version_dce_security;
-        } else if ( (octet9 & 0xF0) == 0x30 ) {
+        }
+        else if ((octet9 & 0xF0) == 0x30)
+        {
             return version_name_based_md5;
-        } else if ( (octet9 & 0xF0) == 0x40 ) {
+        }
+        else if ((octet9 & 0xF0) == 0x40)
+        {
             return version_random_number_based;
-        } else if ( (octet9 & 0xF0) == 0x50 ) {
+        }
+        else if ((octet9 & 0xF0) == 0x50)
+        {
             return version_name_based_sha1;
-        } else {
+        }
+        else
+        {
             return version_unknown;
         }
     }
 
     // note: linear complexity
-    void swap(uuid& rhs) /* throw() */
+    void swap(uuid &rhs) /* throw() */
     {
         std::swap_ranges(begin(), end(), rhs.begin());
     }
 
-public:
+  public:
     // or should it be array<uint8_t, 16>
     uint8_t data[16];
 };
 
-inline bool operator==(uuid const& lhs, uuid const& rhs) /* throw() */
+inline bool operator==(uuid const &lhs, uuid const &rhs) /* throw() */
 {
     return std::equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 
-inline bool operator!=(uuid const& lhs, uuid const& rhs) /* throw() */
+inline bool operator!=(uuid const &lhs, uuid const &rhs) /* throw() */
 {
     return !(lhs == rhs);
 }
 
-inline bool operator<(uuid const& lhs, uuid const& rhs) /* throw() */
+inline bool operator<(uuid const &lhs, uuid const &rhs) /* throw() */
 {
     return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
-inline bool operator>(uuid const& lhs, uuid const& rhs) /* throw() */
+inline bool operator>(uuid const &lhs, uuid const &rhs) /* throw() */
 {
     return rhs < lhs;
 }
-inline bool operator<=(uuid const& lhs, uuid const& rhs) /* throw() */
+inline bool operator<=(uuid const &lhs, uuid const &rhs) /* throw() */
 {
     return !(rhs < lhs);
 }
 
-inline bool operator>=(uuid const& lhs, uuid const& rhs) /* throw() */
+inline bool operator>=(uuid const &lhs, uuid const &rhs) /* throw() */
 {
     return !(lhs < rhs);
 }
 
-inline void swap(uuid& lhs, uuid& rhs) /* throw() */
+inline void swap(uuid &lhs, uuid &rhs) /* throw() */
 {
     lhs.swap(rhs);
 }
 
 // This is equivalent to boost::hash_range(u.begin(), u.end());
-inline std::size_t hash_value(uuid const& u) /* throw() */
+inline std::size_t hash_value(uuid const &u) /* throw() */
 {
     std::size_t seed = 0;
-    for(uuid::const_iterator i=u.begin(); i != u.end(); ++i)
+    for (uuid::const_iterator i = u.begin(); i != u.end(); ++i)
     {
         seed ^= static_cast<std::size_t>(*i) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
@@ -202,14 +243,18 @@ inline std::size_t hash_value(uuid const& u) /* throw() */
     return seed;
 }
 
-}} //namespace boost::uuids
+} // namespace uuids
+} // namespace boost
 
 #ifndef BOOST_UUID_NO_TYPE_TRAITS
 // type traits specializations
-namespace boost {
+namespace boost
+{
 
 template <>
-struct is_pod<uuids::uuid> : true_type {};
+struct is_pod<uuids::uuid> : true_type
+{
+};
 
 } // namespace boost
 #endif

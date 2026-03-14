@@ -4,50 +4,58 @@
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_MATH_TUPLE_HPP_INCLUDED
-#  define BOOST_MATH_TUPLE_HPP_INCLUDED
-#  include <boost/config.hpp>
+#define BOOST_MATH_TUPLE_HPP_INCLUDED
+#include <boost/config.hpp>
 
-#include <boost/tr1/detail/config.hpp>  // for BOOST_HAS_TR1_TUPLE
+#include <boost/tr1/detail/config.hpp> // for BOOST_HAS_TR1_TUPLE
 
 #ifndef BOOST_NO_CXX11_HDR_TUPLE
 
 #include <tuple>
 
-namespace boost{ namespace math{
+namespace boost
+{
+namespace math
+{
 
 using ::std::tuple;
 
 // [6.1.3.2] Tuple creation functions
+using ::std::get;
 using ::std::ignore;
 using ::std::make_tuple;
 using ::std::tie;
-using ::std::get;
 
 // [6.1.3.3] Tuple helper classes
-using ::std::tuple_size;
 using ::std::tuple_element;
+using ::std::tuple_size;
 
-}}
+} // namespace math
+} // namespace boost
 
 #elif defined(BOOST_HAS_TR1_TUPLE)
 
 #include <boost/tr1/tuple.hpp>
 
-namespace boost{ namespace math{
+namespace boost
+{
+namespace math
+{
 
 using ::std::tr1::tuple;
 
 // [6.1.3.2] Tuple creation functions
+using ::std::tr1::get;
 using ::std::tr1::ignore;
 using ::std::tr1::make_tuple;
 using ::std::tr1::tie;
-using ::std::tr1::get;
 
 // [6.1.3.3] Tuple helper classes
-using ::std::tr1::tuple_size;
 using ::std::tr1::tuple_element;
+using ::std::tr1::tuple_size;
 
-}}
+} // namespace math
+} // namespace boost
 
 #elif (defined(__BORLANDC__) && (__BORLANDC__ <= 0x600)) || (defined(_MSC_VER) && (_MSC_VER < 1310)) || defined(__IBMCPP__)
 
@@ -55,26 +63,29 @@ using ::std::tr1::tuple_element;
 #include <boost/tuple/tuple_comparison.hpp>
 #include <boost/type_traits/integral_constant.hpp>
 
-namespace boost{ namespace math{
+namespace boost
+{
+namespace math
+{
 
 using ::boost::tuple;
 
 // [6.1.3.2] Tuple creation functions
-using ::boost::tuples::ignore;
 using ::boost::make_tuple;
 using ::boost::tie;
+using ::boost::tuples::ignore;
 
 // [6.1.3.3] Tuple helper classes
-template <class T> 
-struct tuple_size 
-   : public ::boost::integral_constant
-   < ::std::size_t, ::boost::tuples::length<T>::value>
-{};
+template <class T>
+struct tuple_size
+    : public ::boost::integral_constant<::std::size_t, ::boost::tuples::length<T>::value>
+{
+};
 
-template < int I, class T>
+template <int I, class T>
 struct tuple_element
 {
-   typedef typename boost::tuples::element<I,T>::type type;
+    typedef typename boost::tuples::element<I, T>::type type;
 };
 
 #if !BOOST_WORKAROUND(__BORLANDC__, < 0x0582)
@@ -82,31 +93,34 @@ struct tuple_element
 using ::boost::get;
 #endif
 
-} } // namespaces
+} // namespace math
+} // namespace boost
 
 #else
 
-#include <boost/fusion/include/tuple.hpp>
 #include <boost/fusion/include/std_pair.hpp>
+#include <boost/fusion/include/tuple.hpp>
 
-namespace boost{ namespace math{
+namespace boost
+{
+namespace math
+{
 
 using ::boost::fusion::tuple;
 
 // [6.1.3.2] Tuple creation functions
+using ::boost::fusion::get;
 using ::boost::fusion::ignore;
 using ::boost::fusion::make_tuple;
 using ::boost::fusion::tie;
-using ::boost::fusion::get;
 
 // [6.1.3.3] Tuple helper classes
-using ::boost::fusion::tuple_size;
 using ::boost::fusion::tuple_element;
+using ::boost::fusion::tuple_size;
 
-}}
+} // namespace math
+} // namespace boost
 
 #endif
 
 #endif
-
-

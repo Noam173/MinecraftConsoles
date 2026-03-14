@@ -14,14 +14,14 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_NOT_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_NOT_HPP
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
 namespace detail
 {
-
-
 
 /*!
 \brief Structure negating the result of specified policy
@@ -35,16 +35,16 @@ namespace detail
 template <typename Geometry1, typename Geometry2, typename Policy>
 struct not_
 {
-    static inline bool apply(Geometry1 const &geometry1, Geometry2 const& geometry2)
+    static inline bool apply(Geometry1 const &geometry1, Geometry2 const &geometry2)
     {
-        return ! Policy::apply(geometry1, geometry2);
+        return !Policy::apply(geometry1, geometry2);
     }
 };
-
 
 } // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_NOT_HPP

@@ -10,13 +10,17 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <climits> // for INT_MAX
 #include <boost/mpl/size_t.hpp>
+#include <climits> // for INT_MAX
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 typedef mpl::size_t<INT_MAX / 2 - 1> unknown_width;
@@ -28,30 +32,30 @@ bool is_unknown(width const &that);
 struct width
 {
     width(std::size_t val = 0)
-      : value_(val)
+        : value_(val)
     {
     }
 
-    bool operator !() const
+    bool operator!() const
     {
         return !this->value_;
     }
 
-    width &operator +=(width const &that)
+    width &operator+=(width const &that)
     {
         this->value_ =
             !is_unknown(*this) && !is_unknown(that)
-          ? this->value_ + that.value_
-          : unknown_width();
+                ? this->value_ + that.value_
+                : unknown_width();
         return *this;
     }
 
-    width &operator |=(width const &that)
+    width &operator|=(width const &that)
     {
         this->value_ =
             this->value_ == that.value_
-          ? this->value_
-          : unknown_width();
+                ? this->value_
+                : unknown_width();
         return *this;
     }
 
@@ -60,7 +64,7 @@ struct width
         return this->value_;
     }
 
-private:
+  private:
     std::size_t value_;
 };
 
@@ -69,26 +73,28 @@ inline bool is_unknown(width const &that)
     return unknown_width::value == that.value();
 }
 
-inline bool operator ==(width const &left, width const &right)
+inline bool operator==(width const &left, width const &right)
 {
     return left.value() == right.value();
 }
 
-inline bool operator !=(width const &left, width const &right)
+inline bool operator!=(width const &left, width const &right)
 {
     return left.value() != right.value();
 }
 
-inline width operator +(width left, width const &right)
+inline width operator+(width left, width const &right)
 {
     return left += right;
 }
 
-inline width operator |(width left, width const &right)
+inline width operator|(width left, width const &right)
 {
     return left |= right;
 }
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

@@ -10,7 +10,7 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/karma/stream/format_manip.hpp>
 #include <boost/spirit/home/karma/stream/detail/format_manip_auto.hpp>
+#include <boost/spirit/home/karma/stream/format_manip.hpp>
 
 #endif

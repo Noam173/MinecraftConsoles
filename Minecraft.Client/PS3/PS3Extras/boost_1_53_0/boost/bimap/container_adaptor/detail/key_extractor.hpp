@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_KEY_EXTRACTOR_HPP
 #define BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_KEY_EXTRACTOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -20,18 +20,25 @@
 
 #include <functional>
 
-namespace boost {
-namespace bimaps {
-namespace container_adaptor {
-namespace detail {
+namespace boost
+{
+namespace bimaps
+{
+namespace container_adaptor
+{
+namespace detail
+{
 
 /// \brief Key Extractor
 
-template < class T >
-struct key_from_pair_extractor 
-    : std::unary_function< T, BOOST_DEDUCED_TYPENAME T::first_type >
+template <class T>
+struct key_from_pair_extractor
+    : std::unary_function<T, BOOST_DEDUCED_TYPENAME T::first_type>
 {
-    bool operator()( const T & p ) { return p.first; }
+    bool operator()(const T &p)
+    {
+        return p.first;
+    }
 };
 
 } // namespace detail
@@ -39,7 +46,4 @@ struct key_from_pair_extractor
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_KEY_EXTRACTOR_HPP
-
-

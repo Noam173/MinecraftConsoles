@@ -10,105 +10,115 @@
 
 #include <iosfwd>
 
+#include <boost/config.hpp>
 #include <boost/fusion/support/detail/access.hpp>
 #include <boost/fusion/support/detail/as_fusion_element.hpp>
-#include <boost/config.hpp>
 
-#if defined (BOOST_MSVC)
-#  pragma warning(push)
-#  pragma warning (disable: 4512) // assignment operator could not be generated.
+#if defined(BOOST_MSVC)
+#pragma warning(push)
+#pragma warning(disable : 4512) // assignment operator could not be generated.
 #endif
 
-namespace boost { namespace fusion
+namespace boost
 {
-    // A half runtime pair where the first type does not have data
-    template <typename First, typename Second>
-    struct pair
+namespace fusion
+{
+// A half runtime pair where the first type does not have data
+template <typename First, typename Second>
+struct pair
+{
+    pair()
+        : second()
     {
-        pair()
-            : second() {}
-
-        pair(typename detail::call_param<Second>::type val)
-            : second(val) {}
-
-        template <typename Second2>
-        pair(pair<First, Second2> const& rhs)
-            : second(rhs.second) {}
-
-        template <typename Second2>
-        pair& operator=(pair<First, Second2> const& rhs)
-        {
-            second = rhs.second;
-            return *this;
-        }
-
-        typedef First first_type;
-        typedef Second second_type;
-        Second second;
-    };
-
-    namespace result_of
-    {
-        template<typename First, typename Second>
-        struct make_pair
-        {
-            typedef fusion::pair<First,
-                        typename detail::as_fusion_element<Second>::type> type;
-        };
-
-        template<class Pair>
-        struct first
-        {
-            typedef typename Pair::first_type type;
-        };
-
-        template<class Pair>
-        struct second
-        {
-            typedef typename Pair::second_type type;
-        };
     }
 
-    template <typename First, typename Second>
-    inline typename result_of::make_pair<First,Second>::type
-    make_pair(Second const& val)
+    pair(typename detail::call_param<Second>::type val)
+        : second(val)
     {
-        return pair<First, typename detail::as_fusion_element<Second>::type>(val);
     }
 
-    template <typename First, typename Second>
-    inline std::ostream&
-    operator<<(std::ostream& os, pair<First, Second> const& p)
+    template <typename Second2>
+    pair(pair<First, Second2> const &rhs)
+        : second(rhs.second)
     {
-        os << p.second;
-        return os;
     }
 
-    template <typename First, typename Second>
-    inline std::istream&
-    operator>>(std::istream& is, pair<First, Second>& p)
+    template <typename Second2>
+    pair &operator=(pair<First, Second2> const &rhs)
     {
-        is >> p.second;
-        return is;
+        second = rhs.second;
+        return *this;
     }
 
-    template <typename First, typename SecondL, typename SecondR>
-    inline bool
-    operator==(pair<First, SecondL> const& l, pair<First, SecondR> const& r)
-    {
-        return l.second == r.second;
-    }
+    typedef First first_type;
+    typedef Second second_type;
+    Second second;
+};
 
-    template <typename First, typename SecondL, typename SecondR>
-    inline bool
-    operator!=(pair<First, SecondL> const& l, pair<First, SecondR> const& r)
-    {
-        return l.second != r.second;
-    }
-}}
+namespace result_of
+{
+template <typename First, typename Second>
+struct make_pair
+{
+    typedef fusion::pair<First,
+                         typename detail::as_fusion_element<Second>::type>
+        type;
+};
 
-#if defined (BOOST_MSVC)
-#  pragma warning(pop)
+template <class Pair>
+struct first
+{
+    typedef typename Pair::first_type type;
+};
+
+template <class Pair>
+struct second
+{
+    typedef typename Pair::second_type type;
+};
+} // namespace result_of
+
+template <typename First, typename Second>
+inline typename result_of::make_pair<First, Second>::type
+make_pair(Second const &val)
+{
+    return pair<First, typename detail::as_fusion_element<Second>::type>(val);
+}
+
+template <typename First, typename Second>
+inline std::ostream &
+operator<<(std::ostream &os, pair<First, Second> const &p)
+{
+    os << p.second;
+    return os;
+}
+
+template <typename First, typename Second>
+inline std::istream &
+operator>>(std::istream &is, pair<First, Second> &p)
+{
+    is >> p.second;
+    return is;
+}
+
+template <typename First, typename SecondL, typename SecondR>
+inline bool
+operator==(pair<First, SecondL> const &l, pair<First, SecondR> const &r)
+{
+    return l.second == r.second;
+}
+
+template <typename First, typename SecondL, typename SecondR>
+inline bool
+operator!=(pair<First, SecondL> const &l, pair<First, SecondR> const &r)
+{
+    return l.second != r.second;
+}
+} // namespace fusion
+} // namespace boost
+
+#if defined(BOOST_MSVC)
+#pragma warning(pop)
 #endif
 
 #endif

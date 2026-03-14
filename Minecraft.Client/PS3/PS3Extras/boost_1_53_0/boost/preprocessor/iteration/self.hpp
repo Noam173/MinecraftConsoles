@@ -1,4 +1,4 @@
-# /* **************************************************************************
+#/* **************************************************************************
 #  *                                                                          *
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
@@ -7,13 +7,13 @@
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+#/* See http://www.boost.org for most recent version. */
 #
-# ifndef BOOST_PREPROCESSOR_ITERATION_SELF_HPP
-# define BOOST_PREPROCESSOR_ITERATION_SELF_HPP
+#ifndef BOOST_PREPROCESSOR_ITERATION_SELF_HPP
+#define BOOST_PREPROCESSOR_ITERATION_SELF_HPP
 #
-# /* BOOST_PP_INCLUDE_SELF */
+#/* BOOST_PP_INCLUDE_SELF */
 #
-# define BOOST_PP_INCLUDE_SELF() <boost/preprocessor/iteration/detail/self.hpp>
+#define BOOST_PP_INCLUDE_SELF() <boost/preprocessor/iteration/detail/self.hpp>
 #
-# endif
+#endif

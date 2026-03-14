@@ -7,10 +7,12 @@
 #ifndef PHOENIX_CORE_NOTHING_HPP
 #define PHOENIX_CORE_NOTHING_HPP
 
-#include <boost/spirit/home/phoenix/core/actor.hpp>
 #include <boost/mpl/bool.hpp>
+#include <boost/spirit/home/phoenix/core/actor.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
+{
+namespace phoenix
 {
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -19,24 +21,25 @@ namespace boost { namespace phoenix
 //      A actor that does nothing (a "bum", if you will :-).
 //
 ///////////////////////////////////////////////////////////////////////////////
-    struct null_actor
+struct null_actor
+{
+    typedef mpl::false_ no_nullary;
+
+    template <typename Env>
+    struct result
     {
-        typedef mpl::false_ no_nullary;
-
-        template <typename Env>
-        struct result
-        {
-            typedef void type;
-        };
-
-        template <typename Env>
-        void
-        eval(Env const&) const
-        {
-        }
+        typedef void type;
     };
 
-    actor<null_actor> const nothing = null_actor();
-}}
+    template <typename Env>
+    void
+    eval(Env const &) const
+    {
+    }
+};
+
+actor<null_actor> const nothing = null_actor();
+} // namespace phoenix
+} // namespace boost
 
 #endif

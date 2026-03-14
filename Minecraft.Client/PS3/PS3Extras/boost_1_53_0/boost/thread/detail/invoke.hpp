@@ -21,68 +21,63 @@
 
 namespace boost
 {
-  namespace detail
-  {
+namespace detail
+{
 
-#if ! defined(BOOST_NO_SFINAE_EXPR) && \
-    ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
-    ! defined(BOOST_NO_CXX11_DECLTYPE) && \
-    ! defined(BOOST_NO_CXX11_DECLTYPE_N3276) && \
-    ! defined(BOOST_NO_CXX11_AUTO) && \
-    ! defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
+#if !defined(BOOST_NO_SFINAE_EXPR) &&              \
+    !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
+    !defined(BOOST_NO_CXX11_DECLTYPE) &&           \
+    !defined(BOOST_NO_CXX11_DECLTYPE_N3276) &&     \
+    !defined(BOOST_NO_CXX11_AUTO) &&               \
+    !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
 
-    //      // bullets 1 and 2
+//      // bullets 1 and 2
 
-    template <class Fp, class A0, class ...Args>
-    inline
-    auto
-    invoke(Fp&& f, A0&& a0, Args&& ...args)
-        -> decltype((boost::forward<A0>(a0).*f)(boost::forward<Args>(args)...))
-    {
-        return (boost::forward<A0>(a0).*f)(boost::forward<Args>(args)...);
-    }
+template <class Fp, class A0, class... Args>
+inline auto
+invoke(Fp &&f, A0 &&a0, Args &&...args)
+    -> decltype((boost::forward<A0>(a0).*f)(boost::forward<Args>(args)...))
+{
+    return (boost::forward<A0>(a0).*f)(boost::forward<Args>(args)...);
+}
 
-    template <class Fp, class A0, class ...Args>
-    inline
-    auto
-    invoke(Fp&& f, A0&& a0, Args&& ...args)
-        -> decltype(((*boost::forward<A0>(a0)).*f)(boost::forward<Args>(args)...))
-    {
-        return ((*boost::forward<A0>(a0)).*f)(boost::forward<Args>(args)...);
-    }
+template <class Fp, class A0, class... Args>
+inline auto
+invoke(Fp &&f, A0 &&a0, Args &&...args)
+    -> decltype(((*boost::forward<A0>(a0)).*f)(boost::forward<Args>(args)...))
+{
+    return ((*boost::forward<A0>(a0)).*f)(boost::forward<Args>(args)...);
+}
 
-    // bullets 3 and 4
+// bullets 3 and 4
 
-    template <class Fp, class A0>
-    inline
-    auto
-    invoke(Fp&& f, A0&& a0)
-        -> decltype(boost::forward<A0>(a0).*f)
-    {
-        return boost::forward<A0>(a0).*f;
-    }
+template <class Fp, class A0>
+inline auto
+invoke(Fp &&f, A0 &&a0)
+    -> decltype(boost::forward<A0>(a0).*f)
+{
+    return boost::forward<A0>(a0).*f;
+}
 
-    template <class Fp, class A0>
-    inline
-    auto
-    invoke(Fp&& f, A0&& a0)
-        -> decltype((*boost::forward<A0>(a0)).*f)
-    {
-        return (*boost::forward<A0>(a0)).*f;
-    }
+template <class Fp, class A0>
+inline auto
+invoke(Fp &&f, A0 &&a0)
+    -> decltype((*boost::forward<A0>(a0)).*f)
+{
+    return (*boost::forward<A0>(a0)).*f;
+}
 
-    // bullet 5
+// bullet 5
 
-    template <class Fp, class ...Args>
-    inline
-    auto invoke(Fp&& f, Args&& ...args)
+template <class Fp, class... Args>
+inline auto invoke(Fp &&f, Args &&...args)
     -> decltype(boost::forward<Fp>(f)(boost::forward<Args>(args)...))
-    {
-      return boost::forward<Fp>(f)(boost::forward<Args>(args)...);
-    }
+{
+    return boost::forward<Fp>(f)(boost::forward<Args>(args)...);
+}
 
 #endif
-      }
-    }
+} // namespace detail
+} // namespace boost
 
 #endif // header

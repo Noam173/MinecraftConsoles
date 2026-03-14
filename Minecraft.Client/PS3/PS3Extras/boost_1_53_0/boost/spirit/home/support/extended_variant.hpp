@@ -11,105 +11,112 @@
 #pragma once
 #endif
 
-#include <boost/variant.hpp>
 #include <boost/preprocessor/repetition/enum_params_with_a_default.hpp>
+#include <boost/variant.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace spirit
+namespace boost
 {
-    template <
-        BOOST_PP_ENUM_PARAMS_WITH_A_DEFAULT(
-            BOOST_VARIANT_LIMIT_TYPES,
-            typename T, boost::detail::variant::void_)
-            // We should not be depending on detail::variant::void_
-            // but I'm not sure if this can fixed. Any other way is
-            // clumsy at best.
-        >
-    struct extended_variant
-    {
-        // tell spirit that this is an adapted variant
-        struct adapted_variant_tag;
+namespace spirit
+{
+template <
+    BOOST_PP_ENUM_PARAMS_WITH_A_DEFAULT(
+        BOOST_VARIANT_LIMIT_TYPES,
+        typename T, boost::detail::variant::void_)
+    // We should not be depending on detail::variant::void_
+    // but I'm not sure if this can fixed. Any other way is
+    // clumsy at best.
+    >
+struct extended_variant
+{
+    // tell spirit that this is an adapted variant
+    struct adapted_variant_tag;
 
-        typedef boost::variant<
-            BOOST_VARIANT_ENUM_PARAMS(T)>
+    typedef boost::variant<
+        BOOST_VARIANT_ENUM_PARAMS(T)>
         variant_type;
-        typedef typename variant_type::types types;
+    typedef typename variant_type::types types;
 
-        typedef extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)> base_type;
+    typedef extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)> base_type;
 
-        extended_variant() : var() {}
+    extended_variant() : var()
+    {
+    }
 
-        template <typename T>
-        extended_variant(T const& var)
-            : var(var) {}
+    template <typename T>
+    extended_variant(T const &var)
+        : var(var)
+    {
+    }
 
-        template <typename F>
-        typename F::result_type apply_visitor(F const& v)
-        {
-            return var.apply_visitor(v);
-        }
+    template <typename F>
+    typename F::result_type apply_visitor(F const &v)
+    {
+        return var.apply_visitor(v);
+    }
 
-        template <typename F>
-        typename F::result_type apply_visitor(F const& v) const
-        {
-            return var.apply_visitor(v);
-        }
+    template <typename F>
+    typename F::result_type apply_visitor(F const &v) const
+    {
+        return var.apply_visitor(v);
+    }
 
-        template <typename F>
-        typename F::result_type apply_visitor(F& v)
-        {
-            return var.apply_visitor(v);
-        }
+    template <typename F>
+    typename F::result_type apply_visitor(F &v)
+    {
+        return var.apply_visitor(v);
+    }
 
-        template <typename F>
-        typename F::result_type apply_visitor(F& v) const
-        {
-            return var.apply_visitor(v);
-        }
+    template <typename F>
+    typename F::result_type apply_visitor(F &v) const
+    {
+        return var.apply_visitor(v);
+    }
 
-        variant_type const& get() const
-        {
-            return var;
-        }
+    variant_type const &get() const
+    {
+        return var;
+    }
 
-        variant_type& get()
-        {
-            return var;
-        }
+    variant_type &get()
+    {
+        return var;
+    }
 
-        variant_type var;
-    };
-}}
+    variant_type var;
+};
+} // namespace spirit
+} // namespace boost
 
 namespace boost
 {
-    template <typename T, BOOST_VARIANT_ENUM_PARAMS(typename T)>
-    inline T const&
-    get(boost::spirit::extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)> const& x)
-    {
-        return boost::get<T>(x.get());
-    }
-
-    template <typename T, BOOST_VARIANT_ENUM_PARAMS(typename T)>
-    inline T&
-    get(boost::spirit::extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)>& x)
-    {
-        return boost::get<T>(x.get());
-    }
-
-    template <typename T, BOOST_VARIANT_ENUM_PARAMS(typename T)>
-    inline T const*
-    get(boost::spirit::extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)> const* x)
-    {
-        return boost::get<T>(&x->get());
-    }
-
-    template <typename T, BOOST_VARIANT_ENUM_PARAMS(typename T)>
-    inline T*
-    get(boost::spirit::extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)>* x)
-    {
-        return boost::get<T>(&x->get());
-    }
+template <typename T, BOOST_VARIANT_ENUM_PARAMS(typename T)>
+inline T const &
+get(boost::spirit::extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)> const &x)
+{
+    return boost::get<T>(x.get());
 }
+
+template <typename T, BOOST_VARIANT_ENUM_PARAMS(typename T)>
+inline T &
+get(boost::spirit::extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)> &x)
+{
+    return boost::get<T>(x.get());
+}
+
+template <typename T, BOOST_VARIANT_ENUM_PARAMS(typename T)>
+inline T const *
+get(boost::spirit::extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)> const *x)
+{
+    return boost::get<T>(&x->get());
+}
+
+template <typename T, BOOST_VARIANT_ENUM_PARAMS(typename T)>
+inline T *
+get(boost::spirit::extended_variant<BOOST_VARIANT_ENUM_PARAMS(T)> *x)
+{
+    return boost::get<T>(&x->get());
+}
+} // namespace boost
 
 #endif

@@ -2,18 +2,21 @@
 // subject to the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #ifndef IS_INCREMENTABLE_DWA200415_HPP
-# define IS_INCREMENTABLE_DWA200415_HPP
+#define IS_INCREMENTABLE_DWA200415_HPP
 
-# include <boost/type_traits/detail/template_arity_spec.hpp>
-# include <boost/type_traits/remove_cv.hpp>
-# include <boost/mpl/aux_/lambda_support.hpp>
-# include <boost/mpl/bool.hpp>
-# include <boost/detail/workaround.hpp>
+#include <boost/detail/workaround.hpp>
+#include <boost/mpl/aux_/lambda_support.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/type_traits/detail/template_arity_spec.hpp>
+#include <boost/type_traits/remove_cv.hpp>
 
 // Must be the last include
-# include <boost/type_traits/detail/bool_trait_def.hpp>
+#include <boost/type_traits/detail/bool_trait_def.hpp>
 
-namespace boost { namespace detail { 
+namespace boost
+{
+namespace detail
+{
 
 // is_incrementable<T> metafunction
 //
@@ -24,102 +27,101 @@ namespace boost { namespace detail {
 // This namespace ensures that ADL doesn't mess things up.
 namespace is_incrementable_
 {
-  // a type returned from operator++ when no increment is found in the
-  // type's own namespace
-  struct tag {};
-  
-  // any soaks up implicit conversions and makes the following
-  // operator++ less-preferred than any other such operator that
-  // might be found via ADL.
-  struct any { template <class T> any(T const&); };
+// a type returned from operator++ when no increment is found in the
+// type's own namespace
+struct tag
+{
+};
 
-  // This is a last-resort operator++ for when none other is found
-# if BOOST_WORKAROUND(__GNUC__, == 4) && __GNUC_MINOR__ == 0 && __GNUC_PATCHLEVEL__ == 2
-  
+// any soaks up implicit conversions and makes the following
+// operator++ less-preferred than any other such operator that
+// might be found via ADL.
+struct any
+{
+    template <class T>
+    any(T const &);
+};
+
+// This is a last-resort operator++ for when none other is found
+#if BOOST_WORKAROUND(__GNUC__, == 4) && __GNUC_MINOR__ == 0 && __GNUC_PATCHLEVEL__ == 2
 }
 
 namespace is_incrementable_2
 {
-  is_incrementable_::tag operator++(is_incrementable_::any const&);
-  is_incrementable_::tag operator++(is_incrementable_::any const&,int);
-}
+is_incrementable_::tag operator++(is_incrementable_::any const &);
+is_incrementable_::tag operator++(is_incrementable_::any const &, int);
+} // namespace is_incrementable_2
 using namespace is_incrementable_2;
 
 namespace is_incrementable_
 {
-  
-# else
-  
-  tag operator++(any const&);
-  tag operator++(any const&,int);
-  
-# endif 
 
-# if BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3202)) \
-    || BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-#  define BOOST_comma(a,b) (a)
-# else 
-  // In case an operator++ is found that returns void, we'll use ++x,0
-  tag operator,(tag,int);  
-#  define BOOST_comma(a,b) (a,b)
-# endif 
+#else
 
-# if defined(BOOST_MSVC)
-#  pragma warning(push)
-#  pragma warning(disable:4913) // Warning about operator,
-# endif 
+tag operator++(any const &);
+tag operator++(any const &, int);
 
-  // two check overloads help us identify which operator++ was picked
-  char (& check_(tag) )[2];
-  
-  template <class T>
-  char check_(T const&);
-  
+#endif
 
-  template <class T>
-  struct impl
-  {
-      static typename boost::remove_cv<T>::type& x;
+#if BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3202)) || BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+#define BOOST_comma(a, b) (a)
+#else
+// In case an operator++ is found that returns void, we'll use ++x,0
+tag operator,(tag, int);
+#define BOOST_comma(a, b) (a, b)
+#endif
 
-      BOOST_STATIC_CONSTANT(
-          bool
-        , value = sizeof(is_incrementable_::check_(BOOST_comma(++x,0))) == 1
-      );
-  };
+#if defined(BOOST_MSVC)
+#pragma warning(push)
+#pragma warning(disable : 4913) // Warning about operator,
+#endif
 
-  template <class T>
-  struct postfix_impl
-  {
-      static typename boost::remove_cv<T>::type& x;
+// two check overloads help us identify which operator++ was picked
+char (&check_(tag))[2];
 
-      BOOST_STATIC_CONSTANT(
-          bool
-        , value = sizeof(is_incrementable_::check_(BOOST_comma(x++,0))) == 1
-      );
-  };
+template <class T>
+char check_(T const &);
 
-# if defined(BOOST_MSVC)
-#  pragma warning(pop)
-# endif 
+template <class T>
+struct impl
+{
+    static typename boost::remove_cv<T>::type &x;
 
-}
-
-# undef BOOST_comma
-
-template<typename T> 
-struct is_incrementable 
-BOOST_TT_AUX_BOOL_C_BASE(::boost::detail::is_incrementable_::impl<T>::value)
-{ 
-    BOOST_TT_AUX_BOOL_TRAIT_VALUE_DECL(::boost::detail::is_incrementable_::impl<T>::value)
-    BOOST_MPL_AUX_LAMBDA_SUPPORT(1,is_incrementable,(T))
+    BOOST_STATIC_CONSTANT(
+        bool, value = sizeof(is_incrementable_::check_(BOOST_comma(++x, 0))) == 1);
 };
 
-template<typename T> 
-struct is_postfix_incrementable 
-BOOST_TT_AUX_BOOL_C_BASE(::boost::detail::is_incrementable_::impl<T>::value)
-{ 
+template <class T>
+struct postfix_impl
+{
+    static typename boost::remove_cv<T>::type &x;
+
+    BOOST_STATIC_CONSTANT(
+        bool, value = sizeof(is_incrementable_::check_(BOOST_comma(x++, 0))) == 1);
+};
+
+#if defined(BOOST_MSVC)
+#pragma warning(pop)
+#endif
+
+} // namespace is_incrementable_
+
+#undef BOOST_comma
+
+template <typename T>
+struct is_incrementable
+    BOOST_TT_AUX_BOOL_C_BASE(::boost::detail::is_incrementable_::impl<T>::value)
+{
+    BOOST_TT_AUX_BOOL_TRAIT_VALUE_DECL(::boost::detail::is_incrementable_::impl<T>::value)
+    BOOST_MPL_AUX_LAMBDA_SUPPORT(1, is_incrementable, (T))
+};
+
+template <typename T>
+struct is_postfix_incrementable
+    BOOST_TT_AUX_BOOL_C_BASE(::boost::detail::is_incrementable_::impl<T>::value)
+{
     BOOST_TT_AUX_BOOL_TRAIT_VALUE_DECL(::boost::detail::is_incrementable_::postfix_impl<T>::value)
-    BOOST_MPL_AUX_LAMBDA_SUPPORT(1,is_postfix_incrementable,(T))
+    BOOST_MPL_AUX_LAMBDA_SUPPORT(1, is_postfix_incrementable, (T))
 };
 
 } // namespace detail
@@ -129,6 +131,6 @@ BOOST_TT_AUX_TEMPLATE_ARITY_SPEC(1, ::boost::detail::is_postfix_incrementable)
 
 } // namespace boost
 
-# include <boost/type_traits/detail/bool_trait_undef.hpp>
+#include <boost/type_traits/detail/bool_trait_undef.hpp>
 
 #endif // IS_INCREMENTABLE_DWA200415_HPP

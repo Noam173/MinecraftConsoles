@@ -22,74 +22,66 @@
 
 #include <boost/geometry/algorithms/detail/sections/sectionalize.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace sectionalize
+namespace detail
 {
-
+namespace sectionalize
+{
 
 template <typename MultiGeometry, typename Sections, std::size_t DimensionCount, typename Policy>
 struct sectionalize_multi
 {
-    static inline void apply(MultiGeometry const& multi, Sections& sections, ring_identifier ring_id)
+    static inline void apply(MultiGeometry const &multi, Sections &sections, ring_identifier ring_id)
     {
         ring_id.multi_index = 0;
         for (typename boost::range_iterator<MultiGeometry const>::type
-                    it = boost::begin(multi);
-            it != boost::end(multi);
-            ++it, ++ring_id.multi_index)
+                 it = boost::begin(multi);
+             it != boost::end(multi);
+             ++it, ++ring_id.multi_index)
         {
             Policy::apply(*it, sections, ring_id);
         }
     }
 };
 
-
-}} // namespace detail::sectionalize
+} // namespace sectionalize
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
-template
-<
+template <
     typename MultiPolygon,
     bool Reverse,
     typename Sections,
     std::size_t DimensionCount,
-    std::size_t MaxCount
->
+    std::size_t MaxCount>
 struct sectionalize<multi_polygon_tag, MultiPolygon, Reverse, Sections, DimensionCount, MaxCount>
-    : detail::sectionalize::sectionalize_multi
-        <
-            MultiPolygon,
-            Sections,
-            DimensionCount,
-            detail::sectionalize::sectionalize_polygon
-                <
-                    typename boost::range_value<MultiPolygon>::type,
-                    Reverse,
-                    Sections,
-                    DimensionCount,
-                    MaxCount
-                >
-        >
+    : detail::sectionalize::sectionalize_multi<
+          MultiPolygon,
+          Sections,
+          DimensionCount,
+          detail::sectionalize::sectionalize_polygon<
+              typename boost::range_value<MultiPolygon>::type,
+              Reverse,
+              Sections,
+              DimensionCount,
+              MaxCount>>
 
-{};
-
+{
+};
 
 } // namespace dispatch
 #endif
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_SECTIONS_SECTIONALIZE_HPP

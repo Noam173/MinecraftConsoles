@@ -16,13 +16,16 @@
 #include <list>
 #include <utility>
 
-#include <boost/noncopyable.hpp>
-#include <boost/iterator/iterator_adaptor.hpp>
 #include <boost/heap/detail/ordered_adaptor_iterator.hpp>
+#include <boost/iterator/iterator_adaptor.hpp>
+#include <boost/noncopyable.hpp>
 
-namespace boost  {
-namespace heap   {
-namespace detail {
+namespace boost
+{
+namespace heap
+{
+namespace detail
+{
 
 /* wrapper for a mutable heap container adaptors
  *
@@ -33,7 +36,7 @@ namespace detail {
 template <typename PriorityQueueType>
 class priority_queue_mutable_wrapper
 {
-public:
+  public:
     typedef typename PriorityQueueType::value_type value_type;
     typedef typename PriorityQueueType::size_type size_type;
     typedef typename PriorityQueueType::value_compare value_compare;
@@ -45,7 +48,7 @@ public:
     typedef typename PriorityQueueType::const_pointer const_pointer;
     static const bool is_stable = PriorityQueueType::is_stable;
 
-private:
+  private:
     typedef std::pair<value_type, size_type> node_type;
 
     typedef std::list<node_type, typename allocator_type::template rebind<node_type>::other> object_list;
@@ -71,46 +74,46 @@ private:
     struct index_updater
     {
         template <typename It>
-        static void run(It & it, size_type new_index)
+        static void run(It &it, size_type new_index)
         {
             q_type::get_value(it)->second = new_index;
         }
     };
 
-public:
+  public:
     struct handle_type
     {
-        value_type & operator*() const
+        value_type &operator*() const
         {
             return iterator->first;
         }
 
-        handle_type (void)
-        {}
+        handle_type(void)
+        {
+        }
 
-        handle_type(handle_type const & rhs):
-            iterator(rhs.iterator)
-        {}
+        handle_type(handle_type const &rhs) : iterator(rhs.iterator)
+        {
+        }
 
-    private:
-        explicit handle_type(list_iterator const & it):
-            iterator(it)
-        {}
+      private:
+        explicit handle_type(list_iterator const &it) : iterator(it)
+        {
+        }
 
         list_iterator iterator;
 
         friend class priority_queue_mutable_wrapper;
     };
 
-private:
-    struct indirect_cmp:
-        public value_compare
+  private:
+    struct indirect_cmp : public value_compare
     {
-        indirect_cmp(value_compare const & cmp = value_compare()):
-            value_compare(cmp)
-        {}
+        indirect_cmp(value_compare const &cmp = value_compare()) : value_compare(cmp)
+        {
+        }
 
-        bool operator()(const_list_iterator const & lhs, const_list_iterator const & rhs) const
+        bool operator()(const_list_iterator const &lhs, const_list_iterator const &rhs) const
         {
             return value_compare::operator()(lhs->first, rhs->first);
         }
@@ -118,43 +121,45 @@ private:
 
     typedef typename PriorityQueueType::template rebind<list_iterator,
                                                         indirect_cmp,
-                                                        allocator_type, index_updater >::other q_type;
+                                                        allocator_type, index_updater>::other q_type;
 
-protected:
+  protected:
     q_type q_;
     object_list objects;
 
-protected:
-    priority_queue_mutable_wrapper(value_compare const & cmp = value_compare()):
-        q_(cmp)
-    {}
-
-    priority_queue_mutable_wrapper(priority_queue_mutable_wrapper const & rhs):
-        q_(rhs.q_), objects(rhs.objects)
+  protected:
+    priority_queue_mutable_wrapper(value_compare const &cmp = value_compare()) : q_(cmp)
     {
-        for (typename object_list::iterator it = objects.begin(); it != objects.end(); ++it)
-            q_.push(it);
     }
 
-    priority_queue_mutable_wrapper & operator=(priority_queue_mutable_wrapper const & rhs)
+    priority_queue_mutable_wrapper(priority_queue_mutable_wrapper const &rhs) : q_(rhs.q_), objects(rhs.objects)
+    {
+        for (typename object_list::iterator it = objects.begin(); it != objects.end(); ++it)
+        {
+            q_.push(it);
+        }
+    }
+
+    priority_queue_mutable_wrapper &operator=(priority_queue_mutable_wrapper const &rhs)
     {
         q_ = rhs.q_;
         objects = rhs.objects;
         q_.clear();
         for (typename object_list::iterator it = objects.begin(); it != objects.end(); ++it)
+        {
             q_.push(it);
+        }
         return *this;
     }
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
-    priority_queue_mutable_wrapper (priority_queue_mutable_wrapper && rhs):
-        q_(std::move(rhs.q_))
+    priority_queue_mutable_wrapper(priority_queue_mutable_wrapper &&rhs) : q_(std::move(rhs.q_))
     {
         /// FIXME: msvc seems to invalidate iterators when moving std::list
         std::swap(objects, rhs.objects);
     }
 
-    priority_queue_mutable_wrapper & operator=(priority_queue_mutable_wrapper && rhs)
+    priority_queue_mutable_wrapper &operator=(priority_queue_mutable_wrapper &&rhs)
     {
         q_ = std::move(rhs.q_);
         objects.clear();
@@ -163,33 +168,32 @@ protected:
     }
 #endif
 
-
-public:
+  public:
     template <typename iterator_type>
-    class iterator_base:
-        public boost::iterator_adaptor<iterator_base<iterator_type>,
-                                       iterator_type,
-                                       value_type const,
-                                       boost::bidirectional_traversal_tag>
+    class iterator_base : public boost::iterator_adaptor<iterator_base<iterator_type>,
+                                                         iterator_type,
+                                                         value_type const,
+                                                         boost::bidirectional_traversal_tag>
     {
         typedef boost::iterator_adaptor<iterator_base<iterator_type>,
-                                       iterator_type,
-                                       value_type const,
-                                       boost::bidirectional_traversal_tag> super_t;
+                                        iterator_type,
+                                        value_type const,
+                                        boost::bidirectional_traversal_tag>
+            super_t;
 
         friend class boost::iterator_core_access;
         friend class priority_queue_mutable_wrapper;
 
-        iterator_base(void):
-            super_t(0)
-        {}
+        iterator_base(void) : super_t(0)
+        {
+        }
 
         template <typename T>
-        explicit iterator_base(T const & it):
-            super_t(it)
-        {}
+        explicit iterator_base(T const &it) : super_t(it)
+        {
+        }
 
-        value_type const & dereference() const
+        value_type const &dereference() const
         {
             return super_t::base()->first;
         }
@@ -205,57 +209,59 @@ public:
 
     typedef typename object_list::difference_type difference_type;
 
-    class ordered_iterator:
-        public boost::iterator_adaptor<ordered_iterator,
-                                       const_list_iterator,
-                                       value_type const,
-                                       boost::forward_traversal_tag
-                                      >,
-        q_type::ordered_iterator_dispatcher
+    class ordered_iterator : public boost::iterator_adaptor<ordered_iterator,
+                                                            const_list_iterator,
+                                                            value_type const,
+                                                            boost::forward_traversal_tag>,
+                             q_type::ordered_iterator_dispatcher
     {
         typedef boost::iterator_adaptor<ordered_iterator,
                                         const_list_iterator,
                                         value_type const,
-                                        boost::forward_traversal_tag
-                                      > adaptor_type;
+                                        boost::forward_traversal_tag>
+            adaptor_type;
 
         typedef const_list_iterator iterator;
         typedef typename q_type::ordered_iterator_dispatcher ordered_iterator_dispatcher;
 
         friend class boost::iterator_core_access;
 
-    public:
-        ordered_iterator(void):
-            adaptor_type(0), unvisited_nodes(indirect_cmp()), q_(NULL)
-        {}
-
-        ordered_iterator(const priority_queue_mutable_wrapper * q, indirect_cmp const & cmp):
-            adaptor_type(0), unvisited_nodes(cmp), q_(q)
-        {}
-
-        ordered_iterator(const_list_iterator it, const priority_queue_mutable_wrapper * q, indirect_cmp const & cmp):
-            adaptor_type(it), unvisited_nodes(cmp), q_(q)
+      public:
+        ordered_iterator(void) : adaptor_type(0), unvisited_nodes(indirect_cmp()), q_(NULL)
         {
-            if (it != q->objects.end())
-                discover_nodes(it);
         }
 
-        bool operator!=(ordered_iterator const & rhs) const
+        ordered_iterator(const priority_queue_mutable_wrapper *q, indirect_cmp const &cmp) : adaptor_type(0), unvisited_nodes(cmp), q_(q)
+        {
+        }
+
+        ordered_iterator(const_list_iterator it, const priority_queue_mutable_wrapper *q, indirect_cmp const &cmp) : adaptor_type(it), unvisited_nodes(cmp), q_(q)
+        {
+            if (it != q->objects.end())
+            {
+                discover_nodes(it);
+            }
+        }
+
+        bool operator!=(ordered_iterator const &rhs) const
         {
             return adaptor_type::base() != rhs.base();
         }
 
-        bool operator==(ordered_iterator const & rhs) const
+        bool operator==(ordered_iterator const &rhs) const
         {
             return !operator!=(rhs);
         }
 
-    private:
+      private:
         void increment(void)
         {
             if (unvisited_nodes.empty())
+            {
                 adaptor_type::base_reference() = q_->objects.end();
-            else {
+            }
+            else
+            {
                 iterator next = unvisited_nodes.top();
                 unvisited_nodes.pop();
                 discover_nodes(next);
@@ -263,7 +269,7 @@ public:
             }
         }
 
-        value_type const & dereference() const
+        value_type const &dereference() const
         {
             return adaptor_type::base()->first;
         }
@@ -271,26 +277,29 @@ public:
         void discover_nodes(iterator current)
         {
             size_type current_index = current->second;
-            const q_type * q = &(q_->q_);
+            const q_type *q = &(q_->q_);
 
             if (ordered_iterator_dispatcher::is_leaf(q, current_index))
+            {
                 return;
+            }
 
             std::pair<size_type, size_type> child_range = ordered_iterator_dispatcher::get_child_nodes(q, current_index);
 
-            for (size_type i = child_range.first; i <= child_range.second; ++i) {
-                typename q_type::internal_type const & internal_value_at_index = ordered_iterator_dispatcher::get_internal_value(q, i);
-                typename q_type::value_type const & value_at_index = q_->q_.get_value(internal_value_at_index);
+            for (size_type i = child_range.first; i <= child_range.second; ++i)
+            {
+                typename q_type::internal_type const &internal_value_at_index = ordered_iterator_dispatcher::get_internal_value(q, i);
+                typename q_type::value_type const &value_at_index = q_->q_.get_value(internal_value_at_index);
 
                 unvisited_nodes.push(value_at_index);
             }
         }
 
         std::priority_queue<iterator,
-                            std::vector<iterator, typename allocator_type::template rebind<iterator>::other >,
-                            indirect_cmp
-                           > unvisited_nodes;
-        const priority_queue_mutable_wrapper * q_;
+                            std::vector<iterator, typename allocator_type::template rebind<iterator>::other>,
+                            indirect_cmp>
+            unvisited_nodes;
+        const priority_queue_mutable_wrapper *q_;
     };
 
     bool empty(void) const
@@ -319,7 +328,7 @@ public:
         return q_.get_allocator();
     }
 
-    void swap(priority_queue_mutable_wrapper & rhs)
+    void swap(priority_queue_mutable_wrapper &rhs)
     {
         objects.swap(rhs.objects);
         q_.swap(rhs.q_);
@@ -331,7 +340,7 @@ public:
         return q_.top()->first;
     }
 
-    handle_type push(value_type const & v)
+    handle_type push(value_type const &v)
     {
         objects.push_front(std::make_pair(v, 0));
         list_iterator ret = objects.begin();
@@ -341,7 +350,7 @@ public:
 
 #if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
     template <class... Args>
-    handle_type emplace(Args&&... args)
+    handle_type emplace(Args &&...args)
     {
         objects.push_front(std::make_pair(std::forward<Args>(args)..., 0));
         list_iterator ret = objects.begin();
@@ -364,12 +373,14 @@ public:
      * \b Complexity: N log(N)
      *
      * */
-    void merge(priority_queue_mutable_wrapper const & rhs)
+    void merge(priority_queue_mutable_wrapper const &rhs)
     {
         q_.reserve(q_.size() + rhs.q_.size());
 
         for (typename object_list::const_iterator it = rhs.objects.begin(); it != rhs.objects.end(); ++it)
+        {
             push(it->first);
+        }
     }
 
     /**
@@ -381,12 +392,16 @@ public:
     void update(handle_type handle, const_reference v)
     {
         list_iterator it = handle.iterator;
-        value_type const & current_value = it->first;
-        value_compare const & cmp = q_.value_comp();
+        value_type const &current_value = it->first;
+        value_compare const &cmp = q_.value_comp();
         if (cmp(v, current_value))
+        {
             decrease(handle, v);
+        }
         else
+        {
             increase(handle, v);
+        }
     }
 
     /**
@@ -403,7 +418,7 @@ public:
         q_.update(index);
     }
 
-     /**
+    /**
      * \b Effects: Assigns \c v to the element handled by \c handle & updates the priority queue.
      *
      * \b Complexity: Logarithmic.
@@ -431,7 +446,7 @@ public:
         q_.increase(index);
     }
 
-     /**
+    /**
      * \b Effects: Assigns \c v to the element handled by \c handle & updates the priority queue.
      *
      * \b Complexity: Logarithmic.
@@ -495,9 +510,13 @@ public:
     ordered_iterator ordered_begin(void) const
     {
         if (!empty())
+        {
             return ordered_iterator(q_.top(), this, indirect_cmp(q_.value_comp()));
+        }
         else
+        {
             return ordered_end();
+        }
     }
 
     ordered_iterator ordered_end(void) const
@@ -505,22 +524,21 @@ public:
         return ordered_iterator(objects.end(), this, indirect_cmp(q_.value_comp()));
     }
 
-    static handle_type s_handle_from_iterator(iterator const & it)
+    static handle_type s_handle_from_iterator(iterator const &it)
     {
         return handle_type(it.get_list_iterator());
     }
 
-    value_compare const & value_comp(void) const
+    value_compare const &value_comp(void) const
     {
         return q_.value_comp();
     }
 
-    void reserve (size_type element_count)
+    void reserve(size_type element_count)
     {
         q_.reserve(element_count);
     }
 };
-
 
 } /* namespace detail */
 } /* namespace heap */

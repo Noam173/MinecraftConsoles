@@ -20,32 +20,30 @@
 #include <boost/mpl/if.hpp>
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace boost { namespace geometry { namespace detail { namespace iterators
+namespace boost
+{
+namespace geometry
+{
+namespace detail
+{
+namespace iterators
 {
 
-template
-<
+template <
     typename DerivedClass,
     typename Iterator,
-    typename TraversalFlag = boost::bidirectional_traversal_tag
->
+    typename TraversalFlag = boost::bidirectional_traversal_tag>
 struct iterator_base
-    : public boost::iterator_adaptor
-    <
-        DerivedClass,
-        Iterator,
-        boost::use_default,
-        typename boost::mpl::if_
-        <
-            boost::is_convertible
-            <
-                typename boost::iterator_traversal<Iterator>::type,
-                boost::random_access_traversal_tag
-            >,
-            TraversalFlag,
-            boost::use_default
-        >::type
-    >
+    : public boost::iterator_adaptor<
+          DerivedClass,
+          Iterator,
+          boost::use_default,
+          typename boost::mpl::if_<
+              boost::is_convertible<
+                  typename boost::iterator_traversal<Iterator>::type,
+                  boost::random_access_traversal_tag>,
+              TraversalFlag,
+              boost::use_default>::type>
 {
     // Define operator cast to Iterator to be able to write things like Iterator it = myit++
     inline operator Iterator() const
@@ -63,8 +61,10 @@ struct iterator_base
     }*/
 };
 
-}}}} // namespace boost::geometry::detail::iterators
+} // namespace iterators
+} // namespace detail
+} // namespace geometry
+} // namespace boost
 #endif
-
 
 #endif // BOOST_GEOMETRY_ITERATORS_BASE_HPP

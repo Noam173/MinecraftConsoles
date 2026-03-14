@@ -26,24 +26,24 @@
 #ifndef BOOST_RANGE_ALGORITHM_HPP_INCLUDED_01012009
 #define BOOST_RANGE_ALGORITHM_HPP_INCLUDED_01012009
 
-#include <boost/range/concepts.hpp>
-#include <boost/range/iterator_range.hpp>
-#include <boost/range/difference_type.hpp>
-#include <boost/range/detail/range_return.hpp>
+#include <algorithm>
 #include <boost/iterator/iterator_traits.hpp>
 #include <boost/next_prior.hpp>
-#include <algorithm>
+#include <boost/range/concepts.hpp>
+#include <boost/range/detail/range_return.hpp>
+#include <boost/range/difference_type.hpp>
+#include <boost/range/iterator_range.hpp>
 
 // Non-mutating algorithms
 #include <boost/range/algorithm/adjacent_find.hpp>
 #include <boost/range/algorithm/count.hpp>
 #include <boost/range/algorithm/count_if.hpp>
 #include <boost/range/algorithm/equal.hpp>
-#include <boost/range/algorithm/for_each.hpp>
 #include <boost/range/algorithm/find.hpp>
 #include <boost/range/algorithm/find_end.hpp>
 #include <boost/range/algorithm/find_first_of.hpp>
 #include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm/for_each.hpp>
 #include <boost/range/algorithm/lexicographical_compare.hpp>
 #include <boost/range/algorithm/mismatch.hpp>
 #include <boost/range/algorithm/search.hpp>
@@ -101,4 +101,3 @@
 #include <boost/range/algorithm/permutation.hpp>
 
 #endif // include guard
-

@@ -10,13 +10,14 @@
 #define BOOST_CIRCULAR_BUFFER_SPACE_OPTIMIZED_HPP
 
 #if defined(_MSC_VER) && _MSC_VER >= 1200
-    #pragma once
+#pragma once
 #endif
 
-#include <boost/type_traits/is_same.hpp>
 #include <boost/detail/workaround.hpp>
+#include <boost/type_traits/is_same.hpp>
 
-namespace boost {
+namespace boost
+{
 
 /*!
     \class circular_buffer_space_optimized
@@ -29,12 +30,13 @@ template <class T, class Alloc>
 class circular_buffer_space_optimized :
 /*! \cond */
 #if BOOST_CB_ENABLE_DEBUG
-public
+    public
 #endif
-/*! \endcond */
-circular_buffer<T, Alloc> {
-public:
-// Typedefs
+    /*! \endcond */
+    circular_buffer<T, Alloc>
+{
+  public:
+    // Typedefs
 
     typedef typename circular_buffer<T, Alloc>::value_type value_type;
     typedef typename circular_buffer<T, Alloc>::pointer pointer;
@@ -77,7 +79,7 @@ public:
     */
     typedef cb_details::capacity_control<size_type> capacity_type;
 
-// Inherited
+    // Inherited
 
     using circular_buffer<T, Alloc>::get_allocator;
     using circular_buffer<T, Alloc>::begin;
@@ -97,20 +99,26 @@ public:
     using circular_buffer<T, Alloc>::empty;
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-    reference operator [] (size_type n) { return circular_buffer<T, Alloc>::operator[](n); }
-    return_value_type operator [] (size_type n) const { return circular_buffer<T, Alloc>::operator[](n); }
+    reference operator[](size_type n)
+    {
+        return circular_buffer<T, Alloc>::operator[](n);
+    }
+    return_value_type operator[](size_type n) const
+    {
+        return circular_buffer<T, Alloc>::operator[](n);
+    }
 #else
     using circular_buffer<T, Alloc>::operator[];
 #endif
 
-private:
-// Member variables
+  private:
+    // Member variables
 
     //! The capacity controller of the space optimized circular buffer.
     capacity_type m_capacity_ctrl;
 
-public:
-// Overridden
+  public:
+    // Overridden
 
     //! Is the <code>circular_buffer_space_optimized</code> full?
     /*!
@@ -125,7 +133,10 @@ public:
              Constant (in the size of the <code>circular_buffer_space_optimized</code>).
         \sa <code>empty()</code>
     */
-    bool full() const { return m_capacity_ctrl == size(); }
+    bool full() const
+    {
+        return m_capacity_ctrl == size();
+    }
 
     /*! \brief Get the maximum number of elements which can be inserted into the
                <code>circular_buffer_space_optimized</code> without overwriting any of already stored elements.
@@ -139,7 +150,10 @@ public:
              Constant (in the size of the <code>circular_buffer_space_optimized</code>).
         \sa <code>capacity()</code>, <code>size()</code>, <code>max_size()</code>
     */
-    size_type reserve() const { return m_capacity_ctrl - size(); }
+    size_type reserve() const
+    {
+        return m_capacity_ctrl - size();
+    }
 
     //! Get the capacity of the <code>circular_buffer_space_optimized</code>.
     /*!
@@ -155,7 +169,10 @@ public:
         \sa <code>reserve()</code>, <code>size()</code>, <code>max_size()</code>,
             <code>set_capacity(const capacity_type&)</code>
     */
-    const capacity_type& capacity() const { return m_capacity_ctrl; }
+    const capacity_type &capacity() const
+    {
+        return m_capacity_ctrl;
+    }
 
 #if defined(BOOST_CB_TEST)
 
@@ -164,7 +181,10 @@ public:
        \note This method is not intended to be used directly by the user.
              It is defined only for testing purposes.
     */
-    size_type internal_capacity() const { return circular_buffer<T, Alloc>::capacity(); }
+    size_type internal_capacity() const
+    {
+        return circular_buffer<T, Alloc>::capacity();
+    }
 
 #endif // #if defined(BOOST_CB_TEST)
 
@@ -197,9 +217,11 @@ public:
         \sa <code>rset_capacity(const capacity_type&)</code>,
             <code>\link resize() resize(size_type, const_reference)\endlink</code>
     */
-    void set_capacity(const capacity_type& capacity_ctrl) {
+    void set_capacity(const capacity_type &capacity_ctrl)
+    {
         m_capacity_ctrl = capacity_ctrl;
-        if (capacity_ctrl < size()) {
+        if (capacity_ctrl < size())
+        {
             iterator e = end();
             circular_buffer<T, Alloc>::erase(e - (size() - capacity_ctrl), e);
         }
@@ -233,12 +255,18 @@ public:
         \sa <code>\link rresize() rresize(size_type, const_reference)\endlink</code>,
             <code>set_capacity(const capacity_type&)</code>
     */
-    void resize(size_type new_size, param_value_type item = value_type()) {
-        if (new_size > size()) {
+    void resize(size_type new_size, param_value_type item = value_type())
+    {
+        if (new_size > size())
+        {
             if (new_size > m_capacity_ctrl)
+            {
                 m_capacity_ctrl = capacity_type(new_size, m_capacity_ctrl.min_capacity());
+            }
             insert(end(), new_size - size(), item);
-        } else {
+        }
+        else
+        {
             iterator e = end();
             erase(e - (size() - new_size), e);
         }
@@ -268,9 +296,11 @@ public:
         \sa <code>set_capacity(const capacity_type&)</code>,
             <code>\link rresize() rresize(size_type, const_reference)\endlink</code>
     */
-    void rset_capacity(const capacity_type& capacity_ctrl) {
+    void rset_capacity(const capacity_type &capacity_ctrl)
+    {
         m_capacity_ctrl = capacity_ctrl;
-        if (capacity_ctrl < size()) {
+        if (capacity_ctrl < size())
+        {
             iterator b = begin();
             circular_buffer<T, Alloc>::rerase(b, b + (size() - capacity_ctrl));
         }
@@ -304,12 +334,18 @@ public:
         \sa <code>\link resize() resize(size_type, const_reference)\endlink</code>,
             <code>rset_capacity(const capacity_type&)</code>
     */
-    void rresize(size_type new_size, param_value_type item = value_type()) {
-        if (new_size > size()) {
+    void rresize(size_type new_size, param_value_type item = value_type())
+    {
+        if (new_size > size())
+        {
             if (new_size > m_capacity_ctrl)
+            {
                 m_capacity_ctrl = capacity_type(new_size, m_capacity_ctrl.min_capacity());
+            }
             rinsert(begin(), new_size - size(), item);
-        } else {
+        }
+        else
+        {
             rerase(begin(), end() - new_size);
         }
     }
@@ -324,9 +360,10 @@ public:
         \warning Since Boost version 1.36 the behaviour of this constructor has changed. Now it creates a space
                  optimized circular buffer with zero capacity.
     */
-    explicit circular_buffer_space_optimized(const allocator_type& alloc = allocator_type())
-    : circular_buffer<T, Alloc>(0, alloc)
-    , m_capacity_ctrl(0) {}
+    explicit circular_buffer_space_optimized(const allocator_type &alloc = allocator_type())
+        : circular_buffer<T, Alloc>(0, alloc), m_capacity_ctrl(0)
+    {
+    }
 
     //! Create an empty space optimized circular buffer with the specified capacity.
     /*!
@@ -342,9 +379,10 @@ public:
              Constant.
     */
     explicit circular_buffer_space_optimized(capacity_type capacity_ctrl,
-        const allocator_type& alloc = allocator_type())
-    : circular_buffer<T, Alloc>(capacity_ctrl.min_capacity(), alloc)
-    , m_capacity_ctrl(capacity_ctrl) {}
+                                             const allocator_type &alloc = allocator_type())
+        : circular_buffer<T, Alloc>(capacity_ctrl.min_capacity(), alloc), m_capacity_ctrl(capacity_ctrl)
+    {
+    }
 
     /*! \brief Create a full space optimized circular buffer with the specified capacity filled with
                <code>capacity_ctrl.%capacity()</code> copies of <code>item</code>.
@@ -363,9 +401,10 @@ public:
              Linear (in the <code>capacity_ctrl.%capacity()</code>).
     */
     circular_buffer_space_optimized(capacity_type capacity_ctrl, param_value_type item,
-        const allocator_type& alloc = allocator_type())
-    : circular_buffer<T, Alloc>(capacity_ctrl.capacity(), item, alloc)
-    , m_capacity_ctrl(capacity_ctrl) {}
+                                    const allocator_type &alloc = allocator_type())
+        : circular_buffer<T, Alloc>(capacity_ctrl.capacity(), item, alloc), m_capacity_ctrl(capacity_ctrl)
+    {
+    }
 
     /*! \brief Create a space optimized circular buffer with the specified capacity filled with <code>n</code> copies
                of <code>item</code>.
@@ -387,30 +426,34 @@ public:
              Linear (in the <code>n</code>).
     */
     circular_buffer_space_optimized(capacity_type capacity_ctrl, size_type n, param_value_type item,
-        const allocator_type& alloc = allocator_type())
-    : circular_buffer<T, Alloc>(init_capacity(capacity_ctrl, n), n, item, alloc)
-    , m_capacity_ctrl(capacity_ctrl) {}
+                                    const allocator_type &alloc = allocator_type())
+        : circular_buffer<T, Alloc>(init_capacity(capacity_ctrl, n), n, item, alloc), m_capacity_ctrl(capacity_ctrl)
+    {
+    }
 
 #if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
 
     /*! \cond */
-    circular_buffer_space_optimized(const circular_buffer_space_optimized<T, Alloc>& cb)
-    : circular_buffer<T, Alloc>(cb.begin(), cb.end())
-    , m_capacity_ctrl(cb.m_capacity_ctrl) {}
+    circular_buffer_space_optimized(const circular_buffer_space_optimized<T, Alloc> &cb)
+        : circular_buffer<T, Alloc>(cb.begin(), cb.end()), m_capacity_ctrl(cb.m_capacity_ctrl)
+    {
+    }
 
     template <class InputIterator>
     circular_buffer_space_optimized(InputIterator first, InputIterator last)
-    : circular_buffer<T, Alloc>(first, last)
-    , m_capacity_ctrl(circular_buffer<T, Alloc>::capacity()) {}
+        : circular_buffer<T, Alloc>(first, last), m_capacity_ctrl(circular_buffer<T, Alloc>::capacity())
+    {
+    }
 
     template <class InputIterator>
     circular_buffer_space_optimized(capacity_type capacity_ctrl, InputIterator first, InputIterator last)
-    : circular_buffer<T, Alloc>(
-        init_capacity(capacity_ctrl, first, last, is_integral<InputIterator>()),
-        first, last)
-    , m_capacity_ctrl(capacity_ctrl) {
+        : circular_buffer<T, Alloc>(
+              init_capacity(capacity_ctrl, first, last, is_integral<InputIterator>()),
+              first, last),
+          m_capacity_ctrl(capacity_ctrl)
+    {
         reduce_capacity(
-            is_same< BOOST_DEDUCED_TYPENAME BOOST_ITERATOR_CATEGORY<InputIterator>::type, std::input_iterator_tag >());
+            is_same<BOOST_DEDUCED_TYPENAME BOOST_ITERATOR_CATEGORY<InputIterator>::type, std::input_iterator_tag>());
     }
     /*! \endcond */
 
@@ -428,9 +471,10 @@ public:
         \par Complexity
              Linear (in the size of <code>cb</code>).
     */
-    circular_buffer_space_optimized(const circular_buffer_space_optimized<T, Alloc>& cb)
-    : circular_buffer<T, Alloc>(cb.begin(), cb.end(), cb.get_allocator())
-    , m_capacity_ctrl(cb.m_capacity_ctrl) {}
+    circular_buffer_space_optimized(const circular_buffer_space_optimized<T, Alloc> &cb)
+        : circular_buffer<T, Alloc>(cb.begin(), cb.end(), cb.get_allocator()), m_capacity_ctrl(cb.m_capacity_ctrl)
+    {
+    }
 
     //! Create a full space optimized circular buffer filled with a copy of the range.
     /*!
@@ -452,9 +496,10 @@ public:
     */
     template <class InputIterator>
     circular_buffer_space_optimized(InputIterator first, InputIterator last,
-        const allocator_type& alloc = allocator_type())
-    : circular_buffer<T, Alloc>(first, last, alloc)
-    , m_capacity_ctrl(circular_buffer<T, Alloc>::capacity()) {}
+                                    const allocator_type &alloc = allocator_type())
+        : circular_buffer<T, Alloc>(first, last, alloc), m_capacity_ctrl(circular_buffer<T, Alloc>::capacity())
+    {
+    }
 
     /*! \brief Create a space optimized circular buffer with the specified capacity (and the minimal guaranteed amount
                of allocated memory) filled with a copy of the range.
@@ -485,20 +530,21 @@ public:
     */
     template <class InputIterator>
     circular_buffer_space_optimized(capacity_type capacity_ctrl, InputIterator first, InputIterator last,
-        const allocator_type& alloc = allocator_type())
-    : circular_buffer<T, Alloc>(
-        init_capacity(capacity_ctrl, first, last, is_integral<InputIterator>()),
-        first, last, alloc)
-    , m_capacity_ctrl(capacity_ctrl) {
+                                    const allocator_type &alloc = allocator_type())
+        : circular_buffer<T, Alloc>(
+              init_capacity(capacity_ctrl, first, last, is_integral<InputIterator>()),
+              first, last, alloc),
+          m_capacity_ctrl(capacity_ctrl)
+    {
         reduce_capacity(
-            is_same< BOOST_DEDUCED_TYPENAME BOOST_ITERATOR_CATEGORY<InputIterator>::type, std::input_iterator_tag >());
+            is_same<BOOST_DEDUCED_TYPENAME BOOST_ITERATOR_CATEGORY<InputIterator>::type, std::input_iterator_tag>());
     }
 
 #endif // #if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
 
 #if defined(BOOST_CB_NEVER_DEFINED)
-// This section will never be compiled - the default destructor will be generated instead.
-// Declared only for documentation purpose.
+    // This section will never be compiled - the default destructor will be generated instead.
+    // Declared only for documentation purpose.
 
     //! The destructor.
     /*!
@@ -544,9 +590,12 @@ public:
             <code>assign(InputIterator, InputIterator)</code>,
             <code>assign(capacity_type, InputIterator, InputIterator)</code>
     */
-    circular_buffer_space_optimized<T, Alloc>& operator = (const circular_buffer_space_optimized<T, Alloc>& cb) {
+    circular_buffer_space_optimized<T, Alloc> &operator=(const circular_buffer_space_optimized<T, Alloc> &cb)
+    {
         if (this == &cb)
+        {
             return *this;
+        }
         circular_buffer<T, Alloc>::assign(cb.begin(), cb.end());
         m_capacity_ctrl = cb.m_capacity_ctrl;
         return *this;
@@ -577,7 +626,8 @@ public:
             <code>assign(InputIterator, InputIterator)</code>,
             <code>assign(capacity_type, InputIterator, InputIterator)</code>
     */
-    void assign(size_type n, param_value_type item) {
+    void assign(size_type n, param_value_type item)
+    {
         circular_buffer<T, Alloc>::assign(n, item);
         m_capacity_ctrl = capacity_type(n);
     }
@@ -609,10 +659,11 @@ public:
             <code>assign(InputIterator, InputIterator)</code>,
             <code>assign(capacity_type, InputIterator, InputIterator)</code>
     */
-    void assign(capacity_type capacity_ctrl, size_type n, param_value_type item) {
-       BOOST_CB_ASSERT(capacity_ctrl.capacity() >= n); // check for new capacity lower than n
-       circular_buffer<T, Alloc>::assign((std::max)(capacity_ctrl.min_capacity(), n), n, item);
-       m_capacity_ctrl = capacity_ctrl;
+    void assign(capacity_type capacity_ctrl, size_type n, param_value_type item)
+    {
+        BOOST_CB_ASSERT(capacity_ctrl.capacity() >= n); // check for new capacity lower than n
+        circular_buffer<T, Alloc>::assign((std::max)(capacity_ctrl.min_capacity(), n), n, item);
+        m_capacity_ctrl = capacity_ctrl;
     }
 
     //! Assign a copy of the range into the space optimized circular buffer.
@@ -645,7 +696,8 @@ public:
             <code>assign(capacity_type, InputIterator, InputIterator)</code>
     */
     template <class InputIterator>
-    void assign(InputIterator first, InputIterator last) {
+    void assign(InputIterator first, InputIterator last)
+    {
         circular_buffer<T, Alloc>::assign(first, last);
         m_capacity_ctrl = capacity_type(circular_buffer<T, Alloc>::capacity());
     }
@@ -687,9 +739,10 @@ public:
             <code>assign(InputIterator, InputIterator)</code>
     */
     template <class InputIterator>
-    void assign(capacity_type capacity_ctrl, InputIterator first, InputIterator last) {
-       m_capacity_ctrl = capacity_ctrl;
-       circular_buffer<T, Alloc>::assign(capacity_ctrl, first, last);
+    void assign(capacity_type capacity_ctrl, InputIterator first, InputIterator last)
+    {
+        m_capacity_ctrl = capacity_ctrl;
+        circular_buffer<T, Alloc>::assign(capacity_ctrl, first, last);
     }
 
     //! Swap the contents of two space optimized circular buffers.
@@ -711,7 +764,8 @@ public:
         \sa <code>\link swap(circular_buffer<T, Alloc>&, circular_buffer<T, Alloc>&)
             swap(circular_buffer_space_optimized<T, Alloc>&, circular_buffer_space_optimized<T, Alloc>&)\endlink</code>
     */
-    void swap(circular_buffer_space_optimized<T, Alloc>& cb) {
+    void swap(circular_buffer_space_optimized<T, Alloc> &cb)
+    {
         std::swap(m_capacity_ctrl, cb.m_capacity_ctrl);
         circular_buffer<T, Alloc>::swap(cb);
     }
@@ -736,7 +790,8 @@ public:
         \sa <code>\link push_front() push_front(const_reference)\endlink</code>, <code>pop_back()</code>,
             <code>pop_front()</code>
     */
-    void push_back(param_value_type item = value_type()) {
+    void push_back(param_value_type item = value_type())
+    {
         check_low_capacity();
         circular_buffer<T, Alloc>::push_back(item);
     }
@@ -761,7 +816,8 @@ public:
         \sa <code>\link push_back() push_back(const_reference)\endlink</code>, <code>pop_back()</code>,
             <code>pop_front()</code>
     */
-    void push_front(param_value_type item = value_type()) {
+    void push_front(param_value_type item = value_type())
+    {
         check_low_capacity();
         circular_buffer<T, Alloc>::push_front(item);
     }
@@ -783,7 +839,8 @@ public:
         \sa <code>pop_front()</code>, <code>\link push_back() push_back(const_reference)\endlink</code>,
             <code>\link push_front() push_front(const_reference)\endlink</code>
     */
-    void pop_back() {
+    void pop_back()
+    {
         circular_buffer<T, Alloc>::pop_back();
         check_high_capacity();
     }
@@ -805,7 +862,8 @@ public:
         \sa <code>pop_back()</code>, <code>\link push_back() push_back(const_reference)\endlink</code>,
             <code>\link push_front() push_front(const_reference)\endlink</code>
     */
-    void pop_front() {
+    void pop_front()
+    {
         circular_buffer<T, Alloc>::pop_front();
         check_high_capacity();
     }
@@ -843,7 +901,8 @@ public:
             rinsert(iterator, size_type, value_type)\endlink</code>,
             <code>rinsert(iterator, InputIterator, InputIterator)</code>
     */
-    iterator insert(iterator pos, param_value_type item = value_type()) {
+    iterator insert(iterator pos, param_value_type item = value_type())
+    {
         size_type index = pos - begin();
         check_low_capacity();
         return circular_buffer<T, Alloc>::insert(begin() + index, item);
@@ -889,7 +948,8 @@ public:
             rinsert(iterator, size_type, value_type)\endlink</code>,
             <code>rinsert(iterator, InputIterator, InputIterator)</code>
     */
-    void insert(iterator pos, size_type n, param_value_type item) {
+    void insert(iterator pos, size_type n, param_value_type item)
+    {
         size_type index = pos - begin();
         check_low_capacity(n);
         circular_buffer<T, Alloc>::insert(begin() + index, n, item);
@@ -942,7 +1002,8 @@ public:
             <code>rinsert(iterator, InputIterator, InputIterator)</code>
     */
     template <class InputIterator>
-    void insert(iterator pos, InputIterator first, InputIterator last) {
+    void insert(iterator pos, InputIterator first, InputIterator last)
+    {
         insert(pos, first, last, is_integral<InputIterator>());
     }
 
@@ -979,7 +1040,8 @@ public:
             insert(iterator, size_type, value_type)\endlink</code>,
             <code>insert(iterator, InputIterator, InputIterator)</code>
     */
-    iterator rinsert(iterator pos, param_value_type item = value_type()) {
+    iterator rinsert(iterator pos, param_value_type item = value_type())
+    {
         size_type index = pos - begin();
         check_low_capacity();
         return circular_buffer<T, Alloc>::rinsert(begin() + index, item);
@@ -1025,13 +1087,14 @@ public:
             insert(iterator, size_type, value_type)\endlink</code>,
             <code>insert(iterator, InputIterator, InputIterator)</code>
     */
-    void rinsert(iterator pos, size_type n, param_value_type item) {
+    void rinsert(iterator pos, size_type n, param_value_type item)
+    {
         size_type index = pos - begin();
         check_low_capacity(n);
         circular_buffer<T, Alloc>::rinsert(begin() + index, n, item);
     }
 
-        //! Insert the range <code>[first, last)</code> before the specified position.
+    //! Insert the range <code>[first, last)</code> before the specified position.
     /*!
         \pre <code>pos</code> is a valid iterator pointing to the <code>circular_buffer_space_optimized</code> or its
              end.<br>
@@ -1079,7 +1142,8 @@ public:
             <code>insert(iterator, InputIterator, InputIterator)</code>
     */
     template <class InputIterator>
-    void rinsert(iterator pos, InputIterator first, InputIterator last) {
+    void rinsert(iterator pos, InputIterator first, InputIterator last)
+    {
         rinsert(pos, first, last, is_integral<InputIterator>());
     }
 
@@ -1105,7 +1169,8 @@ public:
         \sa <code>erase(iterator, iterator)</code>, <code>rerase(iterator)</code>,
             <code>rerase(iterator, iterator)</code>, <code>clear()</code>
     */
-    iterator erase(iterator pos) {
+    iterator erase(iterator pos)
+    {
         iterator it = circular_buffer<T, Alloc>::erase(pos);
         size_type index = it - begin();
         check_high_capacity();
@@ -1135,7 +1200,8 @@ public:
         \sa <code>erase(iterator)</code>, <code>rerase(iterator)</code>, <code>rerase(iterator, iterator)</code>,
             <code>clear()</code>
     */
-    iterator erase(iterator first, iterator last) {
+    iterator erase(iterator first, iterator last)
+    {
         iterator it = circular_buffer<T, Alloc>::erase(first, last);
         size_type index = it - begin();
         check_high_capacity();
@@ -1166,7 +1232,8 @@ public:
         \sa <code>erase(iterator)</code>, <code>erase(iterator, iterator)</code>,
             <code>rerase(iterator, iterator)</code>, <code>clear()</code>
     */
-    iterator rerase(iterator pos) {
+    iterator rerase(iterator pos)
+    {
         iterator it = circular_buffer<T, Alloc>::rerase(pos);
         size_type index = it - begin();
         check_high_capacity();
@@ -1199,7 +1266,8 @@ public:
         \sa <code>erase(iterator)</code>, <code>erase(iterator, iterator)</code>, <code>rerase(iterator)</code>,
             <code>clear()</code>
     */
-    iterator rerase(iterator first, iterator last) {
+    iterator rerase(iterator first, iterator last)
+    {
         iterator it = circular_buffer<T, Alloc>::rerase(first, last);
         size_type index = it - begin();
         check_high_capacity();
@@ -1223,25 +1291,38 @@ public:
             <code>erase(iterator, iterator)</code>, <code>rerase(iterator)</code>,
             <code>rerase(iterator, iterator)</code>
     */
-    void clear() { erase(begin(), end()); }
+    void clear()
+    {
+        erase(begin(), end());
+    }
 
-private:
-// Helper methods
+  private:
+    // Helper methods
 
     //! Adjust the amount of allocated memory.
-    void adjust_min_capacity() {
+    void adjust_min_capacity()
+    {
         if (m_capacity_ctrl.min_capacity() > circular_buffer<T, Alloc>::capacity())
+        {
             circular_buffer<T, Alloc>::set_capacity(m_capacity_ctrl.min_capacity());
+        }
         else
+        {
             check_high_capacity();
+        }
     }
 
     //! Ensure the reserve for possible growth up.
-    size_type ensure_reserve(size_type new_capacity, size_type buffer_size) const {
+    size_type ensure_reserve(size_type new_capacity, size_type buffer_size) const
+    {
         if (buffer_size + new_capacity / 5 >= new_capacity)
+        {
             new_capacity *= 2; // ensure at least 20% reserve
+        }
         if (new_capacity > m_capacity_ctrl)
+        {
             return m_capacity_ctrl;
+        }
         return new_capacity;
     }
 
@@ -1249,13 +1330,19 @@ private:
     /*
         \post If the capacity is low it will be increased.
     */
-    void check_low_capacity(size_type n = 1) {
+    void check_low_capacity(size_type n = 1)
+    {
         size_type new_size = size() + n;
         size_type new_capacity = circular_buffer<T, Alloc>::capacity();
-        if (new_size > new_capacity) {
+        if (new_size > new_capacity)
+        {
             if (new_capacity == 0)
+            {
                 new_capacity = 1;
-            for (; new_size > new_capacity; new_capacity *= 2) {}
+            }
+            for (; new_size > new_capacity; new_capacity *= 2)
+            {
+            }
             circular_buffer<T, Alloc>::set_capacity(
                 ensure_reserve(new_capacity, new_size));
         }
@@ -1268,11 +1355,14 @@ private:
     /*
         \post If the capacity is high it will be decreased.
     */
-    void check_high_capacity() {
+    void check_high_capacity()
+    {
         size_type new_capacity = circular_buffer<T, Alloc>::capacity();
-        while (new_capacity / 3 >= size()) { // (new_capacity / 3) -> avoid oscillations
+        while (new_capacity / 3 >= size())
+        { // (new_capacity / 3) -> avoid oscillations
             new_capacity /= 2;
-            if (new_capacity <= m_capacity_ctrl.min_capacity()) {
+            if (new_capacity <= m_capacity_ctrl.min_capacity())
+            {
                 new_capacity = m_capacity_ctrl.min_capacity();
                 break;
             }
@@ -1285,30 +1375,36 @@ private:
     }
 
     //! Specialized method for reducing the capacity.
-    void reduce_capacity(const true_type&) {
+    void reduce_capacity(const true_type &)
+    {
         circular_buffer<T, Alloc>::set_capacity((std::max)(m_capacity_ctrl.min_capacity(), size()));
     }
 
     //! Specialized method for reducing the capacity.
-    void reduce_capacity(const false_type&) {}
+    void reduce_capacity(const false_type &)
+    {
+    }
 
     //! Determine the initial capacity.
-    static size_type init_capacity(const capacity_type& capacity_ctrl, size_type n) {
+    static size_type init_capacity(const capacity_type &capacity_ctrl, size_type n)
+    {
         BOOST_CB_ASSERT(capacity_ctrl.capacity() >= n); // check for capacity lower than n
         return (std::max)(capacity_ctrl.min_capacity(), n);
     }
 
     //! Specialized method for determining the initial capacity.
     template <class IntegralType>
-    static size_type init_capacity(const capacity_type& capacity_ctrl, IntegralType n, IntegralType item,
-        const true_type&) {
+    static size_type init_capacity(const capacity_type &capacity_ctrl, IntegralType n, IntegralType item,
+                                   const true_type &)
+    {
         return init_capacity(capacity_ctrl, static_cast<size_type>(n));
     }
 
     //! Specialized method for determining the initial capacity.
     template <class Iterator>
-    static size_type init_capacity(const capacity_type& capacity_ctrl, Iterator first, Iterator last,
-        const false_type&) {
+    static size_type init_capacity(const capacity_type &capacity_ctrl, Iterator first, Iterator last,
+                                   const false_type &)
+    {
         BOOST_CB_IS_CONVERTIBLE(Iterator, value_type); // check for invalid iterator type
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x581))
         return init_capacity(capacity_ctrl, first, last, BOOST_ITERATOR_CATEGORY<Iterator>::type());
@@ -1320,29 +1416,33 @@ private:
 
     //! Specialized method for determining the initial capacity.
     template <class InputIterator>
-    static size_type init_capacity(const capacity_type& capacity_ctrl, InputIterator first, InputIterator last,
-        const std::input_iterator_tag&) {
+    static size_type init_capacity(const capacity_type &capacity_ctrl, InputIterator first, InputIterator last,
+                                   const std::input_iterator_tag &)
+    {
         return capacity_ctrl.capacity();
     }
 
     //! Specialized method for determining the initial capacity.
     template <class ForwardIterator>
-    static size_type init_capacity(const capacity_type& capacity_ctrl, ForwardIterator first, ForwardIterator last,
-        const std::forward_iterator_tag&) {
+    static size_type init_capacity(const capacity_type &capacity_ctrl, ForwardIterator first, ForwardIterator last,
+                                   const std::forward_iterator_tag &)
+    {
         BOOST_CB_ASSERT(std::distance(first, last) >= 0); // check for wrong range
         return (std::max)(capacity_ctrl.min_capacity(),
-            (std::min)(capacity_ctrl.capacity(), static_cast<size_type>(std::distance(first, last))));
+                          (std::min)(capacity_ctrl.capacity(), static_cast<size_type>(std::distance(first, last))));
     }
 
     //! Specialized insert method.
     template <class IntegralType>
-    void insert(const iterator& pos, IntegralType n, IntegralType item, const true_type&) {
+    void insert(const iterator &pos, IntegralType n, IntegralType item, const true_type &)
+    {
         insert(pos, static_cast<size_type>(n), static_cast<value_type>(item));
     }
 
     //! Specialized insert method.
     template <class Iterator>
-    void insert(const iterator& pos, Iterator first, Iterator last, const false_type&) {
+    void insert(const iterator &pos, Iterator first, Iterator last, const false_type &)
+    {
         size_type index = pos - begin();
         check_low_capacity(std::distance(first, last));
         circular_buffer<T, Alloc>::insert(begin() + index, first, last);
@@ -1350,13 +1450,15 @@ private:
 
     //! Specialized rinsert method.
     template <class IntegralType>
-    void rinsert(const iterator& pos, IntegralType n, IntegralType item, const true_type&) {
+    void rinsert(const iterator &pos, IntegralType n, IntegralType item, const true_type &)
+    {
         rinsert(pos, static_cast<size_type>(n), static_cast<value_type>(item));
     }
 
     //! Specialized rinsert method.
     template <class Iterator>
-    void rinsert(const iterator& pos, Iterator first, Iterator last, const false_type&) {
+    void rinsert(const iterator &pos, Iterator first, Iterator last, const false_type &)
+    {
         size_type index = pos - begin();
         check_low_capacity(std::distance(first, last));
         circular_buffer<T, Alloc>::rinsert(begin() + index, first, last);
@@ -1367,16 +1469,18 @@ private:
 
 //! Test two space optimized circular buffers for equality.
 template <class T, class Alloc>
-inline bool operator == (const circular_buffer_space_optimized<T, Alloc>& lhs,
-    const circular_buffer_space_optimized<T, Alloc>& rhs) {
+inline bool operator==(const circular_buffer_space_optimized<T, Alloc> &lhs,
+                       const circular_buffer_space_optimized<T, Alloc> &rhs)
+{
     return lhs.size() == rhs.size() &&
-        std::equal(lhs.begin(), lhs.end(), rhs.begin());
+           std::equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 
 //! Lexicographical comparison.
 template <class T, class Alloc>
-inline bool operator < (const circular_buffer_space_optimized<T, Alloc>& lhs,
-    const circular_buffer_space_optimized<T, Alloc>& rhs) {
+inline bool operator<(const circular_buffer_space_optimized<T, Alloc> &lhs,
+                      const circular_buffer_space_optimized<T, Alloc> &rhs)
+{
     return std::lexicographical_compare(
         lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
@@ -1385,36 +1489,41 @@ inline bool operator < (const circular_buffer_space_optimized<T, Alloc>& lhs,
 
 //! Test two space optimized circular buffers for non-equality.
 template <class T, class Alloc>
-inline bool operator != (const circular_buffer_space_optimized<T, Alloc>& lhs,
-    const circular_buffer_space_optimized<T, Alloc>& rhs) {
+inline bool operator!=(const circular_buffer_space_optimized<T, Alloc> &lhs,
+                       const circular_buffer_space_optimized<T, Alloc> &rhs)
+{
     return !(lhs == rhs);
 }
 
 //! Lexicographical comparison.
 template <class T, class Alloc>
-inline bool operator > (const circular_buffer_space_optimized<T, Alloc>& lhs,
-    const circular_buffer_space_optimized<T, Alloc>& rhs) {
+inline bool operator>(const circular_buffer_space_optimized<T, Alloc> &lhs,
+                      const circular_buffer_space_optimized<T, Alloc> &rhs)
+{
     return rhs < lhs;
 }
 
 //! Lexicographical comparison.
 template <class T, class Alloc>
-inline bool operator <= (const circular_buffer_space_optimized<T, Alloc>& lhs,
-    const circular_buffer_space_optimized<T, Alloc>& rhs) {
+inline bool operator<=(const circular_buffer_space_optimized<T, Alloc> &lhs,
+                       const circular_buffer_space_optimized<T, Alloc> &rhs)
+{
     return !(rhs < lhs);
 }
 
 //! Lexicographical comparison.
 template <class T, class Alloc>
-inline bool operator >= (const circular_buffer_space_optimized<T, Alloc>& lhs,
-    const circular_buffer_space_optimized<T, Alloc>& rhs) {
+inline bool operator>=(const circular_buffer_space_optimized<T, Alloc> &lhs,
+                       const circular_buffer_space_optimized<T, Alloc> &rhs)
+{
     return !(lhs < rhs);
 }
 
 //! Swap the contents of two space optimized circular buffers.
 template <class T, class Alloc>
-inline void swap(circular_buffer_space_optimized<T, Alloc>& lhs,
-    circular_buffer_space_optimized<T, Alloc>& rhs) {
+inline void swap(circular_buffer_space_optimized<T, Alloc> &lhs,
+                 circular_buffer_space_optimized<T, Alloc> &rhs)
+{
     lhs.swap(rhs);
 }
 

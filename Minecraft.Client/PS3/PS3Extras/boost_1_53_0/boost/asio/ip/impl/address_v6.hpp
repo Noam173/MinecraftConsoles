@@ -12,7 +12,7 @@
 #define BOOST_ASIO_IP_IMPL_ADDRESS_V6_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #if !defined(BOOST_NO_IOSTREAM)
@@ -21,27 +21,38 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace ip {
+namespace boost
+{
+namespace asio
+{
+namespace ip
+{
 
 template <typename Elem, typename Traits>
-std::basic_ostream<Elem, Traits>& operator<<(
-    std::basic_ostream<Elem, Traits>& os, const address_v6& addr)
+std::basic_ostream<Elem, Traits> &operator<<(
+    std::basic_ostream<Elem, Traits> &os, const address_v6 &addr)
 {
-  boost::system::error_code ec;
-  std::string s = addr.to_string(ec);
-  if (ec)
-  {
-    if (os.exceptions() & std::basic_ostream<Elem, Traits>::failbit)
-      boost::asio::detail::throw_error(ec);
+    boost::system::error_code ec;
+    std::string s = addr.to_string(ec);
+    if (ec)
+    {
+        if (os.exceptions() & std::basic_ostream<Elem, Traits>::failbit)
+        {
+            boost::asio::detail::throw_error(ec);
+        }
+        else
+        {
+            os.setstate(std::basic_ostream<Elem, Traits>::failbit);
+        }
+    }
     else
-      os.setstate(std::basic_ostream<Elem, Traits>::failbit);
-  }
-  else
-    for (std::string::iterator i = s.begin(); i != s.end(); ++i)
-      os << os.widen(*i);
-  return os;
+    {
+        for (std::string::iterator i = s.begin(); i != s.end(); ++i)
+        {
+            os << os.widen(*i);
+        }
+    }
+    return os;
 }
 
 } // namespace ip

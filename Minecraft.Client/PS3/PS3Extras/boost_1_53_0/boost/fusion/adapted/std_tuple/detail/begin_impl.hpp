@@ -9,31 +9,34 @@
 
 #include <boost/fusion/adapted/std_tuple/std_tuple_iterator.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct std_tuple_tag;
+namespace fusion
+{
+struct std_tuple_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct begin_impl;
+
+template <>
+struct begin_impl<std_tuple_tag>
+{
+    template <typename Sequence>
+    struct apply
     {
-        template<typename T>
-        struct begin_impl;
+        typedef std_tuple_iterator<Sequence, 0> type;
 
-        template <>
-        struct begin_impl<std_tuple_tag>
+        static type
+        call(Sequence &v)
         {
-            template <typename Sequence>
-            struct apply
-            {
-                typedef std_tuple_iterator<Sequence, 0> type;
-
-                static type
-                call(Sequence& v)
-                {
-                    return type(v);
-                }
-            };
-        };
-    }
-}}
+            return type(v);
+        }
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

@@ -13,7 +13,11 @@
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////
@@ -27,7 +31,7 @@ namespace boost { namespace xpressive { namespace detail
 //      { Not to be confused with spirit::range }
 //
 ///////////////////////////////////////////////////////////////////////////
-template<typename Char>
+template <typename Char>
 struct range
 {
     range(Char first, Char last);
@@ -43,7 +47,7 @@ struct range
 };
 
 //////////////////////////////////
-template<typename Char>
+template <typename Char>
 struct range_compare
 {
     bool operator()(range<Char> const &x, range<Char> const &y) const
@@ -70,7 +74,7 @@ struct range_compare
 //      { Low level implementation detail }
 //
 ///////////////////////////////////////////////////////////////////////////
-template<typename Char>
+template <typename Char>
 struct range_run
 {
     typedef range<Char> range_type;
@@ -78,10 +82,10 @@ struct range_run
     typedef typename run_type::iterator iterator;
     typedef typename run_type::const_iterator const_iterator;
 
-    void swap(range_run& rr);
+    void swap(range_run &rr);
     bool empty() const;
     bool test(Char v) const;
-    template<typename Traits>
+    template <typename Traits>
     bool test(Char v, Traits const &tr) const;
     void set(range_type const &r);
     void clear(range_type const &r);
@@ -90,13 +94,14 @@ struct range_run
     const_iterator begin() const;
     const_iterator end() const;
 
-private:
+  private:
     void merge(iterator iter, range_type const &r);
 
     run_type run_;
 };
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif
-

@@ -1,12 +1,12 @@
 #pragma once
-#include "Screen.h"
 #include "..\Minecraft.World\net.minecraft.stats.h"
+#include "Screen.h"
 class StatsCounter;
 
 class AchievementScreen : public Screen
 {
-private:
-	static const int BIGMAP_X = 16;
+  private:
+    static const int BIGMAP_X = 16;
     static const int BIGMAP_Y = 17;
     static const int BIGMAP_WIDTH = 224;
     static const int BIGMAP_HEIGHT = 155;
@@ -23,35 +23,39 @@ private:
 
     static const int MAX_BG_TILE_Y = (EDGE_VALUE_Y * 2 - 1) / 16;
 
-protected:
-	int imageWidth;
+  protected:
+    int imageWidth;
     int imageHeight;
     int xLastScroll;
     int yLastScroll;
 
-protected:
-	double xScrollO, yScrollO;
+  protected:
+    double xScrollO, yScrollO;
     double xScrollP, yScrollP;
     double xScrollTarget, yScrollTarget;
 
-private:
-	int scrolling;
+  private:
+    int scrolling;
     StatsCounter *statsCounter;
 
-public:
-	using Screen::keyPressed;
+  public:
+    using Screen::keyPressed;
 
-	AchievementScreen(StatsCounter *statsCounter);
+    AchievementScreen(StatsCounter *statsCounter);
     virtual void init();
-protected:
-	virtual void buttonClicked(Button *button);
+
+  protected:
+    virtual void buttonClicked(Button *button);
     virtual void keyPressed(char eventCharacter, int eventKey);
-public:
-	virtual void render(int mouseX, int mouseY, float a);
+
+  public:
+    virtual void render(int mouseX, int mouseY, float a);
     virtual void tick();
-protected:
-	virtual void renderLabels();
+
+  protected:
+    virtual void renderLabels();
     virtual void renderBg(int xm, int ym, float a);
-public:
-	virtual bool isPauseScreen();
+
+  public:
+    virtual bool isPauseScreen();
 };

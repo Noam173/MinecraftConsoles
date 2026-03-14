@@ -10,18 +10,22 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
-# pragma warning(push)
-# pragma warning(disable:4510) // default constructor could not be generated
-# pragma warning(disable:4610) // can never be instantiated - user defined constructor required
+#pragma once
+#pragma warning(push)
+#pragma warning(disable : 4510) // default constructor could not be generated
+#pragma warning(disable : 4610) // can never be instantiated - user defined constructor required
 #endif
 
-#include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
 #include <boost/xpressive/detail/core/regex_impl.hpp>
+#include <string>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,7 +52,7 @@ struct posix_charset_placeholder
 ///////////////////////////////////////////////////////////////////////////////
 // assert_word_placeholder
 //
-template<typename Cond>
+template <typename Cond>
 struct assert_word_placeholder
 {
     BOOST_XPR_QUANT_STYLE(quant_none, 0, true)
@@ -57,7 +61,7 @@ struct assert_word_placeholder
 ///////////////////////////////////////////////////////////////////////////////
 // range_placeholder
 //
-template<typename Char>
+template <typename Char>
 struct range_placeholder
 {
     BOOST_XPR_QUANT_STYLE(quant_fixed_width, 1, true)
@@ -102,19 +106,24 @@ struct self_placeholder
 ///////////////////////////////////////////////////////////////////////////////
 // attribute_placeholder
 //
-template<typename Nbr>
+template <typename Nbr>
 struct attribute_placeholder
 {
     BOOST_XPR_QUANT_STYLE(quant_variable_width, unknown_width::value, false)
 
     typedef Nbr nbr_type;
-    static Nbr nbr() { return Nbr(); }
+    static Nbr nbr()
+    {
+        return Nbr();
+    }
 };
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma warning(pop)
+#pragma warning(pop)
 #endif
 
 #endif

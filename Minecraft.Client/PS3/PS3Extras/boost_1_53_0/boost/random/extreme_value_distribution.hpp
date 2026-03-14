@@ -13,16 +13,18 @@
 #ifndef BOOST_RANDOM_EXTREME_VALUE_DISTRIBUTION_HPP
 #define BOOST_RANDOM_EXTREME_VALUE_DISTRIBUTION_HPP
 
-#include <boost/config/no_tr1/cmath.hpp>
-#include <iosfwd>
-#include <istream>
 #include <boost/config.hpp>
+#include <boost/config/no_tr1/cmath.hpp>
 #include <boost/limits.hpp>
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/uniform_01.hpp>
+#include <iosfwd>
+#include <istream>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
 /**
  * The extreme value distribution is a real valued distribution with two
@@ -30,14 +32,16 @@ namespace random {
  *
  * It has \f$\displaystyle p(x) = \frac{1}{b}e^{\frac{a-x}{b} - e^\frac{a-x}{b}}\f$.
  */
-template<class RealType = double>
-class extreme_value_distribution {
-public:
+template <class RealType = double>
+class extreme_value_distribution
+{
+  public:
     typedef RealType result_type;
     typedef RealType input_type;
 
-    class param_type {
-    public:
+    class param_type
+    {
+      public:
         typedef extreme_value_distribution distribution_type;
 
         /**
@@ -47,30 +51,45 @@ public:
          * Requires: b > 0
          */
         explicit param_type(RealType a_arg = 1.0, RealType b_arg = 1.0)
-          : _a(a_arg), _b(b_arg)
-        {}
+            : _a(a_arg), _b(b_arg)
+        {
+        }
 
         /** Returns the "a" parameter of the distribtuion. */
-        RealType a() const { return _a; }
+        RealType a() const
+        {
+            return _a;
+        }
         /** Returns the "b" parameter of the distribution. */
-        RealType b() const { return _b; }
+        RealType b() const
+        {
+            return _b;
+        }
 
         /** Writes a @c param_type to a @c std::ostream. */
         BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(os, param_type, parm)
-        { os << parm._a << ' ' << parm._b; return os; }
+        {
+            os << parm._a << ' ' << parm._b;
+            return os;
+        }
 
         /** Reads a @c param_type from a @c std::istream. */
         BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, param_type, parm)
-        { is >> parm._a >> std::ws >> parm._b; return is; }
+        {
+            is >> parm._a >> std::ws >> parm._b;
+            return is;
+        }
 
         /** Returns true if the two sets of parameters are the same. */
         BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(param_type, lhs, rhs)
-        { return lhs._a == rhs._a && lhs._b == rhs._b; }
-        
+        {
+            return lhs._a == rhs._a && lhs._b == rhs._b;
+        }
+
         /** Returns true if the two sets of parameters are the different. */
         BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(param_type)
 
-    private:
+      private:
         RealType _a;
         RealType _b;
     };
@@ -81,19 +100,21 @@ public:
      * Requires: b > 0
      */
     explicit extreme_value_distribution(RealType a_arg = 1.0, RealType b_arg = 1.0)
-      : _a(a_arg), _b(b_arg)
-    {}
+        : _a(a_arg), _b(b_arg)
+    {
+    }
     /** Constructs an @c extreme_value_distribution from its parameters. */
-    explicit extreme_value_distribution(const param_type& parm)
-      : _a(parm.a()), _b(parm.b())
-    {}
+    explicit extreme_value_distribution(const param_type &parm)
+        : _a(parm.a()), _b(parm.b())
+    {
+    }
 
     /**
      * Returns a random variate distributed according to the
      * @c extreme_value_distribution.
      */
-    template<class URNG>
-    RealType operator()(URNG& urng) const
+    template <class URNG>
+    RealType operator()(URNG &urng) const
     {
         using std::log;
         return _a - log(-log(uniform_01<RealType>()(urng))) * _b;
@@ -103,28 +124,41 @@ public:
      * Returns a random variate distributed accordint to the extreme
      * value distribution with parameters specified by @c param.
      */
-    template<class URNG>
-    RealType operator()(URNG& urng, const param_type& parm) const
+    template <class URNG>
+    RealType operator()(URNG &urng, const param_type &parm) const
     {
         return extreme_value_distribution(parm)(urng);
     }
 
     /** Returns the "a" parameter of the distribution. */
-    RealType a() const { return _a; }
+    RealType a() const
+    {
+        return _a;
+    }
     /** Returns the "b" parameter of the distribution. */
-    RealType b() const { return _b; }
+    RealType b() const
+    {
+        return _b;
+    }
 
     /** Returns the smallest value that the distribution can produce. */
-    RealType min BOOST_PREVENT_MACRO_SUBSTITUTION () const
-    { return -std::numeric_limits<RealType>::infinity(); }
+    RealType min BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return -std::numeric_limits<RealType>::infinity();
+    }
     /** Returns the largest value that the distribution can produce. */
-    RealType max BOOST_PREVENT_MACRO_SUBSTITUTION () const
-    { return std::numeric_limits<RealType>::infinity(); }
+    RealType max BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return std::numeric_limits<RealType>::infinity();
+    }
 
     /** Returns the parameters of the distribution. */
-    param_type param() const { return param_type(_a, _b); }
+    param_type param() const
+    {
+        return param_type(_a, _b);
+    }
     /** Sets the parameters of the distribution. */
-    void param(const param_type& parm)
+    void param(const param_type &parm)
     {
         _a = parm.a();
         _b = parm.b();
@@ -134,7 +168,9 @@ public:
      * Effects: Subsequent uses of the distribution do not depend
      * on values produced by any engine prior to invoking reset.
      */
-    void reset() { }
+    void reset()
+    {
+    }
 
     /** Writes an @c extreme_value_distribution to a @c std::ostream. */
     BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(os, extreme_value_distribution, wd)
@@ -147,7 +183,8 @@ public:
     BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, extreme_value_distribution, wd)
     {
         param_type parm;
-        if(is >> parm) {
+        if (is >> parm)
+        {
             wd.param(parm);
         }
         return is;
@@ -158,15 +195,17 @@ public:
      * return identical sequences of values given equal generators.
      */
     BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(extreme_value_distribution, lhs, rhs)
-    { return lhs._a == rhs._a && lhs._b == rhs._b; }
-    
+    {
+        return lhs._a == rhs._a && lhs._b == rhs._b;
+    }
+
     /**
      * Returns true if the two instances of @c extreme_value_distribution will
      * return different sequences of values given equal generators.
      */
     BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(extreme_value_distribution)
 
-private:
+  private:
     RealType _a;
     RealType _b;
 };

@@ -49,6 +49,6 @@
 
 #include <boost/config/auto_link.hpp>
 
-#endif  // auto-linking disabled
+#endif // auto-linking disabled
 
 #endif

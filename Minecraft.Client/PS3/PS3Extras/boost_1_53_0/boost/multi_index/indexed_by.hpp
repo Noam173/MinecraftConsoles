@@ -9,7 +9,7 @@
 #ifndef BOOST_MULTI_INDEX_INDEXED_BY_HPP
 #define BOOST_MULTI_INDEX_INDEXED_BY_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -18,7 +18,7 @@
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/control/expr_if.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
-#include <boost/preprocessor/repetition/enum_params.hpp> 
+#include <boost/preprocessor/repetition/enum_params.hpp>
 
 /* An alias to mpl::vector used to hide MPL from the user.
  * indexed_by contains the index specifiers for instantiation
@@ -31,34 +31,34 @@
  */
 
 #if !defined(BOOST_MULTI_INDEX_LIMIT_INDEXED_BY_SIZE)
-#if defined(BOOST_MSVC)&&(BOOST_MSVC<1300)
+#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
 #define BOOST_MULTI_INDEX_LIMIT_INDEXED_BY_SIZE 5
 #else
 #define BOOST_MULTI_INDEX_LIMIT_INDEXED_BY_SIZE BOOST_MPL_LIMIT_VECTOR_SIZE
 #endif
 #endif
 
-#if BOOST_MULTI_INDEX_LIMIT_INDEXED_BY_SIZE<BOOST_MPL_LIMIT_VECTOR_SIZE
+#if BOOST_MULTI_INDEX_LIMIT_INDEXED_BY_SIZE < BOOST_MPL_LIMIT_VECTOR_SIZE
 #define BOOST_MULTI_INDEX_INDEXED_BY_SIZE \
-  BOOST_MULTI_INDEX_LIMIT_INDEXED_BY_SIZE
+    BOOST_MULTI_INDEX_LIMIT_INDEXED_BY_SIZE
 #else
 #define BOOST_MULTI_INDEX_INDEXED_BY_SIZE BOOST_MPL_LIMIT_VECTOR_SIZE
 #endif
 
-#define BOOST_MULTI_INDEX_INDEXED_BY_TEMPLATE_PARM(z,n,var) \
-  typename BOOST_PP_CAT(var,n) BOOST_PP_EXPR_IF(n,=mpl::na)
+#define BOOST_MULTI_INDEX_INDEXED_BY_TEMPLATE_PARM(z, n, var) \
+    typename BOOST_PP_CAT(var, n) BOOST_PP_EXPR_IF(n, = mpl::na)
 
-namespace boost{
+namespace boost
+{
 
-namespace multi_index{
+namespace multi_index
+{
 
-template<
-  BOOST_PP_ENUM(
-    BOOST_MULTI_INDEX_INDEXED_BY_SIZE,
-    BOOST_MULTI_INDEX_INDEXED_BY_TEMPLATE_PARM,T)
->
-struct indexed_by:
-  mpl::vector<BOOST_PP_ENUM_PARAMS(BOOST_MULTI_INDEX_INDEXED_BY_SIZE,T)>
+template <
+    BOOST_PP_ENUM(
+        BOOST_MULTI_INDEX_INDEXED_BY_SIZE,
+        BOOST_MULTI_INDEX_INDEXED_BY_TEMPLATE_PARM, T)>
+struct indexed_by : mpl::vector<BOOST_PP_ENUM_PARAMS(BOOST_MULTI_INDEX_INDEXED_BY_SIZE, T)>
 {
 };
 

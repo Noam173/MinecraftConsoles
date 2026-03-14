@@ -1,26 +1,23 @@
 #include "stdafx.h"
 
-
-#include <stdlib.h>
-#include <string.h>
+#include <cell/cell_fs.h>
 #include <cell/l10n.h>
 #include <cell/pad.h>
-#include <cell/cell_fs.h>
-#include <sys/process.h>
-#include <sys/ppu_thread.h>
-#include <cell/sysmodule.h>
 #include <cell/rtc.h>
+#include <cell/sysmodule.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ppu_thread.h>
+#include <sys/process.h>
 
 #include <libsn.h>
 
 #include <sysutil/sysutil_common.h>
-#include <sysutil/sysutil_sysparam.h>
 #include <sysutil/sysutil_savedata.h>
+#include <sysutil/sysutil_sysparam.h>
 
-#include "STO_TitleSmallStorage.h"
 #include "../Passphrase/ps3__np_conf.h"
-
-
+#include "STO_TitleSmallStorage.h"
 
 #if 0
 

@@ -9,93 +9,77 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_COPY_SEGMENT_POINT_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_COPY_SEGMENT_POINT_HPP
 
-
 #include <boost/range.hpp>
 
-#include <boost/geometry/multi/core/tags.hpp>
 #include <boost/geometry/algorithms/detail/overlay/copy_segment_point.hpp>
+#include <boost/geometry/multi/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace copy_segments
+namespace detail
+{
+namespace copy_segments
 {
 
-
-template
-<
+template <
     typename MultiGeometry,
     typename SegmentIdentifier,
     typename PointOut,
-    typename Policy
->
+    typename Policy>
 struct copy_segment_point_multi
 {
-    static inline bool apply(MultiGeometry const& multi,
-                SegmentIdentifier const& seg_id, bool second,
-                PointOut& point)
+    static inline bool apply(MultiGeometry const &multi,
+                             SegmentIdentifier const &seg_id, bool second,
+                             PointOut &point)
     {
 
-        BOOST_ASSERT
-            (
-                seg_id.multi_index >= 0
-                && seg_id.multi_index < int(boost::size(multi))
-            );
+        BOOST_ASSERT(
+            seg_id.multi_index >= 0 && seg_id.multi_index < int(boost::size(multi)));
 
         // Call the single-version
         return Policy::apply(multi[seg_id.multi_index], seg_id, second, point);
     }
 };
 
-
-}} // namespace detail::copy_segments
+} // namespace copy_segments
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
-template
-<
+template <
     typename MultiGeometry,
     bool Reverse,
     typename SegmentIdentifier,
-    typename PointOut
->
-struct copy_segment_point
-    <
-        multi_polygon_tag,
-        MultiGeometry,
-        Reverse,
-        SegmentIdentifier,
-        PointOut
-    >
-    : detail::copy_segments::copy_segment_point_multi
-        <
-            MultiGeometry,
-            SegmentIdentifier,
-            PointOut,
-            detail::copy_segments::copy_segment_point_polygon
-                <
-                    typename boost::range_value<MultiGeometry>::type,
-                    Reverse,
-                    SegmentIdentifier,
-                    PointOut
-                >
-        >
-{};
-
+    typename PointOut>
+struct copy_segment_point<
+    multi_polygon_tag,
+    MultiGeometry,
+    Reverse,
+    SegmentIdentifier,
+    PointOut>
+    : detail::copy_segments::copy_segment_point_multi<
+          MultiGeometry,
+          SegmentIdentifier,
+          PointOut,
+          detail::copy_segments::copy_segment_point_polygon<
+              typename boost::range_value<MultiGeometry>::type,
+              Reverse,
+              SegmentIdentifier,
+              PointOut>>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_OVERLAY_COPY_SEGMENT_POINT_HPP

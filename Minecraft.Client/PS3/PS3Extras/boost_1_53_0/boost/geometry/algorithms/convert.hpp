@@ -14,82 +14,78 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_CONVERT_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_CONVERT_HPP
 
-
 #include <cstddef>
 
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/range.hpp>
 #include <boost/type_traits/is_array.hpp>
 
-#include <boost/geometry/arithmetic/arithmetic.hpp>
-#include <boost/geometry/algorithms/not_implemented.hpp>
 #include <boost/geometry/algorithms/append.hpp>
 #include <boost/geometry/algorithms/clear.hpp>
-#include <boost/geometry/algorithms/for_each.hpp>
-#include <boost/geometry/algorithms/detail/assign_values.hpp>
 #include <boost/geometry/algorithms/detail/assign_box_corners.hpp>
 #include <boost/geometry/algorithms/detail/assign_indexed_point.hpp>
-#include <boost/geometry/algorithms/detail/convert_point_to_point.hpp>
+#include <boost/geometry/algorithms/detail/assign_values.hpp>
 #include <boost/geometry/algorithms/detail/convert_indexed_to_indexed.hpp>
+#include <boost/geometry/algorithms/detail/convert_point_to_point.hpp>
+#include <boost/geometry/algorithms/for_each.hpp>
+#include <boost/geometry/algorithms/not_implemented.hpp>
+#include <boost/geometry/arithmetic/arithmetic.hpp>
 
 #include <boost/geometry/views/closeable_view.hpp>
 #include <boost/geometry/views/reversible_view.hpp>
 
-#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/closure.hpp>
+#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/point_order.hpp>
 #include <boost/geometry/geometries/concepts/check.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace conversion
+namespace detail
+{
+namespace conversion
 {
 
-template
-<
+template <
     typename Point,
     typename Box,
     std::size_t Index,
     std::size_t Dimension,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct point_to_box
 {
-    static inline void apply(Point const& point, Box& box)
+    static inline void apply(Point const &point, Box &box)
     {
         typedef typename coordinate_type<Box>::type coordinate_type;
 
         set<Index, Dimension>(box,
-                boost::numeric_cast<coordinate_type>(get<Dimension>(point)));
-        point_to_box
-            <
-                Point, Box,
-                Index, Dimension + 1, DimensionCount
-            >::apply(point, box);
+                              boost::numeric_cast<coordinate_type>(get<Dimension>(point)));
+        point_to_box<
+            Point, Box,
+            Index, Dimension + 1, DimensionCount>::apply(point, box);
     }
 };
 
-
-template
-<
+template <
     typename Point,
     typename Box,
     std::size_t Index,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct point_to_box<Point, Box, Index, DimensionCount, DimensionCount>
 {
-    static inline void apply(Point const& , Box& )
-    {}
+    static inline void apply(Point const &, Box &)
+    {
+    }
 };
 
 template <typename Box, typename Range, bool Close, bool Reverse>
 struct box_to_range
 {
-    static inline void apply(Box const& box, Range& range)
+    static inline void apply(Box const &box, Range &range)
     {
         traits::resize<Range>::apply(range, Close ? 5 : 4);
         assign_box_corners_oriented<Reverse>(box, range);
@@ -103,7 +99,7 @@ struct box_to_range
 template <typename Segment, typename Range>
 struct segment_to_range
 {
-    static inline void apply(Segment const& segment, Range& range)
+    static inline void apply(Segment const &segment, Range &range)
     {
         traits::resize<Range>::apply(range, 2);
 
@@ -115,26 +111,20 @@ struct segment_to_range
     }
 };
 
-template 
-<
-    typename Range1, 
-    typename Range2, 
-    bool Reverse = false
->
+template <
+    typename Range1,
+    typename Range2,
+    bool Reverse = false>
 struct range_to_range
 {
-    typedef typename reversible_view
-        <
-            Range1 const, 
-            Reverse ? iterate_reverse : iterate_forward
-        >::type rview_type;
-    typedef typename closeable_view
-        <
-            rview_type const, 
-            geometry::closure<Range1>::value
-        >::type view_type;
+    typedef typename reversible_view<
+        Range1 const,
+        Reverse ? iterate_reverse : iterate_forward>::type rview_type;
+    typedef typename closeable_view<
+        rview_type const,
+        geometry::closure<Range1>::value>::type view_type;
 
-    static inline void apply(Range1 const& source, Range2& destination)
+    static inline void apply(Range1 const &source, Range2 &destination)
     {
         geometry::clear(destination);
 
@@ -151,10 +141,9 @@ struct range_to_range
         }
 
         int i = 0;
-        for (typename boost::range_iterator<view_type const>::type it
-            = boost::begin(view);
-            it != boost::end(view) && i < n;
-            ++it, ++i)
+        for (typename boost::range_iterator<view_type const>::type it = boost::begin(view);
+             it != boost::end(view) && i < n;
+             ++it, ++i)
         {
             geometry::append(destination, *it);
         }
@@ -164,229 +153,191 @@ struct range_to_range
 template <typename Polygon1, typename Polygon2>
 struct polygon_to_polygon
 {
-    typedef range_to_range
-        <
-            typename geometry::ring_type<Polygon1>::type, 
-            typename geometry::ring_type<Polygon2>::type,
-            geometry::point_order<Polygon1>::value
-                != geometry::point_order<Polygon2>::value
-        > per_ring;
+    typedef range_to_range<
+        typename geometry::ring_type<Polygon1>::type,
+        typename geometry::ring_type<Polygon2>::type,
+        geometry::point_order<Polygon1>::value != geometry::point_order<Polygon2>::value>
+        per_ring;
 
-    static inline void apply(Polygon1 const& source, Polygon2& destination)
+    static inline void apply(Polygon1 const &source, Polygon2 &destination)
     {
         // Clearing managed per ring, and in the resizing of interior rings
 
-        per_ring::apply(geometry::exterior_ring(source), 
-            geometry::exterior_ring(destination));
+        per_ring::apply(geometry::exterior_ring(source),
+                        geometry::exterior_ring(destination));
 
         // Container should be resizeable
-        traits::resize
-            <
-                typename boost::remove_reference
-                <
-                    typename traits::interior_mutable_type<Polygon2>::type
-                >::type
-            >::apply(interior_rings(destination), num_interior_rings(source));
+        traits::resize<
+            typename boost::remove_reference<
+                typename traits::interior_mutable_type<Polygon2>::type>::type>::apply(interior_rings(destination), num_interior_rings(source));
 
-        typename interior_return_type<Polygon1 const>::type rings_source
-                    = interior_rings(source);
-        typename interior_return_type<Polygon2>::type rings_dest
-                    = interior_rings(destination);
+        typename interior_return_type<Polygon1 const>::type rings_source = interior_rings(source);
+        typename interior_return_type<Polygon2>::type rings_dest = interior_rings(destination);
 
         BOOST_AUTO_TPL(it_source, boost::begin(rings_source));
         BOOST_AUTO_TPL(it_dest, boost::begin(rings_dest));
 
-        for ( ; it_source != boost::end(rings_source); ++it_source, ++it_dest)
+        for (; it_source != boost::end(rings_source); ++it_source, ++it_dest)
         {
             per_ring::apply(*it_source, *it_dest);
         }
     }
 };
 
-
-}} // namespace detail::conversion
+} // namespace conversion
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-template
-<
+template <
     typename Geometry1, typename Geometry2,
     typename Tag1 = typename tag_cast<typename tag<Geometry1>::type, multi_tag>::type,
     typename Tag2 = typename tag_cast<typename tag<Geometry2>::type, multi_tag>::type,
     std::size_t DimensionCount = dimension<Geometry1>::type::value,
-    bool UseAssignment = boost::is_same<Geometry1, Geometry2>::value
-                         && !boost::is_array<Geometry1>::value
->
-struct convert: not_implemented<Tag1, Tag2, mpl::int_<DimensionCount> >
-{};
+    bool UseAssignment = boost::is_same<Geometry1, Geometry2>::value && !boost::is_array<Geometry1>::value>
+struct convert : not_implemented<Tag1, Tag2, mpl::int_<DimensionCount>>
+{
+};
 
-
-template
-<
+template <
     typename Geometry1, typename Geometry2,
     typename Tag,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct convert<Geometry1, Geometry2, Tag, Tag, DimensionCount, true>
 {
     // Same geometry type -> copy whole geometry
-    static inline void apply(Geometry1 const& source, Geometry2& destination)
+    static inline void apply(Geometry1 const &source, Geometry2 &destination)
     {
         destination = source;
     }
 };
 
-
-template
-<
+template <
     typename Geometry1, typename Geometry2,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct convert<Geometry1, Geometry2, point_tag, point_tag, DimensionCount, false>
     : detail::conversion::point_to_point<Geometry1, Geometry2, 0, DimensionCount>
-{};
+{
+};
 
-
-template
-<
+template <
     typename Box1, typename Box2,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct convert<Box1, Box2, box_tag, box_tag, DimensionCount, false>
     : detail::conversion::indexed_to_indexed<Box1, Box2, 0, DimensionCount>
-{};
+{
+};
 
-
-template
-<
+template <
     typename Segment1, typename Segment2,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct convert<Segment1, Segment2, segment_tag, segment_tag, DimensionCount, false>
     : detail::conversion::indexed_to_indexed<Segment1, Segment2, 0, DimensionCount>
-{};
-
+{
+};
 
 template <typename Segment, typename LineString, std::size_t DimensionCount>
 struct convert<Segment, LineString, segment_tag, linestring_tag, DimensionCount, false>
     : detail::conversion::segment_to_range<Segment, LineString>
-{};
-
+{
+};
 
 template <typename Ring1, typename Ring2, std::size_t DimensionCount>
 struct convert<Ring1, Ring2, ring_tag, ring_tag, DimensionCount, false>
-    : detail::conversion::range_to_range
-        <   
-            Ring1, 
-            Ring2,
-            geometry::point_order<Ring1>::value
-                != geometry::point_order<Ring2>::value
-        >
-{};
+    : detail::conversion::range_to_range<
+          Ring1,
+          Ring2,
+          geometry::point_order<Ring1>::value != geometry::point_order<Ring2>::value>
+{
+};
 
 template <typename LineString1, typename LineString2, std::size_t DimensionCount>
 struct convert<LineString1, LineString2, linestring_tag, linestring_tag, DimensionCount, false>
     : detail::conversion::range_to_range<LineString1, LineString2>
-{};
+{
+};
 
 template <typename Polygon1, typename Polygon2, std::size_t DimensionCount>
 struct convert<Polygon1, Polygon2, polygon_tag, polygon_tag, DimensionCount, false>
     : detail::conversion::polygon_to_polygon<Polygon1, Polygon2>
-{};
+{
+};
 
 template <typename Box, typename Ring>
 struct convert<Box, Ring, box_tag, ring_tag, 2, false>
-    : detail::conversion::box_to_range
-        <
-            Box, 
-            Ring, 
-            geometry::closure<Ring>::value == closed,
-            geometry::point_order<Ring>::value == counterclockwise
-        >
-{};
-
+    : detail::conversion::box_to_range<
+          Box,
+          Ring,
+          geometry::closure<Ring>::value == closed,
+          geometry::point_order<Ring>::value == counterclockwise>
+{
+};
 
 template <typename Box, typename Polygon>
 struct convert<Box, Polygon, box_tag, polygon_tag, 2, false>
 {
-    static inline void apply(Box const& box, Polygon& polygon)
+    static inline void apply(Box const &box, Polygon &polygon)
     {
         typedef typename ring_type<Polygon>::type ring_type;
 
-        convert
-            <
-                Box, ring_type,
-                box_tag, ring_tag,
-                2, false
-            >::apply(box, exterior_ring(polygon));
+        convert<
+            Box, ring_type,
+            box_tag, ring_tag,
+            2, false>::apply(box, exterior_ring(polygon));
     }
 };
-
 
 template <typename Point, typename Box, std::size_t DimensionCount>
 struct convert<Point, Box, point_tag, box_tag, DimensionCount, false>
 {
-    static inline void apply(Point const& point, Box& box)
+    static inline void apply(Point const &point, Box &box)
     {
-        detail::conversion::point_to_box
-            <
-                Point, Box, min_corner, 0, DimensionCount
-            >::apply(point, box);
-        detail::conversion::point_to_box
-            <
-                Point, Box, max_corner, 0, DimensionCount
-            >::apply(point, box);
+        detail::conversion::point_to_box<
+            Point, Box, min_corner, 0, DimensionCount>::apply(point, box);
+        detail::conversion::point_to_box<
+            Point, Box, max_corner, 0, DimensionCount>::apply(point, box);
     }
 };
-
 
 template <typename Ring, typename Polygon, std::size_t DimensionCount>
 struct convert<Ring, Polygon, ring_tag, polygon_tag, DimensionCount, false>
 {
-    static inline void apply(Ring const& ring, Polygon& polygon)
+    static inline void apply(Ring const &ring, Polygon &polygon)
     {
         typedef typename ring_type<Polygon>::type ring_type;
-        convert
-            <
-                Ring, ring_type,
-                ring_tag, ring_tag,
-                DimensionCount, false
-            >::apply(ring, exterior_ring(polygon));
+        convert<
+            Ring, ring_type,
+            ring_tag, ring_tag,
+            DimensionCount, false>::apply(ring, exterior_ring(polygon));
     }
 };
-
 
 template <typename Polygon, typename Ring, std::size_t DimensionCount>
 struct convert<Polygon, Ring, polygon_tag, ring_tag, DimensionCount, false>
 {
-    static inline void apply(Polygon const& polygon, Ring& ring)
+    static inline void apply(Polygon const &polygon, Ring &ring)
     {
         typedef typename ring_type<Polygon>::type ring_type;
 
-        convert
-            <
-                ring_type, Ring,
-                ring_tag, ring_tag,
-                DimensionCount, false
-            >::apply(exterior_ring(polygon), ring);
+        convert<
+            ring_type, Ring,
+            ring_tag, ring_tag,
+            DimensionCount, false>::apply(exterior_ring(polygon), ring);
     }
 };
 
-
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
 
 /*!
 \brief Converts one geometry to another geometry
 \details The convert algorithm converts one geometry, e.g. a BOX, to another
 geometry, e.g. a RING. This only if it is possible and applicable.
-If the point-order is different, or the closure is different between two 
-geometry types, it will be converted correctly by explicitly reversing the 
+If the point-order is different, or the closure is different between two
+geometry types, it will be converted correctly by explicitly reversing the
 points or closing or opening the polygon rings.
 \ingroup convert
 \tparam Geometry1 \tparam_geometry
@@ -397,15 +348,14 @@ points or closing or opening the polygon rings.
 \qbk{[include reference/algorithms/convert.qbk]}
  */
 template <typename Geometry1, typename Geometry2>
-inline void convert(Geometry1 const& geometry1, Geometry2& geometry2)
+inline void convert(Geometry1 const &geometry1, Geometry2 &geometry2)
 {
-    concept::check_concepts_and_equal_dimensions<Geometry1 const, Geometry2>();
+    concept ::check_concepts_and_equal_dimensions<Geometry1 const, Geometry2>();
 
     dispatch::convert<Geometry1, Geometry2>::apply(geometry1, geometry2);
 }
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_CONVERT_HPP

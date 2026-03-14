@@ -27,25 +27,28 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost {
-namespace wave {
-namespace grammars {
+namespace boost
+{
+namespace wave
+{
+namespace grammars
+{
 
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  Here are the node id's of the different node of the cpp_grammar
 //
 ///////////////////////////////////////////////////////////////////////////////
-#define BOOST_WAVE_PLAIN_DEFINE_ID      5
-#define BOOST_WAVE_MACRO_PARAMETERS_ID  6
-#define BOOST_WAVE_MACRO_DEFINITION_ID  7
+#define BOOST_WAVE_PLAIN_DEFINE_ID 5
+#define BOOST_WAVE_MACRO_PARAMETERS_ID 6
+#define BOOST_WAVE_MACRO_DEFINITION_ID 7
 
 ///////////////////////////////////////////////////////////////////////////////
-//  
+//
 //  predefined_macros_grammar_gen template class
 //
-//      This template helps separating the compilation of the 
-//      predefined_macros_grammar class from the compilation of the 
+//      This template helps separating the compilation of the
+//      predefined_macros_grammar class from the compilation of the
 //      main pp_iterator. This is done to safe compilation time.
 //
 //      This class helps parsing command line given macro definitions in a
@@ -58,15 +61,15 @@ struct BOOST_WAVE_DECL predefined_macros_grammar_gen
 {
     typedef LexIteratorT iterator_type;
 
-//  parse the cpp_grammar and return the resulting parse tree    
-    static boost::spirit::classic::tree_parse_info<iterator_type> 
-    parse_predefined_macro (iterator_type const &first, iterator_type const &last);
+    //  parse the cpp_grammar and return the resulting parse tree
+    static boost::spirit::classic::tree_parse_info<iterator_type>
+    parse_predefined_macro(iterator_type const &first, iterator_type const &last);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-}   // namespace grammars
-}   // namespace wave
-}   // namespace boost
+} // namespace grammars
+} // namespace wave
+} // namespace boost
 
 #ifdef BOOST_MSVC
 #pragma warning(pop)

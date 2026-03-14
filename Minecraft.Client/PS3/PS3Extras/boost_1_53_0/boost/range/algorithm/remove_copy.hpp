@@ -9,16 +9,16 @@
 #ifndef BOOST_RANGE_ALGORITHM_REMOVE_COPY_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_REMOVE_COPY_HPP_INCLUDED
 
+#include <algorithm>
 #include <boost/concept_check.hpp>
 #include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/concepts.hpp>
-#include <algorithm>
+#include <boost/range/end.hpp>
 
 namespace boost
 {
-    namespace range
-    {
+namespace range
+{
 
 /// \brief template function remove_copy
 ///
@@ -29,16 +29,16 @@ namespace boost
 /// \pre Value is a model of the EqualityComparableConcept
 /// \pre Objects of type Value can be compared for equality with objects of
 /// InputIterator's value type.
-template< class SinglePassRange, class OutputIterator, class Value >
+template <class SinglePassRange, class OutputIterator, class Value>
 inline OutputIterator
-remove_copy(const SinglePassRange& rng, OutputIterator out_it, const Value& val)
+remove_copy(const SinglePassRange &rng, OutputIterator out_it, const Value &val)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( SinglePassRangeConcept<const SinglePassRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((SinglePassRangeConcept<const SinglePassRange>));
     return std::remove_copy(boost::begin(rng), boost::end(rng), out_it, val);
 }
 
-    } // namespace range
-    using range::remove_copy;
+} // namespace range
+using range::remove_copy;
 } // namespace boost
 
 #endif // include guard

@@ -14,32 +14,46 @@
 #ifndef BOOST_GEOMETRY_IO_WKT_DETAIL_PREFIX_HPP
 #define BOOST_GEOMETRY_IO_WKT_DETAIL_PREFIX_HPP
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace wkt
+namespace detail
+{
+namespace wkt
 {
 
 struct prefix_point
 {
-    static inline const char* apply() { return "POINT"; }
+    static inline const char *apply()
+    {
+        return "POINT";
+    }
 };
 
 struct prefix_polygon
 {
-    static inline const char* apply() { return "POLYGON"; }
+    static inline const char *apply()
+    {
+        return "POLYGON";
+    }
 };
 
 struct prefix_linestring
 {
-    static inline const char* apply() { return "LINESTRING"; }
+    static inline const char *apply()
+    {
+        return "LINESTRING";
+    }
 };
 
-}} // namespace wkt::impl
+} // namespace wkt
+} // namespace detail
 #endif
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_IO_WKT_DETAIL_PREFIX_HPP

@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "CaveSpiderRenderer.h"
+#include "stdafx.h"
 
 ResourceLocation CaveSpiderRenderer::CAVE_SPIDER_LOCATION = ResourceLocation(TN_MOB_CAVE_SPIDER);
 float CaveSpiderRenderer::s_scale = 0.7f;

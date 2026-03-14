@@ -12,14 +12,17 @@
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 
-namespace boost    {
-namespace lockfree {
-namespace detail   {
+namespace boost
+{
+namespace lockfree
+{
+namespace detail
+{
 
 struct copy_convertible
 {
     template <typename T, typename U>
-    static void copy(T & t, U & u)
+    static void copy(T &t, U &u)
     {
         u = t;
     }
@@ -28,22 +31,23 @@ struct copy_convertible
 struct copy_constructible_and_copyable
 {
     template <typename T, typename U>
-    static void copy(T & t, U & u)
+    static void copy(T &t, U &u)
     {
         u = U(t);
     }
 };
 
 template <typename T, typename U>
-void copy_payload(T & t, U & u)
+void copy_payload(T &t, U &u)
 {
     typedef typename boost::mpl::if_<typename boost::is_convertible<T, U>::type,
                                      copy_convertible,
-                                     copy_constructible_and_copyable
-                                    >::type copy_type;
+                                     copy_constructible_and_copyable>::type copy_type;
     copy_type::copy(t, u);
 }
 
-}}}
+} // namespace detail
+} // namespace lockfree
+} // namespace boost
 
-#endif  /* BOOST_LOCKFREE_DETAIL_COPY_PAYLOAD_HPP_INCLUDED */
+#endif /* BOOST_LOCKFREE_DETAIL_COPY_PAYLOAD_HPP_INCLUDED */

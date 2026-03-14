@@ -18,28 +18,27 @@
 #include <boost/geometry/geometries/adapted/boost_polygon/hole_iterator.hpp>
 #include <boost/geometry/geometries/adapted/boost_polygon/ring_proxy.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace adapt { namespace bp
+namespace adapt
 {
-
+namespace bp
+{
 
 // Polygon should implement the boost::polygon::polygon_with_holes_concept
 // Specify constness in the template parameter if necessary
-template<typename Polygon>
+template <typename Polygon>
 struct holes_proxy
 {
-    typedef ring_proxy
-        <
-            typename boost::mpl::if_
-                <
-                    typename boost::is_const<Polygon>,
-                    Polygon const,
-                    Polygon
-                >::type
-        > proxy_type;
+    typedef ring_proxy<
+        typename boost::mpl::if_<
+            typename boost::is_const<Polygon>,
+            Polygon const,
+            Polygon>::type>
+        proxy_type;
     typedef hole_iterator<Polygon, proxy_type> iterator_type;
 
     // The next line does not work probably because coordinate_type is part of the
@@ -49,106 +48,98 @@ struct holes_proxy
     // So we use:
     typedef typename Polygon::coordinate_type coordinate_type;
 
-    inline holes_proxy(Polygon& p)
+    inline holes_proxy(Polygon &p)
         : polygon(p)
-    {}
+    {
+    }
 
     inline void clear()
     {
         Polygon empty;
         // Clear the holes
-        polygon.set_holes
-            (
-                boost::polygon::begin_holes(empty),
-                boost::polygon::end_holes(empty)
-            );
+        polygon.set_holes(
+            boost::polygon::begin_holes(empty),
+            boost::polygon::end_holes(empty));
     }
 
     inline void resize(std::size_t new_size)
     {
-        std::vector<boost::polygon::polygon_data<coordinate_type> > temporary_copy
-            (
-                boost::polygon::begin_holes(polygon),
-                boost::polygon::end_holes(polygon)
-            );
+        std::vector<boost::polygon::polygon_data<coordinate_type>> temporary_copy(
+            boost::polygon::begin_holes(polygon),
+            boost::polygon::end_holes(polygon));
         temporary_copy.resize(new_size);
         polygon.set_holes(temporary_copy.begin(), temporary_copy.end());
     }
 
     template <typename Ring>
-    inline void push_back(Ring const& ring)
+    inline void push_back(Ring const &ring)
     {
-        std::vector<boost::polygon::polygon_data<coordinate_type> > temporary_copy
-            (
-                boost::polygon::begin_holes(polygon),
-                boost::polygon::end_holes(polygon)
-            );
+        std::vector<boost::polygon::polygon_data<coordinate_type>> temporary_copy(
+            boost::polygon::begin_holes(polygon),
+            boost::polygon::end_holes(polygon));
         boost::polygon::polygon_data<coordinate_type> added;
         boost::polygon::set_points(added, ring.begin(), ring.end());
         temporary_copy.push_back(added);
         polygon.set_holes(temporary_copy.begin(), temporary_copy.end());
     }
 
-
-    Polygon& polygon;
+    Polygon &polygon;
 };
-
 
 // Support holes_proxy for Boost.Range ADP
 
 // Const versions
-template<typename Polygon>
+template <typename Polygon>
 inline typename boost::geometry::adapt::bp::holes_proxy<Polygon const>::iterator_type
-            range_begin(boost::geometry::adapt::bp::holes_proxy<Polygon const> const& proxy)
+range_begin(boost::geometry::adapt::bp::holes_proxy<Polygon const> const &proxy)
 {
     typename boost::geometry::adapt::bp::holes_proxy<Polygon const>::iterator_type
-            begin(proxy.polygon, boost::polygon::begin_holes(proxy.polygon));
+        begin(proxy.polygon, boost::polygon::begin_holes(proxy.polygon));
     return begin;
 }
 
-template<typename Polygon>
+template <typename Polygon>
 inline typename boost::geometry::adapt::bp::holes_proxy<Polygon const>::iterator_type
-            range_end(boost::geometry::adapt::bp::holes_proxy<Polygon const> const& proxy)
+range_end(boost::geometry::adapt::bp::holes_proxy<Polygon const> const &proxy)
 {
     typename boost::geometry::adapt::bp::holes_proxy<Polygon const>::iterator_type
-            end(proxy.polygon, boost::polygon::end_holes(proxy.polygon));
+        end(proxy.polygon, boost::polygon::end_holes(proxy.polygon));
     return end;
 }
 
 // Mutable versions
-template<typename Polygon>
+template <typename Polygon>
 inline typename boost::geometry::adapt::bp::holes_proxy<Polygon>::iterator_type
-            range_begin(boost::geometry::adapt::bp::holes_proxy<Polygon>& proxy)
+range_begin(boost::geometry::adapt::bp::holes_proxy<Polygon> &proxy)
 {
     typename boost::geometry::adapt::bp::holes_proxy<Polygon>::iterator_type
-            begin(proxy.polygon, boost::polygon::begin_holes(proxy.polygon));
+        begin(proxy.polygon, boost::polygon::begin_holes(proxy.polygon));
     return begin;
 }
 
-template<typename Polygon>
+template <typename Polygon>
 inline typename boost::geometry::adapt::bp::holes_proxy<Polygon>::iterator_type
-            range_end(boost::geometry::adapt::bp::holes_proxy<Polygon>& proxy)
+range_end(boost::geometry::adapt::bp::holes_proxy<Polygon> &proxy)
 {
     typename boost::geometry::adapt::bp::holes_proxy<Polygon>::iterator_type
-            end(proxy.polygon, boost::polygon::end_holes(proxy.polygon));
+        end(proxy.polygon, boost::polygon::end_holes(proxy.polygon));
     return end;
 }
 
-
-}}
+} // namespace bp
+} // namespace adapt
 
 namespace traits
 {
 
 template <typename Polygon>
-struct rvalue_type<adapt::bp::holes_proxy<Polygon> >
+struct rvalue_type<adapt::bp::holes_proxy<Polygon>>
 {
     typedef adapt::bp::holes_proxy<Polygon> type;
 };
 
-
 template <typename Polygon>
-struct clear<adapt::bp::holes_proxy<Polygon> >
+struct clear<adapt::bp::holes_proxy<Polygon>>
 {
     static inline void apply(adapt::bp::holes_proxy<Polygon> proxy)
     {
@@ -157,7 +148,7 @@ struct clear<adapt::bp::holes_proxy<Polygon> >
 };
 
 template <typename Polygon>
-struct resize<adapt::bp::holes_proxy<Polygon> >
+struct resize<adapt::bp::holes_proxy<Polygon>>
 {
     static inline void apply(adapt::bp::holes_proxy<Polygon> proxy, std::size_t new_size)
     {
@@ -166,39 +157,35 @@ struct resize<adapt::bp::holes_proxy<Polygon> >
 };
 
 template <typename Polygon>
-struct push_back<adapt::bp::holes_proxy<Polygon> >
+struct push_back<adapt::bp::holes_proxy<Polygon>>
 {
     template <typename Ring>
-    static inline void apply(adapt::bp::holes_proxy<Polygon> proxy, Ring const& ring)
+    static inline void apply(adapt::bp::holes_proxy<Polygon> proxy, Ring const &ring)
     {
         proxy.push_back(ring);
     }
 };
 
-
-
 } // namespace traits
 
-
-}}
-
+} // namespace geometry
+} // namespace boost
 
 // Specialize holes_proxy for Boost.Range
 namespace boost
 {
-    template<typename Polygon>
-    struct range_mutable_iterator<geometry::adapt::bp::holes_proxy<Polygon> >
-    {
-        typedef typename geometry::adapt::bp::holes_proxy<Polygon>::iterator_type type;
-    };
+template <typename Polygon>
+struct range_mutable_iterator<geometry::adapt::bp::holes_proxy<Polygon>>
+{
+    typedef typename geometry::adapt::bp::holes_proxy<Polygon>::iterator_type type;
+};
 
-    template<typename Polygon>
-    struct range_const_iterator<geometry::adapt::bp::holes_proxy<Polygon> >
-    {
-        typedef typename geometry::adapt::bp::holes_proxy<Polygon const>::iterator_type type;
-    };
+template <typename Polygon>
+struct range_const_iterator<geometry::adapt::bp::holes_proxy<Polygon>>
+{
+    typedef typename geometry::adapt::bp::holes_proxy<Polygon const>::iterator_type type;
+};
 
 } // namespace boost
-
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_POLYGON_HOLES_PROXY_HPP

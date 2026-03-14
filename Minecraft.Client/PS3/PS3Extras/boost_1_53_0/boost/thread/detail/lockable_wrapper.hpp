@@ -8,7 +8,7 @@
 
 #include <boost/thread/detail/config.hpp>
 
-#if ! defined BOOST_THREAD_NO_CXX11_HDR_INITIALIZER_LIST
+#if !defined BOOST_THREAD_NO_CXX11_HDR_INITIALIZER_LIST
 #include <initializer_list>
 #endif
 #include <boost/config/abi_prefix.hpp>
@@ -16,29 +16,29 @@
 namespace boost
 {
 
-#if ! defined BOOST_THREAD_NO_CXX11_HDR_INITIALIZER_LIST
-  namespace thread_detail
-  {
-    template <typename Mutex>
-    struct lockable_wrapper
+#if !defined BOOST_THREAD_NO_CXX11_HDR_INITIALIZER_LIST
+namespace thread_detail
+{
+template <typename Mutex>
+struct lockable_wrapper
+{
+    Mutex *m;
+    explicit lockable_wrapper(Mutex &m_) : m(&m_)
     {
-      Mutex* m;
-      explicit lockable_wrapper(Mutex& m_) :
-        m(&m_)
-      {}
-    };
-    template <typename Mutex>
-    struct lockable_adopt_wrapper
+    }
+};
+template <typename Mutex>
+struct lockable_adopt_wrapper
+{
+    Mutex *m;
+    explicit lockable_adopt_wrapper(Mutex &m_) : m(&m_)
     {
-      Mutex* m;
-      explicit lockable_adopt_wrapper(Mutex& m_) :
-        m(&m_)
-      {}
-    };
-  }
+    }
+};
+} // namespace thread_detail
 #endif
 
-}
+} // namespace boost
 
 #include <boost/config/abi_suffix.hpp>
 

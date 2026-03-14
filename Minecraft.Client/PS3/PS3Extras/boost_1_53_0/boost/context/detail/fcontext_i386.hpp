@@ -15,45 +15,48 @@
 #include <boost/context/detail/config.hpp>
 
 #ifdef BOOST_HAS_ABI_HEADERS
-# include BOOST_ABI_PREFIX
+#include BOOST_ABI_PREFIX
 #endif
 
-namespace boost {
-namespace context {
+namespace boost
+{
+namespace context
+{
 
-extern "C" {
+extern "C"
+{
 
 #define BOOST_CONTEXT_CALLDECL __attribute__((cdecl))
 
-struct stack_t
-{
-    void            *   sp;
-    std::size_t         size;
+    struct stack_t
+    {
+        void *sp;
+        std::size_t size;
 
-    stack_t() :
-        sp( 0), size( 0)
-    {}
-};
+        stack_t() : sp(0), size(0)
+        {
+        }
+    };
 
-struct fcontext_t
-{
-    boost::uint32_t     fc_greg[6];
-    stack_t             fc_stack;
-    boost::uint32_t     fc_freg[2];
+    struct fcontext_t
+    {
+        boost::uint32_t fc_greg[6];
+        stack_t fc_stack;
+        boost::uint32_t fc_freg[2];
 
-    fcontext_t() :
-        fc_greg(),
-        fc_stack(),
-        fc_freg()
-    {}
-};
-
+        fcontext_t() : fc_greg(),
+                       fc_stack(),
+                       fc_freg()
+        {
+        }
+    };
 }
 
-}}
+} // namespace context
+} // namespace boost
 
 #ifdef BOOST_HAS_ABI_HEADERS
-# include BOOST_ABI_SUFFIX
+#include BOOST_ABI_SUFFIX
 #endif
 
 #endif // BOOST_CONTEXT_DETAIL_FCONTEXT_I386_H

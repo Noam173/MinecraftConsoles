@@ -18,16 +18,19 @@
 // (while nothing seems to be wrong)
 #define BOOST_UBLAS_TYPE_CHECK 0
 
-#include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/ublas/lu.hpp>
 
 #include <boost/geometry/strategies/transform/matrix_transformers.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace strategy { namespace transform
+namespace strategy
+{
+namespace transform
 {
 
 /*!
@@ -42,9 +45,9 @@ class inverse_transformer
 {
     typedef typename select_coordinate_type<P1, P2>::type T;
 
-public :
+  public:
     template <typename Transformer>
-    inline inverse_transformer(Transformer const& input)
+    inline inverse_transformer(Transformer const &input)
     {
         typedef boost::numeric::ublas::matrix<T> matrix_type;
 
@@ -57,7 +60,7 @@ public :
 
         // perform LU-factorization
         int res = boost::numeric::ublas::lu_factorize<matrix_type>(copy, pm);
-        if( res == 0 )
+        if (res == 0)
         {
             // create identity matrix
             this->m_matrix.assign(boost::numeric::ublas::identity_matrix<T>(copy.size1()));
@@ -66,13 +69,12 @@ public :
             boost::numeric::ublas::lu_substitute(copy, pm, this->m_matrix);
         }
     }
-
 };
 
+} // namespace transform
+} // namespace strategy
 
-}} // namespace strategy::transform
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_TRANSFORM_INVERSE_TRANSFORMER_HPP

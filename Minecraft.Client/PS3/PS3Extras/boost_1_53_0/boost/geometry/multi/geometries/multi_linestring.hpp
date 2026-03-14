@@ -23,9 +23,10 @@
 
 #include <boost/geometry/multi/core/tags.hpp>
 
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 namespace model
 {
@@ -41,32 +42,26 @@ namespace model
 [link geometry.reference.concepts.concept_multi_linestring MultiLineString Concept]
 }
 */
-template
-<
+template <
     typename LineString,
-    template<typename, typename> class Container = std::vector,
-    template<typename> class Allocator = std::allocator
->
-class multi_linestring : public Container<LineString, Allocator<LineString> >
+    template <typename, typename> class Container = std::vector,
+    template <typename> class Allocator = std::allocator>
+class multi_linestring : public Container<LineString, Allocator<LineString>>
 {
-    BOOST_CONCEPT_ASSERT( (concept::Linestring<LineString>) );
+    BOOST_CONCEPT_ASSERT((concept ::Linestring<LineString>));
 };
 
-
 } // namespace model
-
 
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 namespace traits
 {
 
-template
-<
+template <
     typename LineString,
-    template<typename, typename> class Container,
-    template<typename> class Allocator
->
-struct tag< model::multi_linestring<LineString, Container, Allocator> >
+    template <typename, typename> class Container,
+    template <typename> class Allocator>
+struct tag<model::multi_linestring<LineString, Container, Allocator>>
 {
     typedef multi_linestring_tag type;
 };
@@ -74,7 +69,7 @@ struct tag< model::multi_linestring<LineString, Container, Allocator> >
 } // namespace traits
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_GEOMETRIES_LINESTRING_HPP

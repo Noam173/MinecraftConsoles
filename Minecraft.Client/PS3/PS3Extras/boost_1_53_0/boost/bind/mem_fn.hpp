@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -22,8 +22,8 @@
 //
 
 #include <boost/config.hpp>
-#include <boost/get_pointer.hpp>
 #include <boost/detail/workaround.hpp>
+#include <boost/get_pointer.hpp>
 
 namespace boost
 {
@@ -36,7 +36,8 @@ namespace boost
 namespace _mfi // mem_fun_impl
 {
 
-template<class V> struct mf
+template <class V>
+struct mf
 {
 
 #define BOOST_MEM_FN_RETURN return
@@ -89,7 +90,8 @@ template<class V> struct mf
 
 }; // struct mf<V>
 
-template<> struct mf<void>
+template <>
+struct mf<void>
 {
 
 #define BOOST_MEM_FN_RETURN
@@ -311,67 +313,70 @@ namespace _mfi
 namespace _mfi
 {
 
-template<class R, class T> class dm
+template <class R, class T>
+class dm
 {
-public:
+  public:
+    typedef R const &result_type;
+    typedef T const *argument_type;
 
-    typedef R const & result_type;
-    typedef T const * argument_type;
-
-private:
-    
-    typedef R (T::*F);
+  private:
+    typedef R(T::*F);
     F f_;
 
-    template<class U> R const & call(U & u, T const *) const
+    template <class U>
+    R const &call(U &u, T const *) const
     {
         return (u.*f_);
     }
 
-    template<class U> R const & call(U & u, void const *) const
+    template <class U>
+    R const &call(U &u, void const *) const
     {
         return (get_pointer(u)->*f_);
     }
 
-public:
-    
-    explicit dm(F f): f_(f) {}
+  public:
+    explicit dm(F f) : f_(f)
+    {
+    }
 
-    R & operator()(T * p) const
+    R &operator()(T *p) const
     {
         return (p->*f_);
     }
 
-    R const & operator()(T const * p) const
+    R const &operator()(T const *p) const
     {
         return (p->*f_);
     }
 
-    template<class U> R const & operator()(U const & u) const
+    template <class U>
+    R const &operator()(U const &u) const
     {
         return call(u, &u);
     }
 
 #if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300) && !BOOST_WORKAROUND(__MWERKS__, < 0x3200)
 
-    R & operator()(T & t) const
+    R &operator()(T &t) const
     {
         return (t.*f_);
     }
 
-    R const & operator()(T const & t) const
+    R const &operator()(T const &t) const
     {
         return (t.*f_);
     }
 
 #endif
 
-    bool operator==(dm const & rhs) const
+    bool operator==(dm const &rhs) const
     {
         return f_ == rhs.f_;
     }
 
-    bool operator!=(dm const & rhs) const
+    bool operator!=(dm const &rhs) const
     {
         return f_ != rhs.f_;
     }
@@ -379,7 +384,8 @@ public:
 
 } // namespace _mfi
 
-template<class R, class T> _mfi::dm<R, T> mem_fn(R T::*f)
+template <class R, class T>
+_mfi::dm<R, T> mem_fn(R T::*f)
 {
     return _mfi::dm<R, T>(f);
 }

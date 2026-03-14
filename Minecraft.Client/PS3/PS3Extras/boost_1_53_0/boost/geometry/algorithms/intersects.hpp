@@ -14,15 +14,15 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_INTERSECTS_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_INTERSECTS_HPP
 
-
 #include <deque>
 
-#include <boost/geometry/geometries/concepts/check.hpp>
 #include <boost/geometry/algorithms/detail/overlay/self_turn_points.hpp>
 #include <boost/geometry/algorithms/disjoint.hpp>
+#include <boost/geometry/geometries/concepts/check.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
@@ -39,44 +39,36 @@ namespace boost { namespace geometry
 \qbk{[include reference/algorithms/intersects.qbk]}
 */
 template <typename Geometry>
-inline bool intersects(Geometry const& geometry)
+inline bool intersects(Geometry const &geometry)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
-
-    typedef detail::overlay::turn_info
-        <
-            typename geometry::point_type<Geometry>::type
-        > turn_info;
+    typedef detail::overlay::turn_info<
+        typename geometry::point_type<Geometry>::type>
+        turn_info;
     std::deque<turn_info> turns;
 
-    typedef typename strategy_intersection
-        <
-            typename cs_tag<Geometry>::type,
-            Geometry,
-            Geometry,
-            typename geometry::point_type<Geometry>::type
-        >::segment_intersection_strategy_type segment_intersection_strategy_type;
+    typedef typename strategy_intersection<
+        typename cs_tag<Geometry>::type,
+        Geometry,
+        Geometry,
+        typename geometry::point_type<Geometry>::type>::segment_intersection_strategy_type segment_intersection_strategy_type;
 
-    typedef detail::overlay::get_turn_info
-        <
-            typename point_type<Geometry>::type,
-            typename point_type<Geometry>::type,
-            turn_info,
-            detail::overlay::assign_null_policy
-        > TurnPolicy;
+    typedef detail::overlay::get_turn_info<
+        typename point_type<Geometry>::type,
+        typename point_type<Geometry>::type,
+        turn_info,
+        detail::overlay::assign_null_policy>
+        TurnPolicy;
 
     detail::disjoint::disjoint_interrupt_policy policy;
-    detail::self_get_turn_points::get_turns
-            <
-                Geometry,
-                std::deque<turn_info>,
-                TurnPolicy,
-                detail::disjoint::disjoint_interrupt_policy
-            >::apply(geometry, turns, policy);
+    detail::self_get_turn_points::get_turns<
+        Geometry,
+        std::deque<turn_info>,
+        TurnPolicy,
+        detail::disjoint::disjoint_interrupt_policy>::apply(geometry, turns, policy);
     return policy.has_intersections;
 }
-
 
 /*!
 \brief \brief_check2{have at least one intersection}
@@ -91,16 +83,15 @@ inline bool intersects(Geometry const& geometry)
 \qbk{[include reference/algorithms/intersects.qbk]}
  */
 template <typename Geometry1, typename Geometry2>
-inline bool intersects(Geometry1 const& geometry1, Geometry2 const& geometry2)
+inline bool intersects(Geometry1 const &geometry1, Geometry2 const &geometry2)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
 
-    return ! geometry::disjoint(geometry1, geometry2);
+    return !geometry::disjoint(geometry1, geometry2);
 }
 
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_INTERSECTS_HPP

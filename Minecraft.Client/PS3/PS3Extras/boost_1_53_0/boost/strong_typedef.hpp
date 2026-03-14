@@ -3,13 +3,13 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // strong_typedef.hpp:
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -26,40 +26,77 @@
 #include <boost/operators.hpp>
 
 #if !defined(__BORLANDC__) || __BORLANDC__ >= 0x590
-    #define BOOST_STRONG_TYPEDEF(T, D)                              \
+#define BOOST_STRONG_TYPEDEF(T, D)                                  \
     struct D                                                        \
-        : boost::totally_ordered1< D                                \
-        , boost::totally_ordered2< D, T                             \
-        > >                                                         \
+        : boost::totally_ordered1<D, boost::totally_ordered2<D, T>> \
     {                                                               \
         T t;                                                        \
         explicit D(const T t_) : t(t_) {};                          \
-        D(){};                                                      \
-        D(const D & t_) : t(t_.t){}                                 \
-        D & operator=(const D & rhs) { t = rhs.t; return *this;}    \
-        D & operator=(const T & rhs) { t = rhs; return *this;}      \
-        operator const T & () const {return t; }                    \
-        operator T & () { return t; }                               \
-        bool operator==(const D & rhs) const { return t == rhs.t; } \
-        bool operator<(const D & rhs) const { return t < rhs.t; }   \
+        D() {};                                                     \
+        D(const D &t_) : t(t_.t)                                    \
+        {                                                           \
+        }                                                           \
+        D &operator=(const D &rhs)                                  \
+        {                                                           \
+            t = rhs.t;                                              \
+            return *this;                                           \
+        }                                                           \
+        D &operator=(const T &rhs)                                  \
+        {                                                           \
+            t = rhs;                                                \
+            return *this;                                           \
+        }                                                           \
+        operator const T &() const                                  \
+        {                                                           \
+            return t;                                               \
+        }                                                           \
+        operator T &()                                              \
+        {                                                           \
+            return t;                                               \
+        }                                                           \
+        bool operator==(const D &rhs) const                         \
+        {                                                           \
+            return t == rhs.t;                                      \
+        }                                                           \
+        bool operator<(const D &rhs) const                          \
+        {                                                           \
+            return t < rhs.t;                                       \
+        }                                                           \
     };
 #else
-    #define BOOST_STRONG_TYPEDEF(T, D)                              \
+#define BOOST_STRONG_TYPEDEF(T, D)                                  \
     struct D                                                        \
-        : boost::totally_ordered1< D                                \
-        , boost::totally_ordered2< D, T                             \
-        > >                                                         \
+        : boost::totally_ordered1<D, boost::totally_ordered2<D, T>> \
     {                                                               \
         T t;                                                        \
         explicit D(const T t_) : t(t_) {};                          \
-        D(){};                                                      \
-        D(const D & t_) : t(t_.t){}                                 \
-        D & operator=(const D & rhs) { t = rhs.t; return *this;}    \
-        D & operator=(const T & rhs) { t = rhs; return *this;}      \
+        D() {};                                                     \
+        D(const D &t_) : t(t_.t)                                    \
+        {                                                           \
+        }                                                           \
+        D &operator=(const D &rhs)                                  \
+        {                                                           \
+            t = rhs.t;                                              \
+            return *this;                                           \
+        }                                                           \
+        D &operator=(const T &rhs)                                  \
+        {                                                           \
+            t = rhs;                                                \
+            return *this;                                           \
+        }                                                           \
         /*operator const T & () const {return t; }*/                \
-        operator T & () { return t; }                               \
-        bool operator==(const D & rhs) const { return t == rhs.t; } \
-        bool operator<(const D & rhs) const { return t < rhs.t; }   \
+        operator T &()                                              \
+        {                                                           \
+            return t;                                               \
+        }                                                           \
+        bool operator==(const D &rhs) const                         \
+        {                                                           \
+            return t == rhs.t;                                      \
+        }                                                           \
+        bool operator<(const D &rhs) const                          \
+        {                                                           \
+            return t < rhs.t;                                       \
+        }                                                           \
     };
 #endif // !defined(__BORLANDC) || __BORLANDC__ >= 0x590
 

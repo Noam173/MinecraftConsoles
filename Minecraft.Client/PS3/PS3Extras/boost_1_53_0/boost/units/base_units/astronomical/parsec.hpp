@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,8 +11,8 @@
 #ifndef BOOST_UNIT_SYSTEMS_ASTRONOMICAL_PARSEC_HPP_INCLUDED
 #define BOOST_UNIT_SYSTEMS_ASTRONOMICAL_PARSEC_HPP_INCLUDED
 
-#include <boost/units/conversion.hpp>
 #include <boost/units/base_units/si/meter.hpp>
+#include <boost/units/conversion.hpp>
 
 BOOST_UNITS_DEFINE_BASE_UNIT_WITH_CONVERSIONS(astronomical, parsec, "parsec", "psc", 3.0856775813e16, boost::units::si::meter_base_unit, -206);
 

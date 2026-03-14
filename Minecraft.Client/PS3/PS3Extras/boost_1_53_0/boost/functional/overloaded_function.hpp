@@ -8,27 +8,27 @@
 #ifndef DOXYGEN // Doxygen documentation only.
 
 #if !BOOST_PP_IS_ITERATING
-#   ifndef BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_HPP_
-#       define BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_HPP_
+#ifndef BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_HPP_
+#define BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_HPP_
 
-#       include <boost/functional/overloaded_function/detail/base.hpp>
-#       include <boost/functional/overloaded_function/detail/function_type.hpp>
-#       include <boost/functional/overloaded_function/config.hpp>
-#       include <boost/typeof/typeof.hpp>
-#       include <boost/preprocessor/iteration/iterate.hpp>
-#       include <boost/preprocessor/repetition/enum.hpp>
-#       include <boost/preprocessor/repetition/repeat.hpp>
-#       include <boost/preprocessor/control/expr_iif.hpp>
-#       include <boost/preprocessor/control/expr_if.hpp>
-#       include <boost/preprocessor/comparison/greater.hpp>
-#       include <boost/preprocessor/comparison/less.hpp>
-#       include <boost/preprocessor/cat.hpp>
-#       include <boost/preprocessor/arithmetic/add.hpp>
-#       include <boost/preprocessor/arithmetic/sub.hpp>
-#       include <boost/preprocessor/tuple/eat.hpp>
-#       include <boost/preprocessor/logical/and.hpp>
-#       include <boost/preprocessor/logical/not.hpp>
-#       include <boost/preprocessor/facilities/expand.hpp>
+#include <boost/functional/overloaded_function/config.hpp>
+#include <boost/functional/overloaded_function/detail/base.hpp>
+#include <boost/functional/overloaded_function/detail/function_type.hpp>
+#include <boost/preprocessor/arithmetic/add.hpp>
+#include <boost/preprocessor/arithmetic/sub.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/comparison/greater.hpp>
+#include <boost/preprocessor/comparison/less.hpp>
+#include <boost/preprocessor/control/expr_if.hpp>
+#include <boost/preprocessor/control/expr_iif.hpp>
+#include <boost/preprocessor/facilities/expand.hpp>
+#include <boost/preprocessor/iteration/iterate.hpp>
+#include <boost/preprocessor/logical/and.hpp>
+#include <boost/preprocessor/logical/not.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/tuple/eat.hpp>
+#include <boost/typeof/typeof.hpp>
 
 #define BOOST_FUNCTIONAL_f_type(z, n, unused) \
     BOOST_PP_CAT(F, n)
@@ -37,19 +37,17 @@
     BOOST_PP_CAT(f, n)
 
 #define BOOST_FUNCTIONAL_f_tparam(z, n, unused) \
-    typename BOOST_FUNCTIONAL_f_type(z, n, ~) \
+    typename BOOST_FUNCTIONAL_f_type(z, n, ~)
 
-#define BOOST_FUNCTIONAL_f_tparam_dflt(z, n, is_tspec) \
-    BOOST_FUNCTIONAL_f_tparam(z, n, ~) \
-    /* overload requires at least 2 functors so F0 and F1 not optional */ \
-    BOOST_PP_EXPR_IIF(BOOST_PP_AND(BOOST_PP_NOT(is_tspec), \
-            BOOST_PP_GREATER(n, 1)), \
-        = void \
-    )
+#define BOOST_FUNCTIONAL_f_tparam_dflt(z, n, is_tspec)                                                       \
+    BOOST_FUNCTIONAL_f_tparam(z, n, ~) /* overload requires at least 2 functors so F0 and F1 not optional */ \
+        BOOST_PP_EXPR_IIF(BOOST_PP_AND(BOOST_PP_NOT(is_tspec),                                               \
+                                       BOOST_PP_GREATER(n, 1)),                                              \
+                          = void)
 
-#define BOOST_FUNCTIONAL_f_arg_decl(z, n, unused) \
+#define BOOST_FUNCTIONAL_f_arg_decl(z, n, unused)                        \
     BOOST_FUNCTIONAL_f_type(z, n, ~) /* no qualifier to deduce tparam */ \
-    BOOST_FUNCTIONAL_f_arg(z, n, ~)
+        BOOST_FUNCTIONAL_f_arg(z, n, ~)
 
 #define BOOST_FUNCTIONAL_g_type(z, n, unused) \
     BOOST_PP_CAT(G, n)
@@ -60,17 +58,17 @@
 #define BOOST_FUNCTIONAL_g_tparam(z, n, unused) \
     typename BOOST_FUNCTIONAL_g_type(z, n, ~)
 
-#define BOOST_FUNCTIONAL_g_arg_decl(z, n, unused) \
+#define BOOST_FUNCTIONAL_g_arg_decl(z, n, unused)                        \
     BOOST_FUNCTIONAL_g_type(z, n, ~) /* no qualifier to deduce tparam */ \
-    BOOST_FUNCTIONAL_g_arg(z, n, ~)
+        BOOST_FUNCTIONAL_g_arg(z, n, ~)
 
-#define BOOST_FUNCTIONAL_base(z, n, unused) \
+#define BOOST_FUNCTIONAL_base(z, n, unused)    \
     ::boost::overloaded_function_detail::base< \
-        BOOST_FUNCTIONAL_f_type(z, n, ~) \
-    >
+        BOOST_FUNCTIONAL_f_type(z, n, ~)>
 
 #define BOOST_FUNCTIONAL_inherit(z, n, unused) \
-    public BOOST_FUNCTIONAL_base(z, n, ~)
+  public                                       \
+    BOOST_FUNCTIONAL_base(z, n, ~)
 
 #define BOOST_FUNCTIONAL_base_init(z, n, unused) \
     BOOST_FUNCTIONAL_base(z, n, ~)(BOOST_FUNCTIONAL_g_arg(z, n, ~))
@@ -78,17 +76,16 @@
 #define BOOST_FUNCTIONAL_using_operator_call(z, n, unused) \
     using BOOST_FUNCTIONAL_base(z, n, ~)::operator();
 
-#define BOOST_FUNCTIONAL_function_type(z, n, unused) \
+#define BOOST_FUNCTIONAL_function_type(z, n, unused)             \
     typename ::boost::overloaded_function_detail::function_type< \
-        BOOST_FUNCTIONAL_f_type(z, n, ~) \
-    >::type
+        BOOST_FUNCTIONAL_f_type(z, n, ~)>::type
 
-#       define BOOST_PP_ITERATION_PARAMS_1 \
-            /* at least 2 func to overload so start from 2 to MAX */ \
-            /* (cannot iterate [0, MAX-2) because error on Sun) */ \
-            (3, (2, BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX, \
-            "boost/functional/overloaded_function.hpp"))
-#       include BOOST_PP_ITERATE() // Iterate over function arity.
+#define BOOST_PP_ITERATION_PARAMS_1                                   \
+    /* at least 2 func to overload so start from 2 to MAX */          \
+    /* (cannot iterate [0, MAX-2) because error on Sun) */            \
+    (3, (2, BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX, \
+         "boost/functional/overloaded_function.hpp"))
+#include BOOST_PP_ITERATE() // Iterate over function arity.
 
 #undef BOOST_FUNCTIONAL_f_type
 #undef BOOST_FUNCTIONAL_f_arg
@@ -105,79 +102,73 @@
 #undef BOOST_FUNCTIONAL_using_operator_call
 #undef BOOST_FUNCTIONAL_function_type
 
-#   endif // #include guard
+#endif // #include guard
 
 #elif BOOST_PP_ITERATION_DEPTH() == 1
-#   define BOOST_FUNCTIONAL_overloads \
-        /* iterate as OVERLOADS, OVERLOADS-1, OVERLOADS-2, ... */ \
-        /* (add 2 because iteration started from 2 to MAX) */ \
-        BOOST_PP_ADD(2, BOOST_PP_SUB( \
-                BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX, \
-                BOOST_PP_FRAME_ITERATION(1)))
-#   define BOOST_FUNCTIONAL_is_tspec \
-        /* if template specialization */ \
-        BOOST_PP_LESS(BOOST_FUNCTIONAL_overloads, \
-                BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX)
+#define BOOST_FUNCTIONAL_overloads                                                \
+    /* iterate as OVERLOADS, OVERLOADS-1, OVERLOADS-2, ... */                     \
+    /* (add 2 because iteration started from 2 to MAX) */                         \
+    BOOST_PP_ADD(2, BOOST_PP_SUB(                                                 \
+                        BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX, \
+                        BOOST_PP_FRAME_ITERATION(1)))
+#define BOOST_FUNCTIONAL_is_tspec             \
+    /* if template specialization */          \
+    BOOST_PP_LESS(BOOST_FUNCTIONAL_overloads, \
+                  BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX)
 
 // For type-of emulation: This must be included at this pp iteration level.
-#   include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
+#include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
-namespace boost {
+namespace boost
+{
 
-template<
+template <
     BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_tparam_dflt,
-            BOOST_FUNCTIONAL_is_tspec)
->
+                  BOOST_FUNCTIONAL_is_tspec)>
 class overloaded_function
     // Template specialization.
     BOOST_PP_EXPR_IIF(BOOST_PP_EXPAND(BOOST_FUNCTIONAL_is_tspec), <)
-    BOOST_PP_IIF(BOOST_FUNCTIONAL_is_tspec,
-        BOOST_PP_ENUM
-    ,
-        BOOST_PP_TUPLE_EAT(3)
-    )(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_type, ~)
-    BOOST_PP_EXPR_IIF(BOOST_PP_EXPAND(BOOST_FUNCTIONAL_is_tspec), >)
+        BOOST_PP_IIF(BOOST_FUNCTIONAL_is_tspec,
+                     BOOST_PP_ENUM,
+                     BOOST_PP_TUPLE_EAT(3))(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_type, ~)
+            BOOST_PP_EXPR_IIF(BOOST_PP_EXPAND(BOOST_FUNCTIONAL_is_tspec), >)
     // Bases (overloads >= 2 so always at least 2 bases).
     : BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads,
-            BOOST_FUNCTIONAL_inherit, ~)
-{
-public:
-    template<
-        BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_g_tparam, ~)
-    > /* implicit */ inline overloaded_function(
-            BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads,
-                    BOOST_FUNCTIONAL_g_arg_decl, ~))
-            // Overloads >= 2 so always at least 2 bases to initialize.
-            : BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads,
-                    BOOST_FUNCTIONAL_base_init, ~)
-    {}
+                    BOOST_FUNCTIONAL_inherit, ~){
+          public :
+              template <
+                  BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_g_tparam, ~)>
+              /* implicit */ inline overloaded_function(
+                  BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads,
+                                BOOST_FUNCTIONAL_g_arg_decl, ~))
+          // Overloads >= 2 so always at least 2 bases to initialize.
+          : BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads,
+                          BOOST_FUNCTIONAL_base_init, ~){}
 
-    BOOST_PP_REPEAT(BOOST_FUNCTIONAL_overloads, 
-            BOOST_FUNCTIONAL_using_operator_call, ~)
-};
+          BOOST_PP_REPEAT(BOOST_FUNCTIONAL_overloads,
+                          BOOST_FUNCTIONAL_using_operator_call, ~)
+      };
 
-template<
-    BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_tparam, ~)
->
+template <
+    BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_tparam, ~)>
 overloaded_function<
-    BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_function_type, ~)
-> make_overloaded_function(
-    BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_arg_decl, ~)
-) {
+    BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_function_type, ~)>
+make_overloaded_function(
+    BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_arg_decl, ~))
+{
     return overloaded_function<
         BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads,
-                BOOST_FUNCTIONAL_function_type, ~)
-    >(BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_arg, ~));
+                      BOOST_FUNCTIONAL_function_type, ~)>(BOOST_PP_ENUM(BOOST_FUNCTIONAL_overloads, BOOST_FUNCTIONAL_f_arg, ~));
 }
 
-} // namespace
+} // namespace boost
 
 // For type-of emulation: Register overloaded function type (for _AUTO, etc).
 BOOST_TYPEOF_REGISTER_TEMPLATE(boost::overloaded_function,
-    BOOST_FUNCTIONAL_overloads)
+                               BOOST_FUNCTIONAL_overloads)
 
-#   undef BOOST_FUNCTIONAL_overloads
-#   undef BOOST_FUNCTIONAL_is_tspec
+#undef BOOST_FUNCTIONAL_overloads
+#undef BOOST_FUNCTIONAL_is_tspec
 #endif // iteration
 
 // DOCUMENTATION //
@@ -189,7 +180,8 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(boost::overloaded_function,
 monomorphic function objects into a single function object.
 */
 
-namespace boost {
+namespace boost
+{
 
 /**
 @brief Function object to overload functions with distinct signatures.
@@ -227,9 +219,10 @@ configuration macro.
 @RefMacro{BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_ARITY_MAX},
 Boost.Function.
 */
-template<typename F1, typename F2, ...>
-class overloaded_function {
-public:
+template <typename F1, typename F2, ...>
+class overloaded_function
+{
+  public:
     /**
     @brief Construct the overloaded function object.
 
@@ -241,8 +234,8 @@ public:
     objects (as explained <a
     href="http://lists.boost.org/Archives/boost/2012/03/191744.php">here</a>).
     */
-    overloaded_function(const boost::function<F1>&,
-            const boost::function<F2>&, ...);
+    overloaded_function(const boost::function<F1> &,
+                        const boost::function<F2> &, ...);
 
     /**
     @brief Call operator matching the signature of the function type specified
@@ -252,9 +245,9 @@ public:
     the constructor.
     */
     typename boost::function_traits<F1>::result_type operator()(
-            typename boost::function_traits<F1>::arg1_type,
-            typename boost::function_traits<F1>::arg2_type,
-            ...) const;
+        typename boost::function_traits<F1>::arg1_type,
+        typename boost::function_traits<F1>::arg2_type,
+        ...) const;
 
     /**
     @brief Call operator matching the signature of the function type specified
@@ -268,9 +261,9 @@ public:
     documentation).
     */
     typename boost::function_traits<F2>::result_type operator()(
-            typename boost::function_traits<F2>::arg1_type,
-            typename boost::function_traits<F2>::arg2_type,
-            ...) const;
+        typename boost::function_traits<F2>::arg1_type,
+        typename boost::function_traits<F2>::arg2_type,
+        ...) const;
 };
 
 /**
@@ -300,12 +293,11 @@ symbol that is specific to the implementation of this library.
 @See @RefSect{tutorial, Tutorial} section, @RefClass{overloaded_function},
 @RefMacro{BOOST_FUNCTIONAL_OVERLOADED_FUNCTION_CONFIG_OVERLOAD_MAX}.
 */
-template<typename F1, typename F2, ...>
+template <typename F1, typename F2, ...>
 overloaded_function<
-    __function_type__<F1>, __function_type__<F2>, ...
-> make_overloaded_function(F1 f1, F2 f2, ...);
+    __function_type__<F1>, __function_type__<F2>, ...>
+make_overloaded_function(F1 f1, F2 f2, ...);
 
-} // namespace
+} // namespace boost
 
 #endif // DOXYGEN
-

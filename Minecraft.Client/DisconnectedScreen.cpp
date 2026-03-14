@@ -1,20 +1,20 @@
-#include "stdafx.h"
 #include "DisconnectedScreen.h"
-#include "TitleScreen.h"
-#include "Button.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
+#include "Button.h"
+#include "TitleScreen.h"
+#include "stdafx.h"
 
-DisconnectedScreen::DisconnectedScreen(const wstring& title, const wstring reason, void *reasonObjects, ...)
+DisconnectedScreen::DisconnectedScreen(const wstring &title, const wstring reason, void *reasonObjects, ...)
 {
     Language *language = Language::getInstance();
 
     this->title = language->getElement(title);
     if (reasonObjects != nullptr)
-	{
+    {
         this->reason = language->getElement(reason, reasonObjects);
     }
-	else
-	{
+    else
+    {
         this->reason = language->getElement(reason);
     }
 }
@@ -33,13 +33,12 @@ void DisconnectedScreen::init()
 
     buttons.clear();
     buttons.push_back(new Button(0, width / 2 - 100, height / 4 + 24 * 5 + 12, language->getElement(L"gui.toMenu")));
-
 }
 
 void DisconnectedScreen::buttonClicked(Button *button)
 {
     if (button->id == 0)
-	{
+    {
         minecraft->setScreen(new TitleScreen());
     }
 }

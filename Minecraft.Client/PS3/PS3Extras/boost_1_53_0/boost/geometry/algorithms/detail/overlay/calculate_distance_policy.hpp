@@ -9,18 +9,18 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_CALCULATE_DISTANCE_POLICY_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_CALCULATE_DISTANCE_POLICY_HPP
 
-
 #include <boost/geometry/algorithms/comparable_distance.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
 {
-
+namespace overlay
+{
 
 /*!
     \brief Policy calculating distance
@@ -34,31 +34,25 @@ struct calculate_distance_policy
     static bool const include_degenerate = false;
     static bool const include_opposite = false;
 
-    template 
-	<
-		typename Info,
-		typename Point1,
-		typename Point2,
-		typename IntersectionInfo,
-		typename DirInfo
-	>
-    static inline void apply(Info& info, Point1 const& p1, Point2 const& p2,
-                IntersectionInfo const&, DirInfo const&)
+    template <
+        typename Info,
+        typename Point1,
+        typename Point2,
+        typename IntersectionInfo,
+        typename DirInfo>
+    static inline void apply(Info &info, Point1 const &p1, Point2 const &p2,
+                             IntersectionInfo const &, DirInfo const &)
     {
-        info.operations[0].enriched.distance
-                    = geometry::comparable_distance(info.point, p1);
-        info.operations[1].enriched.distance
-                    = geometry::comparable_distance(info.point, p2);
+        info.operations[0].enriched.distance = geometry::comparable_distance(info.point, p1);
+        info.operations[1].enriched.distance = geometry::comparable_distance(info.point, p2);
     }
-
 };
 
+} // namespace overlay
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
 
-}} // namespace detail::overlay
-#endif //DOXYGEN_NO_DETAIL
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_CALCULATE_DISTANCE_POLICY_HPP

@@ -17,28 +17,30 @@
  */
 #ifndef BOOST_NO_CXX11_DELETED_FUNCTIONS
 #define BOOST_THREAD_DELETE_COPY_CTOR(CLASS) \
-      CLASS(CLASS const&) = delete; \
+    CLASS(CLASS const &) = delete;
 
 #define BOOST_THREAD_DELETE_COPY_ASSIGN(CLASS) \
-      CLASS& operator=(CLASS const&) = delete;
+    CLASS &operator=(CLASS const &) = delete;
 
 #else // BOOST_NO_CXX11_DELETED_FUNCTIONS
 #define BOOST_THREAD_DELETE_COPY_CTOR(CLASS) \
-    private: \
-      CLASS(CLASS&); \
-    public:
+  private:                                   \
+    CLASS(CLASS &);                          \
+                                             \
+  public:
 
 #define BOOST_THREAD_DELETE_COPY_ASSIGN(CLASS) \
-    private: \
-      CLASS& operator=(CLASS&); \
-    public:
+  private:                                     \
+    CLASS &operator=(CLASS &);                 \
+                                               \
+  public:
 #endif // BOOST_NO_CXX11_DELETED_FUNCTIONS
 
 /**
  * BOOST_THREAD_NO_COPYABLE deletes the copy constructor and assignment when the compiler supports it or
  * makes them private.
  */
-#define BOOST_THREAD_NO_COPYABLE(CLASS) \
+#define BOOST_THREAD_NO_COPYABLE(CLASS)  \
     BOOST_THREAD_DELETE_COPY_CTOR(CLASS) \
     BOOST_THREAD_DELETE_COPY_ASSIGN(CLASS)
 

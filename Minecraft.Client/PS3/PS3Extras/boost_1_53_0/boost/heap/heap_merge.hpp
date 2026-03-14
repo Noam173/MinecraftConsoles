@@ -13,22 +13,26 @@
 #include <boost/heap/heap_concepts.hpp>
 #include <boost/type_traits/is_same.hpp>
 
-namespace boost  {
-namespace heap   {
-namespace detail {
+namespace boost
+{
+namespace heap
+{
+namespace detail
+{
 
 template <typename Heap1, typename Heap2>
 struct heap_merge_emulate
 {
     struct dummy_reserver
     {
-        static void reserve (Heap1 & lhs, std::size_t required_size)
-        {}
+        static void reserve(Heap1 &lhs, std::size_t required_size)
+        {
+        }
     };
 
     struct reserver
     {
-        static void reserve (Heap1 & lhs, std::size_t required_size)
+        static void reserve(Heap1 &lhs, std::size_t required_size)
         {
             lhs.reserve(required_size);
         }
@@ -38,10 +42,12 @@ struct heap_merge_emulate
                                       reserver,
                                       dummy_reserver>::type space_reserver;
 
-    static void merge(Heap1 & lhs, Heap2 & rhs)
+    static void merge(Heap1 &lhs, Heap2 &rhs)
     {
-        if (Heap1::constant_time_size && Heap2::constant_time_size) {
-            if (Heap1::has_reserve) {
+        if (Heap1::constant_time_size && Heap2::constant_time_size)
+        {
+            if (Heap1::has_reserve)
+            {
                 std::size_t required_size = lhs.size() + rhs.size();
                 space_reserver::reserve(lhs, required_size);
             }
@@ -51,7 +57,8 @@ struct heap_merge_emulate
         // FIXME: optimize: if we have ordered iterators and we can efficiently insert keys with a below the lowest key in the heap
         //                  d-ary, b and fibonacci heaps fall into this category
 
-        while (!rhs.empty()) {
+        while (!rhs.empty())
+        {
             lhs.push(rhs.top());
             rhs.pop();
         }
@@ -60,19 +67,16 @@ struct heap_merge_emulate
                                            rhs.get_stability_count()));
         rhs.set_stability_count(0);
     }
-
 };
-
 
 template <typename Heap>
 struct heap_merge_same_mergable
 {
-    static void merge(Heap & lhs, Heap & rhs)
+    static void merge(Heap &lhs, Heap &rhs)
     {
         lhs.merge(rhs);
     }
 };
-
 
 template <typename Heap>
 struct heap_merge_same
@@ -80,10 +84,9 @@ struct heap_merge_same
     static const bool is_mergable = Heap::is_mergable;
     typedef typename boost::mpl::if_c<is_mergable,
                                       heap_merge_same_mergable<Heap>,
-                                      heap_merge_emulate<Heap, Heap>
-                                     >::type heap_merger;
+                                      heap_merge_emulate<Heap, Heap>>::type heap_merger;
 
-    static void merge(Heap & lhs, Heap & rhs)
+    static void merge(Heap &lhs, Heap &rhs)
     {
         heap_merger::merge(lhs, rhs);
     }
@@ -91,16 +94,14 @@ struct heap_merge_same
 
 } /* namespace detail */
 
-
 /** merge rhs into lhs
  *
  *  \b Effect: lhs contains all elements that have been part of rhs, rhs is empty.
  *
  * */
 template <typename Heap1,
-          typename Heap2
-         >
-void heap_merge(Heap1 & lhs, Heap2 & rhs)
+          typename Heap2>
+void heap_merge(Heap1 &lhs, Heap2 &rhs)
 {
     BOOST_CONCEPT_ASSERT((boost::heap::PriorityQueue<Heap1>));
     BOOST_CONCEPT_ASSERT((boost::heap::PriorityQueue<Heap2>));
@@ -112,12 +113,10 @@ void heap_merge(Heap1 & lhs, Heap2 & rhs)
 
     typedef typename boost::mpl::if_c<same_heaps,
                                       detail::heap_merge_same<Heap1>,
-                                      detail::heap_merge_emulate<Heap1, Heap2>
-                                     >::type heap_merger;
+                                      detail::heap_merge_emulate<Heap1, Heap2>>::type heap_merger;
 
     heap_merger::merge(lhs, rhs);
 }
-
 
 } /* namespace heap */
 } /* namespace boost */

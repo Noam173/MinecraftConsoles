@@ -1,4 +1,4 @@
-# /* **************************************************************************
+#/* **************************************************************************
 #  *                                                                          *
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
@@ -7,13 +7,13 @@
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+#/* See http://www.boost.org for most recent version. */
 #
-# ifndef BOOST_PREPROCESSOR_SEQ_PUSH_BACK_HPP
-# define BOOST_PREPROCESSOR_SEQ_PUSH_BACK_HPP
+#ifndef BOOST_PREPROCESSOR_SEQ_PUSH_BACK_HPP
+#define BOOST_PREPROCESSOR_SEQ_PUSH_BACK_HPP
 #
-# /* BOOST_PP_SEQ_PUSH_BACK */
+#/* BOOST_PP_SEQ_PUSH_BACK */
 #
-# define BOOST_PP_SEQ_PUSH_BACK(seq, elem) seq(elem)
+#define BOOST_PP_SEQ_PUSH_BACK(seq, elem) seq(elem)
 #
-# endif
+#endif

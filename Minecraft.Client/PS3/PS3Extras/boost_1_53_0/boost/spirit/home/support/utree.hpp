@@ -11,10 +11,10 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/support/utree/utree_traits_fwd.hpp>
-#include <boost/spirit/home/support/utree/utree.hpp>
-#include <boost/spirit/home/support/utree/operators.hpp>
 #include <boost/spirit/home/support/utree/detail/utree_detail2.hpp>
+#include <boost/spirit/home/support/utree/operators.hpp>
+#include <boost/spirit/home/support/utree/utree.hpp>
 #include <boost/spirit/home/support/utree/utree_traits.hpp>
+#include <boost/spirit/home/support/utree/utree_traits_fwd.hpp>
 
 #endif

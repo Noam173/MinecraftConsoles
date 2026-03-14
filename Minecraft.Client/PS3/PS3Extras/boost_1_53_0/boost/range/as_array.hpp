@@ -12,34 +12,33 @@
 #define BOOST_RANGE_AS_ARRAY_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/range/iterator_range.hpp>
 #include <boost/range/detail/str_types.hpp>
+#include <boost/range/iterator_range.hpp>
 
 namespace boost
 {
 
-    template< class R >
-    inline iterator_range< BOOST_DEDUCED_TYPENAME range_iterator<R>::type > 
-    as_array( R& r )
-    {
-        return boost::make_iterator_range( r );
-    }
+template <class R>
+inline iterator_range<BOOST_DEDUCED_TYPENAME range_iterator<R>::type>
+as_array(R &r)
+{
+    return boost::make_iterator_range(r);
+}
 
 #ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
-    template< class Range >
-    inline boost::iterator_range< BOOST_DEDUCED_TYPENAME range_iterator<const Range>::type > 
-    as_array( const Range& r )
-    {
-        return boost::make_iterator_range( r );
-    }
-    
-#endif
-    
+template <class Range>
+inline boost::iterator_range<BOOST_DEDUCED_TYPENAME range_iterator<const Range>::type>
+as_array(const Range &r)
+{
+    return boost::make_iterator_range(r);
 }
 
 #endif
 
+} // namespace boost
+
+#endif

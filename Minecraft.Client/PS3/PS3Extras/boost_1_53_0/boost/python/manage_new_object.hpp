@@ -3,25 +3,29 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MANAGE_NEW_OBJECT_DWA200222_HPP
-# define MANAGE_NEW_OBJECT_DWA200222_HPP
+#define MANAGE_NEW_OBJECT_DWA200222_HPP
 
-# include <boost/python/detail/prefix.hpp>
-# include <boost/python/detail/indirect_traits.hpp>
-# include <boost/mpl/if.hpp>
-# include <boost/python/to_python_indirect.hpp>
-# include <boost/type_traits/composite_traits.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/python/detail/indirect_traits.hpp>
+#include <boost/python/detail/prefix.hpp>
+#include <boost/python/to_python_indirect.hpp>
+#include <boost/type_traits/composite_traits.hpp>
 
-namespace boost { namespace python { 
+namespace boost
+{
+namespace python
+{
 
 namespace detail
 {
-  template <class R>
-  struct manage_new_object_requires_a_pointer_return_type
-# if defined(__GNUC__) && __GNUC__ >= 3 || defined(__EDG__)
-  {}
-# endif
-  ;
+template <class R>
+struct manage_new_object_requires_a_pointer_return_type
+#if defined(__GNUC__) && __GNUC__ >= 3 || defined(__EDG__)
+{
 }
+#endif
+;
+} // namespace detail
 
 struct manage_new_object
 {
@@ -29,13 +33,11 @@ struct manage_new_object
     struct apply
     {
         typedef typename mpl::if_c<
-            boost::is_pointer<T>::value
-            , to_python_indirect<T, detail::make_owning_holder>
-            , detail::manage_new_object_requires_a_pointer_return_type<T>
-        >::type type;
+            boost::is_pointer<T>::value, to_python_indirect<T, detail::make_owning_holder>, detail::manage_new_object_requires_a_pointer_return_type<T>>::type type;
     };
 };
 
-}} // namespace boost::python
+} // namespace python
+} // namespace boost
 
 #endif // MANAGE_NEW_OBJECT_DWA200222_HPP

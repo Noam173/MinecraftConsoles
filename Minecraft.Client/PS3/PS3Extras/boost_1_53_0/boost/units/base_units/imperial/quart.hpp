@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,26 +11,36 @@
 #ifndef BOOST_UNITS_BASE_UNITS_IMPERIAL_QUART_HPP_INCLUDED
 #define BOOST_UNITS_BASE_UNITS_IMPERIAL_QUART_HPP_INCLUDED
 
+#include <boost/units/base_units/imperial/pint.hpp>
+#include <boost/units/scale.hpp>
 #include <boost/units/scaled_base_unit.hpp>
 #include <boost/units/static_rational.hpp>
-#include <boost/units/scale.hpp>
-#include <boost/units/base_units/imperial/pint.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units {
+namespace units
+{
 
-namespace imperial {
+namespace imperial
+{
 
-//typedef scaled_base_unit<pint_base_unit, scale<2, static_rational<1> > > quart_base_unit;
-typedef scaled_base_unit<pint_base_unit, scale<2, static_rational<1> > > quart_base_unit;
+// typedef scaled_base_unit<pint_base_unit, scale<2, static_rational<1> > > quart_base_unit;
+typedef scaled_base_unit<pint_base_unit, scale<2, static_rational<1>>> quart_base_unit;
 
 } // namespace imperial
 
-template<>
-struct base_unit_info<imperial::quart_base_unit> {
-    static const char* name()   { return("quart (imp.)"); }
-    static const char* symbol() { return("qt"); }
+template <>
+struct base_unit_info<imperial::quart_base_unit>
+{
+    static const char *name()
+    {
+        return ("quart (imp.)");
+    }
+    static const char *symbol()
+    {
+        return ("qt");
+    }
 };
 
 } // namespace units

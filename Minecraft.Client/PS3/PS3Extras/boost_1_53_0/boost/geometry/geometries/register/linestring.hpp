@@ -11,10 +11,8 @@
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_GEOMETRY_GEOMETRIES_REGISTER_LINESTRING_HPP
 #define BOOST_GEOMETRY_GEOMETRIES_REGISTER_LINESTRING_HPP
-
 
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
@@ -22,7 +20,7 @@
 /*!
 \brief \brief_macro{linestring}
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_LINESTRING, linestring} The 
+\details \details_macro{BOOST_GEOMETRY_REGISTER_LINESTRING, linestring} The
     linestring may contain template parameters, which must be specified then.
 \param Linestring \param_macro_type{linestring}
 
@@ -33,15 +31,25 @@
 }
 */
 #define BOOST_GEOMETRY_REGISTER_LINESTRING(Linestring) \
-namespace boost { namespace geometry { namespace traits {  \
-    template<> struct tag<Linestring> { typedef linestring_tag type; }; \
-}}}
-
+    namespace boost                                    \
+    {                                                  \
+    namespace geometry                                 \
+    {                                                  \
+    namespace traits                                   \
+    {                                                  \
+    template <>                                        \
+    struct tag<Linestring>                             \
+    {                                                  \
+        typedef linestring_tag type;                   \
+    };                                                 \
+    }                                                  \
+    }                                                  \
+    }
 
 /*!
 \brief \brief_macro{templated linestring}
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_LINESTRING_TEMPLATED, templated linestring} 
+\details \details_macro{BOOST_GEOMETRY_REGISTER_LINESTRING_TEMPLATED, templated linestring}
     \details_macro_templated{linestring, point}
 \param Linestring \param_macro_type{linestring (without template parameters)}
 
@@ -52,9 +60,19 @@ namespace boost { namespace geometry { namespace traits {  \
 }
 */
 #define BOOST_GEOMETRY_REGISTER_LINESTRING_TEMPLATED(Linestring) \
-namespace boost { namespace geometry { namespace traits {  \
-    template<typename P> struct tag< Linestring<P> > { typedef linestring_tag type; }; \
-}}}
-
+    namespace boost                                              \
+    {                                                            \
+    namespace geometry                                           \
+    {                                                            \
+    namespace traits                                             \
+    {                                                            \
+    template <typename P>                                        \
+    struct tag<Linestring<P>>                                    \
+    {                                                            \
+        typedef linestring_tag type;                             \
+    };                                                           \
+    }                                                            \
+    }                                                            \
+    }
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_REGISTER_LINESTRING_HPP

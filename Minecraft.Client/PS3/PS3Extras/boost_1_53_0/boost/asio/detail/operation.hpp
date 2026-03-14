@@ -12,20 +12,23 @@
 #define BOOST_ASIO_DETAIL_OPERATION_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if defined(BOOST_ASIO_HAS_IOCP)
-# include <boost/asio/detail/win_iocp_operation.hpp>
+#include <boost/asio/detail/win_iocp_operation.hpp>
 #else
-# include <boost/asio/detail/task_io_service_operation.hpp>
+#include <boost/asio/detail/task_io_service_operation.hpp>
 #endif
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 #if defined(BOOST_ASIO_HAS_IOCP)
 typedef win_iocp_operation operation;

@@ -9,34 +9,34 @@
 #ifndef BOOST_RANGE_ALGORITHM_REPLACE_COPY_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_REPLACE_COPY_HPP_INCLUDED
 
+#include <algorithm>
 #include <boost/concept_check.hpp>
 #include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/concepts.hpp>
-#include <algorithm>
+#include <boost/range/end.hpp>
 
 namespace boost
 {
-    namespace range
-    {
+namespace range
+{
 
 /// \brief template function replace_copy
 ///
 /// range-based version of the replace_copy std algorithm
 ///
 /// \pre ForwardRange is a model of the ForwardRangeConcept
-template< class ForwardRange, class OutputIterator, class Value >
+template <class ForwardRange, class OutputIterator, class Value>
 inline OutputIterator
-replace_copy(const ForwardRange& rng, OutputIterator out_it, const Value& what,
-        const Value& with_what)
+replace_copy(const ForwardRange &rng, OutputIterator out_it, const Value &what,
+             const Value &with_what)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( ForwardRangeConcept<const ForwardRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<const ForwardRange>));
     return std::replace_copy(boost::begin(rng), boost::end(rng), out_it,
-        what, with_what);
+                             what, with_what);
 }
 
-    } // namespace range
-    using range::replace_copy;
+} // namespace range
+using range::replace_copy;
 } // namespace boost
 
 #endif // include guard

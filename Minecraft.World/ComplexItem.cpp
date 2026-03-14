@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "ComplexItem.h"
 #include "net.minecraft.network.packet.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.level.h"
-#include "ComplexItem.h"
+#include "stdafx.h"
 
 ComplexItem::ComplexItem(int id) : Item(id)
 {

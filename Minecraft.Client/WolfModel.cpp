@@ -1,8 +1,8 @@
-#include "stdafx.h"
 #include "WolfModel.h"
-#include "..\Minecraft.World\Wolf.h"
 #include "..\Minecraft.World\Mth.h"
+#include "..\Minecraft.World\Wolf.h"
 #include "ModelPart.h"
+#include "stdafx.h"
 
 WolfModel::WolfModel()
 {
@@ -42,19 +42,19 @@ WolfModel::WolfModel()
     tail->addBox(-1, 0, -1, 2, 8, 2, g);
     tail->setPos(-1, 2 + 18 - legSize, 8);
 
-	head->texOffs(16, 14)->addBox(-3, -5, 0, 2, 2, 1, g);
-	head->texOffs(16, 14)->addBox(1, -5, 0, 2, 2, 1, g);
-	head->texOffs(0, 10)->addBox(-1.5f, 0, -5, 3, 3, 4, g);
+    head->texOffs(16, 14)->addBox(-3, -5, 0, 2, 2, 1, g);
+    head->texOffs(16, 14)->addBox(1, -5, 0, 2, 2, 1, g);
+    head->texOffs(0, 10)->addBox(-1.5f, 0, -5, 3, 3, 4, g);
 
-	// 4J added - compile now to avoid random performance hit first time cubes are rendered
-    head->compile(1.0f/16.0f);
-    body->compile(1.0f/16.0f);
-    upperBody->compile(1.0f/16.0f);
-    leg0->compile(1.0f/16.0f);
-    leg1->compile(1.0f/16.0f);
-    leg2->compile(1.0f/16.0f);
-    leg3->compile(1.0f/16.0f);
-    tail->compile(1.0f/16.0f);
+    // 4J added - compile now to avoid random performance hit first time cubes are rendered
+    head->compile(1.0f / 16.0f);
+    body->compile(1.0f / 16.0f);
+    upperBody->compile(1.0f / 16.0f);
+    leg0->compile(1.0f / 16.0f);
+    leg1->compile(1.0f / 16.0f);
+    leg2->compile(1.0f / 16.0f);
+    leg3->compile(1.0f / 16.0f);
+    tail->compile(1.0f / 16.0f);
 }
 
 void WolfModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
@@ -62,36 +62,36 @@ void WolfModel::render(shared_ptr<Entity> entity, float time, float r, float bob
     Model::render(entity, time, r, bob, yRot, xRot, scale, usecompiled);
     setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
-	if (young) 
-	{
-		float ss = 2;
-		glPushMatrix();
-		glTranslatef(0, 5 * scale, 2 * scale);
-		head->renderRollable(scale, usecompiled);
-		glPopMatrix();
-		glPushMatrix();
-		glScalef(1 / ss, 1 / ss, 1 / ss);
-		glTranslatef(0, 24 * scale, 0);
-		body->render(scale, usecompiled);
-		leg0->render(scale, usecompiled);
-		leg1->render(scale, usecompiled);
-		leg2->render(scale, usecompiled);
-		leg3->render(scale, usecompiled);
-		tail->renderRollable(scale, usecompiled);
-		upperBody->render(scale, usecompiled);
-		glPopMatrix();
-	} 
-	else 
-	{
-		head->renderRollable(scale, usecompiled);
-		body->render(scale, usecompiled);
-		leg0->render(scale, usecompiled);
-		leg1->render(scale, usecompiled);
-		leg2->render(scale, usecompiled);
-		leg3->render(scale, usecompiled);
-		tail->renderRollable(scale, usecompiled);
-		upperBody->render(scale, usecompiled);
-	}
+    if (young)
+    {
+        float ss = 2;
+        glPushMatrix();
+        glTranslatef(0, 5 * scale, 2 * scale);
+        head->renderRollable(scale, usecompiled);
+        glPopMatrix();
+        glPushMatrix();
+        glScalef(1 / ss, 1 / ss, 1 / ss);
+        glTranslatef(0, 24 * scale, 0);
+        body->render(scale, usecompiled);
+        leg0->render(scale, usecompiled);
+        leg1->render(scale, usecompiled);
+        leg2->render(scale, usecompiled);
+        leg3->render(scale, usecompiled);
+        tail->renderRollable(scale, usecompiled);
+        upperBody->render(scale, usecompiled);
+        glPopMatrix();
+    }
+    else
+    {
+        head->renderRollable(scale, usecompiled);
+        body->render(scale, usecompiled);
+        leg0->render(scale, usecompiled);
+        leg1->render(scale, usecompiled);
+        leg2->render(scale, usecompiled);
+        leg3->render(scale, usecompiled);
+        tail->renderRollable(scale, usecompiled);
+        upperBody->render(scale, usecompiled);
+    }
 }
 
 void WolfModel::prepareMobModel(shared_ptr<LivingEntity> mob, float time, float r, float a)
@@ -99,16 +99,16 @@ void WolfModel::prepareMobModel(shared_ptr<LivingEntity> mob, float time, float 
     shared_ptr<Wolf> wolf = dynamic_pointer_cast<Wolf>(mob);
 
     if (wolf->isAngry())
-	{
+    {
         tail->yRot = 0;
     }
-	else
-	{
+    else
+    {
         tail->yRot = (Mth::cos(time * 0.6662f) * 1.4f) * r;
     }
 
     if (wolf->isSitting())
-	{
+    {
         upperBody->setPos(-1.0f, 11 + 13.0f - 8, -3);
         upperBody->xRot = .40f * PI;
         upperBody->yRot = .0f * PI;
@@ -128,10 +128,10 @@ void WolfModel::prepareMobModel(shared_ptr<LivingEntity> mob, float time, float 
         leg3->xRot = 1.85f * PI;
         leg3->setPos(.51f, 18 + 7.0f - legSize, -4);
     }
-	else
-	{
+    else
+    {
         body->setPos(0, 11 + 11 - legSize, 2);
-        body->xRot = 90 / (float) (180 / PI);
+        body->xRot = 90 / (float)(180 / PI);
 
         upperBody->setPos(-1.0f, 11 + 11.0f - legSize, -3);
         upperBody->xRot = body->xRot;
@@ -142,7 +142,6 @@ void WolfModel::prepareMobModel(shared_ptr<LivingEntity> mob, float time, float 
         leg1->setPos(.5f, 18 + 6 - legSize, 7);
         leg2->setPos(-2.5f, 18 + 6 - legSize, -4);
         leg3->setPos(.5f, 18 + 6 - legSize, -4);
-
 
         leg0->xRot = (Mth::cos(time * 0.6662f) * 1.4f) * r;
         leg1->xRot = (Mth::cos(time * 0.6662f + PI) * 1.4f) * r;
@@ -161,7 +160,7 @@ void WolfModel::prepareMobModel(shared_ptr<LivingEntity> mob, float time, float 
 void WolfModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
     Model::setupAnim(time, r, bob, yRot, xRot, scale, entity);
-    head->xRot = xRot / (float) (180 / PI);
-    head->yRot = yRot / (float) (180 / PI);
+    head->xRot = xRot / (float)(180 / PI);
+    head->yRot = yRot / (float)(180 / PI);
     tail->xRot = bob;
 }

@@ -12,24 +12,29 @@
 #ifndef BOOST_BIMAP_VIEWS_UNCONSTRAINED_MAP_VIEW_HPP
 #define BOOST_BIMAP_VIEWS_UNCONSTRAINED_MAP_VIEW_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
-namespace boost {
-namespace bimaps {
-namespace views {
+namespace boost
+{
+namespace bimaps
+{
+namespace views
+{
 
 /// \brief Unconstrained view of a side of a bimap.
 
-template< class Tag, class BimapType>
+template <class Tag, class BimapType>
 class unconstrained_map_view
 {
-    public:
-    template< class T >
-    unconstrained_map_view(const T &) {}
+  public:
+    template <class T>
+    unconstrained_map_view(const T &)
+    {
+    }
 
     typedef void iterator;
     typedef void const_iterator;
@@ -43,4 +48,3 @@ class unconstrained_map_view
 } // namespace boost
 
 #endif // BOOST_BIMAP_VIEWS_UNCONSTRAINED_MAP_VIEW_HPP
-

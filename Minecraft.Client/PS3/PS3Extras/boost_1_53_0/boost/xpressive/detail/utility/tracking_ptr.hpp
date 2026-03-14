@@ -10,67 +10,63 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #ifdef BOOST_XPRESSIVE_DEBUG_TRACKING_POINTER
-# include <iostream>
+#include <iostream>
 #endif
-#include <set>
-#include <functional>
-#include <boost/config.hpp>
 #include <boost/assert.hpp>
-#include <boost/weak_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/mpl/assert.hpp>
-#include <boost/intrusive_ptr.hpp>
-#include <boost/detail/workaround.hpp>
+#include <boost/config.hpp>
 #include <boost/detail/atomic_count.hpp>
-#include <boost/iterator/iterator_facade.hpp>
+#include <boost/detail/workaround.hpp>
+#include <boost/intrusive_ptr.hpp>
 #include <boost/iterator/filter_iterator.hpp>
+#include <boost/iterator/iterator_facade.hpp>
+#include <boost/mpl/assert.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
+#include <boost/weak_ptr.hpp>
+#include <functional>
+#include <set>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
-template<typename Type>
+template <typename Type>
 struct tracking_ptr;
 
-template<typename Derived>
+template <typename Derived>
 struct enable_reference_tracking;
 
 ///////////////////////////////////////////////////////////////////////////////
 // weak_iterator
 //  steps through a set of weak_ptr, converts to shared_ptrs on the fly and
 //  removes from the set the weak_ptrs that have expired.
-template<typename Derived>
+template <typename Derived>
 struct weak_iterator
-  : iterator_facade
-    <
-        weak_iterator<Derived>
-      , shared_ptr<Derived> const
-      , std::forward_iterator_tag
-    >
+    : iterator_facade<
+          weak_iterator<Derived>, shared_ptr<Derived> const, std::forward_iterator_tag>
 {
-    typedef std::set<weak_ptr<Derived> > set_type;
+    typedef std::set<weak_ptr<Derived>> set_type;
     typedef typename set_type::iterator base_iterator;
 
     weak_iterator()
-      : cur_()
-      , iter_()
-      , set_(0)
+        : cur_(), iter_(), set_(0)
     {
     }
 
     weak_iterator(base_iterator iter, set_type *set)
-      : cur_()
-      , iter_(iter)
-      , set_(set)
+        : cur_(), iter_(iter), set_(set)
     {
         this->satisfy_();
     }
 
-private:
+  private:
     friend class boost::iterator_core_access;
 
     shared_ptr<Derived> const &dereference() const
@@ -91,11 +87,13 @@ private:
 
     void satisfy_()
     {
-        while(this->iter_ != this->set_->end())
+        while (this->iter_ != this->set_->end())
         {
             this->cur_ = this->iter_->lock();
-            if(this->cur_)
+            if (this->cur_)
+            {
                 return;
+            }
             base_iterator tmp = this->iter_++;
             this->set_->erase(tmp);
         }
@@ -110,27 +108,27 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 // filter_self
 //  for use with a filter_iterator to filter a node out of a list of dependencies
-template<typename Derived>
+template <typename Derived>
 struct filter_self
-  : std::unary_function<shared_ptr<Derived>, bool>
+    : std::unary_function<shared_ptr<Derived>, bool>
 {
     filter_self(enable_reference_tracking<Derived> *self)
-      : self_(self)
+        : self_(self)
     {
     }
 
-    bool operator ()(shared_ptr<Derived> const &that) const
+    bool operator()(shared_ptr<Derived> const &that) const
     {
         return this->self_ != that.get();
     }
 
-private:
+  private:
     enable_reference_tracking<Derived> *self_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 // swap without bringing in std::swap -- must be found by ADL.
-template<typename T>
+template <typename T>
 void adl_swap(T &t1, T &t2)
 {
     swap(t1, t2);
@@ -141,15 +139,15 @@ void adl_swap(T &t1, T &t2)
 //   inherit from this type to enable reference tracking for a type. You can
 //   then use tracking_ptr (below) as a holder for derived objects.
 //
-template<typename Derived>
+template <typename Derived>
 struct enable_reference_tracking
 {
-    typedef std::set<shared_ptr<Derived> > references_type;
-    typedef std::set<weak_ptr<Derived> > dependents_type;
+    typedef std::set<shared_ptr<Derived>> references_type;
+    typedef std::set<weak_ptr<Derived>> dependents_type;
 
     void tracking_copy(Derived const &that)
     {
-        if(&this->derived_() != &that)
+        if (&this->derived_() != &that)
         {
             this->raw_copy_(that);
             this->tracking_update();
@@ -195,43 +193,36 @@ struct enable_reference_tracking
     void release()
     {
         BOOST_ASSERT(0 < this->cnt_);
-        if(0 == --this->cnt_)
+        if (0 == --this->cnt_)
         {
             this->refs_.clear();
             this->self_.reset();
         }
     }
 
-    //{{AFX_DEBUG
-    #ifdef BOOST_XPRESSIVE_DEBUG_TRACKING_POINTER
-    friend std::ostream &operator <<(std::ostream &sout, enable_reference_tracking<Derived> const &that)
+//{{AFX_DEBUG
+#ifdef BOOST_XPRESSIVE_DEBUG_TRACKING_POINTER
+    friend std::ostream &operator<<(std::ostream &sout, enable_reference_tracking<Derived> const &that)
     {
         that.dump_(sout);
         return sout;
     }
-    #endif
+#endif
     //}}AFX_DEBUG
 
-protected:
-
+  protected:
     enable_reference_tracking()
-      : refs_()
-      , deps_()
-      , self_()
-      , cnt_(0)
+        : refs_(), deps_(), self_(), cnt_(0)
     {
     }
 
     enable_reference_tracking(enable_reference_tracking<Derived> const &that)
-      : refs_()
-      , deps_()
-      , self_()
-      , cnt_(0)
+        : refs_(), deps_(), self_(), cnt_(0)
     {
-        this->operator =(that);
+        this->operator=(that);
     }
 
-    enable_reference_tracking<Derived> &operator =(enable_reference_tracking<Derived> const &that)
+    enable_reference_tracking<Derived> &operator=(enable_reference_tracking<Derived> const &that)
     {
         references_type(that.refs_).swap(this->refs_);
         return *this;
@@ -242,7 +233,7 @@ protected:
         this->refs_.swap(that.refs_);
     }
 
-private:
+  private:
     friend struct tracking_ptr<Derived>;
 
     Derived &derived_()
@@ -264,7 +255,7 @@ private:
     {
         typename references_type::iterator cur = this->refs_.begin();
         typename references_type::iterator end = this->refs_.end();
-        for(; cur != end; ++cur)
+        for (; cur != end; ++cur)
         {
             // for each reference, add this as a dependency
             (*cur)->track_dependency_(*this);
@@ -279,7 +270,7 @@ private:
         weak_iterator<Derived> cur(this->deps_.begin(), &this->deps_);
         weak_iterator<Derived> end(this->deps_.end(), &this->deps_);
 
-        for(; cur != end; ++cur)
+        for (; cur != end; ++cur)
         {
             (*cur)->track_reference(*this);
         }
@@ -287,8 +278,10 @@ private:
 
     void track_dependency_(enable_reference_tracking<Derived> &dep)
     {
-        if(this == &dep) // never add ourself as a dependency
+        if (this == &dep) // never add ourself as a dependency
+        {
             return;
+        }
 
         // add dep as a dependency
         this->deps_.insert(dep.self_);
@@ -299,9 +292,7 @@ private:
 
         // also inherit dep's dependencies
         this->deps_.insert(
-            make_filter_iterator(not_self, begin, end)
-          , make_filter_iterator(not_self, end, end)
-        );
+            make_filter_iterator(not_self, begin, end), make_filter_iterator(not_self, end, end));
     }
 
     void purge_stale_deps_()
@@ -309,14 +300,14 @@ private:
         weak_iterator<Derived> cur(this->deps_.begin(), &this->deps_);
         weak_iterator<Derived> end(this->deps_.end(), &this->deps_);
 
-        for(; cur != end; ++cur)
+        for (; cur != end; ++cur)
             ;
     }
 
-    //{{AFX_DEBUG
-    #ifdef BOOST_XPRESSIVE_DEBUG_TRACKING_POINTER
+//{{AFX_DEBUG
+#ifdef BOOST_XPRESSIVE_DEBUG_TRACKING_POINTER
     void dump_(std::ostream &sout) const;
-    #endif
+#endif
     //}}AFX_DEBUG
 
     references_type refs_;
@@ -325,13 +316,13 @@ private:
     boost::detail::atomic_count cnt_;
 };
 
-template<typename Derived>
+template <typename Derived>
 inline void intrusive_ptr_add_ref(enable_reference_tracking<Derived> *p)
 {
     p->add_ref();
 }
 
-template<typename Derived>
+template <typename Derived>
 inline void intrusive_ptr_release(enable_reference_tracking<Derived> *p)
 {
     p->release();
@@ -342,27 +333,27 @@ inline void intrusive_ptr_release(enable_reference_tracking<Derived> *p)
 ///////////////////////////////////////////////////////////////////////////////
 // dump_
 //
-template<typename Derived>
+template <typename Derived>
 inline void enable_reference_tracking<Derived>::dump_(std::ostream &sout) const
 {
     shared_ptr<Derived> this_ = this->self_;
-    sout << "0x" << (void*)this << " cnt=" << this_.use_count()-1 << " refs={";
+    sout << "0x" << (void *)this << " cnt=" << this_.use_count() - 1 << " refs={";
     typename references_type::const_iterator cur1 = this->refs_.begin();
     typename references_type::const_iterator end1 = this->refs_.end();
-    for(; cur1 != end1; ++cur1)
+    for (; cur1 != end1; ++cur1)
     {
-        sout << "0x" << (void*)&**cur1 << ',';
+        sout << "0x" << (void *)&**cur1 << ',';
     }
     sout << "} deps={";
     typename dependents_type::const_iterator cur2 = this->deps_.begin();
     typename dependents_type::const_iterator end2 = this->deps_.end();
-    for(; cur2 != end2; ++cur2)
+    for (; cur2 != end2; ++cur2)
     {
         // ericne, 27/nov/05: CW9_4 doesn't like if(shared_ptr x = y)
         shared_ptr<Derived> dep = cur2->lock();
-        if(dep.get())
+        if (dep.get())
         {
-            sout << "0x" << (void*)&*dep << ',';
+            sout << "0x" << (void *)&*dep << ',';
         }
     }
     sout << '}';
@@ -375,32 +366,32 @@ inline void enable_reference_tracking<Derived>::dump_(std::ostream &sout) const
 //   holder for a reference-tracked type. Does cycle-breaking, lazy initialization
 //   and copy-on-write. TODO: implement move semantics.
 //
-template<typename Type>
+template <typename Type>
 struct tracking_ptr
 {
     BOOST_MPL_ASSERT((is_base_and_derived<enable_reference_tracking<Type>, Type>));
     typedef Type element_type;
 
     tracking_ptr()
-      : impl_()
+        : impl_()
     {
     }
 
     tracking_ptr(tracking_ptr<element_type> const &that)
-      : impl_()
+        : impl_()
     {
-        this->operator =(that);
+        this->operator=(that);
     }
 
-    tracking_ptr<element_type> &operator =(tracking_ptr<element_type> const &that)
+    tracking_ptr<element_type> &operator=(tracking_ptr<element_type> const &that)
     {
         // Note: the copy-and-swap idiom doesn't work here if has_deps_()==true
         // because it invalidates references to the element_type object.
-        if(this != &that)
+        if (this != &that)
         {
-            if(that)
+            if (that)
             {
-                if(that.has_deps_() || this->has_deps_())
+                if (that.has_deps_() || this->has_deps_())
                 {
                     this->fork_(); // deep copy, forks data if necessary
                     this->impl_->tracking_copy(*that);
@@ -410,7 +401,7 @@ struct tracking_ptr
                     this->impl_ = that.impl_; // shallow, copy-on-write
                 }
             }
-            else if(*this)
+            else if (*this)
             {
                 this->impl_->tracking_clear();
             }
@@ -427,56 +418,55 @@ struct tracking_ptr
     // calling this forces this->impl_ to fork.
     shared_ptr<element_type> const &get() const
     {
-        if(intrusive_ptr<element_type> impl = this->fork_())
+        if (intrusive_ptr<element_type> impl = this->fork_())
         {
             this->impl_->tracking_copy(*impl);
         }
         return this->impl_->self_;
     }
 
-    // smart-pointer operators
-    #if defined(__SUNPRO_CC) && BOOST_WORKAROUND(__SUNPRO_CC, <= 0x530)
+// smart-pointer operators
+#if defined(__SUNPRO_CC) && BOOST_WORKAROUND(__SUNPRO_CC, <= 0x530)
 
     operator bool() const
     {
         return this->impl_;
     }
 
-    #else
+#else
 
-    typedef intrusive_ptr<element_type> tracking_ptr::* unspecified_bool_type;
+    typedef intrusive_ptr<element_type> tracking_ptr::*unspecified_bool_type;
 
     operator unspecified_bool_type() const
     {
         return this->impl_ ? &tracking_ptr::impl_ : 0;
     }
 
-    #endif
+#endif
 
-    bool operator !() const
+    bool operator!() const
     {
         return !this->impl_;
     }
 
     // Since this does not un-share the data, it returns a ptr-to-const
-    element_type const *operator ->() const
+    element_type const *operator->() const
     {
         return get_pointer(this->impl_);
     }
 
     // Since this does not un-share the data, it returns a ref-to-const
-    element_type const &operator *() const
+    element_type const &operator*() const
     {
         return *this->impl_;
     }
 
-private:
-
+  private:
     // calling this forces impl_ to fork.
     intrusive_ptr<element_type> fork_() const
     {
         intrusive_ptr<element_type> impl;
-        if(!this->impl_ || 1 != this->impl_->use_count())
+        if (!this->impl_ || 1 != this->impl_->use_count())
         {
             impl = this->impl_;
             BOOST_ASSERT(!this->has_deps_());
@@ -496,6 +486,8 @@ private:
     mutable intrusive_ptr<element_type> impl_;
 };
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

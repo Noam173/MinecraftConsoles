@@ -9,12 +9,12 @@
 
 #include <boost/thread/detail/config.hpp>
 #include <boost/thread/detail/delete.hpp>
-#include <boost/thread/detail/move.hpp>
 #include <boost/thread/detail/lockable_wrapper.hpp>
+#include <boost/thread/detail/move.hpp>
 #include <boost/thread/lock_options.hpp>
-#if ! defined BOOST_THREAD_PROVIDES_NESTED_LOCKS
-#include <boost/thread/is_locked_by_this_thread.hpp>
+#if !defined BOOST_THREAD_PROVIDES_NESTED_LOCKS
 #include <boost/assert.hpp>
+#include <boost/thread/is_locked_by_this_thread.hpp>
 #endif
 
 #include <boost/config/abi_prefix.hpp>
@@ -22,66 +22,61 @@
 namespace boost
 {
 
-  template <typename Mutex>
-  class lock_guard
-  {
+template <typename Mutex>
+class lock_guard
+{
   private:
-    Mutex& m;
+    Mutex &m;
 
   public:
     typedef Mutex mutex_type;
-    BOOST_THREAD_NO_COPYABLE( lock_guard )
+    BOOST_THREAD_NO_COPYABLE(lock_guard)
 
-    explicit lock_guard(Mutex& m_) :
-      m(m_)
+    explicit lock_guard(Mutex &m_) : m(m_)
     {
-      m.lock();
+        m.lock();
     }
 
-    lock_guard(Mutex& m_, adopt_lock_t) :
-      m(m_)
+    lock_guard(Mutex &m_, adopt_lock_t) : m(m_)
     {
-#if ! defined BOOST_THREAD_PROVIDES_NESTED_LOCKS
-      BOOST_ASSERT(is_locked_by_this_thread(m));
+#if !defined BOOST_THREAD_PROVIDES_NESTED_LOCKS
+        BOOST_ASSERT(is_locked_by_this_thread(m));
 #endif
     }
 
-#if ! defined BOOST_THREAD_NO_CXX11_HDR_INITIALIZER_LIST
-    lock_guard(std::initializer_list<thread_detail::lockable_wrapper<Mutex> > l_) :
-      m(*(const_cast<thread_detail::lockable_wrapper<Mutex>*>(l_.begin())->m))
+#if !defined BOOST_THREAD_NO_CXX11_HDR_INITIALIZER_LIST
+    lock_guard(std::initializer_list<thread_detail::lockable_wrapper<Mutex>> l_) : m(*(const_cast<thread_detail::lockable_wrapper<Mutex> *>(l_.begin())->m))
     {
-      m.lock();
+        m.lock();
     }
 
-    lock_guard(std::initializer_list<thread_detail::lockable_adopt_wrapper<Mutex> > l_) :
-      m(*(const_cast<thread_detail::lockable_adopt_wrapper<Mutex>*>(l_.begin())->m))
+    lock_guard(std::initializer_list<thread_detail::lockable_adopt_wrapper<Mutex>> l_) : m(*(const_cast<thread_detail::lockable_adopt_wrapper<Mutex> *>(l_.begin())->m))
     {
-#if ! defined BOOST_THREAD_PROVIDES_NESTED_LOCKS
-      BOOST_ASSERT(is_locked_by_this_thread(m));
+#if !defined BOOST_THREAD_PROVIDES_NESTED_LOCKS
+        BOOST_ASSERT(is_locked_by_this_thread(m));
 #endif
     }
 
 #endif
     ~lock_guard()
     {
-      m.unlock();
+        m.unlock();
     }
-  };
+};
 
-
-#if ! defined BOOST_THREAD_NO_MAKE_LOCK_GUARD
-  template <typename Lockable>
-  lock_guard<Lockable> make_lock_guard(Lockable& mtx)
-  {
-    return { thread_detail::lockable_wrapper<Lockable>(mtx) };
-  }
-  template <typename Lockable>
-  lock_guard<Lockable> make_lock_guard(Lockable& mtx, adopt_lock_t)
-  {
-    return { thread_detail::lockable_adopt_wrapper<Lockable>(mtx) };
-  }
-#endif
+#if !defined BOOST_THREAD_NO_MAKE_LOCK_GUARD
+template <typename Lockable>
+lock_guard<Lockable> make_lock_guard(Lockable &mtx)
+{
+    return {thread_detail::lockable_wrapper<Lockable>(mtx)};
 }
+template <typename Lockable>
+lock_guard<Lockable> make_lock_guard(Lockable &mtx, adopt_lock_t)
+{
+    return {thread_detail::lockable_adopt_wrapper<Lockable>(mtx)};
+}
+#endif
+} // namespace boost
 
 #include <boost/config/abi_suffix.hpp>
 

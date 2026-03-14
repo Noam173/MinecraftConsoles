@@ -17,62 +17,74 @@
 //
 // Implements the inplace all-to-all communication algorithm.
 //
-#include <vector>
 #include <iterator>
+#include <vector>
 
-namespace boost { namespace parallel { 
-
-template<typename ProcessGroup, typename T>
-// where {LinearProcessGroup<ProcessGroup>, MessagingProcessGroup<ProcessGroup>}
-void 
-inplace_all_to_all(ProcessGroup pg, 
-                   const std::vector<std::vector<T> >& outgoing,
-                   std::vector<std::vector<T> >& incoming)
+namespace boost
 {
-  typedef typename std::vector<T>::size_type size_type;
+namespace parallel
+{
 
-  typedef typename ProcessGroup::process_size_type process_size_type;
-  typedef typename ProcessGroup::process_id_type process_id_type;
+template <typename ProcessGroup, typename T>
+// where {LinearProcessGroup<ProcessGroup>, MessagingProcessGroup<ProcessGroup>}
+void inplace_all_to_all(ProcessGroup pg,
+                        const std::vector<std::vector<T>> &outgoing,
+                        std::vector<std::vector<T>> &incoming)
+{
+    typedef typename std::vector<T>::size_type size_type;
 
-  process_size_type p = num_processes(pg);
+    typedef typename ProcessGroup::process_size_type process_size_type;
+    typedef typename ProcessGroup::process_id_type process_id_type;
 
-  // Make sure there are no straggling messages
-  synchronize(pg);
+    process_size_type p = num_processes(pg);
 
-  // Send along the count (always) and the data (if count > 0)
-  for (process_id_type dest = 0; dest < p; ++dest) {
-    if (dest != process_id(pg)) {
-      send(pg, dest, 0, outgoing[dest].size());
-      if (!outgoing[dest].empty())
-        send(pg, dest, 1, &outgoing[dest].front(), outgoing[dest].size());
+    // Make sure there are no straggling messages
+    synchronize(pg);
+
+    // Send along the count (always) and the data (if count > 0)
+    for (process_id_type dest = 0; dest < p; ++dest)
+    {
+        if (dest != process_id(pg))
+        {
+            send(pg, dest, 0, outgoing[dest].size());
+            if (!outgoing[dest].empty())
+            {
+                send(pg, dest, 1, &outgoing[dest].front(), outgoing[dest].size());
+            }
+        }
     }
-  }
 
-  // Make sure all of the data gets transferred
-  synchronize(pg);
+    // Make sure all of the data gets transferred
+    synchronize(pg);
 
-  // Receive the sizes and data
-  for (process_id_type source = 0; source < p; ++source) {
-    if (source != process_id(pg)) {
-      size_type size;
-      receive(pg, source, 0, size);
-      incoming[source].resize(size);
-      if (size > 0)
-        receive(pg, source, 1, &incoming[source].front(), size);
-    } else if (&incoming != &outgoing) {
-      incoming[source] = outgoing[source];
+    // Receive the sizes and data
+    for (process_id_type source = 0; source < p; ++source)
+    {
+        if (source != process_id(pg))
+        {
+            size_type size;
+            receive(pg, source, 0, size);
+            incoming[source].resize(size);
+            if (size > 0)
+            {
+                receive(pg, source, 1, &incoming[source].front(), size);
+            }
+        }
+        else if (&incoming != &outgoing)
+        {
+            incoming[source] = outgoing[source];
+        }
     }
-  }
 }
 
-template<typename ProcessGroup, typename T>
+template <typename ProcessGroup, typename T>
 // where {LinearProcessGroup<ProcessGroup>, MessagingProcessGroup<ProcessGroup>}
-void 
-inplace_all_to_all(ProcessGroup pg, std::vector<std::vector<T> >& data)
+void inplace_all_to_all(ProcessGroup pg, std::vector<std::vector<T>> &data)
 {
-  inplace_all_to_all(pg, data, data);
+    inplace_all_to_all(pg, data, data);
 }
 
-} } // end namespace boost::parallel
+} // namespace parallel
+} // namespace boost
 
 #endif // BOOST_GRAPH_PARALLEL_INPLACE_ALL_TO_ALL_HPP

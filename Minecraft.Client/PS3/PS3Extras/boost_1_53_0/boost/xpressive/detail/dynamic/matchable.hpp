@@ -10,21 +10,25 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/assert.hpp>
-#include <boost/mpl/assert.hpp>
 #include <boost/intrusive_ptr.hpp>
+#include <boost/mpl/assert.hpp>
 #include <boost/throw_exception.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
-#include <boost/xpressive/detail/utility/counted_base.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/dynamic/sequence.hpp>
+#include <boost/xpressive/detail/utility/counted_base.hpp>
 #include <boost/xpressive/regex_error.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -39,21 +43,23 @@ struct quant_spec
 
 ///////////////////////////////////////////////////////////////////////////////
 // matchable
-template<typename BidiIter>
+template <typename BidiIter>
 struct matchable
 {
     typedef BidiIter iterator_type;
     typedef typename iterator_value<iterator_type>::type char_type;
-    virtual ~matchable() {}
+    virtual ~matchable()
+    {
+    }
     virtual bool match(match_state<BidiIter> &state) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 // matchable_ex
-template<typename BidiIter>
+template <typename BidiIter>
 struct matchable_ex
-  : matchable<BidiIter>
-  , counted_base<matchable_ex<BidiIter> >
+    : matchable<BidiIter>,
+      counted_base<matchable_ex<BidiIter>>
 {
     typedef BidiIter iterator_type;
     typedef typename iterator_value<iterator_type>::type char_type;
@@ -70,8 +76,7 @@ struct matchable_ex
     virtual void repeat(quant_spec const &, sequence<BidiIter> &) const
     {
         BOOST_THROW_EXCEPTION(
-            regex_error(regex_constants::error_badrepeat, "expression cannot be quantified")
-        );
+            regex_error(regex_constants::error_badrepeat, "expression cannot be quantified"));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,10 +90,10 @@ struct matchable_ex
     // statically bound xpressions and one for dynamically bound xpressions.
     //
 
-    template<typename Top>
+    template <typename Top>
     bool push_match(match_state<BidiIter> &state) const
     {
-        BOOST_MPL_ASSERT((is_same<Top, matchable_ex<BidiIter> >));
+        BOOST_MPL_ASSERT((is_same<Top, matchable_ex<BidiIter>>));
         return this->match(state);
     }
 
@@ -110,7 +115,7 @@ struct matchable_ex
 
 ///////////////////////////////////////////////////////////////////////////////
 // shared_matchable
-template<typename BidiIter>
+template <typename BidiIter>
 struct shared_matchable
 {
     typedef BidiIter iterator_type;
@@ -121,21 +126,21 @@ struct shared_matchable
     BOOST_STATIC_CONSTANT(bool, pure = false);
 
     shared_matchable(matchable_ptr const &xpr = matchable_ptr())
-      : xpr_(xpr)
+        : xpr_(xpr)
     {
     }
 
-    bool operator !() const
+    bool operator!() const
     {
         return !this->xpr_;
     }
 
-    friend bool operator ==(shared_matchable<BidiIter> const &left, shared_matchable<BidiIter> const &right)
+    friend bool operator==(shared_matchable<BidiIter> const &left, shared_matchable<BidiIter> const &right)
     {
         return left.xpr_ == right.xpr_;
     }
 
-    friend bool operator !=(shared_matchable<BidiIter> const &left, shared_matchable<BidiIter> const &right)
+    friend bool operator!=(shared_matchable<BidiIter> const &left, shared_matchable<BidiIter> const &right)
     {
         return left.xpr_ != right.xpr_;
     }
@@ -161,17 +166,19 @@ struct shared_matchable
     }
 
     // BUGBUG yuk!
-    template<typename Top>
+    template <typename Top>
     bool push_match(match_state<BidiIter> &state) const
     {
-        BOOST_MPL_ASSERT((is_same<Top, matchable_ex<BidiIter> >));
+        BOOST_MPL_ASSERT((is_same<Top, matchable_ex<BidiIter>>));
         return this->match(state);
     }
 
-private:
+  private:
     matchable_ptr xpr_;
 };
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

@@ -1,8 +1,8 @@
-#include "stdafx.h"
-#include "..\Minecraft.World\Random.h"
-#include "..\Minecraft.World\Mth.h"
 #include "GhastModel.h"
+#include "..\Minecraft.World\Mth.h"
+#include "..\Minecraft.World\Random.h"
 #include "ModelPart.h"
+#include "stdafx.h"
 
 GhastModel::GhastModel() : Model()
 {
@@ -12,8 +12,8 @@ GhastModel::GhastModel() : Model()
     body->y += (8 + 16) + yoffs;
 
     Random *random = new Random(1660);
-    for (int i = 0; i < TENTACLESLENGTH; i++)		// 4J - 9 was  tentacles.length
-	{
+    for (int i = 0; i < TENTACLESLENGTH; i++) // 4J - 9 was  tentacles.length
+    {
         tentacles[i] = new ModelPart(this, 0, 0);
 
         float xo = (((i % 3 - (i / 3 % 2) * 0.5f + 0.25f) / 2.0f * 2 - 1) * 5);
@@ -26,18 +26,18 @@ GhastModel::GhastModel() : Model()
         tentacles[i]->y = static_cast<float>(31 + yoffs);
     }
 
-	// 4J added - compile now to avoid random performance hit first time cubes are rendered
-	body->compile(1.0f/16.0f);
-	for( int i = 0; i < TENTACLESLENGTH; i++ )
-	{
-		tentacles[i]->compile(1.0f/16.0f);
-	}
+    // 4J added - compile now to avoid random performance hit first time cubes are rendered
+    body->compile(1.0f / 16.0f);
+    for (int i = 0; i < TENTACLESLENGTH; i++)
+    {
+        tentacles[i]->compile(1.0f / 16.0f);
+    }
 }
 
 void GhastModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
     for (int i = 0; i < TENTACLESLENGTH; i++) // 4J - 9 was  tentacles.length
-	{
+    {
         tentacles[i]->xRot = 0.2f * Mth::sin(bob * 0.3f + i) + 0.4f;
     }
 }
@@ -46,14 +46,14 @@ void GhastModel::render(shared_ptr<Entity> entity, float time, float r, float bo
 {
     setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
-	glPushMatrix();
-	glTranslatef(0, .6f, 0);
+    glPushMatrix();
+    glTranslatef(0, .6f, 0);
 
     body->render(scale, usecompiled);
     for (int i = 0; i < TENTACLESLENGTH; i++) // 4J - 9 was  tentacles.length
-	{
+    {
         tentacles[i]->render(scale, usecompiled);
     }
 
-	glPopMatrix();
+    glPopMatrix();
 }

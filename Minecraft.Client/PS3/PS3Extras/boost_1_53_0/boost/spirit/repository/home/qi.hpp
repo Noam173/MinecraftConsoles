@@ -11,10 +11,9 @@
 #pragma once
 #endif
 
-#include <boost/spirit/repository/home/qi/primitive.hpp>
 #include <boost/spirit/repository/home/qi/directive.hpp>
 #include <boost/spirit/repository/home/qi/nonterminal.hpp>
 #include <boost/spirit/repository/home/qi/operator.hpp>
+#include <boost/spirit/repository/home/qi/primitive.hpp>
 
 #endif
-

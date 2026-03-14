@@ -14,34 +14,33 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_TOUCHES_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_TOUCHES_HPP
 
-
 #include <deque>
 
-#include <boost/geometry/geometries/concepts/check.hpp>
-#include <boost/geometry/algorithms/detail/overlay/self_turn_points.hpp>
 #include <boost/geometry/algorithms/detail/overlay/get_turns.hpp>
+#include <boost/geometry/algorithms/detail/overlay/self_turn_points.hpp>
 #include <boost/geometry/algorithms/disjoint.hpp>
 #include <boost/geometry/algorithms/intersects.hpp>
 #include <boost/geometry/algorithms/num_geometries.hpp>
+#include <boost/geometry/geometries/concepts/check.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace detail { namespace touches 
+namespace detail
+{
+namespace touches
 {
 
 template <typename Turn>
-inline bool ok_for_touch(Turn const& turn)
+inline bool ok_for_touch(Turn const &turn)
 {
-    return turn.both(detail::overlay::operation_union)
-        || turn.both(detail::overlay::operation_blocked)
-        || turn.combination(detail::overlay::operation_union, detail::overlay::operation_blocked)
-        ;
+    return turn.both(detail::overlay::operation_union) || turn.both(detail::overlay::operation_blocked) || turn.combination(detail::overlay::operation_union, detail::overlay::operation_blocked);
 }
 
 template <typename Turns>
-inline bool has_only_turns(Turns const& turns)
+inline bool has_only_turns(Turns const &turns)
 {
     bool has_touch = false;
     typedef typename boost::range_iterator<Turns const>::type iterator_type;
@@ -52,36 +51,37 @@ inline bool has_only_turns(Turns const& turns)
             return false;
         }
 
-        switch(it->method)
+        switch (it->method)
         {
-            case detail::overlay::method_crosses: 
+        case detail::overlay::method_crosses:
+            return false;
+        case detail::overlay::method_equal:
+            // Segment spatially equal means: at the right side
+            // the polygon internally overlaps. So return false.
+            return false;
+        case detail::overlay::method_touch:
+        case detail::overlay::method_touch_interior:
+        case detail::overlay::method_collinear:
+            if (ok_for_touch(*it))
+            {
+                has_touch = true;
+            }
+            else
+            {
                 return false;
-            case detail::overlay::method_equal: 
-                // Segment spatially equal means: at the right side
-                // the polygon internally overlaps. So return false.
-                return false;
-            case detail::overlay::method_touch: 
-            case detail::overlay::method_touch_interior: 
-            case detail::overlay::method_collinear: 
-                if (ok_for_touch(*it))
-                {
-                    has_touch = true;
-                }
-                else
-                {
-                    return false;
-                }
-                break;
-            case detail::overlay::method_none :
-            case detail::overlay::method_disjoint :
-            case detail::overlay::method_error :
-                break;
+            }
+            break;
+        case detail::overlay::method_none:
+        case detail::overlay::method_disjoint:
+        case detail::overlay::method_error:
+            break;
         }
     }
     return has_touch;
 }
 
-}}
+} // namespace touches
+} // namespace detail
 
 /*!
 \brief \brief_check{has at least one touching point (self-tangency)}
@@ -97,36 +97,31 @@ inline bool has_only_turns(Turns const& turns)
 \qbk{[include reference/algorithms/touches.qbk]}
 */
 template <typename Geometry>
-inline bool touches(Geometry const& geometry)
+inline bool touches(Geometry const &geometry)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
-    typedef detail::overlay::turn_info
-        <
-            typename geometry::point_type<Geometry>::type
-        > turn_info;
+    typedef detail::overlay::turn_info<
+        typename geometry::point_type<Geometry>::type>
+        turn_info;
 
-    typedef detail::overlay::get_turn_info
-        <
-            typename point_type<Geometry>::type,
-            typename point_type<Geometry>::type,
-            turn_info,
-            detail::overlay::assign_null_policy
-        > policy_type;
+    typedef detail::overlay::get_turn_info<
+        typename point_type<Geometry>::type,
+        typename point_type<Geometry>::type,
+        turn_info,
+        detail::overlay::assign_null_policy>
+        policy_type;
 
     std::deque<turn_info> turns;
     detail::self_get_turn_points::no_interrupt_policy policy;
-    detail::self_get_turn_points::get_turns
-            <
-                Geometry,
-                std::deque<turn_info>,
-                policy_type,
-                detail::self_get_turn_points::no_interrupt_policy
-            >::apply(geometry, turns, policy);
+    detail::self_get_turn_points::get_turns<
+        Geometry,
+        std::deque<turn_info>,
+        policy_type,
+        detail::self_get_turn_points::no_interrupt_policy>::apply(geometry, turns, policy);
 
     return detail::touches::has_only_turns(turns);
 }
-
 
 /*!
 \brief \brief_check2{have at least one touching point (tangent - non overlapping)}
@@ -141,41 +136,32 @@ inline bool touches(Geometry const& geometry)
 \qbk{[include reference/algorithms/touches.qbk]}
  */
 template <typename Geometry1, typename Geometry2>
-inline bool touches(Geometry1 const& geometry1, Geometry2 const& geometry2)
+inline bool touches(Geometry1 const &geometry1, Geometry2 const &geometry2)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
 
+    typedef detail::overlay::turn_info<
+        typename geometry::point_type<Geometry1>::type>
+        turn_info;
 
-    typedef detail::overlay::turn_info
-        <
-            typename geometry::point_type<Geometry1>::type
-        > turn_info;
-
-    typedef detail::overlay::get_turn_info
-        <
-            typename point_type<Geometry1>::type,
-            typename point_type<Geometry2>::type,
-            turn_info,
-            detail::overlay::assign_null_policy
-        > policy_type;
+    typedef detail::overlay::get_turn_info<
+        typename point_type<Geometry1>::type,
+        typename point_type<Geometry2>::type,
+        turn_info,
+        detail::overlay::assign_null_policy>
+        policy_type;
 
     std::deque<turn_info> turns;
     detail::get_turns::no_interrupt_policy policy;
-    boost::geometry::get_turns
-            <
-                false, false,
-                detail::overlay::assign_null_policy
-            >(geometry1, geometry2, turns, policy);
+    boost::geometry::get_turns<
+        false, false,
+        detail::overlay::assign_null_policy>(geometry1, geometry2, turns, policy);
 
-    return detail::touches::has_only_turns(turns)
-        && ! geometry::detail::disjoint::rings_containing(geometry1, geometry2)
-        && ! geometry::detail::disjoint::rings_containing(geometry2, geometry1)
-        ;
+    return detail::touches::has_only_turns(turns) && !geometry::detail::disjoint::rings_containing(geometry1, geometry2) && !geometry::detail::disjoint::rings_containing(geometry2, geometry1);
 }
 
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_TOUCHES_HPP

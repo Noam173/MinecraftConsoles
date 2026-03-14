@@ -15,31 +15,38 @@
 //  Re-issued here under the Boost Software License, with permission of the original
 //  author (Andrei Alexandrescu).
 
-
 #ifndef BOOST_VARIANT_DETAIL_MOVE_HPP
 #define BOOST_VARIANT_DETAIL_MOVE_HPP
 
 #include <iterator> // for iterator_traits
-#include <new> // for placement new
+#include <new>      // for placement new
 
 #include "boost/config.hpp"
 #include "boost/detail/workaround.hpp"
 #include "boost/mpl/if.hpp"
 #include "boost/type_traits/is_base_and_derived.hpp"
 
-namespace boost {
-namespace detail { namespace variant {
+namespace boost
+{
+namespace detail
+{
+namespace variant
+{
 
 //////////////////////////////////////////////////////////////////////////
 // forward declares
 //
 // NOTE: Incomplete until (if?) Boost.Move becomes part of Boost.
 //
-template <typename Deriving> class moveable;
-template <typename T>        class move_source;
-template <typename T>        class move_return;
+template <typename Deriving>
+class moveable;
+template <typename T>
+class move_source;
+template <typename T>
+class move_return;
 
-namespace detail {
+namespace detail
+{
 
 // (detail) moveable_tag
 //
@@ -61,7 +68,8 @@ struct moveable_tag
 // the object; else, returns the T&.
 //
 
-namespace detail {
+namespace detail
+{
 
 // (detail) class template move_type
 //
@@ -70,14 +78,9 @@ namespace detail {
 template <typename T>
 struct move_type
 {
-public: // metafunction result
-
+  public: // metafunction result
     typedef typename mpl::if_<
-          is_base_and_derived<detail::moveable_tag<T>, T>
-        , move_source<T>
-        , T&
-        >::type type;
-
+        is_base_and_derived<detail::moveable_tag<T>, T>, move_source<T>, T &>::type type;
 };
 
 } // namespace detail
@@ -87,7 +90,7 @@ public: // metafunction result
 template <typename T>
 inline
     typename detail::move_type<T>::type
-move(T& source)
+    move(T &source)
 {
     typedef typename detail::move_type<T>::type
         move_t;
@@ -109,14 +112,9 @@ using std::move;
 template <typename T>
 struct return_t
 {
-public: // metafunction result
-
+  public: // metafunction result
     typedef typename mpl::if_<
-          is_base_and_derived<moveable<T>, T>
-        , move_return<T>
-        , T
-        >::type type;
-
+        is_base_and_derived<moveable<T>, T>, move_return<T>, T>::type type;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -126,37 +124,40 @@ public: // metafunction result
 // types and on non-conforming compilers.
 //
 
-#if   defined(BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP)   \
- ||   BOOST_WORKAROUND(__GNUC__, BOOST_TESTED_AT(2))
+#if defined(BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP) || BOOST_WORKAROUND(__GNUC__, BOOST_TESTED_AT(2))
 
 // [Indicate that move_swap by overload is disabled...]
 #define BOOST_NO_MOVE_SWAP_BY_OVERLOAD
 
 // [...and provide straight swap-by-move implementation:]
 template <typename T>
-inline void move_swap(T& lhs, T& rhs)
+inline void move_swap(T &lhs, T &rhs)
 {
-    T tmp( boost::detail::variant::move(lhs) );
+    T tmp(boost::detail::variant::move(lhs));
     lhs = boost::detail::variant::move(rhs);
     rhs = boost::detail::variant::move(tmp);
 }
 
-#else// !workaround
+#else // !workaround
 
-namespace detail { namespace move_swap {
+namespace detail
+{
+namespace move_swap
+{
 
 template <typename T>
-inline void swap(T& lhs, T& rhs)
+inline void swap(T &lhs, T &rhs)
 {
-    T tmp( boost::detail::variant::move(lhs) );
+    T tmp(boost::detail::variant::move(lhs));
     lhs = boost::detail::variant::move(rhs);
     rhs = boost::detail::variant::move(tmp);
 }
 
-}} // namespace detail::move_swap
+} // namespace move_swap
+} // namespace detail
 
 template <typename T>
-inline void move_swap(T& lhs, T& rhs)
+inline void move_swap(T &lhs, T &rhs)
 {
     using detail::move_swap::swap;
 
@@ -165,10 +166,8 @@ inline void move_swap(T& lhs, T& rhs)
 
 #endif // workaround
 
-}} // namespace detail::variant
+} // namespace variant
+} // namespace detail
 } // namespace boost
 
 #endif // BOOST_VARIANT_DETAIL_MOVE_HPP
-
-
-

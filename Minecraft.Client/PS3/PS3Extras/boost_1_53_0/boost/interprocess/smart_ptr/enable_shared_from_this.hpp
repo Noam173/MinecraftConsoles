@@ -18,56 +18,63 @@
 #include <boost/interprocess/detail/workaround.hpp>
 
 #include <boost/assert.hpp>
-#include <boost/interprocess/smart_ptr/weak_ptr.hpp>
 #include <boost/interprocess/smart_ptr/shared_ptr.hpp>
+#include <boost/interprocess/smart_ptr/weak_ptr.hpp>
 
 //!\file
-//!Describes an utility to form a shared pointer from this
+//! Describes an utility to form a shared pointer from this
 
-namespace boost{
-namespace interprocess{
+namespace boost
+{
+namespace interprocess
+{
 
-//!This class is used as a base class that allows a shared_ptr to the current
-//!object to be obtained from within a member function.
-//!enable_shared_from_this defines two member functions called shared_from_this
-//!that return a shared_ptr<T> and shared_ptr<T const>, depending on constness, to this.
-template<class T, class A, class D>
+//! This class is used as a base class that allows a shared_ptr to the current
+//! object to be obtained from within a member function.
+//! enable_shared_from_this defines two member functions called shared_from_this
+//! that return a shared_ptr<T> and shared_ptr<T const>, depending on constness, to this.
+template <class T, class A, class D>
 class enable_shared_from_this
 {
-   /// @cond
-   protected:
-   enable_shared_from_this()
-   {}
+    /// @cond
+  protected:
+    enable_shared_from_this()
+    {
+    }
 
-   enable_shared_from_this(enable_shared_from_this const &)
-   {}
+    enable_shared_from_this(enable_shared_from_this const &)
+    {
+    }
 
-   enable_shared_from_this & operator=(enable_shared_from_this const &)
-   {  return *this;  }
+    enable_shared_from_this &operator=(enable_shared_from_this const &)
+    {
+        return *this;
+    }
 
-   ~enable_shared_from_this()
-   {}
-   /// @endcond
+    ~enable_shared_from_this()
+    {
+    }
+    /// @endcond
 
-   public:
-   shared_ptr<T, A, D> shared_from_this()
-   {
-      shared_ptr<T, A, D> p(_internal_weak_this);
-      BOOST_ASSERT(ipcdetail::to_raw_pointer(p.get()) == this);
-      return p;
-   }
+  public:
+    shared_ptr<T, A, D> shared_from_this()
+    {
+        shared_ptr<T, A, D> p(_internal_weak_this);
+        BOOST_ASSERT(ipcdetail::to_raw_pointer(p.get()) == this);
+        return p;
+    }
 
-   shared_ptr<T const, A, D> shared_from_this() const
-   {
-      shared_ptr<T const, A, D> p(_internal_weak_this);
-      BOOST_ASSERT(ipcdetail::to_raw_pointer(p.get()) == this);
-      return p;
-   }
+    shared_ptr<T const, A, D> shared_from_this() const
+    {
+        shared_ptr<T const, A, D> p(_internal_weak_this);
+        BOOST_ASSERT(ipcdetail::to_raw_pointer(p.get()) == this);
+        return p;
+    }
 
-   /// @cond
-   typedef T element_type;
-   mutable weak_ptr<element_type, A, D> _internal_weak_this;
-   /// @endcond
+    /// @cond
+    typedef T element_type;
+    mutable weak_ptr<element_type, A, D> _internal_weak_this;
+    /// @endcond
 };
 
 } // namespace interprocess
@@ -75,5 +82,4 @@ class enable_shared_from_this
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif  // #ifndef BOOST_INTERPROCESS_ENABLE_SHARED_FROM_THIS_HPP_INCLUDED
-
+#endif // #ifndef BOOST_INTERPROCESS_ENABLE_SHARED_FROM_THIS_HPP_INCLUDED

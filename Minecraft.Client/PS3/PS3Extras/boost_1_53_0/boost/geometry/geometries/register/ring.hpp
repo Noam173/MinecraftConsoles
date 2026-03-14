@@ -11,10 +11,8 @@
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_GEOMETRY_GEOMETRIES_REGISTER_RING_HPP
 #define BOOST_GEOMETRY_GEOMETRIES_REGISTER_RING_HPP
-
 
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
@@ -22,7 +20,7 @@
 /*!
 \brief \brief_macro{ring}
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_RING, ring} The 
+\details \details_macro{BOOST_GEOMETRY_REGISTER_RING, ring} The
     ring may contain template parameters, which must be specified then.
 \param Ring \param_macro_type{ring}
 
@@ -33,15 +31,25 @@
 }
 */
 #define BOOST_GEOMETRY_REGISTER_RING(Ring) \
-namespace boost { namespace geometry { namespace traits {  \
-    template<> struct tag<Ring> { typedef ring_tag type; }; \
-}}}
-
+    namespace boost                        \
+    {                                      \
+    namespace geometry                     \
+    {                                      \
+    namespace traits                       \
+    {                                      \
+    template <>                            \
+    struct tag<Ring>                       \
+    {                                      \
+        typedef ring_tag type;             \
+    };                                     \
+    }                                      \
+    }                                      \
+    }
 
 /*!
 \brief \brief_macro{templated ring}
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_RING_TEMPLATED, templated ring} 
+\details \details_macro{BOOST_GEOMETRY_REGISTER_RING_TEMPLATED, templated ring}
     \details_macro_templated{ring, point}
 \param Ring \param_macro_type{ring (without template parameters)}
 
@@ -52,9 +60,19 @@ namespace boost { namespace geometry { namespace traits {  \
 }
 */
 #define BOOST_GEOMETRY_REGISTER_RING_TEMPLATED(Ring) \
-namespace boost { namespace geometry { namespace traits {  \
-    template<typename P> struct tag< Ring<P> > { typedef ring_tag type; }; \
-}}}
-
+    namespace boost                                  \
+    {                                                \
+    namespace geometry                               \
+    {                                                \
+    namespace traits                                 \
+    {                                                \
+    template <typename P>                            \
+    struct tag<Ring<P>>                              \
+    {                                                \
+        typedef ring_tag type;                       \
+    };                                               \
+    }                                                \
+    }                                                \
+    }
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_REGISTER_RING_HPP

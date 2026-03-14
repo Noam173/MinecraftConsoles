@@ -8,8 +8,8 @@
 #ifndef BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_HPP_
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_HPP_
 
-#include <boost/local_function/detail/preprocessor/keyword/facility/is.hpp>
 #include <boost/local_function/detail/preprocessor/keyword/facility/add.hpp>
+#include <boost/local_function/detail/preprocessor/keyword/facility/is.hpp>
 #include <boost/local_function/detail/preprocessor/keyword/facility/remove.hpp>
 
 // PRIVATE //
@@ -25,34 +25,33 @@
 // Is.
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_FRONT(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_IS_)
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_FRONT(tokens,  \
+                                                             BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_IS_)
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_BACK(token) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_BACK(token, \
-            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_IS)
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_BACK(token,  \
+                                                            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_IS)
 
 // Remove.
 
-#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_REMOVE_FRONT(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_FRONT, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_REMOVE_)
+#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_REMOVE_FRONT(tokens)                                               \
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_FRONT(tokens,                                                \
+                                                                 BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_FRONT, \
+                                                                 BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_REMOVE_)
 
-#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_REMOVE_BACK(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_BACK(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_BACK, \
-            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_REMOVE)
+#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_REMOVE_BACK(tokens)                                              \
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_BACK(tokens,                                               \
+                                                                BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_BACK, \
+                                                                _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_REMOVE)
 
 // Add.
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_ADD_FRONT(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_FRONT, const)
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_FRONT(tokens,  \
+                                                              BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_FRONT, const)
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_CONST_ADD_BACK(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_BACK(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_BACK, const)
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_BACK(tokens,  \
+                                                             BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_CONST_BACK, const)
 
 #endif // #include guard
-

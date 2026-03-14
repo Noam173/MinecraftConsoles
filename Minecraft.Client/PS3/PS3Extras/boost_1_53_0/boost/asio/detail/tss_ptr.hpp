@@ -12,54 +12,57 @@
 #define BOOST_ASIO_DETAIL_TSS_PTR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if !defined(BOOST_HAS_THREADS) || defined(BOOST_ASIO_DISABLE_THREADS)
-# include <boost/asio/detail/null_tss_ptr.hpp>
+#include <boost/asio/detail/null_tss_ptr.hpp>
 #elif defined(BOOST_ASIO_HAS_THREAD_KEYWORD_EXTENSION)
-# include <boost/asio/detail/keyword_tss_ptr.hpp>
+#include <boost/asio/detail/keyword_tss_ptr.hpp>
 #elif defined(BOOST_WINDOWS)
-# include <boost/asio/detail/win_tss_ptr.hpp>
+#include <boost/asio/detail/win_tss_ptr.hpp>
 #elif defined(BOOST_HAS_PTHREADS)
-# include <boost/asio/detail/posix_tss_ptr.hpp>
+#include <boost/asio/detail/posix_tss_ptr.hpp>
 #else
-# error Only Windows and POSIX are supported!
+#error Only Windows and POSIX are supported!
 #endif
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 template <typename T>
 class tss_ptr
 #if !defined(BOOST_HAS_THREADS) || defined(BOOST_ASIO_DISABLE_THREADS)
-  : public null_tss_ptr<T>
+    : public null_tss_ptr<T>
 #elif defined(BOOST_ASIO_HAS_THREAD_KEYWORD_EXTENSION)
-  : public keyword_tss_ptr<T>
+    : public keyword_tss_ptr<T>
 #elif defined(BOOST_WINDOWS)
-  : public win_tss_ptr<T>
+    : public win_tss_ptr<T>
 #elif defined(BOOST_HAS_PTHREADS)
-  : public posix_tss_ptr<T>
+    : public posix_tss_ptr<T>
 #endif
 {
-public:
-  void operator=(T* value)
-  {
+  public:
+    void operator=(T *value)
+    {
 #if !defined(BOOST_HAS_THREADS) || defined(BOOST_ASIO_DISABLE_THREADS)
-    null_tss_ptr<T>::operator=(value);
+        null_tss_ptr<T>::operator=(value);
 #elif defined(BOOST_ASIO_HAS_THREAD_KEYWORD_EXTENSION)
-    keyword_tss_ptr<T>::operator=(value);
+        keyword_tss_ptr<T>::operator=(value);
 #elif defined(BOOST_WINDOWS)
-    win_tss_ptr<T>::operator=(value);
+        win_tss_ptr<T>::operator=(value);
 #elif defined(BOOST_HAS_PTHREADS)
-    posix_tss_ptr<T>::operator=(value);
+        posix_tss_ptr<T>::operator=(value);
 #endif
-  }
+    }
 };
 
 } // namespace detail

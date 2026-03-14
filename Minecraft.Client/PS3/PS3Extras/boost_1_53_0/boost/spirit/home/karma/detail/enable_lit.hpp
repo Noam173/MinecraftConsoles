@@ -10,21 +10,25 @@
 #pragma once
 #endif
 
+#include <boost/fusion/include/vector.hpp>
+#include <boost/spirit/home/karma/auxiliary/lazy.hpp>
 #include <boost/spirit/home/karma/domain.hpp>
 #include <boost/spirit/home/karma/generator.hpp>
 #include <boost/spirit/home/karma/meta_compiler.hpp>
-#include <boost/spirit/home/karma/auxiliary/lazy.hpp>
-#include <boost/fusion/include/vector.hpp>
-#include <boost/spirit/home/support/string_traits.hpp>
 #include <boost/spirit/home/support/common_terminals.hpp>
+#include <boost/spirit/home/support/string_traits.hpp>
 
-namespace boost { namespace spirit
+namespace boost
 {
-    // enables lazy lit(...) for karma
-    template <>
-    struct use_lazy_terminal<karma::domain, tag::lit, 1> 
-      : mpl::true_ {};
-}}
+namespace spirit
+{
+// enables lazy lit(...) for karma
+template <>
+struct use_lazy_terminal<karma::domain, tag::lit, 1>
+    : mpl::true_
+{
+};
+} // namespace spirit
+} // namespace boost
 
 #endif
-

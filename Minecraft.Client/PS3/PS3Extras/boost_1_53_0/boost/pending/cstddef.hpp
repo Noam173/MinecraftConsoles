@@ -1,5 +1,5 @@
 // -*- C++ -*- forwarding header.
-//  (C) Copyright Jeremy Siek 2004 
+//  (C) Copyright Jeremy Siek 2004
 //  Distributed under the Boost Software License, Version 1.0. (See
 //  accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -8,9 +8,9 @@
 #define BOOST_CSTDDEF_HPP
 
 #if defined(__sgi) && !defined(__GNUC__)
-# include <stddef.h>
+#include <stddef.h>
 #else
-# include <cstddef>
+#include <cstddef>
 #endif
 
 #endif

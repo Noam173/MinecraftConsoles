@@ -22,37 +22,36 @@
 #include <boost/geometry/core/interior_rings.hpp>
 #include <boost/geometry/geometries/concepts/check.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace reverse
+namespace detail
 {
-
+namespace reverse
+{
 
 struct range_reverse
 {
     template <typename Range>
-    static inline void apply(Range& range)
+    static inline void apply(Range &range)
     {
         std::reverse(boost::begin(range), boost::end(range));
     }
 };
 
-
-struct polygon_reverse: private range_reverse
+struct polygon_reverse : private range_reverse
 {
     template <typename Polygon>
-    static inline void apply(Polygon& polygon)
+    static inline void apply(Polygon &polygon)
     {
         typedef typename geometry::ring_type<Polygon>::type ring_type;
 
         range_reverse::apply(exterior_ring(polygon));
 
-        typename interior_return_type<Polygon>::type rings
-                    = interior_rings(polygon);
+        typename interior_return_type<Polygon>::type rings = interior_rings(polygon);
         for (BOOST_AUTO_TPL(it, boost::begin(rings)); it != boost::end(rings); ++it)
         {
             range_reverse::apply(*it);
@@ -60,45 +59,42 @@ struct polygon_reverse: private range_reverse
     }
 };
 
-
-}} // namespace detail::reverse
+} // namespace reverse
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
 template <typename Geometry, typename Tag = typename tag<Geometry>::type>
 struct reverse
 {
-    static inline void apply(Geometry&)
-    {}
+    static inline void apply(Geometry &)
+    {
+    }
 };
-
 
 template <typename Ring>
 struct reverse<Ring, ring_tag>
     : detail::reverse::range_reverse
-{};
-
+{
+};
 
 template <typename LineString>
 struct reverse<LineString, linestring_tag>
     : detail::reverse::range_reverse
-{};
-
+{
+};
 
 template <typename Polygon>
 struct reverse<Polygon, polygon_tag>
     : detail::reverse::polygon_reverse
-{};
-
+{
+};
 
 } // namespace dispatch
 #endif
-
 
 /*!
 \brief Reverses the points within a geometry
@@ -112,14 +108,14 @@ struct reverse<Polygon, polygon_tag>
 \qbk{[include reference/algorithms/reverse.qbk]}
 */
 template <typename Geometry>
-inline void reverse(Geometry& geometry)
+inline void reverse(Geometry &geometry)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     dispatch::reverse<Geometry>::apply(geometry);
 }
 
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_REVERSE_HPP

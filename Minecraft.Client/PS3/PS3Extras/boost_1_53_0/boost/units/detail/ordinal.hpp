@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,39 +11,49 @@
 #ifndef BOOST_UNITS_DETAIL_ORDINAL_HPP_INCLUDED
 #define BOOST_UNITS_DETAIL_ORDINAL_HPP_INCLUDED
 
-#include <boost/mpl/less.hpp>
 #include <boost/mpl/bool.hpp>
+#include <boost/mpl/less.hpp>
 
-namespace boost {
-namespace units {
+namespace boost
+{
+namespace units
+{
 
-namespace detail {
+namespace detail
+{
 
-struct ordinal_tag {};
+struct ordinal_tag
+{
+};
 
-}
+} // namespace detail
 
-template<int N>
-struct ordinal {
+template <int N>
+struct ordinal
+{
     typedef detail::ordinal_tag tag;
     static const long value = N;
 };
 
-template<int N>
+template <int N>
 const long ordinal<N>::value;
 
-}
+} // namespace units
 
-namespace mpl {
+namespace mpl
+{
 
-template<>
-struct less_impl<units::detail::ordinal_tag, units::detail::ordinal_tag> {
-    template<class T1, class T2>
-    struct apply : bool_<(T1::value) < (T2::value)> {};
+template <>
+struct less_impl<units::detail::ordinal_tag, units::detail::ordinal_tag>
+{
+    template <class T1, class T2>
+    struct apply : bool_<(T1::value) < (T2::value)>
+    {
+    };
 };
 
-}
+} // namespace mpl
 
-}
+} // namespace boost
 
 #endif

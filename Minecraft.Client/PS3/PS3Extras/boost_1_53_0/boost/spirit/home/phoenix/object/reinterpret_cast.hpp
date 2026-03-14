@@ -1,7 +1,7 @@
 /*=============================================================================
     Copyright (c) 2001-2007 Joel de Guzman
 
-    Distributed under the Boost Software License, Version 1.0. (See accompanying 
+    Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
 #ifndef PHOENIX_OBJECT_REINTERPRET_CAST_HPP
@@ -9,34 +9,37 @@
 
 #include <boost/spirit/home/phoenix/core/compose.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
 {
-    namespace impl
+namespace phoenix
+{
+namespace impl
+{
+template <typename T>
+struct reinterpret_cast_eval
+{
+    template <typename Env, typename U>
+    struct result
     {
-        template <typename T>
-        struct reinterpret_cast_eval
-        {
-            template <typename Env, typename U>
-            struct result
-            {
-                typedef T type;
-            };
+        typedef T type;
+    };
 
-            template <typename RT, typename Env, typename U>
-            static RT
-            eval(Env const& env, U& obj)
-            {
-                return reinterpret_cast<RT>(obj.eval(env));
-            }
-        };
-    }
-
-    template <typename T, typename U>
-    inline actor<typename as_composite<impl::reinterpret_cast_eval<T>, U>::type>
-    reinterpret_cast_(U const& obj)
+    template <typename RT, typename Env, typename U>
+    static RT
+    eval(Env const &env, U &obj)
     {
-        return compose<impl::reinterpret_cast_eval<T> >(obj);
+        return reinterpret_cast<RT>(obj.eval(env));
     }
-}}
+};
+} // namespace impl
+
+template <typename T, typename U>
+inline actor<typename as_composite<impl::reinterpret_cast_eval<T>, U>::type>
+reinterpret_cast_(U const &obj)
+{
+    return compose<impl::reinterpret_cast_eval<T>>(obj);
+}
+} // namespace phoenix
+} // namespace boost
 
 #endif

@@ -1,7 +1,7 @@
-#include "stdafx.h"
-#include "..\Minecraft.World\Mth.h"
 #include "ChickenModel.h"
+#include "..\Minecraft.World\Mth.h"
 #include "ModelPart.h"
+#include "stdafx.h"
 
 ChickenModel::ChickenModel() : Model()
 {
@@ -38,67 +38,67 @@ ChickenModel::ChickenModel() : Model()
     wing1->addBox(-1.0f, 0.0f, -3.0f, 1, 4, 6); // Wing1
     wing1->setPos(4, static_cast<float>(-3 + yo), 0);
 
-	// 4J added - compile now to avoid random performance hit first time cubes are rendered
-    head->compile(1.0f/16.0f);
-    beak->compile(1.0f/16.0f);
-    redThing->compile(1.0f/16.0f);
-    body->compile(1.0f/16.0f);
-    leg0->compile(1.0f/16.0f);
-    leg1->compile(1.0f/16.0f);
-    wing0->compile(1.0f/16.0f);
-    wing1->compile(1.0f/16.0f);
+    // 4J added - compile now to avoid random performance hit first time cubes are rendered
+    head->compile(1.0f / 16.0f);
+    beak->compile(1.0f / 16.0f);
+    redThing->compile(1.0f / 16.0f);
+    body->compile(1.0f / 16.0f);
+    leg0->compile(1.0f / 16.0f);
+    leg1->compile(1.0f / 16.0f);
+    wing0->compile(1.0f / 16.0f);
+    wing1->compile(1.0f / 16.0f);
 }
 
 void ChickenModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
     setupAnim(time, r, bob, yRot, xRot, scale, entity);
-	if (young) 
-	{
-		float ss = 2;
-		glPushMatrix();
-		glTranslatef(0, 5 * scale, 2 * scale);
-		head->render(scale,usecompiled);
-		beak->render(scale,usecompiled);
-		redThing->render(scale,usecompiled);
-		glPopMatrix();
-		glPushMatrix();
-		glScalef(1 / ss, 1 / ss, 1 / ss);
-		glTranslatef(0, 24 * scale, 0);
-		body->render(scale,usecompiled);
-		leg0->render(scale,usecompiled);
-		leg1->render(scale,usecompiled);
-		wing0->render(scale,usecompiled);
-		wing1->render(scale,usecompiled);
-		glPopMatrix();
-	} 
-	else 
-	{
-		head->render(scale,usecompiled);
-		beak->render(scale,usecompiled);
-		redThing->render(scale,usecompiled);
-		body->render(scale,usecompiled);
-		leg0->render(scale,usecompiled);
-		leg1->render(scale,usecompiled);
-		wing0->render(scale,usecompiled);
-		wing1->render(scale,usecompiled);
-	}
+    if (young)
+    {
+        float ss = 2;
+        glPushMatrix();
+        glTranslatef(0, 5 * scale, 2 * scale);
+        head->render(scale, usecompiled);
+        beak->render(scale, usecompiled);
+        redThing->render(scale, usecompiled);
+        glPopMatrix();
+        glPushMatrix();
+        glScalef(1 / ss, 1 / ss, 1 / ss);
+        glTranslatef(0, 24 * scale, 0);
+        body->render(scale, usecompiled);
+        leg0->render(scale, usecompiled);
+        leg1->render(scale, usecompiled);
+        wing0->render(scale, usecompiled);
+        wing1->render(scale, usecompiled);
+        glPopMatrix();
+    }
+    else
+    {
+        head->render(scale, usecompiled);
+        beak->render(scale, usecompiled);
+        redThing->render(scale, usecompiled);
+        body->render(scale, usecompiled);
+        leg0->render(scale, usecompiled);
+        leg1->render(scale, usecompiled);
+        wing0->render(scale, usecompiled);
+        wing1->render(scale, usecompiled);
+    }
 }
 
 void ChickenModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
-	head->xRot = xRot / (float) (180 / PI);
-	head->yRot = yRot / (float) (180 / PI);
-        
-	beak->xRot = head->xRot;
-	beak->yRot = head->yRot;
-        
-	redThing->xRot = head->xRot;
-	redThing->yRot = head->yRot;
-        
-	body->xRot = 90 / (float) (180 / PI);
+    head->xRot = xRot / (float)(180 / PI);
+    head->yRot = yRot / (float)(180 / PI);
 
-	leg0->xRot = (Mth::cos(time * 0.6662f) * 1.4f) * r;
-	leg1->xRot = ( Mth::cos(time * 0.6662f + PI) * 1.4f) * r;
-	wing0->zRot = bob;
-	wing1->zRot = -bob;
+    beak->xRot = head->xRot;
+    beak->yRot = head->yRot;
+
+    redThing->xRot = head->xRot;
+    redThing->yRot = head->yRot;
+
+    body->xRot = 90 / (float)(180 / PI);
+
+    leg0->xRot = (Mth::cos(time * 0.6662f) * 1.4f) * r;
+    leg1->xRot = (Mth::cos(time * 0.6662f + PI) * 1.4f) * r;
+    wing0->zRot = bob;
+    wing1->zRot = -bob;
 }

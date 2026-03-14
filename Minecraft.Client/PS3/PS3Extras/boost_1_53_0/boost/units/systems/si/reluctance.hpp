@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,16 +11,19 @@
 #ifndef BOOST_UNITS_SI_RELUCTANCE_HPP
 #define BOOST_UNITS_SI_RELUCTANCE_HPP
 
-#include <boost/units/systems/si/base.hpp>
 #include <boost/units/physical_dimensions/reluctance.hpp>
+#include <boost/units/systems/si/base.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units { 
+namespace units
+{
 
-namespace si {
+namespace si
+{
 
-typedef unit<reluctance_dimension,si::system>    reluctance;
+typedef unit<reluctance_dimension, si::system> reluctance;
 
 } // namespace si
 

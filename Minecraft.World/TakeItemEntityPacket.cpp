@@ -1,41 +1,39 @@
-#include "stdafx.h"
-#include <iostream>
+#include "TakeItemEntityPacket.h"
 #include "InputOutputStream.h"
 #include "PacketListener.h"
-#include "TakeItemEntityPacket.h"
+#include "stdafx.h"
+#include <iostream>
 
-
-
-TakeItemEntityPacket::TakeItemEntityPacket() 
+TakeItemEntityPacket::TakeItemEntityPacket()
 {
-	itemId = -1;
-	playerId = -1;
+    itemId = -1;
+    playerId = -1;
 }
 
 TakeItemEntityPacket::TakeItemEntityPacket(int itemId, int playerId)
 {
-	this->itemId = itemId;
-	this->playerId = playerId;
+    this->itemId = itemId;
+    this->playerId = playerId;
 }
 
-void TakeItemEntityPacket::read(DataInputStream *dis) //throws IOException 
+void TakeItemEntityPacket::read(DataInputStream *dis) // throws IOException
 {
-	itemId = dis->readInt();
-	playerId = dis->readInt();
+    itemId = dis->readInt();
+    playerId = dis->readInt();
 }
 
-void TakeItemEntityPacket::write(DataOutputStream *dos) //throws IOException 
+void TakeItemEntityPacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeInt(itemId);
-	dos->writeInt(playerId);
+    dos->writeInt(itemId);
+    dos->writeInt(playerId);
 }
 
-void TakeItemEntityPacket::handle(PacketListener *listener) 
+void TakeItemEntityPacket::handle(PacketListener *listener)
 {
-	listener->handleTakeItemEntity(shared_from_this());
+    listener->handleTakeItemEntity(shared_from_this());
 }
 
 int TakeItemEntityPacket::getEstimatedSize()
 {
-	return 8;
+    return 8;
 }

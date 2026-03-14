@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -13,20 +13,29 @@
 
 #include <string>
 
-#include <boost/units/config.hpp>
 #include <boost/units/base_unit.hpp>
+#include <boost/units/config.hpp>
 #include <boost/units/physical_dimensions/luminous_intensity.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units {
+namespace units
+{
 
-namespace si {
+namespace si
+{
 
 struct candela_base_unit : public base_unit<candela_base_unit, luminous_intensity_dimension, -3>
 {
-    static std::string name()   { return("candela"); }
-    static std::string symbol() { return("cd"); }
+    static std::string name()
+    {
+        return ("candela");
+    }
+    static std::string symbol()
+    {
+        return ("cd");
+    }
 };
 
 } // namespace si
@@ -43,6 +52,6 @@ BOOST_TYPEOF_REGISTER_TYPE(boost::units::si::candela_base_unit)
 
 #endif
 
-//#include <boost/units/base_units/detail/conversions.hpp>
+// #include <boost/units/base_units/detail/conversions.hpp>
 
 #endif // BOOST_UNITS_SI_CANDELA_BASE_UNIT_HPP

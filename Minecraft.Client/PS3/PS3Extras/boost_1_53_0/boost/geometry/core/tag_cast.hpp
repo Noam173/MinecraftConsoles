@@ -14,11 +14,12 @@
 #ifndef BOOST_GEOMETRY_CORE_TAG_CAST_HPP
 #define BOOST_GEOMETRY_CORE_TAG_CAST_HPP
 
-
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
@@ -28,7 +29,7 @@ namespace boost { namespace geometry
     both the multi_tag and the pointlike tag. Often behaviour can be shared
     between different geometry types. A tag, found by the metafunction tag,
     can be casted to a more basic tag, and then dispatched by that tag.
-\ingroup core    
+\ingroup core
 \tparam Tag The tag to be casted to one of the base tags
 \tparam BaseTag First base tag
 \tparam BaseTag2 Optional second base tag
@@ -40,8 +41,7 @@ namespace boost { namespace geometry
 
 \qbk{[include reference/core/tag_cast.qbk]}
 */
-template
-<
+template <
     typename Tag,
     typename BaseTag,
     typename BaseTag2 = void,
@@ -49,21 +49,16 @@ template
     typename BaseTag4 = void,
     typename BaseTag5 = void,
     typename BaseTag6 = void,
-    typename BaseTag7 = void
->
+    typename BaseTag7 = void>
 struct tag_cast
 {
-    typedef typename boost::mpl::if_
-        <
-          typename boost::is_base_of<BaseTag, Tag>::type,
-          BaseTag,
-          // Try next one in line:
-          typename tag_cast
-            <
-                Tag, BaseTag2, BaseTag3, BaseTag4,
-                BaseTag5, BaseTag6, BaseTag7, void
-            >::type
-        >::type type;
+    typedef typename boost::mpl::if_<
+        typename boost::is_base_of<BaseTag, Tag>::type,
+        BaseTag,
+        // Try next one in line:
+        typename tag_cast<
+            Tag, BaseTag2, BaseTag3, BaseTag4,
+            BaseTag5, BaseTag6, BaseTag7, void>::type>::type type;
 };
 
 #ifndef DOXYGEN_NO_SPECIALIZATIONS
@@ -78,7 +73,7 @@ struct tag_cast<Tag, void, void, void, void, void, void, void>
 
 #endif // DOXYGEN_NO_SPECIALIZATIONS
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_CORE_TAG_CAST_HPP

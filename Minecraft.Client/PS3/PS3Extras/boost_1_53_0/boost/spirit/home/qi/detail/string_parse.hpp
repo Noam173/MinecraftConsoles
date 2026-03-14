@@ -13,77 +13,96 @@
 
 #include <boost/spirit/home/qi/detail/assign_to.hpp>
 
-namespace boost { namespace spirit { namespace qi { namespace detail
+namespace boost
 {
-    template <typename Char, typename Iterator, typename Attribute>
-    inline bool string_parse(
-        Char const* str
-      , Iterator& first, Iterator const& last, Attribute& attr)
-    {
-        Iterator i = first;
-        Char ch = *str;
+namespace spirit
+{
+namespace qi
+{
+namespace detail
+{
+template <typename Char, typename Iterator, typename Attribute>
+inline bool string_parse(
+    Char const *str, Iterator &first, Iterator const &last, Attribute &attr)
+{
+    Iterator i = first;
+    Char ch = *str;
 
-        for (; !!ch; ++i)
+    for (; !!ch; ++i)
+    {
+        if (i == last || (ch != *i))
         {
-            if (i == last || (ch != *i))
-                return false;
-            ch = *++str;
+            return false;
         }
-
-        spirit::traits::assign_to(first, i, attr);
-        first = i;
-        return true;
+        ch = *++str;
     }
 
-    template <typename String, typename Iterator, typename Attribute>
-    inline bool string_parse(
-        String const& str
-      , Iterator& first, Iterator const& last, Attribute& attr)
+    spirit::traits::assign_to(first, i, attr);
+    first = i;
+    return true;
+}
+
+template <typename String, typename Iterator, typename Attribute>
+inline bool string_parse(
+    String const &str, Iterator &first, Iterator const &last, Attribute &attr)
+{
+    Iterator i = first;
+    typename String::const_iterator stri = str.begin();
+    typename String::const_iterator str_last = str.end();
+
+    for (; stri != str_last; ++stri, ++i)
     {
-        Iterator i = first;
-        typename String::const_iterator stri = str.begin();
-        typename String::const_iterator str_last = str.end();
-
-        for (; stri != str_last; ++stri, ++i)
-            if (i == last || (*stri != *i))
-                return false;
-        spirit::traits::assign_to(first, i, attr);
-        first = i;
-        return true;
+        if (i == last || (*stri != *i))
+        {
+            return false;
+        }
     }
+    spirit::traits::assign_to(first, i, attr);
+    first = i;
+    return true;
+}
 
-    template <typename Char, typename Iterator, typename Attribute>
-    inline bool string_parse(
-        Char const* uc_i, Char const* lc_i
-      , Iterator& first, Iterator const& last, Attribute& attr)
+template <typename Char, typename Iterator, typename Attribute>
+inline bool string_parse(
+    Char const *uc_i, Char const *lc_i, Iterator &first, Iterator const &last, Attribute &attr)
+{
+    Iterator i = first;
+
+    for (; *uc_i && *lc_i; ++uc_i, ++lc_i, ++i)
     {
-        Iterator i = first;
-
-        for (; *uc_i && *lc_i; ++uc_i, ++lc_i, ++i)
-            if (i == last || ((*uc_i != *i) && (*lc_i != *i)))
-                return false;
-        spirit::traits::assign_to(first, i, attr);
-        first = i;
-        return true;
+        if (i == last || ((*uc_i != *i) && (*lc_i != *i)))
+        {
+            return false;
+        }
     }
+    spirit::traits::assign_to(first, i, attr);
+    first = i;
+    return true;
+}
 
-    template <typename String, typename Iterator, typename Attribute>
-    inline bool string_parse(
-        String const& ucstr, String const& lcstr
-      , Iterator& first, Iterator const& last, Attribute& attr)
+template <typename String, typename Iterator, typename Attribute>
+inline bool string_parse(
+    String const &ucstr, String const &lcstr, Iterator &first, Iterator const &last, Attribute &attr)
+{
+    typename String::const_iterator uc_i = ucstr.begin();
+    typename String::const_iterator uc_last = ucstr.end();
+    typename String::const_iterator lc_i = lcstr.begin();
+    Iterator i = first;
+
+    for (; uc_i != uc_last; ++uc_i, ++lc_i, ++i)
     {
-        typename String::const_iterator uc_i = ucstr.begin();
-        typename String::const_iterator uc_last = ucstr.end();
-        typename String::const_iterator lc_i = lcstr.begin();
-        Iterator i = first;
-
-        for (; uc_i != uc_last; ++uc_i, ++lc_i, ++i)
-            if (i == last || ((*uc_i != *i) && (*lc_i != *i)))
-                return false;
-        spirit::traits::assign_to(first, i, attr);
-        first = i;
-        return true;
+        if (i == last || ((*uc_i != *i) && (*lc_i != *i)))
+        {
+            return false;
+        }
     }
-}}}}
+    spirit::traits::assign_to(first, i, attr);
+    first = i;
+    return true;
+}
+} // namespace detail
+} // namespace qi
+} // namespace spirit
+} // namespace boost
 
 #endif

@@ -17,71 +17,78 @@
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <queue>
 
-namespace boost  {
-namespace heap   {
-namespace detail {
-
-
-template<typename type>
-struct identity:
-    public std::unary_function<type,type>
+namespace boost
 {
-    type& operator()(type& x) const
-    { return x; }
+namespace heap
+{
+namespace detail
+{
 
-    const type& operator()(const type& x) const
-    { return x; }
+template <typename type>
+struct identity : public std::unary_function<type, type>
+{
+    type &operator()(type &x) const
+    {
+        return x;
+    }
+
+    const type &operator()(const type &x) const
+    {
+        return x;
+    }
 };
 
-template<typename type>
-struct caster:
-    public std::unary_function<type,type>
+template <typename type>
+struct caster : public std::unary_function<type, type>
 {
     template <typename U>
-    type& operator()(U& x) const
-    { return static_cast<type&>(x); }
+    type &operator()(U &x) const
+    {
+        return static_cast<type &>(x);
+    }
 
     template <typename U>
-    const type& operator()(const U& x) const
-    { return static_cast<const type&>(x); }
+    const type &operator()(const U &x) const
+    {
+        return static_cast<const type &>(x);
+    }
 };
 
-template<typename Node>
+template <typename Node>
 struct dereferencer
 {
     template <typename Iterator>
-    Node * operator()(Iterator const & it)
+    Node *operator()(Iterator const &it)
     {
         return static_cast<Node *>(*it);
     }
 };
 
-template<typename Node>
+template <typename Node>
 struct pointer_to_reference
 {
     template <typename Iterator>
-    const Node * operator()(Iterator const & it)
+    const Node *operator()(Iterator const &it)
     {
         return static_cast<const Node *>(&*it);
     }
 };
 
-
 template <typename HandleType,
           typename Alloc,
-          typename ValueCompare
-         >
+          typename ValueCompare>
 struct unordered_tree_iterator_storage
 {
-    unordered_tree_iterator_storage(ValueCompare const & cmp)
-    {}
+    unordered_tree_iterator_storage(ValueCompare const &cmp)
+    {
+    }
 
     void push(HandleType h)
     {
         data_.push_back(h);
     }
 
-    HandleType const & top(void)
+    HandleType const &top(void)
     {
         return data_.back();
     }
@@ -96,37 +103,34 @@ struct unordered_tree_iterator_storage
         return data_.empty();
     }
 
-    std::vector<HandleType, typename Alloc::template rebind<HandleType>::other > data_;
+    std::vector<HandleType, typename Alloc::template rebind<HandleType>::other> data_;
 };
 
 template <typename ValueType,
           typename HandleType,
           typename Alloc,
           typename ValueCompare,
-          typename ValueExtractor
-         >
-struct ordered_tree_iterator_storage:
-    ValueExtractor
+          typename ValueExtractor>
+struct ordered_tree_iterator_storage : ValueExtractor
 {
-    struct compare_values_by_handle:
-        ValueExtractor,
-        ValueCompare
+    struct compare_values_by_handle : ValueExtractor,
+                                      ValueCompare
     {
-        compare_values_by_handle(ValueCompare const & cmp):
-            ValueCompare(cmp)
-        {}
-
-        bool operator()(HandleType const & lhs, HandleType const & rhs) const
+        compare_values_by_handle(ValueCompare const &cmp) : ValueCompare(cmp)
         {
-            ValueType const & lhs_value = ValueExtractor::operator()(lhs->value);
-            ValueType const & rhs_value = ValueExtractor::operator()(rhs->value);
+        }
+
+        bool operator()(HandleType const &lhs, HandleType const &rhs) const
+        {
+            ValueType const &lhs_value = ValueExtractor::operator()(lhs->value);
+            ValueType const &rhs_value = ValueExtractor::operator()(rhs->value);
             return ValueCompare::operator()(lhs_value, rhs_value);
         }
     };
 
-    ordered_tree_iterator_storage(ValueCompare const & cmp):
-        data_(compare_values_by_handle(cmp))
-    {}
+    ordered_tree_iterator_storage(ValueCompare const &cmp) : data_(compare_values_by_handle(cmp))
+    {
+    }
 
     void push(HandleType h)
     {
@@ -138,7 +142,7 @@ struct ordered_tree_iterator_storage:
         data_.pop();
     }
 
-    HandleType const & top(void)
+    HandleType const &top(void)
     {
         return data_.top();
     }
@@ -150,9 +154,9 @@ struct ordered_tree_iterator_storage:
 
     std::priority_queue<HandleType,
                         std::vector<HandleType, typename Alloc::template rebind<HandleType>::other>,
-                        compare_values_by_handle> data_;
+                        compare_values_by_handle>
+        data_;
 };
-
 
 /* tree iterator helper class
  *
@@ -168,24 +172,20 @@ template <typename Node,
           typename PointerExtractor = dereferencer<Node>,
           bool check_null_pointer = false,
           bool ordered_iterator = false,
-          typename ValueCompare = std::less<ValueType>
-         >
-class tree_iterator:
-    public boost::iterator_adaptor<tree_iterator<Node,
-                                                 ValueType,
-                                                 Alloc,
-                                                 ValueExtractor,
-                                                 PointerExtractor,
-                                                 check_null_pointer,
-                                                 ordered_iterator,
-                                                 ValueCompare
-                                                >,
-                                   const Node *,
-                                   ValueType,
-                                   boost::forward_traversal_tag
-                                  >,
-    ValueExtractor,
-    PointerExtractor
+          typename ValueCompare = std::less<ValueType>>
+class tree_iterator : public boost::iterator_adaptor<tree_iterator<Node,
+                                                                   ValueType,
+                                                                   Alloc,
+                                                                   ValueExtractor,
+                                                                   PointerExtractor,
+                                                                   check_null_pointer,
+                                                                   ordered_iterator,
+                                                                   ValueCompare>,
+                                                     const Node *,
+                                                     ValueType,
+                                                     boost::forward_traversal_tag>,
+                      ValueExtractor,
+                      PointerExtractor
 {
     typedef boost::iterator_adaptor<tree_iterator<Node,
                                                   ValueType,
@@ -194,95 +194,104 @@ class tree_iterator:
                                                   PointerExtractor,
                                                   check_null_pointer,
                                                   ordered_iterator,
-                                                  ValueCompare
-                                                 >,
+                                                  ValueCompare>,
                                     const Node *,
                                     ValueType,
-                                    boost::forward_traversal_tag
-                                   > adaptor_type;
+                                    boost::forward_traversal_tag>
+        adaptor_type;
 
     friend class boost::iterator_core_access;
 
-    typedef typename boost::mpl::if_c< ordered_iterator,
-                                       ordered_tree_iterator_storage<ValueType, const Node*, Alloc, ValueCompare, ValueExtractor>,
-                                       unordered_tree_iterator_storage<const Node*, Alloc, ValueCompare>
-                                     >::type
+    typedef typename boost::mpl::if_c<ordered_iterator,
+                                      ordered_tree_iterator_storage<ValueType, const Node *, Alloc, ValueCompare, ValueExtractor>,
+                                      unordered_tree_iterator_storage<const Node *, Alloc, ValueCompare>>::type
         unvisited_node_container;
 
-public:
-    tree_iterator(void):
-        adaptor_type(0), unvisited_nodes(ValueCompare())
-    {}
+  public:
+    tree_iterator(void) : adaptor_type(0), unvisited_nodes(ValueCompare())
+    {
+    }
 
-    tree_iterator(ValueCompare const & cmp):
-        adaptor_type(0), unvisited_nodes(cmp)
-    {}
+    tree_iterator(ValueCompare const &cmp) : adaptor_type(0), unvisited_nodes(cmp)
+    {
+    }
 
-    tree_iterator(const Node * it, ValueCompare const & cmp):
-        adaptor_type(it), unvisited_nodes(cmp)
+    tree_iterator(const Node *it, ValueCompare const &cmp) : adaptor_type(it), unvisited_nodes(cmp)
     {
         if (it)
+        {
             discover_nodes(it);
+        }
     }
 
     /* fills the iterator from a list of possible top nodes */
     template <typename NodePointerIterator>
-    tree_iterator(NodePointerIterator begin, NodePointerIterator end, const Node * top_node, ValueCompare const & cmp):
-        adaptor_type(0), unvisited_nodes(cmp)
+    tree_iterator(NodePointerIterator begin, NodePointerIterator end, const Node *top_node, ValueCompare const &cmp) : adaptor_type(0), unvisited_nodes(cmp)
     {
         BOOST_STATIC_ASSERT(ordered_iterator);
         if (begin == end)
+        {
             return;
+        }
 
         adaptor_type::base_reference() = top_node;
         discover_nodes(top_node);
 
-        for (NodePointerIterator it = begin; it != end; ++it) {
-            const Node * current_node = static_cast<const Node*>(&*it);
+        for (NodePointerIterator it = begin; it != end; ++it)
+        {
+            const Node *current_node = static_cast<const Node *>(&*it);
             if (current_node != top_node)
+            {
                 unvisited_nodes.push(current_node);
+            }
         }
     }
 
-    bool operator!=(tree_iterator const & rhs) const
+    bool operator!=(tree_iterator const &rhs) const
     {
         return adaptor_type::base() != rhs.base();
     }
 
-    bool operator==(tree_iterator const & rhs) const
+    bool operator==(tree_iterator const &rhs) const
     {
         return !operator!=(rhs);
     }
 
-    const Node * get_node() const
+    const Node *get_node() const
     {
         return adaptor_type::base_reference();
     }
 
-private:
+  private:
     void increment(void)
     {
         if (unvisited_nodes.empty())
+        {
             adaptor_type::base_reference() = 0;
-        else {
-            const Node * next = unvisited_nodes.top();
+        }
+        else
+        {
+            const Node *next = unvisited_nodes.top();
             unvisited_nodes.pop();
             discover_nodes(next);
             adaptor_type::base_reference() = next;
         }
     }
 
-    ValueType const & dereference() const
+    ValueType const &dereference() const
     {
         return ValueExtractor::operator()(adaptor_type::base_reference()->value);
     }
 
-    void discover_nodes(const Node * n)
+    void discover_nodes(const Node *n)
     {
-        for (typename Node::const_child_iterator it = n->children.begin(); it != n->children.end(); ++it) {
-            const Node * n = PointerExtractor::operator()(it);
+        for (typename Node::const_child_iterator it = n->children.begin(); it != n->children.end(); ++it)
+        {
+            const Node *n = PointerExtractor::operator()(it);
             if (check_null_pointer && n == NULL)
+            {
                 continue;
+            }
             unvisited_nodes.push(n);
         }
     }
@@ -293,14 +302,14 @@ private:
 template <typename Node, typename NodeList>
 struct list_iterator_converter
 {
-    typename NodeList::const_iterator operator()(const Node * node)
+    typename NodeList::const_iterator operator()(const Node *node)
     {
         return NodeList::s_iterator_to(*node);
     }
 
-    Node * operator()(typename NodeList::const_iterator it)
+    Node *operator()(typename NodeList::const_iterator it)
     {
-        return const_cast<Node*>(static_cast<const Node*>(&*it));
+        return const_cast<Node *>(static_cast<const Node *>(&*it));
     }
 };
 
@@ -308,83 +317,86 @@ template <typename Node,
           typename NodeIterator,
           typename ValueType,
           typename ValueExtractor = identity<typename Node::value_type>,
-          typename IteratorCoverter = identity<NodeIterator>
-         >
-class recursive_tree_iterator:
-    public boost::iterator_adaptor<recursive_tree_iterator<Node,
-                                                           NodeIterator,
-                                                           ValueType,
-                                                           ValueExtractor,
-                                                           IteratorCoverter
-                                                          >,
-                                    NodeIterator,
-                                    ValueType const,
-                                    boost::bidirectional_traversal_tag>,
-    ValueExtractor, IteratorCoverter
+          typename IteratorCoverter = identity<NodeIterator>>
+class recursive_tree_iterator : public boost::iterator_adaptor<recursive_tree_iterator<Node,
+                                                                                       NodeIterator,
+                                                                                       ValueType,
+                                                                                       ValueExtractor,
+                                                                                       IteratorCoverter>,
+                                                               NodeIterator,
+                                                               ValueType const,
+                                                               boost::bidirectional_traversal_tag>,
+                                ValueExtractor,
+                                IteratorCoverter
 {
     typedef boost::iterator_adaptor<recursive_tree_iterator<Node,
                                                             NodeIterator,
                                                             ValueType,
                                                             ValueExtractor,
-                                                            IteratorCoverter
-                                                           >,
+                                                            IteratorCoverter>,
                                     NodeIterator,
                                     ValueType const,
-                                    boost::bidirectional_traversal_tag> adaptor_type;
+                                    boost::bidirectional_traversal_tag>
+        adaptor_type;
 
     friend class boost::iterator_core_access;
 
+  public:
+    recursive_tree_iterator(void) : adaptor_type(0)
+    {
+    }
 
-public:
-    recursive_tree_iterator(void):
-        adaptor_type(0)
-    {}
-
-    explicit recursive_tree_iterator(NodeIterator const & it):
-        adaptor_type(it)
-    {}
+    explicit recursive_tree_iterator(NodeIterator const &it) : adaptor_type(it)
+    {
+    }
 
     void increment(void)
     {
         NodeIterator next = adaptor_type::base_reference();
 
-        const Node * n = get_node(next);
-        if (n->children.empty()) {
-            const Node * parent = get_node(next)->get_parent();
+        const Node *n = get_node(next);
+        if (n->children.empty())
+        {
+            const Node *parent = get_node(next)->get_parent();
 
             ++next;
 
-            while (true) {
+            while (true)
+            {
                 if (parent == NULL || next != parent->children.end())
+                {
                     break;
+                }
 
                 next = IteratorCoverter::operator()(parent);
                 parent = get_node(next)->get_parent();
                 ++next;
             }
-        } else
+        }
+        else
+        {
             next = n->children.begin();
+        }
 
         adaptor_type::base_reference() = next;
         return;
     }
 
-    ValueType const & dereference() const
+    ValueType const &dereference() const
     {
         return ValueExtractor::operator()(get_node(adaptor_type::base_reference())->value);
     }
 
-    static const Node * get_node(NodeIterator const & it)
+    static const Node *get_node(NodeIterator const &it)
     {
         return static_cast<const Node *>(&*it);
     }
 
-    const Node * get_node() const
+    const Node *get_node() const
     {
         return get_node(adaptor_type::base_reference());
     }
 };
-
 
 } /* namespace detail */
 } /* namespace heap */

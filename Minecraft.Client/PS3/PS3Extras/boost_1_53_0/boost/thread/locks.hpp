@@ -8,9 +8,9 @@
 #define BOOST_THREAD_LOCKS_HPP
 
 #include <boost/thread/lock_algorithms.hpp>
-#include <boost/thread/lock_types.hpp>
 #include <boost/thread/lock_guard.hpp>
-#include <boost/thread/lockable_traits.hpp>
 #include <boost/thread/lock_options.hpp>
+#include <boost/thread/lock_types.hpp>
+#include <boost/thread/lockable_traits.hpp>
 
 #endif

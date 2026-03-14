@@ -7,26 +7,29 @@
 #if !defined(BOOST_FUSION_CATEGORY_OF_IMPL_09272006_0726)
 #define BOOST_FUSION_CATEGORY_OF_IMPL_09272006_0726
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct std_tuple_tag;
-    struct random_access_traversal_tag;
+namespace fusion
+{
+struct std_tuple_tag;
+struct random_access_traversal_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct category_of_impl;
+
+template <>
+struct category_of_impl<std_tuple_tag>
+{
+    template <typename T>
+    struct apply
     {
-        template<typename T>
-        struct category_of_impl;
-
-        template<>
-        struct category_of_impl<std_tuple_tag>
-        {
-            template<typename T>
-            struct apply
-            {
-                typedef random_access_traversal_tag type;
-            };
-        };
-    }
-}}
+        typedef random_access_traversal_tag type;
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

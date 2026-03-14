@@ -13,26 +13,32 @@
 #error "Parallel BGL files should not be included unless <boost/graph/use_mpi.hpp> has been included"
 #endif
 
-#include <boost/graph/reverse_graph.hpp>
 #include <boost/graph/parallel/container_traits.hpp>
+#include <boost/graph/reverse_graph.hpp>
 
-namespace boost {
-  namespace graph {
-    namespace parallel {
-      /// Retrieve the process group from a reverse graph
-      template<typename Graph, typename GraphRef>
-      struct process_group_type<reverse_graph<Graph, GraphRef> >
-        : process_group_type<Graph> { };
-    }
+namespace boost
+{
+namespace graph
+{
+namespace parallel
+{
+/// Retrieve the process group from a reverse graph
+template <typename Graph, typename GraphRef>
+struct process_group_type<reverse_graph<Graph, GraphRef>>
+    : process_group_type<Graph>
+{
+};
+} // namespace parallel
 
-  }
+} // namespace graph
 
-  /// Retrieve the process group from a reverse graph
-  template<typename Graph, typename GraphRef>
-  inline typename graph::parallel::process_group_type<Graph>::type
-  process_group(reverse_graph<Graph, GraphRef> const& g) {
+/// Retrieve the process group from a reverse graph
+template <typename Graph, typename GraphRef>
+inline typename graph::parallel::process_group_type<Graph>::type
+process_group(reverse_graph<Graph, GraphRef> const &g)
+{
     return process_group(g.m_g);
-  }
+}
 } // namespace boost
 
 #endif

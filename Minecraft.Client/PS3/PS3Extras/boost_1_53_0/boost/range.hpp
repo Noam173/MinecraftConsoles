@@ -12,7 +12,7 @@
 #define BOOST_RANGE_HPP_27_07_04
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif
 
 #if _MSC_VER == 1300 // experiment
@@ -24,8 +24,8 @@
 #else
 
 #include <boost/range/functions.hpp>
-#include <boost/range/metafunctions.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/range/metafunctions.hpp>
 #include <boost/range/sub_range.hpp>
 
 #endif // _MSC_VER == 1300 // experiment

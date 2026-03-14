@@ -1,31 +1,31 @@
-#include "stdafx.h"
+#include "DirectoryLevelStorageSource.h"
+#include "DirectoryLevelStorage.h"
 #include "File.h"
 #include "LevelData.h"
 #include "LevelSummary.h"
 #include "com.mojang.nbt.h"
-#include "DirectoryLevelStorage.h"
-#include "DirectoryLevelStorageSource.h"
+#include "stdafx.h"
 
 #include "ConsoleSaveFileIO.h"
 #include "ConsoleSaveFileOriginal.h"
 
 class LevelStorage;
 
-DirectoryLevelStorageSource::DirectoryLevelStorageSource(const File dir) : baseDir( dir )
+DirectoryLevelStorageSource::DirectoryLevelStorageSource(const File dir) : baseDir(dir)
 {
-	//if (!dir.exists()) dir.mkdirs(); // 4J Removed
-	//this->baseDir = dir;
+    // if (!dir.exists()) dir.mkdirs(); // 4J Removed
+    // this->baseDir = dir;
 }
 
 wstring DirectoryLevelStorageSource::getName()
 {
-	return L"Old Format";
+    return L"Old Format";
 }
 
 vector<LevelSummary *> *DirectoryLevelStorageSource::getLevelList()
 {
-	// 4J Stu - We don't use directory list with the Xbox save locations
-	vector<LevelSummary *> *levels = new vector<LevelSummary *>;
+    // 4J Stu - We don't use directory list with the Xbox save locations
+    vector<LevelSummary *> *levels = new vector<LevelSummary *>;
 #if 0
 	for (int i = 0; i < 5; i++)
 	{
@@ -38,103 +38,106 @@ vector<LevelSummary *> *DirectoryLevelStorageSource::getLevelList()
 		}
 	}
 #endif
-	return levels;
+    return levels;
 }
 
 void DirectoryLevelStorageSource::clearAll()
 {
 }
 
-LevelData *DirectoryLevelStorageSource::getDataTagFor(ConsoleSaveFile *saveFile, const wstring& levelId)
+LevelData *DirectoryLevelStorageSource::getDataTagFor(ConsoleSaveFile *saveFile, const wstring &levelId)
 {
-	//File dataFile(dir, L"level.dat");
-	ConsoleSavePath dataFile = ConsoleSavePath( wstring( L"level.dat" ) );
-	if ( saveFile->doesFileExist( dataFile ) )
-	{
-		ConsoleSaveFileInputStream fis = ConsoleSaveFileInputStream(saveFile, dataFile);
-		CompoundTag *root = NbtIo::readCompressed(&fis);
-		CompoundTag *tag = root->getCompound(L"Data");
-		LevelData *ret = new LevelData(tag);
-		delete root;
-		return ret;
-	}
+    // File dataFile(dir, L"level.dat");
+    ConsoleSavePath dataFile = ConsoleSavePath(wstring(L"level.dat"));
+    if (saveFile->doesFileExist(dataFile))
+    {
+        ConsoleSaveFileInputStream fis = ConsoleSaveFileInputStream(saveFile, dataFile);
+        CompoundTag *root = NbtIo::readCompressed(&fis);
+        CompoundTag *tag = root->getCompound(L"Data");
+        LevelData *ret = new LevelData(tag);
+        delete root;
+        return ret;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
-void DirectoryLevelStorageSource::renameLevel(const wstring& levelId, const wstring& newLevelName)
+void DirectoryLevelStorageSource::renameLevel(const wstring &levelId, const wstring &newLevelName)
 {
-	ConsoleSaveFileOriginal tempSave(levelId);
+    ConsoleSaveFileOriginal tempSave(levelId);
 
-	//File dataFile = File(dir, L"level.dat");
-	ConsoleSavePath dataFile = ConsoleSavePath( wstring( L"level.dat" ) );
-	if ( tempSave.doesFileExist( dataFile ) )
-	{
-		ConsoleSaveFileInputStream fis = ConsoleSaveFileInputStream(&tempSave, dataFile);
-		CompoundTag *root = NbtIo::readCompressed(&fis);
-		CompoundTag *tag = root->getCompound(L"Data");
-		tag->putString(L"LevelName", newLevelName);
+    // File dataFile = File(dir, L"level.dat");
+    ConsoleSavePath dataFile = ConsoleSavePath(wstring(L"level.dat"));
+    if (tempSave.doesFileExist(dataFile))
+    {
+        ConsoleSaveFileInputStream fis = ConsoleSaveFileInputStream(&tempSave, dataFile);
+        CompoundTag *root = NbtIo::readCompressed(&fis);
+        CompoundTag *tag = root->getCompound(L"Data");
+        tag->putString(L"LevelName", newLevelName);
 
-		ConsoleSaveFileOutputStream fos = ConsoleSaveFileOutputStream(&tempSave, dataFile);
-		NbtIo::writeCompressed(root, &fos);
-	}
+        ConsoleSaveFileOutputStream fos = ConsoleSaveFileOutputStream(&tempSave, dataFile);
+        NbtIo::writeCompressed(root, &fos);
+    }
 }
 
-bool DirectoryLevelStorageSource::isNewLevelIdAcceptable(const wstring& levelId)
+bool DirectoryLevelStorageSource::isNewLevelIdAcceptable(const wstring &levelId)
 {
-	// 4J Jev, removed try/catch.
+    // 4J Jev, removed try/catch.
 
-	File levelFolder = File(baseDir, levelId);
-	if (levelFolder.exists())
-	{
-		return false;
-	}
+    File levelFolder = File(baseDir, levelId);
+    if (levelFolder.exists())
+    {
+        return false;
+    }
 
-	levelFolder.mkdir();
+    levelFolder.mkdir();
 
-	return true;
+    return true;
 }
 
-void DirectoryLevelStorageSource::deleteLevel(const wstring& levelId)
+void DirectoryLevelStorageSource::deleteLevel(const wstring &levelId)
 {
-	File dir = File(baseDir, levelId);
-	if (!dir.exists()) return;
+    File dir = File(baseDir, levelId);
+    if (!dir.exists())
+    {
+        return;
+    }
 
-	deleteRecursive(dir.listFiles());
-	dir._delete();
+    deleteRecursive(dir.listFiles());
+    dir._delete();
 }
 
 void DirectoryLevelStorageSource::deleteRecursive(vector<File *> *files)
 {
-	if ( files )
-	{
-		for (File* file : *files)
-		{
-			if (file->isDirectory())
-			{
-				deleteRecursive(file->listFiles());
-			}
-			file->_delete();
-		}
-	}
+    if (files)
+    {
+        for (File *file : *files)
+        {
+            if (file->isDirectory())
+            {
+                deleteRecursive(file->listFiles());
+            }
+            file->_delete();
+        }
+    }
 }
 
-shared_ptr<LevelStorage> DirectoryLevelStorageSource::selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir)
+shared_ptr<LevelStorage> DirectoryLevelStorageSource::selectLevel(ConsoleSaveFile *saveFile, const wstring &levelId, bool createPlayerDir)
 {
-	return std::make_shared<DirectoryLevelStorage>(saveFile, baseDir, levelId, createPlayerDir);
+    return std::make_shared<DirectoryLevelStorage>(saveFile, baseDir, levelId, createPlayerDir);
 }
 
-bool DirectoryLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId)
+bool DirectoryLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const wstring &levelId)
 {
-	return false;
+    return false;
 }
 
-bool DirectoryLevelStorageSource::requiresConversion(ConsoleSaveFile *saveFile, const wstring& levelId)
+bool DirectoryLevelStorageSource::requiresConversion(ConsoleSaveFile *saveFile, const wstring &levelId)
 {
-	return false;
+    return false;
 }
 
-bool DirectoryLevelStorageSource::convertLevel(ConsoleSaveFile *saveFile, const wstring& levelId, ProgressListener *progress)
+bool DirectoryLevelStorageSource::convertLevel(ConsoleSaveFile *saveFile, const wstring &levelId, ProgressListener *progress)
 {
-	return false;
+    return false;
 }

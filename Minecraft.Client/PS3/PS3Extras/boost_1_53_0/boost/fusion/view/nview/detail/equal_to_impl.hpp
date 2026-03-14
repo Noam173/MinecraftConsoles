@@ -10,24 +10,28 @@
 
 #include <boost/fusion/iterator/equal_to.hpp>
 
-namespace boost { namespace fusion 
+namespace boost
 {
-    struct nview_iterator_tag;
+namespace fusion
+{
+struct nview_iterator_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct equal_to_impl;
+
+template <>
+struct equal_to_impl<nview_iterator_tag>
+{
+    template <typename It1, typename It2>
+    struct apply
+        : result_of::equal_to<typename It1::first_type, typename It2::first_type>
     {
-        template<typename Tag>
-        struct equal_to_impl;
-
-        template<>
-        struct equal_to_impl<nview_iterator_tag>
-        {
-            template<typename It1, typename It2>
-            struct apply
-              : result_of::equal_to<typename It1::first_type, typename It2::first_type>
-            {};
-        };
-    }
-}}
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

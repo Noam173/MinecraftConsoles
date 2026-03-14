@@ -14,22 +14,21 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_SIDE_INFO_HPP
 #define BOOST_GEOMETRY_STRATEGIES_SIDE_INFO_HPP
 
-
 #include <utility>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 /*!
 \brief Class side_info: small class wrapping for sides (-1,0,1)
 */
 class side_info
 {
-public :
+  public:
     inline side_info(int side_a1 = 0, int side_a2 = 0,
-            int side_b1 = 0, int side_b2 = 0)
+                     int side_b1 = 0, int side_b2 = 0)
     {
         sides[0].first = side_a1;
         sides[0].second = side_a2;
@@ -63,7 +62,6 @@ public :
         return Index == 0 ? sides[Which].first : sides[Which].second;
     }
 
-
     // Returns true if both lying on the same side WRT the other
     // (so either 1,1 or -1-1)
     template <int Which>
@@ -74,24 +72,17 @@ public :
 
     inline bool collinear() const
     {
-        return sides[0].first == 0
-            && sides[0].second == 0
-            && sides[1].first == 0
-            && sides[1].second == 0;
+        return sides[0].first == 0 && sides[0].second == 0 && sides[1].first == 0 && sides[1].second == 0;
     }
 
     inline bool crossing() const
     {
-        return sides[0].first * sides[0].second == -1
-            && sides[1].first * sides[1].second == -1;
+        return sides[0].first * sides[0].second == -1 && sides[1].first * sides[1].second == -1;
     }
 
     inline bool touching() const
     {
-        return (sides[0].first * sides[1].first == -1
-            && sides[0].second == 0 && sides[1].second == 0)
-            || (sides[1].first * sides[0].first == -1
-            && sides[1].second == 0 && sides[0].second == 0);
+        return (sides[0].first * sides[1].first == -1 && sides[0].second == 0 && sides[1].second == 0) || (sides[1].first * sides[0].first == -1 && sides[1].second == 0 && sides[0].second == 0);
     }
 
     template <int Which>
@@ -99,8 +90,7 @@ public :
     {
         // This is normally a situation which can't occur:
         // If one is completely left or right, the other cannot touch
-        return one_zero<Which>()
-            && sides[1 - Which].first * sides[1 - Which].second == 1;
+        return one_zero<Which>() && sides[1 - Which].first * sides[1 - Which].second == 1;
     }
 
     inline bool meeting() const
@@ -118,19 +108,14 @@ public :
     template <int Which>
     inline bool one_zero() const
     {
-        return (sides[Which].first == 0 && sides[Which].second != 0)
-            || (sides[Which].first != 0 && sides[Which].second == 0);
+        return (sides[Which].first == 0 && sides[Which].second != 0) || (sides[Which].first != 0 && sides[Which].second == 0);
     }
 
     inline bool one_of_all_zero() const
     {
-        int const sum = std::abs(sides[0].first)
-                + std::abs(sides[0].second)
-                + std::abs(sides[1].first)
-                + std::abs(sides[1].second);
+        int const sum = std::abs(sides[0].first) + std::abs(sides[0].second) + std::abs(sides[1].first) + std::abs(sides[1].second);
         return sum == 3;
     }
-
 
     template <int Which>
     inline int zero_index() const
@@ -138,29 +123,25 @@ public :
         return sides[Which].first == 0 ? 0 : 1;
     }
 
-
     inline void debug() const
     {
         std::cout << sides[0].first << " "
-            << sides[0].second << " "
-            << sides[1].first << " "
-            << sides[1].second 
-			<< std::endl;
+                  << sides[0].second << " "
+                  << sides[1].first << " "
+                  << sides[1].second
+                  << std::endl;
     }
-
 
     inline void reverse()
     {
         std::swap(sides[0], sides[1]);
     }
 
-//private :
+    // private :
     std::pair<int, int> sides[2];
-
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_SIDE_INFO_HPP

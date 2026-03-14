@@ -5,9 +5,9 @@
 #ifndef BOOST_TYPEOF_STD_iterator_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_iterator_hpp_INCLUDED
 
-#include <iterator>
-#include <boost/typeof/typeof.hpp>
 #include <boost/typeof/std/string.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <iterator>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -20,7 +20,7 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::iterator, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::iterator, 3)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::iterator, 4)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::iterator, 5)
-#endif//BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
+#endif // BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
 BOOST_TYPEOF_REGISTER_TYPE(std::input_iterator_tag)
 BOOST_TYPEOF_REGISTER_TYPE(std::output_iterator_tag)
 BOOST_TYPEOF_REGISTER_TYPE(std::forward_iterator_tag)
@@ -33,7 +33,7 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::reverse_iterator, 4)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::reverse_iterator, 5)
 #else
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::reverse_iterator, 1)
-#endif//BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
+#endif // BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::back_insert_iterator, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::front_insert_iterator, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::insert_iterator, 1)
@@ -46,7 +46,7 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::istream_iterator, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::istream_iterator, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::istream_iterator, 3)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::istream_iterator, 4)
-#endif//BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
+#endif // BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::ostream_iterator, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::ostream_iterator, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::ostream_iterator, 3)
@@ -55,4 +55,4 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::istreambuf_iterator, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::ostreambuf_iterator, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::ostreambuf_iterator, 2)
 
-#endif//BOOST_TYPEOF_STD_iterator_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_iterator_hpp_INCLUDED

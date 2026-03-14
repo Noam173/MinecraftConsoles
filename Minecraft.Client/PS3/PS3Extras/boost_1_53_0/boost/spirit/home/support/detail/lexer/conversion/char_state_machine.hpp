@@ -7,9 +7,9 @@
 #define BOOST_LEXER_CHAR_STATE_MACHINE_HPP
 
 #include "../consts.hpp"
-#include <map>
 #include "../size_t.hpp"
 #include "../string_token.hpp"
+#include <map>
 #include <vector>
 
 namespace boost
@@ -18,7 +18,7 @@ namespace lexer
 {
 namespace detail
 {
-template<typename CharT>
+template <typename CharT>
 struct basic_char_state_machine
 {
     struct state
@@ -35,13 +35,12 @@ struct basic_char_state_machine
         std::size_t _eol_index;
         size_t_string_token_map _transitions;
 
-        state () :
-            _end_state (false),
-            _id (0),
-            _unique_id (npos),
-            _state (0),
-            _bol_index (npos),
-            _eol_index (npos)
+        state() : _end_state(false),
+                  _id(0),
+                  _unique_id(npos),
+                  _state(0),
+                  _bol_index(npos),
+                  _eol_index(npos)
         {
         }
     };
@@ -51,27 +50,27 @@ struct basic_char_state_machine
 
     state_vector_vector _sm_vector;
 
-    bool empty () const
+    bool empty() const
     {
-        return _sm_vector.empty ();
+        return _sm_vector.empty();
     }
 
-    void clear ()
+    void clear()
     {
-        _sm_vector.clear ();
+        _sm_vector.clear();
     }
 
-    void swap (basic_char_state_machine &csm_)
+    void swap(basic_char_state_machine &csm_)
     {
-        _sm_vector.swap (csm_._sm_vector);
+        _sm_vector.swap(csm_._sm_vector);
     }
 };
 
 typedef basic_char_state_machine<char> char_state_machine;
 typedef basic_char_state_machine<wchar_t> wchar_state_machine;
 
-}
-}
-}
+} // namespace detail
+} // namespace lexer
+} // namespace boost
 
 #endif

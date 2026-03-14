@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_SUPPORT_LAMBDA_HPP
 #define BOOST_BIMAP_SUPPORT_LAMBDA_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -20,10 +20,13 @@
 
 #include <boost/lambda/lambda.hpp>
 
-namespace boost {
-namespace bimaps {
+namespace boost
+{
+namespace bimaps
+{
 
-namespace {
+namespace
+{
 
 /*
 boost::lambda::placeholder1_type & _first  = boost::lambda::_1;
@@ -33,14 +36,12 @@ boost::lambda::placeholder1_type & _left   = boost::lambda::_1;
 boost::lambda::placeholder2_type & _right  = boost::lambda::_2;
 */
 
-boost::lambda::placeholder1_type & _key  = boost::lambda::_1;
-boost::lambda::placeholder1_type & _data = boost::lambda::_1;
+boost::lambda::placeholder1_type &_key = boost::lambda::_1;
+boost::lambda::placeholder1_type &_data = boost::lambda::_1;
 
-}
+} // namespace
 
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_SUPPORT_LAMBDA_HPP
-

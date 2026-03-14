@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2004-2008.
 //  Distributed under the Boost Software License, Version 1.0.
-//  (See accompanying file LICENSE_1_0.txt or copy at 
+//  (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -22,34 +22,57 @@
 #include <boost/type_traits/add_const.hpp>
 
 // STL
-#include <string>                       // std::char_traits
-#include <cstddef>                      // std::size_t
+#include <cstddef> // std::size_t
+#include <string>  // std::char_traits
 
 #include <boost/test/detail/suppress_warnings.hpp>
 
 //____________________________________________________________________________//
 
-namespace boost {
+namespace boost
+{
 
-namespace unit_test {
+namespace unit_test
+{
 
-namespace ut_detail {
+namespace ut_detail
+{
 
-template<typename CharT> struct bcs_base_char           { typedef CharT type; };
+template <typename CharT>
+struct bcs_base_char
+{
+    typedef CharT type;
+};
 
-template<> struct bcs_base_char<char const>             { typedef char type; };
-template<> struct bcs_base_char<unsigned char>          { typedef char type; };
+template <>
+struct bcs_base_char<char const>
+{
+    typedef char type;
+};
+template <>
+struct bcs_base_char<unsigned char>
+{
+    typedef char type;
+};
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x551))
-template<> struct bcs_base_char<unsigned char const>    { typedef char type; };
+template <>
+struct bcs_base_char<unsigned char const>
+{
+    typedef char type;
+};
 #endif
 
-template<> struct bcs_base_char<wchar_t const>          { typedef wchar_t type; };
+template <>
+struct bcs_base_char<wchar_t const>
+{
+    typedef wchar_t type;
+};
 
 // ************************************************************************** //
 // **************               bcs_char_traits                ************** //
 // ************************************************************************** //
 
-template<typename CharT>
+template <typename CharT>
 struct bcs_char_traits_impl
 {
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
@@ -57,20 +80,23 @@ struct bcs_char_traits_impl
 #else
     typedef typename boost::add_const<CharT>::type const_char;
 #endif
-    static bool eq( CharT c1, CharT c2 )
+    static bool eq(CharT c1, CharT c2)
     {
         return c1 == c2;
     }
-    static bool lt( CharT c1, CharT c2 )
+    static bool lt(CharT c1, CharT c2)
     {
         return c1 < c2;
     }
 
-    static int compare( const_char* cstr1, const_char* cstr2, std::size_t n )
+    static int compare(const_char *cstr1, const_char *cstr2, std::size_t n)
     {
-        while( n > 0 ) {
-            if( !eq( *cstr1, *cstr2 ) )
-                return lt( *cstr1, *cstr2 ) ? -1 : 1;
+        while (n > 0)
+        {
+            if (!eq(*cstr1, *cstr2))
+            {
+                return lt(*cstr1, *cstr2) ? -1 : 1;
+            }
             ++cstr1;
             ++cstr2;
             --n;
@@ -79,22 +105,27 @@ struct bcs_char_traits_impl
         return 0;
     }
 
-    static std::size_t length( const_char* cstr )
+    static std::size_t length(const_char *cstr)
     {
         const_char null_char = CharT();
 
-        const_char* ptr = cstr;
-        while( !eq( *ptr, null_char ) )
+        const_char *ptr = cstr;
+        while (!eq(*ptr, null_char))
+        {
             ++ptr;
+        }
 
         return ptr - cstr;
     }
 
-    static const_char* find( const_char* s, std::size_t n, CharT c )
+    static const_char *find(const_char *s, std::size_t n, CharT c)
     {
-        while( n > 0 ) {
-            if( eq( *s, c ) )
+        while (n > 0)
+        {
+            if (eq(*s, c))
+            {
                 return s;
+            }
 
             ++s;
             --n;
@@ -104,13 +135,17 @@ struct bcs_char_traits_impl
 };
 
 #ifdef BOOST_CLASSIC_IOSTREAMS
-template<typename CharT>
-struct char_traits_with_find : std::string_char_traits<CharT> {
-    static CharT const* find( CharT const* s, std::size_t n, CharT c )
+template <typename CharT>
+struct char_traits_with_find : std::string_char_traits<CharT>
+{
+    static CharT const *find(CharT const *s, std::size_t n, CharT c)
     {
-        while( n > 0 ) {
-            if( eq( *s, c ) )
+        while (n > 0)
+        {
+            if (eq(*s, c))
+            {
                 return s;
+            }
 
             ++s;
             --n;
@@ -119,21 +154,35 @@ struct char_traits_with_find : std::string_char_traits<CharT> {
     }
 };
 
-template<> struct bcs_char_traits_impl<char> : char_traits_with_find<char> {};
-template<> struct bcs_char_traits_impl<wchar_t> : char_traits_with_find<wchar_t> {};
+template <>
+struct bcs_char_traits_impl<char> : char_traits_with_find<char>
+{
+};
+template <>
+struct bcs_char_traits_impl<wchar_t> : char_traits_with_find<wchar_t>
+{
+};
 #else
-template<> struct bcs_char_traits_impl<char> : std::char_traits<char> {};
-template<> struct bcs_char_traits_impl<wchar_t> : std::char_traits<wchar_t> {};
+template <>
+struct bcs_char_traits_impl<char> : std::char_traits<char>
+{
+};
+template <>
+struct bcs_char_traits_impl<wchar_t> : std::char_traits<wchar_t>
+{
+};
 #endif
 
-template<typename CharT>
-class bcs_char_traits : public bcs_char_traits_impl<CharT> {
-    typedef typename ut_detail::bcs_base_char<CharT>::type                              the_base_char;
-public:
+template <typename CharT>
+class bcs_char_traits : public bcs_char_traits_impl<CharT>
+{
+    typedef typename ut_detail::bcs_base_char<CharT>::type the_base_char;
+
+  public:
 #ifdef BOOST_CLASSIC_IOSTREAMS
-    typedef std::basic_string<the_base_char, std::string_char_traits<the_base_char> >   std_string;
+    typedef std::basic_string<the_base_char, std::string_char_traits<the_base_char>> std_string;
 #else
-    typedef std::basic_string<the_base_char, std::char_traits<the_base_char> >          std_string;
+    typedef std::basic_string<the_base_char, std::char_traits<the_base_char>> std_string;
 #endif
 };
 

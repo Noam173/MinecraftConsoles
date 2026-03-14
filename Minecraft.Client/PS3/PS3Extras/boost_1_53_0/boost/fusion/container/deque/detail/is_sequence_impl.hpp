@@ -10,22 +10,27 @@
 
 #include <boost/mpl/bool.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct deque_tag;
+namespace fusion
+{
+struct deque_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct is_sequence_impl;
+
+template <>
+struct is_sequence_impl<deque_tag>
+{
+    template <typename Sequence>
+    struct apply : mpl::true_
     {
-        template<typename T>
-        struct is_sequence_impl;
-
-        template<>
-        struct is_sequence_impl<deque_tag>
-        {
-            template<typename Sequence>
-            struct apply : mpl::true_ {};
-        };
-    }
-}}
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

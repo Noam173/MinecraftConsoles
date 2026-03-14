@@ -3,26 +3,31 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef COPY_NON_CONST_REFERENCE_DWA2002131_HPP
-# define COPY_NON_CONST_REFERENCE_DWA2002131_HPP
+#define COPY_NON_CONST_REFERENCE_DWA2002131_HPP
 
-# include <boost/python/detail/prefix.hpp>
-# include <boost/python/detail/indirect_traits.hpp>
-# include <boost/mpl/if.hpp>
-# include <boost/python/to_python_value.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/python/detail/indirect_traits.hpp>
+#include <boost/python/detail/prefix.hpp>
+#include <boost/python/to_python_value.hpp>
 
-namespace boost { namespace python { 
+namespace boost
+{
+namespace python
+{
 
 namespace detail
 {
-  template <class R>
-  struct copy_non_const_reference_expects_a_non_const_reference_return_type
-# if defined(__GNUC__) && __GNUC__ >= 3 || defined(__EDG__)
-  {}
-# endif
-  ;
+template <class R>
+struct copy_non_const_reference_expects_a_non_const_reference_return_type
+#if defined(__GNUC__) && __GNUC__ >= 3 || defined(__EDG__)
+{
 }
+#endif
+;
+} // namespace detail
 
-template <class T> struct to_python_value;
+template <class T>
+struct to_python_value;
 
 struct copy_non_const_reference
 {
@@ -30,14 +35,11 @@ struct copy_non_const_reference
     struct apply
     {
         typedef typename mpl::if_c<
-            indirect_traits::is_reference_to_non_const<T>::value
-            , to_python_value<T>
-            , detail::copy_non_const_reference_expects_a_non_const_reference_return_type<T>
-        >::type type;
+            indirect_traits::is_reference_to_non_const<T>::value, to_python_value<T>, detail::copy_non_const_reference_expects_a_non_const_reference_return_type<T>>::type type;
     };
 };
 
-
-}} // namespace boost::python
+} // namespace python
+} // namespace boost
 
 #endif // COPY_NON_CONST_REFERENCE_DWA2002131_HPP

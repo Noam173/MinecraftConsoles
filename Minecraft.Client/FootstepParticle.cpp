@@ -1,22 +1,22 @@
-#include "stdafx.h"
 #include "FootstepParticle.h"
-#include "Textures.h"
-#include "Tesselator.h"
 #include "..\Minecraft.World\Mth.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "ResourceLocation.h"
+#include "Tesselator.h"
+#include "Textures.h"
+#include "stdafx.h"
 
 ResourceLocation FootstepParticle::FOOTPRINT_LOCATION = ResourceLocation(TN_MISC_FOOTSTEP);
 
 FootstepParticle::FootstepParticle(Textures *textures, Level *level, double x, double y, double z) : Particle(level, x, y, z, 0, 0, 0)
 {
-	// 4J added initialisers
-	life = 0;
-	lifeTime = 0;
+    // 4J added initialisers
+    life = 0;
+    lifeTime = 0;
 
-	this->textures = textures;
-	xd = yd = zd = 0;
-	lifeTime = 200;
+    this->textures = textures;
+    xd = yd = zd = 0;
+    lifeTime = 200;
 }
 
 void FootstepParticle::render(Tesselator *t, float a, float xa, float ya, float za, float xa2, float za2)
@@ -25,7 +25,10 @@ void FootstepParticle::render(Tesselator *t, float a, float xa, float ya, float 
     time = time * time;
 
     float alpha = 2 - time * 2;
-    if (alpha > 1) alpha = 1;
+    if (alpha > 1)
+    {
+        alpha = 1;
+    }
     alpha = alpha * 0.2f;
 
     glDisable(GL_LIGHTING);
@@ -43,24 +46,26 @@ void FootstepParticle::render(Tesselator *t, float a, float xa, float ya, float 
 
     t->begin();
     t->color(br, br, br, alpha);
-    t->vertexUV((float)(xx - r), (float)( yy), (float)( zz + r), static_cast<float>(0), static_cast<float>(1));
-    t->vertexUV((float)(xx + r), (float)( yy), (float)( zz + r), static_cast<float>(1), static_cast<float>(1));
-    t->vertexUV((float)(xx + r), (float)( yy), (float)( zz - r), static_cast<float>(1), static_cast<float>(0));
-    t->vertexUV((float)(xx - r), (float)( yy), (float)( zz - r), static_cast<float>(0), static_cast<float>(0));
+    t->vertexUV((float)(xx - r), (float)(yy), (float)(zz + r), static_cast<float>(0), static_cast<float>(1));
+    t->vertexUV((float)(xx + r), (float)(yy), (float)(zz + r), static_cast<float>(1), static_cast<float>(1));
+    t->vertexUV((float)(xx + r), (float)(yy), (float)(zz - r), static_cast<float>(1), static_cast<float>(0));
+    t->vertexUV((float)(xx - r), (float)(yy), (float)(zz - r), static_cast<float>(0), static_cast<float>(0));
     t->end();
 
     glDisable(GL_BLEND);
     glEnable(GL_LIGHTING);
-
 }
 
 void FootstepParticle::tick()
 {
     life++;
-    if (life == lifeTime) remove();
+    if (life == lifeTime)
+    {
+        remove();
+    }
 }
 
 int FootstepParticle::getParticleTexture()
 {
-	return ParticleEngine::ENTITY_PARTICLE_TEXTURE;
+    return ParticleEngine::ENTITY_PARTICLE_TEXTURE;
 }

@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_SIGNAL_INIT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -23,19 +23,22 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 template <int Signal = SIGPIPE>
 class signal_init
 {
-public:
-  // Constructor.
-  signal_init()
-  {
-    std::signal(Signal, SIG_IGN);
-  }
+  public:
+    // Constructor.
+    signal_init()
+    {
+        std::signal(Signal, SIG_IGN);
+    }
 };
 
 } // namespace detail

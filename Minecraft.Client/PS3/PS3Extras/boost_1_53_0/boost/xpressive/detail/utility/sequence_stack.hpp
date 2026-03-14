@@ -10,38 +10,46 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
-# pragma warning(push)
-# pragma warning(disable : 4127) // conditional expression constant
+#pragma once
+#pragma warning(push)
+#pragma warning(disable : 4127) // conditional expression constant
 #endif
 
 #include <algorithm>
 #include <functional>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
-struct fill_t {} const fill = {};
+struct fill_t
+{
+} const fill = {};
 
 //////////////////////////////////////////////////////////////////////////
 // sequence_stack
 //
 //   For storing a stack of sequences of type T, where each sequence
 //   is guaranteed to be stored in contiguous memory.
-template<typename T>
+template <typename T>
 struct sequence_stack
 {
-private:
+  private:
     static T *allocate(std::size_t size, T const &t)
     {
         std::size_t i = 0;
         T *p = (T *)::operator new(size * sizeof(T));
         try
         {
-            for(; i < size; ++i)
-                ::new((void *)(p+i)) T(t);
+            for (; i < size; ++i)
+            {
+                ::new ((void *)(p + i)) T(t);
+            }
         }
-        catch(...)
+        catch (...)
         {
             deallocate(p, i);
             throw;
@@ -51,24 +59,26 @@ private:
 
     static void deallocate(T *p, std::size_t i)
     {
-        while(i-- > 0)
-            (p+i)->~T();
+        while (i-- > 0)
+        {
+            (p + i)->~T();
+        }
         ::operator delete(p);
     }
 
     struct chunk
     {
         chunk(std::size_t size, T const &t, std::size_t count, chunk *back, chunk *next)
-          : begin_(allocate(size, t))
-          , curr_(begin_ + count)
-          , end_(begin_ + size)
-          , back_(back)
-          , next_(next)
+            : begin_(allocate(size, t)), curr_(begin_ + count), end_(begin_ + size), back_(back), next_(next)
         {
-            if(this->back_)
+            if (this->back_)
+            {
                 this->back_->next_ = this;
-            if(this->next_)
+            }
+            if (this->next_)
+            {
                 this->next_->back_ = this;
+            }
         }
 
         ~chunk()
@@ -84,8 +94,8 @@ private:
         T *const begin_, *curr_, *const end_;
         chunk *back_, *next_;
 
-    private:
-        chunk &operator =(chunk const &);
+      private:
+        chunk &operator=(chunk const &);
     };
 
     chunk *current_chunk_;
@@ -97,14 +107,14 @@ private:
 
     T *grow_(std::size_t count, T const &t)
     {
-        if(this->current_chunk_)
+        if (this->current_chunk_)
         {
             // write the cached value of current into the expr.
             // OK to do this even if later statements throw.
             this->current_chunk_->curr_ = this->curr_;
 
             // Do we have a expr with enough available memory already?
-            if(this->current_chunk_->next_ && count <= this->current_chunk_->next_->size())
+            if (this->current_chunk_->next_ && count <= this->current_chunk_->next_->size())
             {
                 this->current_chunk_ = this->current_chunk_->next_;
                 this->curr_ = this->current_chunk_->curr_ = this->current_chunk_->begin_ + count;
@@ -150,15 +160,12 @@ private:
 
     bool in_current_chunk(T *ptr) const
     {
-        return !std::less<void*>()(ptr, this->begin_) && std::less<void*>()(ptr, this->end_);
+        return !std::less<void *>()(ptr, this->begin_) && std::less<void *>()(ptr, this->end_);
     }
 
-public:
+  public:
     sequence_stack()
-      : current_chunk_(0)
-      , begin_(0)
-      , curr_(0)
-      , end_(0)
+        : current_chunk_(0), begin_(0), curr_(0), end_(0)
     {
     }
 
@@ -170,9 +177,9 @@ public:
     // walk to the front of the linked list
     void unwind()
     {
-        if(this->current_chunk_)
+        if (this->current_chunk_)
         {
-            while(this->current_chunk_->back_)
+            while (this->current_chunk_->back_)
             {
                 this->current_chunk_->curr_ = this->current_chunk_->begin_;
                 this->current_chunk_ = this->current_chunk_->back_;
@@ -189,7 +196,7 @@ public:
         this->unwind();
 
         // delete the list
-        for(chunk *next; this->current_chunk_; this->current_chunk_ = next)
+        for (chunk *next; this->current_chunk_; this->current_chunk_ = next)
         {
             next = this->current_chunk_->next_;
             delete this->current_chunk_;
@@ -207,7 +214,7 @@ public:
         this->curr_ += count;
 
         // Check to see if we have overflowed this buffer
-        if(std::less<void*>()(this->end_, this->curr_))
+        if (std::less<void *>()(this->end_, this->curr_))
         {
             // oops, back this out.
             this->curr_ = ptr;
@@ -228,7 +235,7 @@ public:
 
     void unwind_to(T *ptr)
     {
-        while(!this->in_current_chunk(ptr))
+        while (!this->in_current_chunk(ptr))
         {
             // completely unwind the current chunk, move to the previous chunk
             this->unwind_chunk_();
@@ -239,9 +246,9 @@ public:
     // shrink-to-fit: remove any unused nodes in the chain
     void conserve()
     {
-        if(this->current_chunk_)
+        if (this->current_chunk_)
         {
-            for(chunk *next; this->current_chunk_->next_; this->current_chunk_->next_ = next)
+            for (chunk *next; this->current_chunk_->next_; this->current_chunk_->next_ = next)
             {
                 next = this->current_chunk_->next_->next_;
                 delete this->current_chunk_->next_;
@@ -250,10 +257,12 @@ public:
     }
 };
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma warning(pop)
+#pragma warning(pop)
 #endif
 
 #endif

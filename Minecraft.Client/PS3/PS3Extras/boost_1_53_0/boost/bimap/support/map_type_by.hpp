@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_SUPPORT_MAP_TYPE_BY_HPP
 #define BOOST_BIMAP_SUPPORT_MAP_TYPE_BY_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -41,25 +41,22 @@ See also member_at.
 \ingroup bimap_group
                                                                     **/
 
-namespace boost {
-namespace bimaps {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace support
+{
 
 // Implementation of map type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     map_type_by,
     left_map,
-    right_map
-)
-
-
+    right_map)
 
 } // namespace support
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_SUPPORT_MAP_TYPE_BY_HPP
-

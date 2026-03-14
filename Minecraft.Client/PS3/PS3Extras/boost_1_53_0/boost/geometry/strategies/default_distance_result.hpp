@@ -14,13 +14,13 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_DEFAULT_DISTANCE_RESULT_HPP
 #define BOOST_GEOMETRY_STRATEGIES_DEFAULT_DISTANCE_RESULT_HPP
 
-
 #include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/point_type.hpp>
 #include <boost/geometry/strategies/distance.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
@@ -32,19 +32,14 @@ namespace boost { namespace geometry
 template <typename Geometry1, typename Geometry2 = Geometry1>
 struct default_distance_result
 {
-    typedef typename strategy::distance::services::return_type
-        <
-            typename strategy::distance::services::default_strategy
-                <
-                    point_tag,
-                    typename point_type<Geometry1>::type,
-                    typename point_type<Geometry2>::type
-                >::type
-        >::type type;
+    typedef typename strategy::distance::services::return_type<
+        typename strategy::distance::services::default_strategy<
+            point_tag,
+            typename point_type<Geometry1>::type,
+            typename point_type<Geometry2>::type>::type>::type type;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_DEFAULT_DISTANCE_RESULT_HPP

@@ -13,16 +13,20 @@
 #ifndef BOOST_VARIANT_DETAIL_FORCED_RETURN_HPP
 #define BOOST_VARIANT_DETAIL_FORCED_RETURN_HPP
 
+#include "boost/assert.hpp"
 #include "boost/config.hpp"
 #include "boost/variant/detail/generic_result_type.hpp"
-#include "boost/assert.hpp"
 
 #if !defined(BOOST_MSVC) && !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
-#   include "boost/type_traits/remove_reference.hpp"
+#include "boost/type_traits/remove_reference.hpp"
 #endif
 
-namespace boost {
-namespace detail { namespace variant {
+namespace boost
+{
+namespace detail
+{
+namespace variant
+{
 
 ///////////////////////////////////////////////////////////////////////////////
 // (detail) function template forced_return
@@ -31,25 +35,23 @@ namespace detail { namespace variant {
 // compile-time requirement of returning a result value.
 //
 
-#if !defined(BOOST_MSVC)                                \
- && !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)  \
- && !defined(BOOST_NO_VOID_RETURNS)
+#if !defined(BOOST_MSVC) && !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_NO_VOID_RETURNS)
 
 // "standard" implementation:
 
 template <typename T>
-inline T forced_return( BOOST_EXPLICIT_TEMPLATE_TYPE(T) )
+inline T forced_return(BOOST_EXPLICIT_TEMPLATE_TYPE(T))
 {
     // logical error: should never be here! (see above)
     BOOST_ASSERT(false);
 
     typedef typename boost::remove_reference<T>::type basic_type;
-    basic_type* dummy = 0;
-    return *static_cast< basic_type* >(dummy);
+    basic_type *dummy = 0;
+    return *static_cast<basic_type *>(dummy);
 }
 
 template <>
-inline void forced_return<void>( BOOST_EXPLICIT_TEMPLATE_TYPE_SPEC(void) )
+inline void forced_return<void>(BOOST_EXPLICIT_TEMPLATE_TYPE_SPEC(void))
 {
     // logical error: should never be here! (see above)
     BOOST_ASSERT(false);
@@ -64,9 +66,8 @@ inline void forced_return<void>( BOOST_EXPLICIT_TEMPLATE_TYPE_SPEC(void) )
 //
 
 template <typename T>
-inline
-    BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(T)
-forced_return( BOOST_EXPLICIT_TEMPLATE_TYPE(T) )
+inline BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(T)
+    forced_return(BOOST_EXPLICIT_TEMPLATE_TYPE(T))
 {
     // logical error: should never be here! (see above)
     BOOST_ASSERT(false);
@@ -82,13 +83,11 @@ forced_return( BOOST_EXPLICIT_TEMPLATE_TYPE(T) )
 // Leverages __declspec(noreturn) for optimized implementation.
 //
 
-__declspec(noreturn)
-inline void forced_return_no_return() {};
+__declspec(noreturn) inline void forced_return_no_return() {};
 
 template <typename T>
-inline
-    BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(T)
-forced_return( BOOST_EXPLICIT_TEMPLATE_TYPE(T) )
+inline BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(T)
+    forced_return(BOOST_EXPLICIT_TEMPLATE_TYPE(T))
 {
     // logical error: should never be here! (see above)
     BOOST_ASSERT(false);
@@ -98,7 +97,8 @@ forced_return( BOOST_EXPLICIT_TEMPLATE_TYPE(T) )
 
 #endif // BOOST_MSVC optimization
 
-}} // namespace detail::variant
+} // namespace variant
+} // namespace detail
 } // namespace boost
 
 #endif // BOOST_VARIANT_DETAIL_FORCED_RETURN_HPP

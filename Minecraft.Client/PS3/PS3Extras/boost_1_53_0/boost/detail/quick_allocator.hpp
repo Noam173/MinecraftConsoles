@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -20,4 +20,4 @@
 
 #include <boost/smart_ptr/detail/quick_allocator.hpp>
 
-#endif  // #ifndef BOOST_DETAIL_QUICK_ALLOCATOR_HPP_INCLUDED
+#endif // #ifndef BOOST_DETAIL_QUICK_ALLOCATOR_HPP_INCLUDED

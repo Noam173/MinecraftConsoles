@@ -1,12 +1,12 @@
-#include "stdafx.h"
 #include "HttpTexture.h"
+#include "stdafx.h"
 
-HttpTexture::HttpTexture(const wstring& _url, HttpTextureProcessor *processor)
+HttpTexture::HttpTexture(const wstring &_url, HttpTextureProcessor *processor)
 {
-	// 4J - added
+    // 4J - added
     count = 1;
     id = -1;
     isLoaded = false;
 
-	// 4J - TODO - actually implement
+    // 4J - TODO - actually implement
 }

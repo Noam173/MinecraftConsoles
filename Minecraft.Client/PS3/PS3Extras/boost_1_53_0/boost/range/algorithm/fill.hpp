@@ -9,41 +9,41 @@
 #ifndef BOOST_RANGE_ALGORITHM_FILL_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_FILL_HPP_INCLUDED
 
+#include <algorithm>
 #include <boost/concept_check.hpp>
 #include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/concepts.hpp>
-#include <algorithm>
+#include <boost/range/end.hpp>
 
 namespace boost
 {
-    namespace range
-    {
+namespace range
+{
 
 /// \brief template function fill
 ///
 /// range-based version of the fill std algorithm
 ///
 /// \pre ForwardRange is a model of the ForwardRangeConcept
-template< class ForwardRange, class Value >
-inline ForwardRange& fill(ForwardRange& rng, const Value& val)
+template <class ForwardRange, class Value>
+inline ForwardRange &fill(ForwardRange &rng, const Value &val)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( ForwardRangeConcept<ForwardRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<ForwardRange>));
     std::fill(boost::begin(rng), boost::end(rng), val);
     return rng;
 }
 
 /// \overload
-template< class ForwardRange, class Value >
-inline const ForwardRange& fill(const ForwardRange& rng, const Value& val)
+template <class ForwardRange, class Value>
+inline const ForwardRange &fill(const ForwardRange &rng, const Value &val)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( ForwardRangeConcept<const ForwardRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<const ForwardRange>));
     std::fill(boost::begin(rng), boost::end(rng), val);
     return rng;
 }
 
-    } // namespace range
-    using range::fill;
-}
+} // namespace range
+using range::fill;
+} // namespace boost
 
 #endif // include guard

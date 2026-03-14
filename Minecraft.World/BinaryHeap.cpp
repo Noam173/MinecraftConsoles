@@ -1,24 +1,24 @@
-#include "stdafx.h"
+#include "BinaryHeap.h"
+#include "BasicTypeContainers.h"
 #include "Node.h"
 #include "System.h"
-#include "BasicTypeContainers.h"
-#include "BinaryHeap.h"
+#include "stdafx.h"
 
 // 4J Jev, add common ctor code.
 void BinaryHeap::_init()
 {
-	heap = NodeArray(1024);
-	sizeVar = 0;
+    heap = NodeArray(1024);
+    sizeVar = 0;
 }
 
 BinaryHeap::BinaryHeap()
 {
-	_init();
+    _init();
 }
 
 BinaryHeap::~BinaryHeap()
 {
-	delete[] heap.data;
+    delete[] heap.data;
 }
 
 Node *BinaryHeap::insert(Node *node)
@@ -26,13 +26,13 @@ Node *BinaryHeap::insert(Node *node)
     /* if (node->heapIdx >=0) throw new IllegalStateException("OW KNOWS!"); 4J Jev, removed try/catch */
 
     // Expand if necessary.
-	if (sizeVar == heap.length)
+    if (sizeVar == heap.length)
     {
         NodeArray newHeap = NodeArray(sizeVar << 1);
 
         System::arraycopy(heap, 0, &newHeap, 0, sizeVar);
 
-		delete[] heap.data;
+        delete[] heap.data;
         heap = newHeap;
     }
 
@@ -59,8 +59,11 @@ Node *BinaryHeap::pop()
     Node *popped = heap[0];
     heap[0] = heap[--sizeVar];
     heap[sizeVar] = nullptr;
-    if (sizeVar > 0) downHeap(0);
-    popped->heapIdx=-1;
+    if (sizeVar > 0)
+    {
+        downHeap(0);
+    }
+    popped->heapIdx = -1;
     return popped;
 }
 
@@ -117,7 +120,10 @@ void BinaryHeap::upHeap(int idx)
             parent->heapIdx = idx;
             idx = parentIdx;
         }
-        else break;
+        else
+        {
+            break;
+        }
     }
     heap[idx] = node;
     node->heapIdx = idx;
@@ -133,7 +139,10 @@ void BinaryHeap::downHeap(int idx)
         int leftIdx = 1 + (idx << 1);
         int rightIdx = leftIdx + 1;
 
-        if (leftIdx >= sizeVar) break;
+        if (leftIdx >= sizeVar)
+        {
+            break;
+        }
 
         // We definitely have a left child.
         Node *leftNode = heap[leftIdx];
@@ -164,7 +173,10 @@ void BinaryHeap::downHeap(int idx)
                 leftNode->heapIdx = idx;
                 idx = leftIdx;
             }
-            else break;
+            else
+            {
+                break;
+            }
         }
         else
         {
@@ -174,7 +186,10 @@ void BinaryHeap::downHeap(int idx)
                 rightNode->heapIdx = idx;
                 idx = rightIdx;
             }
-            else break;
+            else
+            {
+                break;
+            }
         }
     }
 
@@ -184,5 +199,5 @@ void BinaryHeap::downHeap(int idx)
 
 bool BinaryHeap::isEmpty()
 {
-    return sizeVar==0;
+    return sizeVar == 0;
 }

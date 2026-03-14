@@ -6,18 +6,12 @@
 // ing file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //////////////////////////////////////////////////////////////////////////////
 
-
-
 #include <boost/statechart/result.hpp>
-
-
 
 namespace boost
 {
 namespace statechart
 {
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 class null_exception_translator
@@ -27,18 +21,14 @@ class null_exception_translator
     // The following declarations should be private.
     // They are only public because many compilers lack template friends.
     //////////////////////////////////////////////////////////////////////////
-    template< class Action, class ExceptionEventHandler >
-    result operator()( Action action, ExceptionEventHandler )
+    template <class Action, class ExceptionEventHandler>
+    result operator()(Action action, ExceptionEventHandler)
     {
-      return action();
+        return action();
     }
 };
 
-
-
 } // namespace statechart
 } // namespace boost
-
-
 
 #endif

@@ -9,17 +9,17 @@
 #ifndef BOOST_RANGE_ALGORITHM_COPY_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_COPY_HPP_INCLUDED
 
+#include <algorithm>
 #include <boost/concept_check.hpp>
 #include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/concepts.hpp>
+#include <boost/range/end.hpp>
 #include <boost/range/iterator_range.hpp>
-#include <algorithm>
 
 namespace boost
 {
-    namespace range
-    {
+namespace range
+{
 
 /// \brief template function copy
 ///
@@ -27,15 +27,15 @@ namespace boost
 ///
 /// \pre SinglePassRange is a model of the SinglePassRangeConcept
 /// \pre OutputIterator is a model of the OutputIteratorConcept
-template< class SinglePassRange, class OutputIterator >
-inline OutputIterator copy(const SinglePassRange& rng, OutputIterator out)
+template <class SinglePassRange, class OutputIterator>
+inline OutputIterator copy(const SinglePassRange &rng, OutputIterator out)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( SinglePassRangeConcept<const SinglePassRange> ));
-    return std::copy(boost::begin(rng),boost::end(rng),out);
+    BOOST_RANGE_CONCEPT_ASSERT((SinglePassRangeConcept<const SinglePassRange>));
+    return std::copy(boost::begin(rng), boost::end(rng), out);
 }
 
-    } // namespace range
-    using range::copy;
+} // namespace range
+using range::copy;
 } // namespace boost
 
 #endif // include guard

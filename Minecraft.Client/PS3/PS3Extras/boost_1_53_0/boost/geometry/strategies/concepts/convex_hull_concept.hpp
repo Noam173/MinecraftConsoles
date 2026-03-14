@@ -14,62 +14,63 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_CONCEPTS_CONVEX_HULL_CONCEPT_HPP
 #define BOOST_GEOMETRY_STRATEGIES_CONCEPTS_CONVEX_HULL_CONCEPT_HPP
 
-
 #include <vector>
 
 #include <boost/concept_check.hpp>
 
-
-namespace boost { namespace geometry { namespace concept
+namespace boost
+{
+namespace geometry
+{
+namespace concept
 {
 
-
-/*!
-    \brief Checks strategy for convex_hull
-    \ingroup convex_hull
-*/
-template <typename Strategy>
-class ConvexHullStrategy
-{
+    /*!
+        \brief Checks strategy for convex_hull
+        \ingroup convex_hull
+    */
+    template <typename Strategy>
+    class ConvexHullStrategy
+    {
 #ifndef DOXYGEN_NO_CONCEPT_MEMBERS
 
-    // 1) must define state_type
-    typedef typename Strategy::state_type state_type;
+        // 1) must define state_type
+        typedef typename Strategy::state_type state_type;
 
-    // 2) must define point_type
-    typedef typename Strategy::point_type point_type;
+        // 2) must define point_type
+        typedef typename Strategy::point_type point_type;
 
-    // 3) must define geometry_type
-    typedef typename Strategy::geometry_type geometry_type;
+        // 3) must define geometry_type
+        typedef typename Strategy::geometry_type geometry_type;
 
-    struct check_methods
-    {
-        static void apply()
+        struct check_methods
         {
-            Strategy const* str;
+            static void apply()
+            {
+                Strategy const *str;
 
-            state_type* st;
-            geometry_type* sp;
-            std::vector<point_type> *v;
+                state_type *st;
+                geometry_type *sp;
+                std::vector<point_type> *v;
 
-            // 4) must implement a method apply, iterating over a range
-            str->apply(*sp, *st);
+                // 4) must implement a method apply, iterating over a range
+                str->apply(*sp, *st);
 
-            // 5) must implement a method result, with an output iterator
-            str->result(*st, std::back_inserter(*v), true);
+                // 5) must implement a method result, with an output iterator
+                str->result(*st, std::back_inserter(*v), true);
+            }
+        };
+
+      public:
+        BOOST_CONCEPT_USAGE(ConvexHullStrategy)
+        {
+            check_methods::apply();
         }
+#endif
     };
 
-public :
-    BOOST_CONCEPT_USAGE(ConvexHullStrategy)
-    {
-        check_methods::apply();
-    }
-#endif
-};
-
-
-}}} // namespace boost::geometry::concept
-
+} // namespace concept
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_CONCEPTS_CONVEX_HULL_CONCEPT_HPP

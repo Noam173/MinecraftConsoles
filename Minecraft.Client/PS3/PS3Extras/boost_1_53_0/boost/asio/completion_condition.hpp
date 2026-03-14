@@ -12,7 +12,7 @@
 #define BOOST_ASIO_COMPLETION_CONDITION_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -20,19 +20,25 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
+namespace boost
+{
+namespace asio
+{
 
-namespace detail {
+namespace detail
+{
 
 // The default maximum number of bytes to transfer in a single operation.
-enum { default_max_transfer_size = 65536 };
+enum
+{
+    default_max_transfer_size = 65536
+};
 
 // Adapt result of old-style completion conditions (which had a bool result
 // where true indicated that the operation was complete).
 inline std::size_t adapt_completion_condition_result(bool result)
 {
-  return result ? 0 : default_max_transfer_size;
+    return result ? 0 : default_max_transfer_size;
 }
 
 // Adapt result of current completion conditions (which have a size_t result
@@ -40,62 +46,61 @@ inline std::size_t adapt_completion_condition_result(bool result)
 // maximum number of bytes to transfer on the next underlying operation).
 inline std::size_t adapt_completion_condition_result(std::size_t result)
 {
-  return result;
+    return result;
 }
 
 class transfer_all_t
 {
-public:
-  typedef std::size_t result_type;
+  public:
+    typedef std::size_t result_type;
 
-  template <typename Error>
-  std::size_t operator()(const Error& err, std::size_t)
-  {
-    return !!err ? 0 : default_max_transfer_size;
-  }
+    template <typename Error>
+    std::size_t operator()(const Error &err, std::size_t)
+    {
+        return !!err ? 0 : default_max_transfer_size;
+    }
 };
 
 class transfer_at_least_t
 {
-public:
-  typedef std::size_t result_type;
+  public:
+    typedef std::size_t result_type;
 
-  explicit transfer_at_least_t(std::size_t minimum)
-    : minimum_(minimum)
-  {
-  }
+    explicit transfer_at_least_t(std::size_t minimum)
+        : minimum_(minimum)
+    {
+    }
 
-  template <typename Error>
-  std::size_t operator()(const Error& err, std::size_t bytes_transferred)
-  {
-    return (!!err || bytes_transferred >= minimum_)
-      ? 0 : default_max_transfer_size;
-  }
+    template <typename Error>
+    std::size_t operator()(const Error &err, std::size_t bytes_transferred)
+    {
+        return (!!err || bytes_transferred >= minimum_)
+                   ? 0
+                   : default_max_transfer_size;
+    }
 
-private:
-  std::size_t minimum_;
+  private:
+    std::size_t minimum_;
 };
 
 class transfer_exactly_t
 {
-public:
-  typedef std::size_t result_type;
+  public:
+    typedef std::size_t result_type;
 
-  explicit transfer_exactly_t(std::size_t size)
-    : size_(size)
-  {
-  }
+    explicit transfer_exactly_t(std::size_t size)
+        : size_(size)
+    {
+    }
 
-  template <typename Error>
-  std::size_t operator()(const Error& err, std::size_t bytes_transferred)
-  {
-    return (!!err || bytes_transferred >= size_) ? 0 :
-      (size_ - bytes_transferred < default_max_transfer_size
-        ? size_ - bytes_transferred : std::size_t(default_max_transfer_size));
-  }
+    template <typename Error>
+    std::size_t operator()(const Error &err, std::size_t bytes_transferred)
+    {
+        return (!!err || bytes_transferred >= size_) ? 0 : (size_ - bytes_transferred < default_max_transfer_size ? size_ - bytes_transferred : std::size_t(default_max_transfer_size));
+    }
 
-private:
-  std::size_t size_;
+  private:
+    std::size_t size_;
 };
 
 } // namespace detail
@@ -138,7 +143,7 @@ unspecified transfer_all();
 #else
 inline detail::transfer_all_t transfer_all()
 {
-  return detail::transfer_all_t();
+    return detail::transfer_all_t();
 }
 #endif
 
@@ -172,7 +177,7 @@ unspecified transfer_at_least(std::size_t minimum);
 #else
 inline detail::transfer_at_least_t transfer_at_least(std::size_t minimum)
 {
-  return detail::transfer_at_least_t(minimum);
+    return detail::transfer_at_least_t(minimum);
 }
 #endif
 
@@ -206,7 +211,7 @@ unspecified transfer_exactly(std::size_t size);
 #else
 inline detail::transfer_exactly_t transfer_exactly(std::size_t size)
 {
-  return detail::transfer_exactly_t(size);
+    return detail::transfer_exactly_t(size);
 }
 #endif
 

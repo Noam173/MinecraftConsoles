@@ -9,20 +9,21 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_TRAVERSAL_INFO_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_TRAVERSAL_INFO_HPP
 
-
-#include <boost/geometry/algorithms/detail/overlay/turn_info.hpp>
 #include <boost/geometry/algorithms/detail/overlay/enrichment_info.hpp>
-#include <boost/geometry/algorithms/detail/overlay/visit_info.hpp>
 #include <boost/geometry/algorithms/detail/overlay/segment_identifier.hpp>
+#include <boost/geometry/algorithms/detail/overlay/turn_info.hpp>
+#include <boost/geometry/algorithms/detail/overlay/visit_info.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
 {
-
+namespace overlay
+{
 
 template <typename P>
 struct traversal_turn_operation : public turn_operation
@@ -32,16 +33,15 @@ struct traversal_turn_operation : public turn_operation
 };
 
 template <typename P>
-struct traversal_turn_info : public turn_info<P, traversal_turn_operation<P> >
-{};
+struct traversal_turn_info : public turn_info<P, traversal_turn_operation<P>>
+{
+};
 
+} // namespace overlay
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
 
-
-}} // namespace detail::overlay
-#endif //DOXYGEN_NO_DETAIL
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_TRAVERSAL_INFO_HPP

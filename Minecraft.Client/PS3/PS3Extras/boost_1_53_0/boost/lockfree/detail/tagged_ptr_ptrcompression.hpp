@@ -11,27 +11,29 @@
 
 #include <boost/lockfree/detail/branch_hints.hpp>
 
-#include <cstddef>              /* for std::size_t */
+#include <cstddef> /* for std::size_t */
 
 #include <boost/cstdint.hpp>
 
-namespace boost {
-namespace lockfree {
-namespace detail {
+namespace boost
+{
+namespace lockfree
+{
+namespace detail
+{
 
-#if defined (__x86_64__) || defined (_M_X64)
+#if defined(__x86_64__) || defined(_M_X64)
 
 template <class T>
 class tagged_ptr
 {
     typedef boost::uint64_t compressed_ptr_t;
 
-public:
+  public:
     typedef boost::uint16_t tag_t;
 
-private:
-    union cast_unit
-    {
+  private:
+    union cast_unit {
         compressed_ptr_t value;
         tag_t tag[4];
     };
@@ -39,19 +41,19 @@ private:
     static const int tag_index = 3;
     static const compressed_ptr_t ptr_mask = 0xffffffffffffUL; //(1L<<48L)-1;
 
-    static T* extract_ptr(volatile compressed_ptr_t const & i)
+    static T *extract_ptr(volatile compressed_ptr_t const &i)
     {
-        return (T*)(i & ptr_mask);
+        return (T *)(i & ptr_mask);
     }
 
-    static tag_t extract_tag(volatile compressed_ptr_t const & i)
+    static tag_t extract_tag(volatile compressed_ptr_t const &i)
     {
         cast_unit cu;
         cu.value = i;
         return cu.tag[tag_index];
     }
 
-    static compressed_ptr_t pack_ptr(T * ptr, int tag)
+    static compressed_ptr_t pack_ptr(T *ptr, int tag)
     {
         cast_unit ret;
         ret.value = compressed_ptr_t(ptr);
@@ -59,37 +61,38 @@ private:
         return ret.value;
     }
 
-public:
+  public:
     /** uninitialized constructor */
-    tagged_ptr(void) BOOST_NOEXCEPT//: ptr(0), tag(0)
-    {}
+    tagged_ptr(void) BOOST_NOEXCEPT //: ptr(0), tag(0)
+    {
+    }
 
     /** copy constructor */
 #ifdef BOOST_NO_CXX11_DEFAULTED_FUNCTIONS
-    tagged_ptr(tagged_ptr const & p):
-        ptr(p.ptr)
-    {}
+    tagged_ptr(tagged_ptr const &p) : ptr(p.ptr)
+    {
+    }
 #else
-    tagged_ptr(tagged_ptr const & p) = default;
+    tagged_ptr(tagged_ptr const &p) = default;
 #endif
 
-    explicit tagged_ptr(T * p, tag_t t = 0):
-        ptr(pack_ptr(p, t))
-    {}
+    explicit tagged_ptr(T *p, tag_t t = 0) : ptr(pack_ptr(p, t))
+    {
+    }
 
     /** unsafe set operation */
     /* @{ */
 #ifdef BOOST_NO_CXX11_DEFAULTED_FUNCTIONS
-    tagged_ptr & operator= (tagged_ptr const & p)
+    tagged_ptr &operator=(tagged_ptr const &p)
     {
-         ptr = p.ptr;
-         return *this;
+        ptr = p.ptr;
+        return *this;
     }
 #else
-    tagged_ptr & operator= (tagged_ptr const & p) = default;
+    tagged_ptr &operator=(tagged_ptr const &p) = default;
 #endif
 
-    void set(T * p, tag_t t)
+    void set(T *p, tag_t t)
     {
         ptr = pack_ptr(p, t);
     }
@@ -97,12 +100,12 @@ public:
 
     /** comparing semantics */
     /* @{ */
-    bool operator== (volatile tagged_ptr const & p) const
+    bool operator==(volatile tagged_ptr const &p) const
     {
         return (ptr == p.ptr);
     }
 
-    bool operator!= (volatile tagged_ptr const & p) const
+    bool operator!=(volatile tagged_ptr const &p) const
     {
         return !operator==(p);
     }
@@ -110,12 +113,12 @@ public:
 
     /** pointer access */
     /* @{ */
-    T * get_ptr() const volatile
+    T *get_ptr() const volatile
     {
         return extract_ptr(ptr);
     }
 
-    void set_ptr(T * p) volatile
+    void set_ptr(T *p) volatile
     {
         tag_t tag = get_tag();
         ptr = pack_ptr(p, tag);
@@ -131,19 +134,19 @@ public:
 
     void set_tag(tag_t t) volatile
     {
-        T * p = get_ptr();
+        T *p = get_ptr();
         ptr = pack_ptr(p, t);
     }
     /* @} */
 
     /** smart pointer support  */
     /* @{ */
-    T & operator*() const
+    T &operator*() const
     {
         return *get_ptr();
     }
 
-    T * operator->() const
+    T *operator->() const
     {
         return get_ptr();
     }
@@ -154,7 +157,7 @@ public:
     }
     /* @} */
 
-protected:
+  protected:
     compressed_ptr_t ptr;
 };
 #else

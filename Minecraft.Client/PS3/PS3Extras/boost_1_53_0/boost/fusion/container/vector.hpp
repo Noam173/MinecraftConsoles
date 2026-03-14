@@ -23,9 +23,9 @@
 #include <boost/fusion/container/vector/vector50.hpp>
 #endif
 
+#include <boost/fusion/container/vector/convert.hpp>
 #include <boost/fusion/container/vector/vector.hpp>
 #include <boost/fusion/container/vector/vector_fwd.hpp>
 #include <boost/fusion/container/vector/vector_iterator.hpp>
-#include <boost/fusion/container/vector/convert.hpp>
 
 #endif

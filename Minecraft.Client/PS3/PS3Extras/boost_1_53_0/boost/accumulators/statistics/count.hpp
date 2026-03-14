@@ -8,44 +8,46 @@
 #ifndef BOOST_ACCUMULATORS_STATISTICS_COUNT_HPP_EAN_28_10_2005
 #define BOOST_ACCUMULATORS_STATISTICS_COUNT_HPP_EAN_28_10_2005
 
-#include <boost/mpl/always.hpp>
 #include <boost/accumulators/framework/accumulator_base.hpp>
-#include <boost/accumulators/framework/extractor.hpp>
 #include <boost/accumulators/framework/depends_on.hpp>
+#include <boost/accumulators/framework/extractor.hpp>
 #include <boost/accumulators/statistics_fwd.hpp>
+#include <boost/mpl/always.hpp>
 
-namespace boost { namespace accumulators
+namespace boost
+{
+namespace accumulators
 {
 
 namespace impl
 {
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // count_impl
-    struct count_impl
-      : accumulator_base
+///////////////////////////////////////////////////////////////////////////////
+// count_impl
+struct count_impl
+    : accumulator_base
+{
+    // for boost::result_of
+    typedef std::size_t result_type;
+
+    count_impl(dont_care)
+        : cnt(0)
     {
-        // for boost::result_of
-        typedef std::size_t result_type;
+    }
 
-        count_impl(dont_care)
-          : cnt(0)
-        {
-        }
+    void operator()(dont_care)
+    {
+        ++this->cnt;
+    }
 
-        void operator ()(dont_care)
-        {
-            ++this->cnt;
-        }
+    result_type result(dont_care) const
+    {
+        return this->cnt;
+    }
 
-        result_type result(dont_care) const
-        {
-            return this->cnt;
-        }
-
-    private:
-        std::size_t cnt;
-    };
+  private:
+    std::size_t cnt;
+};
 
 } // namespace impl
 
@@ -54,27 +56,28 @@ namespace impl
 //
 namespace tag
 {
-    struct count
-      : depends_on<>
-    {
-        /// INTERNAL ONLY
-        ///
-        typedef mpl::always<accumulators::impl::count_impl> impl;
-    };
-}
+struct count
+    : depends_on<>
+{
+    /// INTERNAL ONLY
+    ///
+    typedef mpl::always<accumulators::impl::count_impl> impl;
+};
+} // namespace tag
 
 ///////////////////////////////////////////////////////////////////////////////
 // extract::count
 //
 namespace extract
 {
-    extractor<tag::count> const count = {};
+extractor<tag::count> const count = {};
 
-    BOOST_ACCUMULATORS_IGNORE_GLOBAL(count)
-}
+BOOST_ACCUMULATORS_IGNORE_GLOBAL(count)
+} // namespace extract
 
 using extract::count;
 
-}} // namespace boost::accumulators
+} // namespace accumulators
+} // namespace boost
 
 #endif

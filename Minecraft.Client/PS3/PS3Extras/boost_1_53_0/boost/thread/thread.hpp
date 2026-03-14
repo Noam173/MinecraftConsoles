@@ -26,5 +26,4 @@
 #include <boost/thread/detail/thread_group.hpp>
 #include <boost/thread/v2/thread.hpp>
 
-
 #endif

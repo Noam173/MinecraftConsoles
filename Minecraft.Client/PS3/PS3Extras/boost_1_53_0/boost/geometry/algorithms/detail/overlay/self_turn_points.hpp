@@ -19,17 +19,20 @@
 #include <boost/geometry/geometries/concepts/check.hpp>
 
 #include <boost/geometry/algorithms/detail/disjoint.hpp>
-#include <boost/geometry/algorithms/detail/partition.hpp>
 #include <boost/geometry/algorithms/detail/overlay/get_turns.hpp>
+#include <boost/geometry/algorithms/detail/partition.hpp>
 
 #include <boost/geometry/geometries/box.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace self_get_turn_points
+namespace detail
+{
+namespace self_get_turn_points
 {
 
 struct no_interrupt_policy
@@ -37,58 +40,48 @@ struct no_interrupt_policy
     static bool const enabled = false;
     static bool const has_intersections = false;
 
-
     template <typename Range>
-    static inline bool apply(Range const&)
+    static inline bool apply(Range const &)
     {
         return false;
     }
 };
 
+class self_ip_exception : public geometry::exception
+{
+};
 
-
-
-class self_ip_exception : public geometry::exception {};
-
-template
-<
+template <
     typename Geometry,
     typename Turns,
     typename TurnPolicy,
-    typename InterruptPolicy
->
+    typename InterruptPolicy>
 struct self_section_visitor
 {
-    Geometry const& m_geometry;
-    Turns& m_turns;
-    InterruptPolicy& m_interrupt_policy;
+    Geometry const &m_geometry;
+    Turns &m_turns;
+    InterruptPolicy &m_interrupt_policy;
 
-    inline self_section_visitor(Geometry const& g,
-            Turns& turns, InterruptPolicy& ip)
-        : m_geometry(g)
-        , m_turns(turns)
-        , m_interrupt_policy(ip)
-    {}
+    inline self_section_visitor(Geometry const &g,
+                                Turns &turns, InterruptPolicy &ip)
+        : m_geometry(g), m_turns(turns), m_interrupt_policy(ip)
+    {
+    }
 
     template <typename Section>
-    inline bool apply(Section const& sec1, Section const& sec2)
+    inline bool apply(Section const &sec1, Section const &sec2)
     {
-        if (! detail::disjoint::disjoint_box_box(sec1.bounding_box, sec2.bounding_box)
-                && ! sec1.duplicate
-                && ! sec2.duplicate)
+        if (!detail::disjoint::disjoint_box_box(sec1.bounding_box, sec2.bounding_box) && !sec1.duplicate && !sec2.duplicate)
         {
-            detail::get_turns::get_turns_in_sections
-                    <
-                        Geometry, Geometry,
-                        false, false,
-                        Section, Section,
-                        Turns, TurnPolicy,
-                        InterruptPolicy
-                    >::apply(
-                            0, m_geometry, sec1,
-                            0, m_geometry, sec2,
-                            false,
-                            m_turns, m_interrupt_policy);
+            detail::get_turns::get_turns_in_sections<
+                Geometry, Geometry,
+                false, false,
+                Section, Section,
+                Turns, TurnPolicy,
+                InterruptPolicy>::apply(0, m_geometry, sec1,
+                                        0, m_geometry, sec2,
+                                        false,
+                                        m_turns, m_interrupt_policy);
         }
         if (m_interrupt_policy.has_intersections)
         {
@@ -98,53 +91,43 @@ struct self_section_visitor
         }
         return true;
     }
-
 };
 
-
-
-template
-<
+template <
     typename Geometry,
     typename Turns,
     typename TurnPolicy,
-    typename InterruptPolicy
->
+    typename InterruptPolicy>
 struct get_turns
 {
     static inline bool apply(
-            Geometry const& geometry,
-            Turns& turns,
-            InterruptPolicy& interrupt_policy)
+        Geometry const &geometry,
+        Turns &turns,
+        InterruptPolicy &interrupt_policy)
     {
-        typedef model::box
-            <
-                typename geometry::point_type<Geometry>::type
-            > box_type;
-        typedef typename geometry::sections
-            <
-                box_type, 1
-            > sections_type;
+        typedef model::box<
+            typename geometry::point_type<Geometry>::type>
+            box_type;
+        typedef typename geometry::sections<
+            box_type, 1>
+            sections_type;
 
         sections_type sec;
         geometry::sectionalize<false>(geometry, sec);
 
-        self_section_visitor
-            <
-                Geometry,
-                Turns, TurnPolicy, InterruptPolicy
-            > visitor(geometry, turns, interrupt_policy);
+        self_section_visitor<
+            Geometry,
+            Turns, TurnPolicy, InterruptPolicy>
+            visitor(geometry, turns, interrupt_policy);
 
         try
         {
-            geometry::partition
-                <
-                    box_type, 
-                    detail::get_turns::get_section_box, 
-                    detail::get_turns::ovelaps_section_box
-                >::apply(sec, visitor);
+            geometry::partition<
+                box_type,
+                detail::get_turns::get_section_box,
+                detail::get_turns::ovelaps_section_box>::apply(sec, visitor);
         }
-        catch(self_ip_exception const& )
+        catch (self_ip_exception const &)
         {
             return false;
         }
@@ -153,104 +136,82 @@ struct get_turns
     }
 };
 
-
-}} // namespace detail::self_get_turn_points
+} // namespace self_get_turn_points
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-template
-<
+template <
     typename GeometryTag,
     typename Geometry,
     typename Turns,
     typename TurnPolicy,
-    typename InterruptPolicy
->
+    typename InterruptPolicy>
 struct self_get_turn_points
 {
 };
 
-
-template
-<
+template <
     typename Ring,
     typename Turns,
     typename TurnPolicy,
-    typename InterruptPolicy
->
-struct self_get_turn_points
-    <
-        ring_tag, Ring,
-        Turns,
-        TurnPolicy,
-        InterruptPolicy
-    >
-    : detail::self_get_turn_points::get_turns
-        <
-            Ring,
-            Turns,
-            TurnPolicy,
-            InterruptPolicy
-        >
-{};
+    typename InterruptPolicy>
+struct self_get_turn_points<
+    ring_tag, Ring,
+    Turns,
+    TurnPolicy,
+    InterruptPolicy>
+    : detail::self_get_turn_points::get_turns<
+          Ring,
+          Turns,
+          TurnPolicy,
+          InterruptPolicy>
+{
+};
 
-
-template
-<
+template <
     typename Box,
     typename Turns,
     typename TurnPolicy,
-    typename InterruptPolicy
->
-struct self_get_turn_points
-    <
-        box_tag, Box,
-        Turns,
-        TurnPolicy,
-        InterruptPolicy
-    >
+    typename InterruptPolicy>
+struct self_get_turn_points<
+    box_tag, Box,
+    Turns,
+    TurnPolicy,
+    InterruptPolicy>
 {
     static inline bool apply(
-            Box const& ,
-            Turns& ,
-            InterruptPolicy& )
+        Box const &,
+        Turns &,
+        InterruptPolicy &)
     {
         return true;
     }
 };
 
-
-template
-<
+template <
     typename Polygon,
     typename Turns,
     typename TurnPolicy,
-    typename InterruptPolicy
->
-struct self_get_turn_points
-    <
-        polygon_tag, Polygon,
-        Turns,
-        TurnPolicy,
-        InterruptPolicy
-    >
-    : detail::self_get_turn_points::get_turns
-        <
-            Polygon,
-            Turns,
-            TurnPolicy,
-            InterruptPolicy
-        >
-{};
-
+    typename InterruptPolicy>
+struct self_get_turn_points<
+    polygon_tag, Polygon,
+    Turns,
+    TurnPolicy,
+    InterruptPolicy>
+    : detail::self_get_turn_points::get_turns<
+          Polygon,
+          Turns,
+          TurnPolicy,
+          InterruptPolicy>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
 
 /*!
     \brief Calculate self intersections of a geometry
@@ -263,46 +224,38 @@ struct self_get_turn_points
     \param interrupt_policy policy determining if process is stopped
         when intersection is found
  */
-template
-<
+template <
     typename AssignPolicy,
     typename Geometry,
     typename Turns,
-    typename InterruptPolicy
->
-inline void self_turns(Geometry const& geometry,
-            Turns& turns, InterruptPolicy& interrupt_policy)
+    typename InterruptPolicy>
+inline void self_turns(Geometry const &geometry,
+                       Turns &turns, InterruptPolicy &interrupt_policy)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
-    typedef typename strategy_intersection
-        <
-            typename cs_tag<Geometry>::type,
-            Geometry,
-            Geometry,
-            typename boost::range_value<Turns>::type
-        >::segment_intersection_strategy_type strategy_type;
+    typedef typename strategy_intersection<
+        typename cs_tag<Geometry>::type,
+        Geometry,
+        Geometry,
+        typename boost::range_value<Turns>::type>::segment_intersection_strategy_type strategy_type;
 
-    typedef detail::overlay::get_turn_info
-                        <
-                            typename point_type<Geometry>::type,
-                            typename point_type<Geometry>::type,
-                            typename boost::range_value<Turns>::type,
-                            detail::overlay::assign_null_policy
-                        > TurnPolicy;
+    typedef detail::overlay::get_turn_info<
+        typename point_type<Geometry>::type,
+        typename point_type<Geometry>::type,
+        typename boost::range_value<Turns>::type,
+        detail::overlay::assign_null_policy>
+        TurnPolicy;
 
-    dispatch::self_get_turn_points
-            <
-                typename tag<Geometry>::type,
-                Geometry,
-                Turns,
-                TurnPolicy,
-                InterruptPolicy
-            >::apply(geometry, turns, interrupt_policy);
+    dispatch::self_get_turn_points<
+        typename tag<Geometry>::type,
+        Geometry,
+        Turns,
+        TurnPolicy,
+        InterruptPolicy>::apply(geometry, turns, interrupt_policy);
 }
 
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_SELF_TURN_POINTS_HPP

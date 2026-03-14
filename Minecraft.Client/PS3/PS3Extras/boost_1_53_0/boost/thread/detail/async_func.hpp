@@ -18,84 +18,94 @@
 
 #include <boost/config.hpp>
 
-#include <boost/utility/result_of.hpp>
-#include <boost/thread/detail/move.hpp>
 #include <boost/thread/detail/invoke.hpp>
 #include <boost/thread/detail/make_tuple_indices.hpp>
+#include <boost/thread/detail/move.hpp>
+#include <boost/utility/result_of.hpp>
 
-#if ! defined(BOOST_NO_CXX11_HDR_TUPLE)
+#if !defined(BOOST_NO_CXX11_HDR_TUPLE)
 #include <tuple>
 #endif
 
 namespace boost
 {
-  namespace detail
-  {
+namespace detail
+{
 
-#if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
-    ! defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && \
-    ! defined(BOOST_NO_CXX11_HDR_TUPLE)
+#if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
+    !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) &&  \
+    !defined(BOOST_NO_CXX11_HDR_TUPLE)
 
-    template <class Fp, class... Args>
-    class async_func
+template <class Fp, class... Args>
+class async_func
+{
+    std::tuple<Fp, Args...> f_;
+
+  public:
+    // typedef typename invoke_of<_Fp, _Args...>::type Rp;
+    typedef typename result_of<Fp(Args...)>::type result_type;
+
+    BOOST_SYMBOL_VISIBLE
+    explicit async_func(Fp &&f, Args &&...args)
+        : f_(boost::move(f), boost::move(args)...)
     {
-        std::tuple<Fp, Args...> f_;
+    }
 
-    public:
-        //typedef typename invoke_of<_Fp, _Args...>::type Rp;
-        typedef typename result_of<Fp(Args...)>::type result_type;
+    BOOST_SYMBOL_VISIBLE
+    async_func(async_func &&f) : f_(boost::move(f.f_))
+    {
+    }
 
-        BOOST_SYMBOL_VISIBLE
-        explicit async_func(Fp&& f, Args&&... args)
-            : f_(boost::move(f), boost::move(args)...) {}
+    result_type operator()()
+    {
+        typedef typename make_tuple_indices<1 + sizeof...(Args), 1>::type Index;
+        return execute(Index());
+    }
 
-        BOOST_SYMBOL_VISIBLE
-        async_func(async_func&& f) : f_(boost::move(f.f_)) {}
-
-        result_type operator()()
-        {
-            typedef typename make_tuple_indices<1+sizeof...(Args), 1>::type Index;
-            return execute(Index());
-        }
-    private:
-        template <size_t ...Indices>
-        result_type
-        execute(tuple_indices<Indices...>)
-        {
-            return invoke(boost::move(std::get<0>(f_)), boost::move(std::get<Indices>(f_))...);
-        }
-    };
+  private:
+    template <size_t... Indices>
+    result_type
+    execute(tuple_indices<Indices...>)
+    {
+        return invoke(boost::move(std::get<0>(f_)), boost::move(std::get<Indices>(f_))...);
+    }
+};
 #else
-    template <class Fp>
-    class async_func
+template <class Fp>
+class async_func
+{
+    Fp f_;
+
+  public:
+    BOOST_THREAD_COPYABLE_AND_MOVABLE(async_func)
+
+    typedef typename result_of<Fp()>::type result_type;
+
+    BOOST_SYMBOL_VISIBLE
+    explicit async_func(BOOST_THREAD_FWD_REF(Fp) f)
+        : f_(boost::move(f))
     {
-        Fp f_;
+    }
 
-    public:
-        BOOST_THREAD_COPYABLE_AND_MOVABLE(async_func)
+    BOOST_SYMBOL_VISIBLE
+    async_func(BOOST_THREAD_FWD_REF(async_func) f) : f_(boost::move(f.f_))
+    {
+    }
 
-        typedef typename result_of<Fp()>::type result_type;
+    result_type operator()()
+    {
+        return execute();
+    }
 
-        BOOST_SYMBOL_VISIBLE
-        explicit async_func(BOOST_THREAD_FWD_REF(Fp) f)
-            : f_(boost::move(f)) {}
-
-        BOOST_SYMBOL_VISIBLE
-        async_func(BOOST_THREAD_FWD_REF(async_func) f) : f_(boost::move(f.f_)) {}
-
-        result_type operator()()
-        {
-            return execute();
-        }
-    private:
-        result_type
-        execute()
-        {
-            return f_();
-        }
-    };
+  private:
+    result_type
+    execute()
+    {
+        return f_();
+    }
+};
 #endif
-  }
-}
+} // namespace detail
+} // namespace boost
 
 #endif // header

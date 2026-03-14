@@ -10,35 +10,36 @@
 
 #include <boost/fusion/iterator/deref.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct repetitive_view_iterator_tag;
+namespace fusion
+{
+struct repetitive_view_iterator_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct deref_impl;
+
+template <>
+struct deref_impl<repetitive_view_iterator_tag>
+{
+    template <typename Iterator>
+    struct apply
     {
-        template<typename Tag>
-        struct deref_impl;
+        typedef typename result_of::deref<typename Iterator::pos_type>::type
+            type;
 
-        template<>
-        struct deref_impl<repetitive_view_iterator_tag>
+        static type call(Iterator const &i)
         {
-            template<typename Iterator>
-            struct apply
-            {
-                typedef typename
-                    result_of::deref<typename Iterator::pos_type>::type
-                type;
+            return *i.pos;
+        }
+    };
+};
 
-                static type call(Iterator const& i)
-                {
-                    return *i.pos;
-                }
-            };
-        };
+} // namespace extension
 
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif
-

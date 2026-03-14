@@ -15,36 +15,52 @@
 
 #include <boost/property_map/property_map.hpp>
 
-namespace boost { namespace graph { namespace distributed { namespace detail {
+namespace boost
+{
+namespace graph
+{
+namespace distributed
+{
+namespace detail
+{
 
 /**********************************************************************
  * Dijkstra queue message data                                        *
  **********************************************************************/
-template<typename DistanceMap, typename PredecessorMap>
+template <typename DistanceMap, typename PredecessorMap>
 class dijkstra_msg_value
 {
-  typedef typename property_traits<DistanceMap>::value_type distance_type;
-  typedef typename property_traits<PredecessorMap>::value_type
-    predecessor_type;
+    typedef typename property_traits<DistanceMap>::value_type distance_type;
+    typedef typename property_traits<PredecessorMap>::value_type
+        predecessor_type;
 
-public:
-  typedef std::pair<distance_type, predecessor_type> type;
+  public:
+    typedef std::pair<distance_type, predecessor_type> type;
 
-  static type create(distance_type dist, predecessor_type pred)
-  { return std::make_pair(dist, pred); }
+    static type create(distance_type dist, predecessor_type pred)
+    {
+        return std::make_pair(dist, pred);
+    }
 };
 
-template<typename DistanceMap>
+template <typename DistanceMap>
 class dijkstra_msg_value<DistanceMap, dummy_property_map>
 {
-  typedef typename property_traits<DistanceMap>::key_type vertex_descriptor;
-public:
-  typedef typename property_traits<DistanceMap>::value_type type;
+    typedef typename property_traits<DistanceMap>::key_type vertex_descriptor;
 
-  static type create(type dist, vertex_descriptor) { return dist; }
+  public:
+    typedef typename property_traits<DistanceMap>::value_type type;
+
+    static type create(type dist, vertex_descriptor)
+    {
+        return dist;
+    }
 };
 /**********************************************************************/
 
-} } } } // end namespace boost::graph::distributed::detail
+} // namespace detail
+} // namespace distributed
+} // namespace graph
+} // namespace boost
 
 #endif // BOOST_GRAPH_PARALLEL_DIJKSTRA_DETAIL_HPP

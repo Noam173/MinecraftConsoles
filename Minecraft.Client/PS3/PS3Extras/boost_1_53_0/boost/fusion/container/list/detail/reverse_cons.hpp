@@ -9,35 +9,41 @@
 
 #include <boost/fusion/container/list/cons_fwd.hpp>
 
-namespace boost { namespace fusion { namespace detail
+namespace boost
 {
-    ////////////////////////////////////////////////////////////////////////////
-    template<typename Cons, typename State = nil>
-    struct reverse_cons;
+namespace fusion
+{
+namespace detail
+{
+////////////////////////////////////////////////////////////////////////////
+template <typename Cons, typename State = nil>
+struct reverse_cons;
 
-    template<typename Car, typename Cdr, typename State>
-    struct reverse_cons<cons<Car, Cdr>, State>
+template <typename Car, typename Cdr, typename State>
+struct reverse_cons<cons<Car, Cdr>, State>
+{
+    typedef reverse_cons<Cdr, cons<Car, State>> impl;
+    typedef typename impl::type type;
+
+    static type call(cons<Car, Cdr> const &cons, State const &state = State())
     {
-        typedef reverse_cons<Cdr, cons<Car, State> > impl;
-        typedef typename impl::type type;
+        typedef fusion::cons<Car, State> cdr_type;
+        return impl::call(cons.cdr, cdr_type(cons.car, state));
+    }
+};
 
-        static type call(cons<Car, Cdr> const &cons, State const &state = State())
-        {
-            typedef fusion::cons<Car, State> cdr_type;
-            return impl::call(cons.cdr, cdr_type(cons.car, state));
-        }
-    };
+template <typename State>
+struct reverse_cons<nil, State>
+{
+    typedef State type;
 
-    template<typename State>
-    struct reverse_cons<nil, State>
+    static State const &call(nil const &, State const &state = State())
     {
-        typedef State type;
-
-        static State const &call(nil const &, State const &state = State())
-        {
-            return state;
-        }
-    };
-}}}
+        return state;
+    }
+};
+} // namespace detail
+} // namespace fusion
+} // namespace boost
 
 #endif

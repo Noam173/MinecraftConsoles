@@ -1,7 +1,6 @@
-#include "stdafx.h"
-#include "net.minecraft.world.scores.criteria.h"
 #include "ObjectiveCriteria.h"
-
+#include "net.minecraft.world.scores.criteria.h"
+#include "stdafx.h"
 
 unordered_map<wstring, ObjectiveCriteria *> ObjectiveCriteria::CRITERIA_BY_NAME;
 

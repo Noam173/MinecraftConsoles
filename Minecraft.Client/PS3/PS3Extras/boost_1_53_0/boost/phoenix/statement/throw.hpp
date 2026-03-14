@@ -9,102 +9,114 @@
 #ifndef BOOST_PHOENIX_STATEMENT_THROW_HPP
 #define BOOST_PHOENIX_STATEMENT_THROW_HPP
 
-#include <boost/phoenix/core/limits.hpp>
 #include <boost/phoenix/core/actor.hpp>
 #include <boost/phoenix/core/call.hpp>
-#include <boost/phoenix/core/meta_grammar.hpp>
 #include <boost/phoenix/core/expression.hpp>
+#include <boost/phoenix/core/limits.hpp>
+#include <boost/phoenix/core/meta_grammar.hpp>
 #include <boost/phoenix/core/terminal.hpp>
 #include <boost/phoenix/core/value.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
 {
-    namespace tag
+namespace phoenix
+{
+namespace tag
+{
+struct throw_
+{
+};
+} // namespace tag
+
+namespace expression
+{
+template <typename A>
+struct throw_
+    : expr<tag::throw_, A>
+{
+};
+} // namespace expression
+
+namespace rule
+{
+struct throw_
+    : expression::throw_<meta_grammar>
+{
+};
+} // namespace rule
+
+template <typename Dummy>
+struct meta_grammar::case_<tag::throw_, Dummy>
+    : enable_rule<rule::throw_, Dummy>
+{
+};
+
+struct throw_eval
+{
+    typedef void result_type;
+
+    template <typename ThrowExpr, typename Context>
+    result_type
+    operator()(ThrowExpr const &throw_expr, Context const &ctx) const
     {
-        struct throw_ {};
+        throw boost::phoenix::eval(throw_expr, ctx);
     }
+};
 
-    namespace expression
-    {
-        template <typename A>
-        struct throw_
-            : expr<tag::throw_, A>
-        {};
-    }
+template <typename Dummy>
+struct default_actions::when<rule::throw_, Dummy>
+    : call<throw_eval>
+{
+};
 
-    namespace rule
-    {
-        struct throw_
-            : expression::throw_<meta_grammar>
-        {};
-    }
-
-    template <typename Dummy>
-    struct meta_grammar::case_<tag::throw_, Dummy>
-        : enable_rule<rule::throw_, Dummy>
-    {};
-
-    struct throw_eval
-    {
-        typedef void result_type;
-
-        template <typename ThrowExpr, typename Context>
-        result_type
-        operator()(ThrowExpr const& throw_expr, Context const & ctx) const
-        {
-            throw boost::phoenix::eval(throw_expr, ctx);
-        }
-    };
-    
-    template <typename Dummy>
-    struct default_actions::when<rule::throw_, Dummy>
-        : call<throw_eval>
-    {};
-
-    template <typename ThrowExpr>
-    inline
+template <typename ThrowExpr>
+inline
     typename expression::throw_<ThrowExpr>::type const
-    throw_(ThrowExpr const& throw_expr)
-    {
-        return expression::throw_<ThrowExpr>::make(throw_expr);
-    }
-    
-    namespace detail
-    {
-        struct rethrow {};
-    }
-    
-    namespace expression
-    {
-        struct rethrow
-            : expression::value<detail::rethrow>
-        {};
-    }
-    
-    template<typename Dummy>
-    struct is_custom_terminal<detail::rethrow, Dummy>
-      : mpl::true_
-    {};
+    throw_(ThrowExpr const &throw_expr)
+{
+    return expression::throw_<ThrowExpr>::make(throw_expr);
+}
 
-    template<typename Dummy>
-    struct custom_terminal<detail::rethrow, Dummy>
-    {
-        typedef void result_type;
+namespace detail
+{
+struct rethrow
+{
+};
+} // namespace detail
 
-        template <typename Context>
-        void operator()(detail::rethrow, Context &) const
-        {
-            throw;
-        }
-    };
+namespace expression
+{
+struct rethrow
+    : expression::value<detail::rethrow>
+{
+};
+} // namespace expression
 
-    inline
-    expression::rethrow::type const
-    throw_()
+template <typename Dummy>
+struct is_custom_terminal<detail::rethrow, Dummy>
+    : mpl::true_
+{
+};
+
+template <typename Dummy>
+struct custom_terminal<detail::rethrow, Dummy>
+{
+    typedef void result_type;
+
+    template <typename Context>
+    void operator()(detail::rethrow, Context &) const
     {
-        return expression::rethrow::make(detail::rethrow());
+        throw;
     }
+};
 
-}}
+inline expression::rethrow::type const
+throw_()
+{
+    return expression::rethrow::make(detail::rethrow());
+}
+
+} // namespace phoenix
+} // namespace boost
 
 #endif

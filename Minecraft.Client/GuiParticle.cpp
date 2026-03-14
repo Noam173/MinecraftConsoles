@@ -1,18 +1,18 @@
-#include "stdafx.h"
 #include "GuiParticle.h"
 #include "..\Minecraft.World\Random.h"
+#include "stdafx.h"
 
 Random *GuiParticle::random = new Random();
 
 GuiParticle::GuiParticle(double x, double y, double xa, double ya)
 {
-	// 4J - added initialisation block
+    // 4J - added initialisation block
     removed = false;
     life = 0;
     a = 1;
     oR = oG = oB = oA = 0;
-		
-	this->xo = this->x = x;
+
+    this->xo = this->x = x;
     this->yo = this->y = y;
     this->xa = xa;
     this->ya = ya;
@@ -36,9 +36,15 @@ void GuiParticle::tick(GuiParticles *guiParticles)
     ya *= friction;
 
     ya += 0.1;
-    if (++life > lifeTime) remove();
+    if (++life > lifeTime)
+    {
+        remove();
+    }
     a = 2 - (life / static_cast<double>(lifeTime)) * 2;
-    if (a > 1) a = 1;
+    if (a > 1)
+    {
+        a = 1;
+    }
     a = a * a;
     a *= 0.5;
 }
@@ -56,5 +62,5 @@ void GuiParticle::preTick()
 
 void GuiParticle::remove()
 {
-	removed = true;
+    removed = true;
 }

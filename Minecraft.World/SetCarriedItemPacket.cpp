@@ -1,47 +1,45 @@
-#include "stdafx.h"
-#include <iostream>
+#include "SetCarriedItemPacket.h"
 #include "InputOutputStream.h"
 #include "PacketListener.h"
-#include "SetCarriedItemPacket.h"
+#include "stdafx.h"
+#include <iostream>
 
-
-
-SetCarriedItemPacket::SetCarriedItemPacket() 
+SetCarriedItemPacket::SetCarriedItemPacket()
 {
-	slot = 0;
+    slot = 0;
 }
 
-SetCarriedItemPacket::SetCarriedItemPacket(int slot) 
+SetCarriedItemPacket::SetCarriedItemPacket(int slot)
 {
-	this->slot = slot;
+    this->slot = slot;
 }
 
-void SetCarriedItemPacket::read(DataInputStream *dis) //throws IOException
+void SetCarriedItemPacket::read(DataInputStream *dis) // throws IOException
 {
-	slot = dis->readShort();
+    slot = dis->readShort();
 }
 
-void SetCarriedItemPacket::write(DataOutputStream *dos) //throws IOException 
+void SetCarriedItemPacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeShort(slot);
+    dos->writeShort(slot);
 }
 
-void SetCarriedItemPacket::handle(PacketListener *listener) 
+void SetCarriedItemPacket::handle(PacketListener *listener)
 {
-	listener->handleSetCarriedItem(shared_from_this());
+    listener->handleSetCarriedItem(shared_from_this());
 }
 
-int SetCarriedItemPacket::getEstimatedSize() 
+int SetCarriedItemPacket::getEstimatedSize()
 {
-	return 2;
+    return 2;
 }
 
-bool SetCarriedItemPacket::canBeInvalidated() 
+bool SetCarriedItemPacket::canBeInvalidated()
 {
-	return true;
+    return true;
 }
 
 bool SetCarriedItemPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	return true;
+    return true;
 }

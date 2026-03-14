@@ -13,13 +13,17 @@
 
 #include <boost/mpl/int.hpp>
 
-namespace boost {
-namespace mpl {
+namespace boost
+{
+namespace mpl
+{
 
-struct rational_c_tag : int_<10> {};
+struct rational_c_tag : int_<10>
+{
+};
 
-}
-}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_RATIO_EXTENSIONS
-#endif  // BOOST_RATIO_MPL_RATIONAL_C_TAG_HPP
+#endif // BOOST_RATIO_MPL_RATIONAL_C_TAG_HPP

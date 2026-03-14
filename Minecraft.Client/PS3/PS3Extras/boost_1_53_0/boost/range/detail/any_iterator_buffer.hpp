@@ -12,106 +12,110 @@
 
 #include <boost/array.hpp>
 #include <boost/assert.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/static_assert.hpp>
 
 namespace boost
 {
-    template<std::size_t StackBufferSize>
-    class any_iterator_buffer
-        : noncopyable
+template <std::size_t StackBufferSize>
+class any_iterator_buffer
+    : noncopyable
+{
+    BOOST_STATIC_ASSERT((StackBufferSize > 0));
+
+  public:
+    any_iterator_buffer()
+        : m_ptr()
     {
-        BOOST_STATIC_ASSERT(( StackBufferSize > 0 ));
-    public:
-        any_iterator_buffer()
-            : m_ptr()
-        {
-        }
+    }
 
-        ~any_iterator_buffer()
-        {
-            delete [] m_ptr;
-        }
-
-        void* allocate(std::size_t bytes)
-        {
-            BOOST_ASSERT( !m_ptr );
-            if (bytes <= StackBufferSize)
-                return m_buffer.data();
-
-            m_ptr = new char[bytes];
-            return m_ptr;
-        }
-
-        void deallocate()
-        {
-            delete [] m_ptr;
-            m_ptr = 0;
-        }
-
-    private:
-        // Rationale:
-        // Do not use inheritance from noncopyable because this causes
-        // the concepts to erroneous detect the derived any_iterator
-        // as noncopyable.
-        any_iterator_buffer(const any_iterator_buffer&);
-        void operator=(const any_iterator_buffer&);
-
-        char* m_ptr;
-        boost::array<char, StackBufferSize> m_buffer;
-    };
-
-    class any_iterator_heap_only_buffer
-        : noncopyable
+    ~any_iterator_buffer()
     {
-    public:
-        any_iterator_heap_only_buffer()
-            : m_ptr()
-        {
-        }
+        delete[] m_ptr;
+    }
 
-        ~any_iterator_heap_only_buffer()
-        {
-            delete [] m_ptr;
-        }
-
-        void* allocate(std::size_t bytes)
-        {
-            BOOST_ASSERT( !m_ptr );
-            m_ptr = new char[bytes];
-            return m_ptr;
-        }
-
-        void deallocate()
-        {
-            delete [] m_ptr;
-            m_ptr = 0;
-        }
-
-    private:
-        char* m_ptr;
-    };
-
-    template<std::size_t StackBufferSize>
-    class any_iterator_stack_only_buffer
+    void *allocate(std::size_t bytes)
     {
-        BOOST_STATIC_ASSERT(( StackBufferSize > 0 ));
-    public:
-        void* allocate(std::size_t bytes)
+        BOOST_ASSERT(!m_ptr);
+        if (bytes <= StackBufferSize)
         {
-            BOOST_ASSERT( bytes <= m_buffer.size() );
             return m_buffer.data();
         }
 
-        void deallocate()
-        {
-        }
+        m_ptr = new char[bytes];
+        return m_ptr;
+    }
 
-    private:
-        boost::array<char, StackBufferSize> m_buffer;
-    };
+    void deallocate()
+    {
+        delete[] m_ptr;
+        m_ptr = 0;
+    }
 
-    typedef any_iterator_buffer<64> any_iterator_default_buffer;
+  private:
+    // Rationale:
+    // Do not use inheritance from noncopyable because this causes
+    // the concepts to erroneous detect the derived any_iterator
+    // as noncopyable.
+    any_iterator_buffer(const any_iterator_buffer &);
+    void operator=(const any_iterator_buffer &);
+
+    char *m_ptr;
+    boost::array<char, StackBufferSize> m_buffer;
+};
+
+class any_iterator_heap_only_buffer
+    : noncopyable
+{
+  public:
+    any_iterator_heap_only_buffer()
+        : m_ptr()
+    {
+    }
+
+    ~any_iterator_heap_only_buffer()
+    {
+        delete[] m_ptr;
+    }
+
+    void *allocate(std::size_t bytes)
+    {
+        BOOST_ASSERT(!m_ptr);
+        m_ptr = new char[bytes];
+        return m_ptr;
+    }
+
+    void deallocate()
+    {
+        delete[] m_ptr;
+        m_ptr = 0;
+    }
+
+  private:
+    char *m_ptr;
+};
+
+template <std::size_t StackBufferSize>
+class any_iterator_stack_only_buffer
+{
+    BOOST_STATIC_ASSERT((StackBufferSize > 0));
+
+  public:
+    void *allocate(std::size_t bytes)
+    {
+        BOOST_ASSERT(bytes <= m_buffer.size());
+        return m_buffer.data();
+    }
+
+    void deallocate()
+    {
+    }
+
+  private:
+    boost::array<char, StackBufferSize> m_buffer;
+};
+
+typedef any_iterator_buffer<64> any_iterator_default_buffer;
 } // namespace boost
 
 #endif // include guard

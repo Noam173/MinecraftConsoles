@@ -18,8 +18,7 @@
 
 // Digital Mars C++
 
-#elif defined(__INTEL_COMPILER) || defined(__ICL) \
-  || defined(__ICC) || defined(__ECC)
+#elif defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
 
 // Intel C++
 
@@ -27,19 +26,19 @@
 
 // GNU C++
 
-# if defined(__MINGW32__) || defined(__CYGWIN__)
-#  pragma pack (pop)
-# endif
+#if defined(__MINGW32__) || defined(__CYGWIN__)
+#pragma pack(pop)
+#endif
 
-# if defined(__OBJC__)
-#  if !defined(__APPLE_CC__) || (__APPLE_CC__ <= 1)
-#   if defined(BOOST_ASIO_OBJC_WORKAROUND)
-#    undef Protocol
-#    undef id
-#    undef BOOST_ASIO_OBJC_WORKAROUND
-#   endif
-#  endif
-# endif
+#if defined(__OBJC__)
+#if !defined(__APPLE_CC__) || (__APPLE_CC__ <= 1)
+#if defined(BOOST_ASIO_OBJC_WORKAROUND)
+#undef Protocol
+#undef id
+#undef BOOST_ASIO_OBJC_WORKAROUND
+#endif
+#endif
+#endif
 
 #elif defined(__KCC)
 
@@ -61,9 +60,9 @@
 
 // Borland C++
 
-# pragma option pop
-# pragma nopushoptwarn
-# pragma nopackwarning
+#pragma option pop
+#pragma nopushoptwarn
+#pragma nopackwarning
 
 #elif defined(__MWERKS__)
 
@@ -92,7 +91,7 @@
 // Must remain the last #elif since some other vendors (Metrowerks, for example)
 // also #define _MSC_VER
 
-# pragma warning (pop)
-# pragma pack (pop)
+#pragma warning(pop)
+#pragma pack(pop)
 
 #endif

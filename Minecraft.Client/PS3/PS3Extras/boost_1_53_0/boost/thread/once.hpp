@@ -22,13 +22,13 @@
 
 namespace boost
 {
-  // template<class Callable, class ...Args> void
-  // call_once(once_flag& flag, Callable&& func, Args&&... args);
-    inline void call_once(void (*func)(),once_flag& flag)
-    {
-        call_once(flag,func);
-    }
+// template<class Callable, class ...Args> void
+// call_once(once_flag& flag, Callable&& func, Args&&... args);
+inline void call_once(void (*func)(), once_flag &flag)
+{
+    call_once(flag, func);
 }
+} // namespace boost
 
 #include <boost/config/abi_suffix.hpp>
 

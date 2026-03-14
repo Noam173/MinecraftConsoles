@@ -4,33 +4,33 @@
 
 void ComparatorTileEntity::save(CompoundTag *tag)
 {
-	TileEntity::save(tag);
-	tag->putInt(L"OutputSignal", output);
+    TileEntity::save(tag);
+    tag->putInt(L"OutputSignal", output);
 }
 
 void ComparatorTileEntity::load(CompoundTag *tag)
 {
-	TileEntity::load(tag);
-	output = tag->getInt(L"OutputSignal");
+    TileEntity::load(tag);
+    output = tag->getInt(L"OutputSignal");
 }
 
 int ComparatorTileEntity::getOutputSignal()
 {
-	return output;
+    return output;
 }
 
 void ComparatorTileEntity::setOutputSignal(int value)
 {
-	output = value;
+    output = value;
 }
 
 // 4J Added
 shared_ptr<TileEntity> ComparatorTileEntity::clone()
 {
-	shared_ptr<ComparatorTileEntity> result = std::make_shared<ComparatorTileEntity>();
-	TileEntity::clone(result);
+    shared_ptr<ComparatorTileEntity> result = std::make_shared<ComparatorTileEntity>();
+    TileEntity::clone(result);
 
-	result->output = output;
+    result->output = output;
 
-	return result;
+    return result;
 }

@@ -13,7 +13,7 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/qi/parse.hpp>
 #include <boost/spirit/home/qi/detail/parse_auto.hpp>
+#include <boost/spirit/home/qi/parse.hpp>
 
 #endif

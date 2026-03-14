@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "Language.h"
+#include "stdafx.h"
 
 // 4J - TODO - properly implement
 
@@ -11,15 +11,15 @@ Language::Language()
 
 Language *Language::getInstance()
 {
-	return singleton;
+    return singleton;
 }
 
-std::wstring Language::getElementName(const std::wstring& elementId)
+std::wstring Language::getElementName(const std::wstring &elementId)
 {
-	return elementId;
+    return elementId;
 }
 
-std::wstring Language::getElementDescription(const std::wstring& elementId)
+std::wstring Language::getElementDescription(const std::wstring &elementId)
 {
-	return elementId;
+    return elementId;
 }

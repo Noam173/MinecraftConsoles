@@ -10,52 +10,54 @@
 #pragma once
 #endif
 
-#include <boost/math/special_functions/log1p.hpp>
-#include <boost/math/special_functions/expm1.hpp>
-#include <boost/math/special_functions/math_fwd.hpp>
 #include <boost/assert.hpp>
+#include <boost/math/special_functions/expm1.hpp>
+#include <boost/math/special_functions/log1p.hpp>
+#include <boost/math/special_functions/math_fwd.hpp>
 
-namespace boost{ namespace math{ namespace detail{
+namespace boost
+{
+namespace math
+{
+namespace detail
+{
 
 template <class T, class Policy>
-inline T powm1_imp(const T a, const T z, const Policy& pol)
+inline T powm1_imp(const T a, const T z, const Policy &pol)
 {
-   BOOST_MATH_STD_USING
+    BOOST_MATH_STD_USING
 
-   if((fabs(a) < 1) || (fabs(z) < 1))
-   {
-      T p = log(a) * z;
-      if(fabs(p) < 2)
-         return boost::math::expm1(p, pol);
-      // otherwise fall though:
-   }
-   return pow(a, z) - 1;
+    if ((fabs(a) < 1) || (fabs(z) < 1))
+    {
+        T p = log(a) * z;
+        if (fabs(p) < 2)
+        {
+            return boost::math::expm1(p, pol);
+        }
+        // otherwise fall though:
+    }
+    return pow(a, z) - 1;
 }
 
-} // detail
+} // namespace detail
 
 template <class T1, class T2>
-inline typename tools::promote_args<T1, T2>::type 
-   powm1(const T1 a, const T2 z)
+inline typename tools::promote_args<T1, T2>::type
+powm1(const T1 a, const T2 z)
 {
-   typedef typename tools::promote_args<T1, T2>::type result_type;
-   return detail::powm1_imp(static_cast<result_type>(a), static_cast<result_type>(z), policies::policy<>());
+    typedef typename tools::promote_args<T1, T2>::type result_type;
+    return detail::powm1_imp(static_cast<result_type>(a), static_cast<result_type>(z), policies::policy<>());
 }
 
 template <class T1, class T2, class Policy>
-inline typename tools::promote_args<T1, T2>::type 
-   powm1(const T1 a, const T2 z, const Policy& pol)
+inline typename tools::promote_args<T1, T2>::type
+powm1(const T1 a, const T2 z, const Policy &pol)
 {
-   typedef typename tools::promote_args<T1, T2>::type result_type;
-   return detail::powm1_imp(static_cast<result_type>(a), static_cast<result_type>(z), pol);
+    typedef typename tools::promote_args<T1, T2>::type result_type;
+    return detail::powm1_imp(static_cast<result_type>(a), static_cast<result_type>(z), pol);
 }
 
 } // namespace math
 } // namespace boost
 
 #endif // BOOST_MATH_POWM1
-
-
-
-
-

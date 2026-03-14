@@ -9,94 +9,85 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_RING_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_RING_HPP
 
-
 #include <boost/assert.hpp>
 #include <boost/range.hpp>
 
-
-#include <boost/geometry/core/tags.hpp>
+#include <boost/geometry/algorithms/detail/ring_identifier.hpp>
 #include <boost/geometry/core/exterior_ring.hpp>
 #include <boost/geometry/core/interior_rings.hpp>
-#include <boost/geometry/algorithms/detail/ring_identifier.hpp>
+#include <boost/geometry/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
+{
+namespace overlay
 {
 
-
-template<typename Tag>
+template <typename Tag>
 struct get_ring
-{};
+{
+};
 
 // A container of rings (multi-ring but that does not exist)
 // gets the "void" tag and is dispatched here.
-template<>
+template <>
 struct get_ring<void>
 {
-    template<typename Container>
-    static inline typename boost::range_value<Container>::type const&
-                apply(ring_identifier const& id, Container const& container)
+    template <typename Container>
+    static inline typename boost::range_value<Container>::type const &
+    apply(ring_identifier const &id, Container const &container)
     {
         return container[id.multi_index];
     }
 };
 
-
-
-
-template<>
+template <>
 struct get_ring<ring_tag>
 {
-    template<typename Ring>
-    static inline Ring const& apply(ring_identifier const& , Ring const& ring)
+    template <typename Ring>
+    static inline Ring const &apply(ring_identifier const &, Ring const &ring)
     {
         return ring;
     }
 };
 
-
-template<>
+template <>
 struct get_ring<box_tag>
 {
-    template<typename Box>
-    static inline Box const& apply(ring_identifier const& ,
-                    Box const& box)
+    template <typename Box>
+    static inline Box const &apply(ring_identifier const &,
+                                   Box const &box)
     {
         return box;
     }
 };
 
-
-template<>
+template <>
 struct get_ring<polygon_tag>
 {
-    template<typename Polygon>
+    template <typename Polygon>
     static inline typename ring_return_type<Polygon const>::type const apply(
-                ring_identifier const& id,
-                Polygon const& polygon)
+        ring_identifier const &id,
+        Polygon const &polygon)
     {
-        BOOST_ASSERT
-            (
-                id.ring_index >= -1
-                && id.ring_index < int(boost::size(interior_rings(polygon)))
-            );
+        BOOST_ASSERT(
+            id.ring_index >= -1 && id.ring_index < int(boost::size(interior_rings(polygon))));
         return id.ring_index < 0
-            ? exterior_ring(polygon)
-            : interior_rings(polygon)[id.ring_index];
+                   ? exterior_ring(polygon)
+                   : interior_rings(polygon)[id.ring_index];
     }
 };
 
-
-}} // namespace detail::overlay
+} // namespace overlay
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_RING_HPP

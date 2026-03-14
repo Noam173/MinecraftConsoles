@@ -14,163 +14,141 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_CARTESIAN_BOX_IN_BOX_HPP
 #define BOOST_GEOMETRY_STRATEGIES_CARTESIAN_BOX_IN_BOX_HPP
 
-
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
 #include <boost/geometry/strategies/covered_by.hpp>
 #include <boost/geometry/strategies/within.hpp>
 
-
-namespace boost { namespace geometry { namespace strategy 
+namespace boost
 {
-    
-   
+namespace geometry
+{
+namespace strategy
+{
+
 namespace within
 {
 
 struct box_within_range
 {
     template <typename BoxContainedValue, typename BoxContainingValue>
-    static inline bool apply(BoxContainedValue const& bed_min
-                , BoxContainedValue const& bed_max
-                , BoxContainingValue const& bing_min
-                , BoxContainingValue const& bing_max)
+    static inline bool apply(BoxContainedValue const &bed_min, BoxContainedValue const &bed_max, BoxContainingValue const &bing_min, BoxContainingValue const &bing_max)
     {
         return bed_min > bing_min && bed_max < bing_max;
     }
 };
 
-
 struct box_covered_by_range
 {
     template <typename BoxContainedValue, typename BoxContainingValue>
-    static inline bool apply(BoxContainedValue const& bed_min
-                , BoxContainedValue const& bed_max
-                , BoxContainingValue const& bing_min
-                , BoxContainingValue const& bing_max)
+    static inline bool apply(BoxContainedValue const &bed_min, BoxContainedValue const &bed_max, BoxContainingValue const &bing_min, BoxContainingValue const &bing_max)
     {
         return bed_min >= bing_min && bed_max <= bing_max;
     }
 };
 
-
-template
-<
+template <
     typename SubStrategy,
     typename Box1,
     typename Box2,
     std::size_t Dimension,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct relate_box_box_loop
 {
-    static inline bool apply(Box1 const& b_contained, Box2 const& b_containing)
+    static inline bool apply(Box1 const &b_contained, Box2 const &b_containing)
     {
         assert_dimension_equal<Box1, Box2>();
 
-        if (! SubStrategy::apply(
-                    get<min_corner, Dimension>(b_contained), 
-                    get<max_corner, Dimension>(b_contained), 
-                    get<min_corner, Dimension>(b_containing), 
-                    get<max_corner, Dimension>(b_containing)
-                )
-            )
+        if (!SubStrategy::apply(
+                get<min_corner, Dimension>(b_contained),
+                get<max_corner, Dimension>(b_contained),
+                get<min_corner, Dimension>(b_containing),
+                get<max_corner, Dimension>(b_containing)))
         {
             return false;
         }
 
-        return relate_box_box_loop
-            <
-                SubStrategy,
-                Box1, Box2,
-                Dimension + 1, DimensionCount
-            >::apply(b_contained, b_containing);
+        return relate_box_box_loop<
+            SubStrategy,
+            Box1, Box2,
+            Dimension + 1, DimensionCount>::apply(b_contained, b_containing);
     }
 };
 
-template
-<
+template <
     typename SubStrategy,
     typename Box1,
     typename Box2,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct relate_box_box_loop<SubStrategy, Box1, Box2, DimensionCount, DimensionCount>
 {
-    static inline bool apply(Box1 const& , Box2 const& )
+    static inline bool apply(Box1 const &, Box2 const &)
     {
         return true;
     }
 };
 
-template
-<
+template <
     typename Box1,
     typename Box2,
-    typename SubStrategy = box_within_range
->
+    typename SubStrategy = box_within_range>
 struct box_in_box
 {
-    static inline bool apply(Box1 const& box1, Box2 const& box2)
+    static inline bool apply(Box1 const &box1, Box2 const &box2)
     {
-        return relate_box_box_loop
-            <
-                SubStrategy, 
-                Box1, Box2, 0, dimension<Box1>::type::value
-            >::apply(box1, box2);
+        return relate_box_box_loop<
+            SubStrategy,
+            Box1, Box2, 0, dimension<Box1>::type::value>::apply(box1, box2);
     }
 };
 
-
 } // namespace within
-
 
 #ifndef DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
 
-
-namespace within { namespace services
+namespace within
+{
+namespace services
 {
 
 template <typename BoxContained, typename BoxContaining>
-struct default_strategy
-    <
-        box_tag, box_tag, 
-        box_tag, areal_tag, 
-        cartesian_tag, cartesian_tag, 
-        BoxContained, BoxContaining
-    >
+struct default_strategy<
+    box_tag, box_tag,
+    box_tag, areal_tag,
+    cartesian_tag, cartesian_tag,
+    BoxContained, BoxContaining>
 {
     typedef within::box_in_box<BoxContained, BoxContaining> type;
 };
 
+} // namespace services
+} // namespace within
 
-}} // namespace within::services
-
-namespace covered_by { namespace services
+namespace covered_by
+{
+namespace services
 {
 
 template <typename BoxContained, typename BoxContaining>
-struct default_strategy
-    <
-        box_tag, box_tag, 
-        box_tag, areal_tag, 
-        cartesian_tag, cartesian_tag, 
-        BoxContained, BoxContaining
-    >
+struct default_strategy<
+    box_tag, box_tag,
+    box_tag, areal_tag,
+    cartesian_tag, cartesian_tag,
+    BoxContained, BoxContaining>
 {
-    typedef within::box_in_box
-                <
-                    BoxContained, BoxContaining,
-                    within::box_covered_by_range
-                > type;
+    typedef within::box_in_box<
+        BoxContained, BoxContaining,
+        within::box_covered_by_range>
+        type;
 };
 
-}} // namespace covered_by::services
-
+} // namespace services
+} // namespace covered_by
 
 #endif // DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
 
-
-}}} // namespace boost::geometry::strategy
+} // namespace strategy
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_CARTESIAN_BOX_IN_BOX_HPP

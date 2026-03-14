@@ -3,7 +3,7 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //  basic_config.hpp  ---------------------------------------------//
@@ -15,7 +15,7 @@
 
 //  See library home page at http://www.boost.org/libs/serialization
 
-//----------------------------------------------------------------------------// 
+//----------------------------------------------------------------------------//
 
 // This header implements separate compilation features as described in
 // http://www.boost.org/more/separate_compilation.html
@@ -30,12 +30,12 @@
 #if defined(BOOST_ALL_DYN_LINK) || defined(BOOST_ARCHIVE_DYN_LINK)
 // export if this is our own source, otherwise import:
 #ifdef BOOST_ARCHIVE_SOURCE
-# define BOOST_ARCHIVE_DECL __declspec(dllexport)
+#define BOOST_ARCHIVE_DECL __declspec(dllexport)
 #else
-# define BOOST_ARCHIVE_DECL __declspec(dllimport)
-#endif  // BOOST_ARCHIVE_SOURCE
-#endif  // DYN_LINK
-#endif  // BOOST_HAS_DECLSPEC
+#define BOOST_ARCHIVE_DECL __declspec(dllimport)
+#endif // BOOST_ARCHIVE_SOURCE
+#endif // DYN_LINK
+#endif // BOOST_HAS_DECLSPEC
 //
 // if BOOST_ARCHIVE_DECL isn't defined yet define it now:
 #ifndef BOOST_ARCHIVE_DECL

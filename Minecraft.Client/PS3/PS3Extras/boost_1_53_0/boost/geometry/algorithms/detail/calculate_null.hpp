@@ -14,7 +14,9 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_CALCULATE_NULL_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_CALCULATE_NULL_HPP
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
@@ -23,8 +25,8 @@ namespace detail
 
 struct calculate_null
 {
-    template<typename ReturnType, typename Geometry, typename Strategy>
-    static inline ReturnType apply(Geometry const& , Strategy const&)
+    template <typename ReturnType, typename Geometry, typename Strategy>
+    static inline ReturnType apply(Geometry const &, Strategy const &)
     {
         return ReturnType();
     }
@@ -33,6 +35,7 @@ struct calculate_null
 } // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_CALCULATE_NULL_HPP

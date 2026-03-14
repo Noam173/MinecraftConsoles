@@ -5,7 +5,6 @@
 //  Distributed under the Boost Software License, Version 1.0.
 //  See http://www.boost.org/LICENSE_1_0.txt
 
-
 #ifndef BOOST_DETAIL_WIN_DLL_HPP
 #define BOOST_DETAIL_WIN_DLL_HPP
 
@@ -18,35 +17,31 @@ namespace detail
 {
 namespace win32
 {
-#if defined( BOOST_USE_WINDOWS_H )
-    using ::LoadLibrary;
-    using ::FreeLibrary;
-    using ::GetProcAddress;
-    using ::GetModuleHandleA;
+#if defined(BOOST_USE_WINDOWS_H)
+using ::FreeLibrary;
+using ::GetModuleHandleA;
+using ::GetProcAddress;
+using ::LoadLibrary;
 #else
-extern "C" { 
-    __declspec(dllimport) HMODULE_ __stdcall 
-        LoadLibrary(
-            LPCTSTR_ lpFileName
-    );
-    __declspec(dllimport) BOOL_ __stdcall 
-        FreeLibrary(
-            HMODULE_ hModule
-    );
-    __declspec(dllimport) FARPROC_ __stdcall 
-        GetProcAddress(
-            HMODULE_ hModule,
-            LPCSTR_ lpProcName
-    );
-    __declspec(dllimport) FARPROC_ __stdcall 
-        GetModuleHandleA(
-            LPCSTR_ lpProcName
-    );
-    
-}    
+extern "C"
+{
+    __declspec(dllimport) HMODULE_ __stdcall
+    LoadLibrary(
+        LPCTSTR_ lpFileName);
+    __declspec(dllimport) BOOL_ __stdcall
+    FreeLibrary(
+        HMODULE_ hModule);
+    __declspec(dllimport) FARPROC_ __stdcall
+    GetProcAddress(
+        HMODULE_ hModule,
+        LPCSTR_ lpProcName);
+    __declspec(dllimport) FARPROC_ __stdcall
+    GetModuleHandleA(
+        LPCSTR_ lpProcName);
+}
 #endif
-}
-}
-}
+} // namespace win32
+} // namespace detail
+} // namespace boost
 
 #endif // BOOST_DETAIL_WIN_THREAD_HPP

@@ -1,11 +1,11 @@
-#include "stdafx.h"
 #include "SmoothFloat.h"
+#include "stdafx.h"
 
 SmoothFloat::SmoothFloat()
 {
-	targetValue = 0.0f;
-	remainingValue = 0.0f;
-	lastAmount = 0.0f;
+    targetValue = 0.0f;
+    remainingValue = 0.0f;
+    lastAmount = 0.0f;
 }
 
 float SmoothFloat::getNewDeltaValue(float deltaValue, float accelerationAmount)
@@ -15,7 +15,7 @@ float SmoothFloat::getNewDeltaValue(float deltaValue, float accelerationAmount)
     deltaValue = (targetValue - remainingValue) * accelerationAmount;
     lastAmount = lastAmount + (deltaValue - lastAmount) * 0.5f;
     if ((deltaValue > 0 && deltaValue > lastAmount) || (deltaValue < 0 && deltaValue < lastAmount))
-	{
+    {
         deltaValue = lastAmount;
     }
     remainingValue += deltaValue;
@@ -25,5 +25,5 @@ float SmoothFloat::getNewDeltaValue(float deltaValue, float accelerationAmount)
 
 float SmoothFloat::getTargetValue()
 {
-	return targetValue;
+    return targetValue;
 }

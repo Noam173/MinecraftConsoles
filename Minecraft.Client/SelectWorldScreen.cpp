@@ -1,28 +1,27 @@
-#include "stdafx.h"
 #include "SelectWorldScreen.h"
-#include "Button.h"
-#include "ConfirmScreen.h"
-#include "CreateWorldScreen.h"
-#include "RenameWorldScreen.h"
-#include "DemoMode.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\net.minecraft.world.level.storage.h"
-
+#include "Button.h"
+#include "ConfirmScreen.h"
+#include "CreateWorldScreen.h"
+#include "DemoMode.h"
+#include "RenameWorldScreen.h"
+#include "stdafx.h"
 
 SelectWorldScreen::SelectWorldScreen(Screen *lastScreen)
 {
-	// 4J - added initialisers
+    // 4J - added initialisers
     title = L"Select world";
     done = false;
-	selectedWorld = 0;
-	worldSelectionList = nullptr;
-	isDeleting = false;
-	deleteButton = nullptr;
+    selectedWorld = 0;
+    worldSelectionList = nullptr;
+    isDeleting = false;
+    deleteButton = nullptr;
     selectButton = nullptr;
     renameButton = nullptr;
 
-	this->lastScreen = lastScreen;
+    this->lastScreen = lastScreen;
 }
 
 void SelectWorldScreen::init()
@@ -42,23 +41,23 @@ void SelectWorldScreen::init()
 
 void SelectWorldScreen::loadLevelList()
 {
-	LevelStorageSource *levelSource = minecraft->getLevelSource();
-	levelList = levelSource->getLevelList();
-//	Collections.sort(levelList);	// 4J - TODO - get sort functor etc.
-	selectedWorld = -1;
+    LevelStorageSource *levelSource = minecraft->getLevelSource();
+    levelList = levelSource->getLevelList();
+    //	Collections.sort(levelList);	// 4J - TODO - get sort functor etc.
+    selectedWorld = -1;
 }
 
 wstring SelectWorldScreen::getWorldId(int id)
 {
-	return levelList->at(id)->getLevelId();
+    return levelList->at(id)->getLevelId();
 }
 
 wstring SelectWorldScreen::getWorldName(int id)
 {
     wstring levelName = levelList->at(id)->getLevelName();
 
-	if ( levelName.length() == 0 )
-	{
+    if (levelName.length() == 0)
+    {
         Language *language = Language::getInstance();
         levelName = language->getElement(L"selectWorld.world") + L" " + std::to_wstring(id + 1);
     }
@@ -79,17 +78,19 @@ void SelectWorldScreen::postInit()
     selectButton->active = false;
     deleteButton->active = false;
     renameButton->active = false;
-
 }
 
 void SelectWorldScreen::buttonClicked(Button *button)
 {
-    if (!button->active) return;
+    if (!button->active)
+    {
+        return;
+    }
     if (button->id == BUTTON_DELETE_ID)
-	{
+    {
         wstring worldName = getWorldName(selectedWorld);
         if (worldName != L"")
-		{
+        {
             isDeleting = true;
 
             Language *language = Language::getInstance();
@@ -102,21 +103,24 @@ void SelectWorldScreen::buttonClicked(Button *button)
             minecraft->setScreen(confirmScreen);
         }
     }
-	else if (button->id == BUTTON_SELECT_ID)
-	{
+    else if (button->id == BUTTON_SELECT_ID)
+    {
         worldSelected(selectedWorld);
     }
-	else if (button->id == BUTTON_CREATE_ID)
-	{
+    else if (button->id == BUTTON_CREATE_ID)
+    {
         if (ProfileManager.IsFullVersion())
-		{
+        {
             minecraft->setScreen(new CreateWorldScreen(this));
         }
-		else
-		{
+        else
+        {
             // create demo world
             minecraft->setScreen(nullptr);
-            if (done) return;
+            if (done)
+            {
+                return;
+            }
             done = true;
 // 4J Stu - Not used, so commenting to stop the build failing
 #if 0
@@ -126,16 +130,16 @@ void SelectWorldScreen::buttonClicked(Button *button)
 #endif
         }
     }
-	else if (button->id == BUTTON_RENAME_ID)
-	{
+    else if (button->id == BUTTON_RENAME_ID)
+    {
         minecraft->setScreen(new RenameWorldScreen(this, getWorldId(selectedWorld)));
     }
-	else if (button->id == BUTTON_CANCEL_ID)
-	{
+    else if (button->id == BUTTON_CANCEL_ID)
+    {
         minecraft->setScreen(lastScreen);
     }
-	else
-	{
+    else
+    {
         worldSelectionList->buttonClicked(button);
     }
 }
@@ -143,13 +147,16 @@ void SelectWorldScreen::buttonClicked(Button *button)
 void SelectWorldScreen::worldSelected(int id)
 {
     minecraft->setScreen(nullptr);
-    if (done) return;
+    if (done)
+    {
+        return;
+    }
     done = true;
-    minecraft->gameMode = nullptr; //new SurvivalMode(minecraft);
+    minecraft->gameMode = nullptr; // new SurvivalMode(minecraft);
 
     wstring worldFolderName = getWorldId(id);
-    if (worldFolderName == L"")	// 4J - was nullptr comparison
-	{
+    if (worldFolderName == L"") // 4J - was nullptr comparison
+    {
         worldFolderName = L"World" + std::to_wstring(id);
     }
 // 4J Stu - Not used, so commenting to stop the build failing
@@ -162,10 +169,10 @@ void SelectWorldScreen::worldSelected(int id)
 void SelectWorldScreen::confirmResult(bool result, int id)
 {
     if (isDeleting)
-	{
+    {
         isDeleting = false;
         if (result)
-		{
+        {
             LevelStorageSource *levelSource = minecraft->getLevelSource();
             levelSource->clearAll();
             levelSource->deleteLevel(getWorldId(id));
@@ -185,57 +192,56 @@ void SelectWorldScreen::render(int xm, int ym, float a)
 
     Screen::render(xm, ym, a);
 
-	// 4J - debug code - remove
-	static int count = 0;
-	static bool forceCreateLevel = false;
-	if( count++ >= 100 )
-	{
-		if( !forceCreateLevel && levelList->size() > 0 )
-		{
-			// 4J Stu - For some obscures reason the "delete" button is called "renameButton" and vice versa.
-			//if( levelList->size() > 2 && deleteButton->active )
-			//{
-			//	this->selectedWorld = 2;
-			//	count = 0;
-			//	buttonClicked(deleteButton);
-			//}
-			//else
-			if( levelList->size() > 1 && renameButton->active )
-			{
-				this->selectedWorld = 1;
-				count = 0;
-				buttonClicked(renameButton);
-			}
-			else
-				if( selectButton->active == true )
-			{
-				this->selectedWorld = 0;
-				buttonClicked(selectButton);
-				//this->worldSelected( 0 );
-			}
-			else
-			{
-				selectButton->active = true;
-				deleteButton->active = true;
-				renameButton->active = true;
-				count = 0;
-			}
-		}
-		else
-		{
-			minecraft->setScreen(new CreateWorldScreen(this));
-		}
-	}
+    // 4J - debug code - remove
+    static int count = 0;
+    static bool forceCreateLevel = false;
+    if (count++ >= 100)
+    {
+        if (!forceCreateLevel && levelList->size() > 0)
+        {
+            // 4J Stu - For some obscures reason the "delete" button is called "renameButton" and vice versa.
+            // if( levelList->size() > 2 && deleteButton->active )
+            //{
+            //	this->selectedWorld = 2;
+            //	count = 0;
+            //	buttonClicked(deleteButton);
+            //}
+            // else
+            if (levelList->size() > 1 && renameButton->active)
+            {
+                this->selectedWorld = 1;
+                count = 0;
+                buttonClicked(renameButton);
+            }
+            else if (selectButton->active == true)
+            {
+                this->selectedWorld = 0;
+                buttonClicked(selectButton);
+                // this->worldSelected( 0 );
+            }
+            else
+            {
+                selectButton->active = true;
+                deleteButton->active = true;
+                renameButton->active = true;
+                count = 0;
+            }
+        }
+        else
+        {
+            minecraft->setScreen(new CreateWorldScreen(this));
+        }
+    }
 }
 
 SelectWorldScreen::WorldSelectionList::WorldSelectionList(SelectWorldScreen *sws) : ScrolledSelectionList(sws->minecraft, sws->width, sws->height, 32, sws->height - 64, 36)
 {
-	parent = sws;
+    parent = sws;
 }
 
 int SelectWorldScreen::WorldSelectionList::getNumberOfItems()
 {
-	return static_cast<int>(this->parent->levelList->size());
+    return static_cast<int>(this->parent->levelList->size());
 }
 
 void SelectWorldScreen::WorldSelectionList::selectItem(int item, bool doubleClick)
@@ -247,24 +253,24 @@ void SelectWorldScreen::WorldSelectionList::selectItem(int item, bool doubleClic
     parent->renameButton->active = active;
 
     if (doubleClick && active)
-	{
+    {
         parent->worldSelected(item);
     }
 }
 
 bool SelectWorldScreen::WorldSelectionList::isSelectedItem(int item)
 {
-	return item == parent->selectedWorld;
+    return item == parent->selectedWorld;
 }
 
 int SelectWorldScreen::WorldSelectionList::getMaxPosition()
 {
-	return static_cast<int>(parent->levelList->size()) * 36;
+    return static_cast<int>(parent->levelList->size()) * 36;
 }
 
 void SelectWorldScreen::WorldSelectionList::renderBackground()
 {
-	parent->renderBackground();	// 4J - was SelectWorldScreen.this.renderBackground();
+    parent->renderBackground(); // 4J - was SelectWorldScreen.this.renderBackground();
 }
 
 void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y, int h, Tesselator *t)
@@ -272,26 +278,26 @@ void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y, int 
     LevelSummary *levelSummary = parent->levelList->at(i);
 
     wstring name = levelSummary->getLevelName();
-    if (name.length()==0)
-	{
+    if (name.length() == 0)
+    {
         name = parent->worldLang + L" " + std::to_wstring(i + 1);
     }
 
     wstring id = levelSummary->getLevelId();
 
-	ULARGE_INTEGER rawtime;
-	rawtime.QuadPart = levelSummary->getLastPlayed() * 10000; // Convert it from milliseconds back to FileTime
+    ULARGE_INTEGER rawtime;
+    rawtime.QuadPart = levelSummary->getLastPlayed() * 10000; // Convert it from milliseconds back to FileTime
 
-	FILETIME timeasfiletime;
-	timeasfiletime.dwHighDateTime = rawtime.HighPart;
-	timeasfiletime.dwLowDateTime = rawtime.LowPart;
+    FILETIME timeasfiletime;
+    timeasfiletime.dwHighDateTime = rawtime.HighPart;
+    timeasfiletime.dwLowDateTime = rawtime.LowPart;
 
-	SYSTEMTIME time;
-	FileTimeToSystemTime( &timeasfiletime, &time );
+    SYSTEMTIME time;
+    FileTimeToSystemTime(&timeasfiletime, &time);
 
-	wchar_t buffer[20];
-	// 4J Stu - Currently shows years as 4 digits, where java only showed 2
-	swprintf(buffer,20,L"%d/%d/%d %d:%02d",time.wDay, time.wMonth, time.wYear, time.wHour, time.wMinute); // 4J - TODO Localise this
+    wchar_t buffer[20];
+    // 4J Stu - Currently shows years as 4 digits, where java only showed 2
+    swprintf(buffer, 20, L"%d/%d/%d %d:%02d", time.wDay, time.wMonth, time.wYear, time.wHour, time.wMinute); // 4J - TODO Localise this
     id = id + L" (" + buffer;
 
     int64_t size = levelSummary->getSizeOnDisk();
@@ -299,12 +305,11 @@ void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y, int 
     wstring info;
 
     if (levelSummary->isRequiresConversion())
-	{
+    {
         info = parent->conversionLang + L" " + info;
     }
 
     parent->drawString(parent->font, name, x + 2, y + 1, 0xffffff);
     parent->drawString(parent->font, id, x + 2, y + 12, 0x808080);
     parent->drawString(parent->font, info, x + 2, y + 12 + 10, 0x808080);
-
 }

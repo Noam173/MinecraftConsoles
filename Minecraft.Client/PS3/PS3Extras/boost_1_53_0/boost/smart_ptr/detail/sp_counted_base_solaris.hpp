@@ -20,8 +20,8 @@
 //  formulation
 //
 
-#include <boost/detail/sp_typeinfo.hpp>
 #include <atomic.h>
+#include <boost/detail/sp_typeinfo.hpp>
 
 namespace boost
 {
@@ -31,17 +31,15 @@ namespace detail
 
 class sp_counted_base
 {
-private:
+  private:
+    sp_counted_base(sp_counted_base const &);
+    sp_counted_base &operator=(sp_counted_base const &);
 
-    sp_counted_base( sp_counted_base const & );
-    sp_counted_base & operator= ( sp_counted_base const & );
+    uint32_t use_count_;  // #shared
+    uint32_t weak_count_; // #weak + (#shared != 0)
 
-    uint32_t use_count_;        // #shared
-    uint32_t weak_count_;       // #weak + (#shared != 0)
-
-public:
-
-    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
+  public:
+    sp_counted_base() : use_count_(1), weak_count_(1)
     {
     }
 
@@ -61,27 +59,33 @@ public:
         delete this;
     }
 
-    virtual void * get_deleter( sp_typeinfo const & ti ) = 0;
-    virtual void * get_untyped_deleter() = 0;
+    virtual void *get_deleter(sp_typeinfo const &ti) = 0;
+    virtual void *get_untyped_deleter() = 0;
 
     void add_ref_copy()
     {
-        atomic_inc_32( &use_count_ );
+        atomic_inc_32(&use_count_);
     }
 
     bool add_ref_lock() // true on success
     {
-        for( ;; )
+        for (;;)
         {
-            uint32_t tmp = static_cast< uint32_t const volatile& >( use_count_ );
-            if( tmp == 0 ) return false;
-            if( atomic_cas_32( &use_count_, tmp, tmp + 1 ) == tmp ) return true;
+            uint32_t tmp = static_cast<uint32_t const volatile &>(use_count_);
+            if (tmp == 0)
+            {
+                return false;
+            }
+            if (atomic_cas_32(&use_count_, tmp, tmp + 1) == tmp)
+            {
+                return true;
+            }
         }
     }
 
     void release() // nothrow
     {
-        if( atomic_dec_32_nv( &use_count_ ) == 0 )
+        if (atomic_dec_32_nv(&use_count_) == 0)
         {
             dispose();
             weak_release();
@@ -90,12 +94,12 @@ public:
 
     void weak_add_ref() // nothrow
     {
-        atomic_inc_32( &weak_count_ );
+        atomic_inc_32(&weak_count_);
     }
 
     void weak_release() // nothrow
     {
-        if( atomic_dec_32_nv( &weak_count_ ) == 0 )
+        if (atomic_dec_32_nv(&weak_count_) == 0)
         {
             destroy();
         }
@@ -103,7 +107,7 @@ public:
 
     long use_count() const // nothrow
     {
-        return static_cast<long const volatile &>( use_count_ );
+        return static_cast<long const volatile &>(use_count_);
     }
 };
 
@@ -111,4 +115,4 @@ public:
 
 } // namespace boost
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_SOLARIS_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_SOLARIS_HPP_INCLUDED

@@ -5,7 +5,6 @@
 //  Distributed under the Boost Software License, Version 1.0.
 //  See http://www.boost.org/LICENSE_1_0.txt
 
-
 #ifndef BOOST_DETAIL_WIN_DIRECTORY_MANAGEMENT_HPP
 #define BOOST_DETAIL_WIN_DIRECTORY_MANAGEMENT_HPP
 
@@ -18,26 +17,26 @@ namespace detail
 {
 namespace win32
 {
-#if defined( BOOST_USE_WINDOWS_H )
-    using ::CreateDirectory;
-    using ::CreateDirectoryA;
-    using ::GetTempPathA;
-    using ::RemoveDirectoryA;
+#if defined(BOOST_USE_WINDOWS_H)
+using ::CreateDirectory;
+using ::CreateDirectoryA;
+using ::GetTempPathA;
+using ::RemoveDirectoryA;
 #else
-extern "C" { 
-    __declspec(dllimport) int __stdcall 
-        CreateDirectory(LPCTSTR_, LPSECURITY_ATTRIBUTES_*);
-    __declspec(dllimport) int __stdcall 
-        CreateDirectoryA(LPCTSTR_, interprocess_security_attributes*);
-    __declspec(dllimport) int __stdcall 
-        GetTempPathA(unsigned long length, char *buffer);
-    __declspec(dllimport) int __stdcall 
-        RemoveDirectoryA(LPCTSTR_);
-    
-}    
+extern "C"
+{
+    __declspec(dllimport) int __stdcall
+    CreateDirectory(LPCTSTR_, LPSECURITY_ATTRIBUTES_ *);
+    __declspec(dllimport) int __stdcall
+    CreateDirectoryA(LPCTSTR_, interprocess_security_attributes *);
+    __declspec(dllimport) int __stdcall
+    GetTempPathA(unsigned long length, char *buffer);
+    __declspec(dllimport) int __stdcall
+    RemoveDirectoryA(LPCTSTR_);
+}
 #endif
-}
-}
-}
+} // namespace win32
+} // namespace detail
+} // namespace boost
 
 #endif // BOOST_DETAIL_WIN_THREAD_HPP

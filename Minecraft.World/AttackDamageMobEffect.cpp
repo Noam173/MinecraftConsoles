@@ -8,12 +8,12 @@ AttackDamageMobEffect::AttackDamageMobEffect(int id, bool isHarmful, eMinecraftC
 
 double AttackDamageMobEffect::getAttributeModifierValue(int amplifier, AttributeModifier *original)
 {
-	if (id == MobEffect::weakness->id)
-	{
-		return -0.5f * (amplifier + 1);
-	}
-	else
-	{
-		return 1.3 * (amplifier + 1);
-	}
+    if (id == MobEffect::weakness->id)
+    {
+        return -0.5f * (amplifier + 1);
+    }
+    else
+    {
+        return 1.3 * (amplifier + 1);
+    }
 }

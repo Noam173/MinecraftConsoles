@@ -16,15 +16,16 @@
 // should be the last #include
 #include "boost/type_traits/detail/bool_trait_def.hpp"
 
-#define BOOST_VARIANT_TT_AUX_BOOL_TRAIT_DEF1(trait,T,C) \
-template< typename T > struct trait \
-    BOOST_TT_AUX_BOOL_C_BASE(C) \
-{ \
-    BOOST_TT_AUX_BOOL_TRAIT_VALUE_DECL(C) \
-    BOOST_MPL_AUX_LAMBDA_SUPPORT(1,trait,(T)) \
-}; \
-/**/
+#define BOOST_VARIANT_TT_AUX_BOOL_TRAIT_DEF1(trait, T, C) \
+    template <typename T>                                 \
+    struct trait                                          \
+    BOOST_TT_AUX_BOOL_C_BASE(C)                           \
+    {                                                     \
+        BOOST_TT_AUX_BOOL_TRAIT_VALUE_DECL(C)             \
+        BOOST_MPL_AUX_LAMBDA_SUPPORT(1, trait, (T))       \
+    };                                                    \
+    /**/
 
 #define BOOST_VARIANT_TT_AUX_TRAIT_SUFFIX(arity, name) \
-BOOST_TT_AUX_TEMPLATE_ARITY_SPEC(arity, name) \
+    BOOST_TT_AUX_TEMPLATE_ARITY_SPEC(arity, name)      \
 /**/

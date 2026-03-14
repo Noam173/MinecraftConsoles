@@ -39,13 +39,16 @@
  * functions.
  */
 
+#include <errno.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
-#include <errno.h>
 
-namespace boost {
-namespace interprocess {
-namespace xsi {
+namespace boost
+{
+namespace interprocess
+{
+namespace xsi
+{
 
 // Create a semaphore with a specified initial value.
 // If the semaphore already exists, we don't initialize it (of course).
@@ -53,21 +56,27 @@ namespace xsi {
 
 inline bool simple_sem_open_or_create(::key_t key, int initval, int &semid, int perm)
 {
-   int id, semval;
-   semid = -1;
+    int id, semval;
+    semid = -1;
 
-   if (key == IPC_PRIVATE)
-      return false; //not intended for private semaphores
+    if (key == IPC_PRIVATE)
+    {
+        return false; // not intended for private semaphores
+    }
 
-   else if (key == (::key_t) -1)
-      return false; //probably an ftok() error by caller
+    else if (key == (::key_t)-1)
+    {
+        return false; // probably an ftok() error by caller
+    }
 
-   again:
-   if ((id = ::semget(key, 1, (perm & 0x01FF) | IPC_CREAT)) < 0)
-      return false;   //permission problem or tables full
+again:
+    if ((id = ::semget(key, 1, (perm & 0x01FF) | IPC_CREAT)) < 0)
+    {
+        return false; // permission problem or tables full
+    }
 
-   semid = id;
-   return true;
+    semid = id;
+    return true;
 }
 
 /****************************************************************************
@@ -80,11 +89,12 @@ inline bool simple_sem_open_or_create(::key_t key, int initval, int &semid, int 
 
 inline bool simple_sem_rm(int id)
 {
-   if (::semctl(id, 0, IPC_RMID, 0) < 0)
-      return false;
-   return true;
+    if (::semctl(id, 0, IPC_RMID, 0) < 0)
+    {
+        return false;
+    }
+    return true;
 }
-
 
 /****************************************************************************
  * General semaphore operation.  Increment or decrement by a user-specified
@@ -93,24 +103,29 @@ inline bool simple_sem_rm(int id)
 
 inline bool simple_sem_op(int id, int value, bool undo = true)
 {
-   ::sembuf op_op[1] = {
-      0, 99, 0 // decrement or increment [0] with undo on exit
-               // the 99 is set to the actual amount to add
-               // or subtract (positive or negative)
-   };
-   if(undo){
-      op_op[0].sem_flg = SEM_UNDO;
-   }
-   if ((op_op[0].sem_op = value) == 0)
-      return false;
+    ::sembuf op_op[1] = {
+        0, 99, 0 // decrement or increment [0] with undo on exit
+                 // the 99 is set to the actual amount to add
+                 // or subtract (positive or negative)
+    };
+    if (undo)
+    {
+        op_op[0].sem_flg = SEM_UNDO;
+    }
+    if ((op_op[0].sem_op = value) == 0)
+    {
+        return false;
+    }
 
-   if (::semop(id, &op_op[0], 1) < 0)
-      return false;
-   return true;
+    if (::semop(id, &op_op[0], 1) < 0)
+    {
+        return false;
+    }
+    return true;
 }
 
-}  //namespace xsi {
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace xsi
+} // namespace interprocess
+} // namespace boost
 
-#endif //BOOST_INTERPROCESS_SYNC_XSI_SIMPLE_XSI_SEMAPHORE_HPP
+#endif // BOOST_INTERPROCESS_SYNC_XSI_SIMPLE_XSI_SEMAPHORE_HPP

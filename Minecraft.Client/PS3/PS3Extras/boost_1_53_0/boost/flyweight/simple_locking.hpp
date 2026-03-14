@@ -9,25 +9,27 @@
 #ifndef BOOST_FLYWEIGHT_SIMPLE_LOCKING_HPP
 #define BOOST_FLYWEIGHT_SIMPLE_LOCKING_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
 #include <boost/flyweight/detail/recursive_lw_mutex.hpp>
-#include <boost/flyweight/simple_locking_fwd.hpp>
 #include <boost/flyweight/locking_tag.hpp>
+#include <boost/flyweight/simple_locking_fwd.hpp>
 
 /* simple locking policy based on native recursive mutexes */
 
-namespace boost{
-
-namespace flyweights{
-
-struct simple_locking:locking_marker
+namespace boost
 {
-  typedef detail::recursive_lightweight_mutex mutex_type;
-  typedef mutex_type::scoped_lock             lock_type;
+
+namespace flyweights
+{
+
+struct simple_locking : locking_marker
+{
+    typedef detail::recursive_lightweight_mutex mutex_type;
+    typedef mutex_type::scoped_lock lock_type;
 };
 
 } /* namespace flyweights */

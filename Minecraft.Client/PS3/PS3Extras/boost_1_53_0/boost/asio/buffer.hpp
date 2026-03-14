@@ -12,56 +12,58 @@
 #define BOOST_ASIO_BUFFER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include <boost/asio/detail/array_fwd.hpp>
 #include <boost/asio/detail/config.hpp>
+#include <boost/detail/workaround.hpp>
 #include <cstddef>
 #include <cstring>
 #include <string>
 #include <vector>
-#include <boost/detail/workaround.hpp>
-#include <boost/asio/detail/array_fwd.hpp>
 
 #if defined(BOOST_MSVC)
-# if defined(_HAS_ITERATOR_DEBUGGING) && (_HAS_ITERATOR_DEBUGGING != 0)
-#  if !defined(BOOST_ASIO_DISABLE_BUFFER_DEBUGGING)
-#   define BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-#  endif // !defined(BOOST_ASIO_DISABLE_BUFFER_DEBUGGING)
-# endif // defined(_HAS_ITERATOR_DEBUGGING)
+#if defined(_HAS_ITERATOR_DEBUGGING) && (_HAS_ITERATOR_DEBUGGING != 0)
+#if !defined(BOOST_ASIO_DISABLE_BUFFER_DEBUGGING)
+#define BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
+#endif // !defined(BOOST_ASIO_DISABLE_BUFFER_DEBUGGING)
+#endif // defined(_HAS_ITERATOR_DEBUGGING)
 #endif // defined(BOOST_MSVC)
 
 #if defined(__GNUC__)
-# if defined(_GLIBCXX_DEBUG)
-#  if !defined(BOOST_ASIO_DISABLE_BUFFER_DEBUGGING)
-#   define BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-#  endif // !defined(BOOST_ASIO_DISABLE_BUFFER_DEBUGGING)
-# endif // defined(_GLIBCXX_DEBUG)
+#if defined(_GLIBCXX_DEBUG)
+#if !defined(BOOST_ASIO_DISABLE_BUFFER_DEBUGGING)
+#define BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
+#endif // !defined(BOOST_ASIO_DISABLE_BUFFER_DEBUGGING)
+#endif // defined(_GLIBCXX_DEBUG)
 #endif // defined(__GNUC__)
 
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-# include <boost/function.hpp>
+#include <boost/function.hpp>
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
 
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582)) \
-  || BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x590))
-# include <boost/type_traits/is_const.hpp>
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582)) || BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x590))
+#include <boost/type_traits/is_const.hpp>
 #endif // BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
        // || BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x590))
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
+namespace boost
+{
+namespace asio
+{
 
 class mutable_buffer;
 class const_buffer;
 
-namespace detail {
-void* buffer_cast_helper(const mutable_buffer&);
-const void* buffer_cast_helper(const const_buffer&);
-std::size_t buffer_size_helper(const mutable_buffer&);
-std::size_t buffer_size_helper(const const_buffer&);
+namespace detail
+{
+void *buffer_cast_helper(const mutable_buffer &);
+const void *buffer_cast_helper(const const_buffer &);
+std::size_t buffer_size_helper(const mutable_buffer &);
+std::size_t buffer_size_helper(const const_buffer &);
 } // namespace detail
 
 /// Holds a buffer that can be modified.
@@ -85,64 +87,67 @@ std::size_t buffer_size_helper(const const_buffer&);
  */
 class mutable_buffer
 {
-public:
-  /// Construct an empty buffer.
-  mutable_buffer()
-    : data_(0),
-      size_(0)
-  {
-  }
+  public:
+    /// Construct an empty buffer.
+    mutable_buffer()
+        : data_(0),
+          size_(0)
+    {
+    }
 
-  /// Construct a buffer to represent a given memory range.
-  mutable_buffer(void* data, std::size_t size)
-    : data_(data),
-      size_(size)
-  {
-  }
+    /// Construct a buffer to represent a given memory range.
+    mutable_buffer(void *data, std::size_t size)
+        : data_(data),
+          size_(size)
+    {
+    }
 
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-  mutable_buffer(void* data, std::size_t size,
-      boost::function<void()> debug_check)
-    : data_(data),
-      size_(size),
-      debug_check_(debug_check)
-  {
-  }
+    mutable_buffer(void *data, std::size_t size,
+                   boost::function<void()> debug_check)
+        : data_(data),
+          size_(size),
+          debug_check_(debug_check)
+    {
+    }
 
-  const boost::function<void()>& get_debug_check() const
-  {
-    return debug_check_;
-  }
+    const boost::function<void()> &get_debug_check() const
+    {
+        return debug_check_;
+    }
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
 
-private:
-  friend void* boost::asio::detail::buffer_cast_helper(
-      const mutable_buffer& b);
-  friend std::size_t boost::asio::detail::buffer_size_helper(
-      const mutable_buffer& b);
+  private:
+    friend void *boost::asio::detail::buffer_cast_helper(
+        const mutable_buffer &b);
+    friend std::size_t boost::asio::detail::buffer_size_helper(
+        const mutable_buffer &b);
 
-  void* data_;
-  std::size_t size_;
+    void *data_;
+    std::size_t size_;
 
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-  boost::function<void()> debug_check_;
+    boost::function<void()> debug_check_;
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
 };
 
-namespace detail {
+namespace detail
+{
 
-inline void* buffer_cast_helper(const mutable_buffer& b)
+inline void *buffer_cast_helper(const mutable_buffer &b)
 {
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-  if (b.size_ && b.debug_check_)
-    b.debug_check_();
+    if (b.size_ && b.debug_check_)
+    {
+        b.debug_check_();
+    }
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-  return b.data_;
+    return b.data_;
 }
 
-inline std::size_t buffer_size_helper(const mutable_buffer& b)
+inline std::size_t buffer_size_helper(const mutable_buffer &b)
 {
-  return b.size_;
+    return b.size_;
 }
 
 } // namespace detail
@@ -150,38 +155,38 @@ inline std::size_t buffer_size_helper(const mutable_buffer& b)
 /// Adapts a single modifiable buffer so that it meets the requirements of the
 /// MutableBufferSequence concept.
 class mutable_buffers_1
-  : public mutable_buffer
+    : public mutable_buffer
 {
-public:
-  /// The type for each element in the list of buffers.
-  typedef mutable_buffer value_type;
+  public:
+    /// The type for each element in the list of buffers.
+    typedef mutable_buffer value_type;
 
-  /// A random-access iterator type that may be used to read elements.
-  typedef const mutable_buffer* const_iterator;
+    /// A random-access iterator type that may be used to read elements.
+    typedef const mutable_buffer *const_iterator;
 
-  /// Construct to represent a given memory range.
-  mutable_buffers_1(void* data, std::size_t size)
-    : mutable_buffer(data, size)
-  {
-  }
+    /// Construct to represent a given memory range.
+    mutable_buffers_1(void *data, std::size_t size)
+        : mutable_buffer(data, size)
+    {
+    }
 
-  /// Construct to represent a single modifiable buffer.
-  explicit mutable_buffers_1(const mutable_buffer& b)
-    : mutable_buffer(b)
-  {
-  }
+    /// Construct to represent a single modifiable buffer.
+    explicit mutable_buffers_1(const mutable_buffer &b)
+        : mutable_buffer(b)
+    {
+    }
 
-  /// Get a random-access iterator to the first element.
-  const_iterator begin() const
-  {
-    return this;
-  }
+    /// Get a random-access iterator to the first element.
+    const_iterator begin() const
+    {
+        return this;
+    }
 
-  /// Get a random-access iterator for one past the last element.
-  const_iterator end() const
-  {
-    return begin() + 1;
-  }
+    /// Get a random-access iterator for one past the last element.
+    const_iterator end() const
+    {
+        return begin() + 1;
+    }
 };
 
 /// Holds a buffer that cannot be modified.
@@ -205,74 +210,78 @@ public:
  */
 class const_buffer
 {
-public:
-  /// Construct an empty buffer.
-  const_buffer()
-    : data_(0),
-      size_(0)
-  {
-  }
+  public:
+    /// Construct an empty buffer.
+    const_buffer()
+        : data_(0),
+          size_(0)
+    {
+    }
 
-  /// Construct a buffer to represent a given memory range.
-  const_buffer(const void* data, std::size_t size)
-    : data_(data),
-      size_(size)
-  {
-  }
+    /// Construct a buffer to represent a given memory range.
+    const_buffer(const void *data, std::size_t size)
+        : data_(data),
+          size_(size)
+    {
+    }
 
-  /// Construct a non-modifiable buffer from a modifiable one.
-  const_buffer(const mutable_buffer& b)
-    : data_(boost::asio::detail::buffer_cast_helper(b)),
-      size_(boost::asio::detail::buffer_size_helper(b))
+    /// Construct a non-modifiable buffer from a modifiable one.
+    const_buffer(const mutable_buffer &b)
+        : data_(boost::asio::detail::buffer_cast_helper(b)),
+          size_(boost::asio::detail::buffer_size_helper(b))
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-      , debug_check_(b.get_debug_check())
+          ,
+          debug_check_(b.get_debug_check())
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-  {
-  }
+    {
+    }
 
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-  const_buffer(const void* data, std::size_t size,
-      boost::function<void()> debug_check)
-    : data_(data),
-      size_(size),
-      debug_check_(debug_check)
-  {
-  }
+    const_buffer(const void *data, std::size_t size,
+                 boost::function<void()> debug_check)
+        : data_(data),
+          size_(size),
+          debug_check_(debug_check)
+    {
+    }
 
-  const boost::function<void()>& get_debug_check() const
-  {
-    return debug_check_;
-  }
+    const boost::function<void()> &get_debug_check() const
+    {
+        return debug_check_;
+    }
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
 
-private:
-  friend const void* boost::asio::detail::buffer_cast_helper(
-      const const_buffer& b);
-  friend std::size_t boost::asio::detail::buffer_size_helper(
-      const const_buffer& b);
+  private:
+    friend const void *boost::asio::detail::buffer_cast_helper(
+        const const_buffer &b);
+    friend std::size_t boost::asio::detail::buffer_size_helper(
+        const const_buffer &b);
 
-  const void* data_;
-  std::size_t size_;
+    const void *data_;
+    std::size_t size_;
 
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-  boost::function<void()> debug_check_;
+    boost::function<void()> debug_check_;
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
 };
 
-namespace detail {
+namespace detail
+{
 
-inline const void* buffer_cast_helper(const const_buffer& b)
+inline const void *buffer_cast_helper(const const_buffer &b)
 {
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-  if (b.size_ && b.debug_check_)
-    b.debug_check_();
+    if (b.size_ && b.debug_check_)
+    {
+        b.debug_check_();
+    }
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-  return b.data_;
+    return b.data_;
 }
 
-inline std::size_t buffer_size_helper(const const_buffer& b)
+inline std::size_t buffer_size_helper(const const_buffer &b)
 {
-  return b.size_;
+    return b.size_;
 }
 
 } // namespace detail
@@ -280,65 +289,65 @@ inline std::size_t buffer_size_helper(const const_buffer& b)
 /// Adapts a single non-modifiable buffer so that it meets the requirements of
 /// the ConstBufferSequence concept.
 class const_buffers_1
-  : public const_buffer
+    : public const_buffer
 {
-public:
-  /// The type for each element in the list of buffers.
-  typedef const_buffer value_type;
+  public:
+    /// The type for each element in the list of buffers.
+    typedef const_buffer value_type;
 
-  /// A random-access iterator type that may be used to read elements.
-  typedef const const_buffer* const_iterator;
+    /// A random-access iterator type that may be used to read elements.
+    typedef const const_buffer *const_iterator;
 
-  /// Construct to represent a given memory range.
-  const_buffers_1(const void* data, std::size_t size)
-    : const_buffer(data, size)
-  {
-  }
+    /// Construct to represent a given memory range.
+    const_buffers_1(const void *data, std::size_t size)
+        : const_buffer(data, size)
+    {
+    }
 
-  /// Construct to represent a single non-modifiable buffer.
-  explicit const_buffers_1(const const_buffer& b)
-    : const_buffer(b)
-  {
-  }
+    /// Construct to represent a single non-modifiable buffer.
+    explicit const_buffers_1(const const_buffer &b)
+        : const_buffer(b)
+    {
+    }
 
-  /// Get a random-access iterator to the first element.
-  const_iterator begin() const
-  {
-    return this;
-  }
+    /// Get a random-access iterator to the first element.
+    const_iterator begin() const
+    {
+        return this;
+    }
 
-  /// Get a random-access iterator for one past the last element.
-  const_iterator end() const
-  {
-    return begin() + 1;
-  }
+    /// Get a random-access iterator for one past the last element.
+    const_iterator end() const
+    {
+        return begin() + 1;
+    }
 };
 
 /// An implementation of both the ConstBufferSequence and MutableBufferSequence
 /// concepts to represent a null buffer sequence.
 class null_buffers
 {
-public:
-  /// The type for each element in the list of buffers.
-  typedef mutable_buffer value_type;
+  public:
+    /// The type for each element in the list of buffers.
+    typedef mutable_buffer value_type;
 
-  /// A random-access iterator type that may be used to read elements.
-  typedef const mutable_buffer* const_iterator;
+    /// A random-access iterator type that may be used to read elements.
+    typedef const mutable_buffer *const_iterator;
 
-  /// Get a random-access iterator to the first element.
-  const_iterator begin() const
-  {
-    return &buf_;
-  }
+    /// Get a random-access iterator to the first element.
+    const_iterator begin() const
+    {
+        return &buf_;
+    }
 
-  /// Get a random-access iterator for one past the last element.
-  const_iterator end() const
-  {
-    return &buf_;
-  }
+    /// Get a random-access iterator for one past the last element.
+    const_iterator end() const
+    {
+        return &buf_;
+    }
 
-private:
-  mutable_buffer buf_;
+  private:
+    mutable_buffer buf_;
 };
 
 /** @defgroup buffer_size boost::asio::buffer_size
@@ -349,45 +358,47 @@ private:
 /*@{*/
 
 /// Get the number of bytes in a modifiable buffer.
-inline std::size_t buffer_size(const mutable_buffer& b)
+inline std::size_t buffer_size(const mutable_buffer &b)
 {
-  return detail::buffer_size_helper(b);
+    return detail::buffer_size_helper(b);
 }
 
 /// Get the number of bytes in a modifiable buffer.
-inline std::size_t buffer_size(const mutable_buffers_1& b)
+inline std::size_t buffer_size(const mutable_buffers_1 &b)
 {
-  return detail::buffer_size_helper(b);
+    return detail::buffer_size_helper(b);
 }
 
 /// Get the number of bytes in a non-modifiable buffer.
-inline std::size_t buffer_size(const const_buffer& b)
+inline std::size_t buffer_size(const const_buffer &b)
 {
-  return detail::buffer_size_helper(b);
+    return detail::buffer_size_helper(b);
 }
 
 /// Get the number of bytes in a non-modifiable buffer.
-inline std::size_t buffer_size(const const_buffers_1& b)
+inline std::size_t buffer_size(const const_buffers_1 &b)
 {
-  return detail::buffer_size_helper(b);
+    return detail::buffer_size_helper(b);
 }
 
 /// Get the total number of bytes in a buffer sequence.
-/** 
+/**
  * The @c BufferSequence template parameter may meet either of the @c
  * ConstBufferSequence or @c MutableBufferSequence type requirements.
  */
 template <typename BufferSequence>
-inline std::size_t buffer_size(const BufferSequence& b)
+inline std::size_t buffer_size(const BufferSequence &b)
 {
-  std::size_t total_buffer_size = 0;
+    std::size_t total_buffer_size = 0;
 
-  typename BufferSequence::const_iterator iter = b.begin();
-  typename BufferSequence::const_iterator end = b.end();
-  for (; iter != end; ++iter)
-    total_buffer_size += detail::buffer_size_helper(*iter);
+    typename BufferSequence::const_iterator iter = b.begin();
+    typename BufferSequence::const_iterator end = b.end();
+    for (; iter != end; ++iter)
+    {
+        total_buffer_size += detail::buffer_size_helper(*iter);
+    }
 
-  return total_buffer_size;
+    return total_buffer_size;
 }
 
 /*@}*/
@@ -416,16 +427,16 @@ inline std::size_t buffer_size(const BufferSequence& b)
 
 /// Cast a non-modifiable buffer to a specified pointer to POD type.
 template <typename PointerToPodType>
-inline PointerToPodType buffer_cast(const mutable_buffer& b)
+inline PointerToPodType buffer_cast(const mutable_buffer &b)
 {
-  return static_cast<PointerToPodType>(detail::buffer_cast_helper(b));
+    return static_cast<PointerToPodType>(detail::buffer_cast_helper(b));
 }
 
 /// Cast a non-modifiable buffer to a specified pointer to POD type.
 template <typename PointerToPodType>
-inline PointerToPodType buffer_cast(const const_buffer& b)
+inline PointerToPodType buffer_cast(const const_buffer &b)
 {
-  return static_cast<PointerToPodType>(detail::buffer_cast_helper(b));
+    return static_cast<PointerToPodType>(detail::buffer_cast_helper(b));
 }
 
 /*@}*/
@@ -434,99 +445,112 @@ inline PointerToPodType buffer_cast(const const_buffer& b)
 /**
  * @relates mutable_buffer
  */
-inline mutable_buffer operator+(const mutable_buffer& b, std::size_t start)
+inline mutable_buffer operator+(const mutable_buffer &b, std::size_t start)
 {
-  if (start > buffer_size(b))
-    return mutable_buffer();
-  char* new_data = buffer_cast<char*>(b) + start;
-  std::size_t new_size = buffer_size(b) - start;
-  return mutable_buffer(new_data, new_size
+    if (start > buffer_size(b))
+    {
+        return mutable_buffer();
+    }
+    char *new_data = buffer_cast<char *>(b) + start;
+    std::size_t new_size = buffer_size(b) - start;
+    return mutable_buffer(new_data, new_size
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-      , b.get_debug_check()
+                          ,
+                          b.get_debug_check()
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-      );
+    );
 }
 
 /// Create a new modifiable buffer that is offset from the start of another.
 /**
  * @relates mutable_buffer
  */
-inline mutable_buffer operator+(std::size_t start, const mutable_buffer& b)
+inline mutable_buffer operator+(std::size_t start, const mutable_buffer &b)
 {
-  if (start > buffer_size(b))
-    return mutable_buffer();
-  char* new_data = buffer_cast<char*>(b) + start;
-  std::size_t new_size = buffer_size(b) - start;
-  return mutable_buffer(new_data, new_size
+    if (start > buffer_size(b))
+    {
+        return mutable_buffer();
+    }
+    char *new_data = buffer_cast<char *>(b) + start;
+    std::size_t new_size = buffer_size(b) - start;
+    return mutable_buffer(new_data, new_size
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-      , b.get_debug_check()
+                          ,
+                          b.get_debug_check()
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-      );
+    );
 }
 
 /// Create a new non-modifiable buffer that is offset from the start of another.
 /**
  * @relates const_buffer
  */
-inline const_buffer operator+(const const_buffer& b, std::size_t start)
+inline const_buffer operator+(const const_buffer &b, std::size_t start)
 {
-  if (start > buffer_size(b))
-    return const_buffer();
-  const char* new_data = buffer_cast<const char*>(b) + start;
-  std::size_t new_size = buffer_size(b) - start;
-  return const_buffer(new_data, new_size
+    if (start > buffer_size(b))
+    {
+        return const_buffer();
+    }
+    const char *new_data = buffer_cast<const char *>(b) + start;
+    std::size_t new_size = buffer_size(b) - start;
+    return const_buffer(new_data, new_size
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-      , b.get_debug_check()
+                        ,
+                        b.get_debug_check()
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-      );
+    );
 }
 
 /// Create a new non-modifiable buffer that is offset from the start of another.
 /**
  * @relates const_buffer
  */
-inline const_buffer operator+(std::size_t start, const const_buffer& b)
+inline const_buffer operator+(std::size_t start, const const_buffer &b)
 {
-  if (start > buffer_size(b))
-    return const_buffer();
-  const char* new_data = buffer_cast<const char*>(b) + start;
-  std::size_t new_size = buffer_size(b) - start;
-  return const_buffer(new_data, new_size
+    if (start > buffer_size(b))
+    {
+        return const_buffer();
+    }
+    const char *new_data = buffer_cast<const char *>(b) + start;
+    std::size_t new_size = buffer_size(b) - start;
+    return const_buffer(new_data, new_size
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-      , b.get_debug_check()
+                        ,
+                        b.get_debug_check()
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-      );
+    );
 }
 
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-namespace detail {
+namespace detail
+{
 
 template <typename Iterator>
 class buffer_debug_check
 {
-public:
-  buffer_debug_check(Iterator iter)
-    : iter_(iter)
-  {
-  }
+  public:
+    buffer_debug_check(Iterator iter)
+        : iter_(iter)
+    {
+    }
 
-  ~buffer_debug_check()
-  {
+    ~buffer_debug_check()
+    {
 #if BOOST_WORKAROUND(BOOST_MSVC, == 1400)
-    // MSVC 8's string iterator checking may crash in a std::string::iterator
-    // object's destructor when the iterator points to an already-destroyed
-    // std::string object, unless the iterator is cleared first.
-    iter_ = Iterator();
+        // MSVC 8's string iterator checking may crash in a std::string::iterator
+        // object's destructor when the iterator points to an already-destroyed
+        // std::string object, unless the iterator is cleared first.
+        iter_ = Iterator();
 #endif // BOOST_WORKAROUND(BOOST_MSVC, == 1400)
-  }
+    }
 
-  void operator()()
-  {
-    *iter_;
-  }
+    void operator()()
+    {
+        *iter_;
+    }
 
-private:
-  Iterator iter_;
+  private:
+    Iterator iter_;
 };
 
 } // namespace detail
@@ -695,9 +719,9 @@ private:
 /**
  * @returns <tt>mutable_buffers_1(b)</tt>.
  */
-inline mutable_buffers_1 buffer(const mutable_buffer& b)
+inline mutable_buffers_1 buffer(const mutable_buffer &b)
 {
-  return mutable_buffers_1(b);
+    return mutable_buffers_1(b);
 }
 
 /// Create a new modifiable buffer from an existing buffer.
@@ -707,26 +731,28 @@ inline mutable_buffers_1 buffer(const mutable_buffer& b)
  *     buffer_cast<void*>(b),
  *     min(buffer_size(b), max_size_in_bytes)); @endcode
  */
-inline mutable_buffers_1 buffer(const mutable_buffer& b,
-    std::size_t max_size_in_bytes)
+inline mutable_buffers_1 buffer(const mutable_buffer &b,
+                                std::size_t max_size_in_bytes)
 {
-  return mutable_buffers_1(
-      mutable_buffer(buffer_cast<void*>(b),
-        buffer_size(b) < max_size_in_bytes
-        ? buffer_size(b) : max_size_in_bytes
+    return mutable_buffers_1(
+        mutable_buffer(buffer_cast<void *>(b),
+                       buffer_size(b) < max_size_in_bytes
+                           ? buffer_size(b)
+                           : max_size_in_bytes
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-        , b.get_debug_check()
+                       ,
+                       b.get_debug_check()
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-        ));
+                           ));
 }
 
 /// Create a new non-modifiable buffer from an existing buffer.
 /**
  * @returns <tt>const_buffers_1(b)</tt>.
  */
-inline const_buffers_1 buffer(const const_buffer& b)
+inline const_buffers_1 buffer(const const_buffer &b)
 {
-  return const_buffers_1(b);
+    return const_buffers_1(b);
 }
 
 /// Create a new non-modifiable buffer from an existing buffer.
@@ -736,36 +762,38 @@ inline const_buffers_1 buffer(const const_buffer& b)
  *     buffer_cast<const void*>(b),
  *     min(buffer_size(b), max_size_in_bytes)); @endcode
  */
-inline const_buffers_1 buffer(const const_buffer& b,
-    std::size_t max_size_in_bytes)
+inline const_buffers_1 buffer(const const_buffer &b,
+                              std::size_t max_size_in_bytes)
 {
-  return const_buffers_1(
-      const_buffer(buffer_cast<const void*>(b),
-        buffer_size(b) < max_size_in_bytes
-        ? buffer_size(b) : max_size_in_bytes
+    return const_buffers_1(
+        const_buffer(buffer_cast<const void *>(b),
+                     buffer_size(b) < max_size_in_bytes
+                         ? buffer_size(b)
+                         : max_size_in_bytes
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-        , b.get_debug_check()
+                     ,
+                     b.get_debug_check()
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-        ));
+                         ));
 }
 
 /// Create a new modifiable buffer that represents the given memory range.
 /**
  * @returns <tt>mutable_buffers_1(data, size_in_bytes)</tt>.
  */
-inline mutable_buffers_1 buffer(void* data, std::size_t size_in_bytes)
+inline mutable_buffers_1 buffer(void *data, std::size_t size_in_bytes)
 {
-  return mutable_buffers_1(mutable_buffer(data, size_in_bytes));
+    return mutable_buffers_1(mutable_buffer(data, size_in_bytes));
 }
 
 /// Create a new non-modifiable buffer that represents the given memory range.
 /**
  * @returns <tt>const_buffers_1(data, size_in_bytes)</tt>.
  */
-inline const_buffers_1 buffer(const void* data,
-    std::size_t size_in_bytes)
+inline const_buffers_1 buffer(const void *data,
+                              std::size_t size_in_bytes)
 {
-  return const_buffers_1(const_buffer(data, size_in_bytes));
+    return const_buffers_1(const_buffer(data, size_in_bytes));
 }
 
 /// Create a new modifiable buffer that represents the given POD array.
@@ -778,9 +806,9 @@ inline const_buffers_1 buffer(const void* data,
 template <typename PodType, std::size_t N>
 inline mutable_buffers_1 buffer(PodType (&data)[N])
 {
-  return mutable_buffers_1(mutable_buffer(data, N * sizeof(PodType)));
+    return mutable_buffers_1(mutable_buffer(data, N * sizeof(PodType)));
 }
- 
+
 /// Create a new modifiable buffer that represents the given POD array.
 /**
  * @returns A mutable_buffers_1 value equivalent to:
@@ -790,14 +818,15 @@ inline mutable_buffers_1 buffer(PodType (&data)[N])
  */
 template <typename PodType, std::size_t N>
 inline mutable_buffers_1 buffer(PodType (&data)[N],
-    std::size_t max_size_in_bytes)
+                                std::size_t max_size_in_bytes)
 {
-  return mutable_buffers_1(
-      mutable_buffer(data,
-        N * sizeof(PodType) < max_size_in_bytes
-        ? N * sizeof(PodType) : max_size_in_bytes));
+    return mutable_buffers_1(
+        mutable_buffer(data,
+                       N * sizeof(PodType) < max_size_in_bytes
+                           ? N * sizeof(PodType)
+                           : max_size_in_bytes));
 }
- 
+
 /// Create a new non-modifiable buffer that represents the given POD array.
 /**
  * @returns A const_buffers_1 value equivalent to:
@@ -808,7 +837,7 @@ inline mutable_buffers_1 buffer(PodType (&data)[N],
 template <typename PodType, std::size_t N>
 inline const_buffers_1 buffer(const PodType (&data)[N])
 {
-  return const_buffers_1(const_buffer(data, N * sizeof(PodType)));
+    return const_buffers_1(const_buffer(data, N * sizeof(PodType)));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD array.
@@ -820,16 +849,16 @@ inline const_buffers_1 buffer(const PodType (&data)[N])
  */
 template <typename PodType, std::size_t N>
 inline const_buffers_1 buffer(const PodType (&data)[N],
-    std::size_t max_size_in_bytes)
+                              std::size_t max_size_in_bytes)
 {
-  return const_buffers_1(
-      const_buffer(data,
-        N * sizeof(PodType) < max_size_in_bytes
-        ? N * sizeof(PodType) : max_size_in_bytes));
+    return const_buffers_1(
+        const_buffer(data,
+                     N * sizeof(PodType) < max_size_in_bytes
+                         ? N * sizeof(PodType)
+                         : max_size_in_bytes));
 }
 
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582)) \
-  || BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x590))
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582)) || BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x590))
 
 // Borland C++ and Sun Studio think the overloads:
 //
@@ -843,7 +872,8 @@ inline const_buffers_1 buffer(const PodType (&data)[N],
 // class that contains typedefs for the appropriate buffer and container
 // classes, based on whether PodType is const or non-const.
 
-namespace detail {
+namespace detail
+{
 
 template <bool IsConst>
 struct buffer_types_base;
@@ -851,20 +881,20 @@ struct buffer_types_base;
 template <>
 struct buffer_types_base<false>
 {
-  typedef mutable_buffer buffer_type;
-  typedef mutable_buffers_1 container_type;
+    typedef mutable_buffer buffer_type;
+    typedef mutable_buffers_1 container_type;
 };
 
 template <>
 struct buffer_types_base<true>
 {
-  typedef const_buffer buffer_type;
-  typedef const_buffers_1 container_type;
+    typedef const_buffer buffer_type;
+    typedef const_buffers_1 container_type;
 };
 
 template <typename PodType>
 struct buffer_types
-  : public buffer_types_base<boost::is_const<PodType>::value>
+    : public buffer_types_base<boost::is_const<PodType>::value>
 {
 };
 
@@ -872,28 +902,29 @@ struct buffer_types
 
 template <typename PodType, std::size_t N>
 inline typename detail::buffer_types<PodType>::container_type
-buffer(boost::array<PodType, N>& data)
+buffer(boost::array<PodType, N> &data)
 {
-  typedef typename boost::asio::detail::buffer_types<PodType>::buffer_type
-    buffer_type;
-  typedef typename boost::asio::detail::buffer_types<PodType>::container_type
-    container_type;
-  return container_type(
-      buffer_type(data.c_array(), data.size() * sizeof(PodType)));
+    typedef typename boost::asio::detail::buffer_types<PodType>::buffer_type
+        buffer_type;
+    typedef typename boost::asio::detail::buffer_types<PodType>::container_type
+        container_type;
+    return container_type(
+        buffer_type(data.c_array(), data.size() * sizeof(PodType)));
 }
 
 template <typename PodType, std::size_t N>
 inline typename detail::buffer_types<PodType>::container_type
-buffer(boost::array<PodType, N>& data, std::size_t max_size_in_bytes)
+buffer(boost::array<PodType, N> &data, std::size_t max_size_in_bytes)
 {
-  typedef typename boost::asio::detail::buffer_types<PodType>::buffer_type
-    buffer_type;
-  typedef typename boost::asio::detail::buffer_types<PodType>::container_type
-    container_type;
-  return container_type(
-      buffer_type(data.c_array(),
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes));
+    typedef typename boost::asio::detail::buffer_types<PodType>::buffer_type
+        buffer_type;
+    typedef typename boost::asio::detail::buffer_types<PodType>::container_type
+        container_type;
+    return container_type(
+        buffer_type(data.c_array(),
+                    data.size() * sizeof(PodType) < max_size_in_bytes
+                        ? data.size() * sizeof(PodType)
+                        : max_size_in_bytes));
 }
 
 #else // BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
@@ -907,10 +938,10 @@ buffer(boost::array<PodType, N>& data, std::size_t max_size_in_bytes)
  *     data.size() * sizeof(PodType)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline mutable_buffers_1 buffer(boost::array<PodType, N>& data)
+inline mutable_buffers_1 buffer(boost::array<PodType, N> &data)
 {
-  return mutable_buffers_1(
-      mutable_buffer(data.c_array(), data.size() * sizeof(PodType)));
+    return mutable_buffers_1(
+        mutable_buffer(data.c_array(), data.size() * sizeof(PodType)));
 }
 
 /// Create a new modifiable buffer that represents the given POD array.
@@ -921,13 +952,14 @@ inline mutable_buffers_1 buffer(boost::array<PodType, N>& data)
  *     min(data.size() * sizeof(PodType), max_size_in_bytes)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline mutable_buffers_1 buffer(boost::array<PodType, N>& data,
-    std::size_t max_size_in_bytes)
+inline mutable_buffers_1 buffer(boost::array<PodType, N> &data,
+                                std::size_t max_size_in_bytes)
 {
-  return mutable_buffers_1(
-      mutable_buffer(data.c_array(),
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes));
+    return mutable_buffers_1(
+        mutable_buffer(data.c_array(),
+                       data.size() * sizeof(PodType) < max_size_in_bytes
+                           ? data.size() * sizeof(PodType)
+                           : max_size_in_bytes));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD array.
@@ -938,10 +970,10 @@ inline mutable_buffers_1 buffer(boost::array<PodType, N>& data,
  *     data.size() * sizeof(PodType)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline const_buffers_1 buffer(boost::array<const PodType, N>& data)
+inline const_buffers_1 buffer(boost::array<const PodType, N> &data)
 {
-  return const_buffers_1(
-      const_buffer(data.data(), data.size() * sizeof(PodType)));
+    return const_buffers_1(
+        const_buffer(data.data(), data.size() * sizeof(PodType)));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD array.
@@ -952,13 +984,14 @@ inline const_buffers_1 buffer(boost::array<const PodType, N>& data)
  *     min(data.size() * sizeof(PodType), max_size_in_bytes)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline const_buffers_1 buffer(boost::array<const PodType, N>& data,
-    std::size_t max_size_in_bytes)
+inline const_buffers_1 buffer(boost::array<const PodType, N> &data,
+                              std::size_t max_size_in_bytes)
 {
-  return const_buffers_1(
-      const_buffer(data.data(),
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes));
+    return const_buffers_1(
+        const_buffer(data.data(),
+                     data.size() * sizeof(PodType) < max_size_in_bytes
+                         ? data.size() * sizeof(PodType)
+                         : max_size_in_bytes));
 }
 
 #endif // BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
@@ -972,10 +1005,10 @@ inline const_buffers_1 buffer(boost::array<const PodType, N>& data,
  *     data.size() * sizeof(PodType)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline const_buffers_1 buffer(const boost::array<PodType, N>& data)
+inline const_buffers_1 buffer(const boost::array<PodType, N> &data)
 {
-  return const_buffers_1(
-      const_buffer(data.data(), data.size() * sizeof(PodType)));
+    return const_buffers_1(
+        const_buffer(data.data(), data.size() * sizeof(PodType)));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD array.
@@ -986,13 +1019,14 @@ inline const_buffers_1 buffer(const boost::array<PodType, N>& data)
  *     min(data.size() * sizeof(PodType), max_size_in_bytes)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline const_buffers_1 buffer(const boost::array<PodType, N>& data,
-    std::size_t max_size_in_bytes)
+inline const_buffers_1 buffer(const boost::array<PodType, N> &data,
+                              std::size_t max_size_in_bytes)
 {
-  return const_buffers_1(
-      const_buffer(data.data(),
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes));
+    return const_buffers_1(
+        const_buffer(data.data(),
+                     data.size() * sizeof(PodType) < max_size_in_bytes
+                         ? data.size() * sizeof(PodType)
+                         : max_size_in_bytes));
 }
 
 #if defined(BOOST_ASIO_HAS_STD_ARRAY) || defined(GENERATING_DOCUMENTATION)
@@ -1005,10 +1039,10 @@ inline const_buffers_1 buffer(const boost::array<PodType, N>& data,
  *     data.size() * sizeof(PodType)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline mutable_buffers_1 buffer(std::array<PodType, N>& data)
+inline mutable_buffers_1 buffer(std::array<PodType, N> &data)
 {
-  return mutable_buffers_1(
-      mutable_buffer(data.data(), data.size() * sizeof(PodType)));
+    return mutable_buffers_1(
+        mutable_buffer(data.data(), data.size() * sizeof(PodType)));
 }
 
 /// Create a new modifiable buffer that represents the given POD array.
@@ -1019,13 +1053,14 @@ inline mutable_buffers_1 buffer(std::array<PodType, N>& data)
  *     min(data.size() * sizeof(PodType), max_size_in_bytes)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline mutable_buffers_1 buffer(std::array<PodType, N>& data,
-    std::size_t max_size_in_bytes)
+inline mutable_buffers_1 buffer(std::array<PodType, N> &data,
+                                std::size_t max_size_in_bytes)
 {
-  return mutable_buffers_1(
-      mutable_buffer(data.data(),
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes));
+    return mutable_buffers_1(
+        mutable_buffer(data.data(),
+                       data.size() * sizeof(PodType) < max_size_in_bytes
+                           ? data.size() * sizeof(PodType)
+                           : max_size_in_bytes));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD array.
@@ -1036,10 +1071,10 @@ inline mutable_buffers_1 buffer(std::array<PodType, N>& data,
  *     data.size() * sizeof(PodType)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline const_buffers_1 buffer(std::array<const PodType, N>& data)
+inline const_buffers_1 buffer(std::array<const PodType, N> &data)
 {
-  return const_buffers_1(
-      const_buffer(data.data(), data.size() * sizeof(PodType)));
+    return const_buffers_1(
+        const_buffer(data.data(), data.size() * sizeof(PodType)));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD array.
@@ -1050,13 +1085,14 @@ inline const_buffers_1 buffer(std::array<const PodType, N>& data)
  *     min(data.size() * sizeof(PodType), max_size_in_bytes)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline const_buffers_1 buffer(std::array<const PodType, N>& data,
-    std::size_t max_size_in_bytes)
+inline const_buffers_1 buffer(std::array<const PodType, N> &data,
+                              std::size_t max_size_in_bytes)
 {
-  return const_buffers_1(
-      const_buffer(data.data(),
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes));
+    return const_buffers_1(
+        const_buffer(data.data(),
+                     data.size() * sizeof(PodType) < max_size_in_bytes
+                         ? data.size() * sizeof(PodType)
+                         : max_size_in_bytes));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD array.
@@ -1067,10 +1103,10 @@ inline const_buffers_1 buffer(std::array<const PodType, N>& data,
  *     data.size() * sizeof(PodType)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline const_buffers_1 buffer(const std::array<PodType, N>& data)
+inline const_buffers_1 buffer(const std::array<PodType, N> &data)
 {
-  return const_buffers_1(
-      const_buffer(data.data(), data.size() * sizeof(PodType)));
+    return const_buffers_1(
+        const_buffer(data.data(), data.size() * sizeof(PodType)));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD array.
@@ -1081,13 +1117,14 @@ inline const_buffers_1 buffer(const std::array<PodType, N>& data)
  *     min(data.size() * sizeof(PodType), max_size_in_bytes)); @endcode
  */
 template <typename PodType, std::size_t N>
-inline const_buffers_1 buffer(const std::array<PodType, N>& data,
-    std::size_t max_size_in_bytes)
+inline const_buffers_1 buffer(const std::array<PodType, N> &data,
+                              std::size_t max_size_in_bytes)
 {
-  return const_buffers_1(
-      const_buffer(data.data(),
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes));
+    return const_buffers_1(
+        const_buffer(data.data(),
+                     data.size() * sizeof(PodType) < max_size_in_bytes
+                         ? data.size() * sizeof(PodType)
+                         : max_size_in_bytes));
 }
 
 #endif // defined(BOOST_ASIO_HAS_STD_ARRAY) || defined(GENERATING_DOCUMENTATION)
@@ -1103,16 +1140,16 @@ inline const_buffers_1 buffer(const std::array<PodType, N>& data,
  * invalidate iterators.
  */
 template <typename PodType, typename Allocator>
-inline mutable_buffers_1 buffer(std::vector<PodType, Allocator>& data)
+inline mutable_buffers_1 buffer(std::vector<PodType, Allocator> &data)
 {
-  return mutable_buffers_1(
-      mutable_buffer(data.size() ? &data[0] : 0, data.size() * sizeof(PodType)
+    return mutable_buffers_1(
+        mutable_buffer(data.size() ? &data[0] : 0, data.size() * sizeof(PodType)
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-        , detail::buffer_debug_check<
-            typename std::vector<PodType, Allocator>::iterator
-          >(data.begin())
+                                                       ,
+                       detail::buffer_debug_check<
+                           typename std::vector<PodType, Allocator>::iterator>(data.begin())
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-        ));
+                           ));
 }
 
 /// Create a new modifiable buffer that represents the given POD vector.
@@ -1126,19 +1163,20 @@ inline mutable_buffers_1 buffer(std::vector<PodType, Allocator>& data)
  * invalidate iterators.
  */
 template <typename PodType, typename Allocator>
-inline mutable_buffers_1 buffer(std::vector<PodType, Allocator>& data,
-    std::size_t max_size_in_bytes)
+inline mutable_buffers_1 buffer(std::vector<PodType, Allocator> &data,
+                                std::size_t max_size_in_bytes)
 {
-  return mutable_buffers_1(
-      mutable_buffer(data.size() ? &data[0] : 0,
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes
+    return mutable_buffers_1(
+        mutable_buffer(data.size() ? &data[0] : 0,
+                       data.size() * sizeof(PodType) < max_size_in_bytes
+                           ? data.size() * sizeof(PodType)
+                           : max_size_in_bytes
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-        , detail::buffer_debug_check<
-            typename std::vector<PodType, Allocator>::iterator
-          >(data.begin())
+                       ,
+                       detail::buffer_debug_check<
+                           typename std::vector<PodType, Allocator>::iterator>(data.begin())
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-        ));
+                           ));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD vector.
@@ -1153,16 +1191,16 @@ inline mutable_buffers_1 buffer(std::vector<PodType, Allocator>& data,
  */
 template <typename PodType, typename Allocator>
 inline const_buffers_1 buffer(
-    const std::vector<PodType, Allocator>& data)
+    const std::vector<PodType, Allocator> &data)
 {
-  return const_buffers_1(
-      const_buffer(data.size() ? &data[0] : 0, data.size() * sizeof(PodType)
+    return const_buffers_1(
+        const_buffer(data.size() ? &data[0] : 0, data.size() * sizeof(PodType)
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-        , detail::buffer_debug_check<
-            typename std::vector<PodType, Allocator>::const_iterator
-          >(data.begin())
+                                                     ,
+                     detail::buffer_debug_check<
+                         typename std::vector<PodType, Allocator>::const_iterator>(data.begin())
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-        ));
+                         ));
 }
 
 /// Create a new non-modifiable buffer that represents the given POD vector.
@@ -1177,18 +1215,19 @@ inline const_buffers_1 buffer(
  */
 template <typename PodType, typename Allocator>
 inline const_buffers_1 buffer(
-    const std::vector<PodType, Allocator>& data, std::size_t max_size_in_bytes)
+    const std::vector<PodType, Allocator> &data, std::size_t max_size_in_bytes)
 {
-  return const_buffers_1(
-      const_buffer(data.size() ? &data[0] : 0,
-        data.size() * sizeof(PodType) < max_size_in_bytes
-        ? data.size() * sizeof(PodType) : max_size_in_bytes
+    return const_buffers_1(
+        const_buffer(data.size() ? &data[0] : 0,
+                     data.size() * sizeof(PodType) < max_size_in_bytes
+                         ? data.size() * sizeof(PodType)
+                         : max_size_in_bytes
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-        , detail::buffer_debug_check<
-            typename std::vector<PodType, Allocator>::const_iterator
-          >(data.begin())
+                     ,
+                     detail::buffer_debug_check<
+                         typename std::vector<PodType, Allocator>::const_iterator>(data.begin())
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-        ));
+                         ));
 }
 
 /// Create a new non-modifiable buffer that represents the given string.
@@ -1200,15 +1239,15 @@ inline const_buffers_1 buffer(
  */
 template <typename Elem, typename Traits, typename Allocator>
 inline const_buffers_1 buffer(
-    const std::basic_string<Elem, Traits, Allocator>& data)
+    const std::basic_string<Elem, Traits, Allocator> &data)
 {
-  return const_buffers_1(const_buffer(data.data(), data.size() * sizeof(Elem)
+    return const_buffers_1(const_buffer(data.data(), data.size() * sizeof(Elem)
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-        , detail::buffer_debug_check<
-            typename std::basic_string<Elem, Traits, Allocator>::const_iterator
-          >(data.begin())
+                                                         ,
+                                        detail::buffer_debug_check<
+                                            typename std::basic_string<Elem, Traits, Allocator>::const_iterator>(data.begin())
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-        ));
+                                            ));
 }
 
 /// Create a new non-modifiable buffer that represents the given string.
@@ -1223,19 +1262,20 @@ inline const_buffers_1 buffer(
  */
 template <typename Elem, typename Traits, typename Allocator>
 inline const_buffers_1 buffer(
-    const std::basic_string<Elem, Traits, Allocator>& data,
+    const std::basic_string<Elem, Traits, Allocator> &data,
     std::size_t max_size_in_bytes)
 {
-  return const_buffers_1(
-      const_buffer(data.data(),
-        data.size() * sizeof(Elem) < max_size_in_bytes
-        ? data.size() * sizeof(Elem) : max_size_in_bytes
+    return const_buffers_1(
+        const_buffer(data.data(),
+                     data.size() * sizeof(Elem) < max_size_in_bytes
+                         ? data.size() * sizeof(Elem)
+                         : max_size_in_bytes
 #if defined(BOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
-        , detail::buffer_debug_check<
-            typename std::basic_string<Elem, Traits, Allocator>::const_iterator
-          >(data.begin())
+                     ,
+                     detail::buffer_debug_check<
+                         typename std::basic_string<Elem, Traits, Allocator>::const_iterator>(data.begin())
 #endif // BOOST_ASIO_ENABLE_BUFFER_DEBUGGING
-        ));
+                         ));
 }
 
 /*@}*/
@@ -1281,15 +1321,15 @@ inline const_buffers_1 buffer(
  *
  * @li @c buffer_size(source)
  */
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const const_buffer& source)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const const_buffer &source)
 {
-  using namespace std; // For memcpy.
-  std::size_t target_size = buffer_size(target);
-  std::size_t source_size = buffer_size(source);
-  std::size_t n = target_size < source_size ? target_size : source_size;
-  memcpy(buffer_cast<void*>(target), buffer_cast<const void*>(source), n);
-  return n;
+    using namespace std; // For memcpy.
+    std::size_t target_size = buffer_size(target);
+    std::size_t source_size = buffer_size(source);
+    std::size_t n = target_size < source_size ? target_size : source_size;
+    memcpy(buffer_cast<void *>(target), buffer_cast<const void *>(source), n);
+    return n;
 }
 
 /// Copies bytes from a source buffer to a target buffer.
@@ -1308,10 +1348,10 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  *
  * @li @c buffer_size(source)
  */
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const const_buffers_1& source)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const const_buffers_1 &source)
 {
-  return buffer_copy(target, static_cast<const const_buffer&>(source));
+    return buffer_copy(target, static_cast<const const_buffer &>(source));
 }
 
 /// Copies bytes from a source buffer to a target buffer.
@@ -1331,10 +1371,10 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  *
  * @li @c buffer_size(source)
  */
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const mutable_buffer& source)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const mutable_buffer &source)
 {
-  return buffer_copy(target, const_buffer(source));
+    return buffer_copy(target, const_buffer(source));
 }
 
 /// Copies bytes from a source buffer to a target buffer.
@@ -1354,10 +1394,10 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  *
  * @li @c buffer_size(source)
  */
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const mutable_buffers_1& source)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const mutable_buffers_1 &source)
 {
-  return buffer_copy(target, const_buffer(source));
+    return buffer_copy(target, const_buffer(source));
 }
 
 /// Copies bytes from a source buffer sequence to a target buffer.
@@ -1377,24 +1417,24 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  * @li @c buffer_size(source)
  */
 template <typename ConstBufferSequence>
-std::size_t buffer_copy(const mutable_buffer& target,
-    const ConstBufferSequence& source)
+std::size_t buffer_copy(const mutable_buffer &target,
+                        const ConstBufferSequence &source)
 {
-  std::size_t total_bytes_copied = 0;
+    std::size_t total_bytes_copied = 0;
 
-  typename ConstBufferSequence::const_iterator source_iter = source.begin();
-  typename ConstBufferSequence::const_iterator source_end = source.end();
+    typename ConstBufferSequence::const_iterator source_iter = source.begin();
+    typename ConstBufferSequence::const_iterator source_end = source.end();
 
-  for (mutable_buffer target_buffer(target);
-      buffer_size(target_buffer) && source_iter != source_end; ++source_iter)
-  {
-    const_buffer source_buffer(*source_iter);
-    std::size_t bytes_copied = buffer_copy(target_buffer, source_buffer);
-    total_bytes_copied += bytes_copied;
-    target_buffer = target_buffer + bytes_copied;
-  }
+    for (mutable_buffer target_buffer(target);
+         buffer_size(target_buffer) && source_iter != source_end; ++source_iter)
+    {
+        const_buffer source_buffer(*source_iter);
+        std::size_t bytes_copied = buffer_copy(target_buffer, source_buffer);
+        total_bytes_copied += bytes_copied;
+        target_buffer = target_buffer + bytes_copied;
+    }
 
-  return total_bytes_copied;
+    return total_bytes_copied;
 }
 
 /// Copies bytes from a source buffer to a target buffer.
@@ -1413,10 +1453,10 @@ std::size_t buffer_copy(const mutable_buffer& target,
  *
  * @li @c buffer_size(source)
  */
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const const_buffer& source)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const const_buffer &source)
 {
-  return buffer_copy(static_cast<const mutable_buffer&>(target), source);
+    return buffer_copy(static_cast<const mutable_buffer &>(target), source);
 }
 
 /// Copies bytes from a source buffer to a target buffer.
@@ -1435,11 +1475,11 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  *
  * @li @c buffer_size(source)
  */
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const const_buffers_1& source)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const const_buffers_1 &source)
 {
-  return buffer_copy(static_cast<const mutable_buffer&>(target),
-      static_cast<const const_buffer&>(source));
+    return buffer_copy(static_cast<const mutable_buffer &>(target),
+                       static_cast<const const_buffer &>(source));
 }
 
 /// Copies bytes from a source buffer to a target buffer.
@@ -1459,11 +1499,11 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  *
  * @li @c buffer_size(source)
  */
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const mutable_buffer& source)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const mutable_buffer &source)
 {
-  return buffer_copy(static_cast<const mutable_buffer&>(target),
-      const_buffer(source));
+    return buffer_copy(static_cast<const mutable_buffer &>(target),
+                       const_buffer(source));
 }
 
 /// Copies bytes from a source buffer to a target buffer.
@@ -1483,11 +1523,11 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  *
  * @li @c buffer_size(source)
  */
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const mutable_buffers_1& source)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const mutable_buffers_1 &source)
 {
-  return buffer_copy(static_cast<const mutable_buffer&>(target),
-      const_buffer(source));
+    return buffer_copy(static_cast<const mutable_buffer &>(target),
+                       const_buffer(source));
 }
 
 /// Copies bytes from a source buffer sequence to a target buffer.
@@ -1507,10 +1547,10 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  * @li @c buffer_size(source)
  */
 template <typename ConstBufferSequence>
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const ConstBufferSequence& source)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const ConstBufferSequence &source)
 {
-  return buffer_copy(static_cast<const mutable_buffer&>(target), source);
+    return buffer_copy(static_cast<const mutable_buffer &>(target), source);
 }
 
 /// Copies bytes from a source buffer to a target buffer sequence.
@@ -1530,24 +1570,24 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  * @li @c buffer_size(source)
  */
 template <typename MutableBufferSequence>
-std::size_t buffer_copy(const MutableBufferSequence& target,
-    const const_buffer& source)
+std::size_t buffer_copy(const MutableBufferSequence &target,
+                        const const_buffer &source)
 {
-  std::size_t total_bytes_copied = 0;
+    std::size_t total_bytes_copied = 0;
 
-  typename MutableBufferSequence::const_iterator target_iter = target.begin();
-  typename MutableBufferSequence::const_iterator target_end = target.end();
+    typename MutableBufferSequence::const_iterator target_iter = target.begin();
+    typename MutableBufferSequence::const_iterator target_end = target.end();
 
-  for (const_buffer source_buffer(source);
-      buffer_size(source_buffer) && target_iter != target_end; ++target_iter)
-  {
-    mutable_buffer target_buffer(*target_iter);
-    std::size_t bytes_copied = buffer_copy(target_buffer, source_buffer);
-    total_bytes_copied += bytes_copied;
-    source_buffer = source_buffer + bytes_copied;
-  }
+    for (const_buffer source_buffer(source);
+         buffer_size(source_buffer) && target_iter != target_end; ++target_iter)
+    {
+        mutable_buffer target_buffer(*target_iter);
+        std::size_t bytes_copied = buffer_copy(target_buffer, source_buffer);
+        total_bytes_copied += bytes_copied;
+        source_buffer = source_buffer + bytes_copied;
+    }
 
-  return total_bytes_copied;
+    return total_bytes_copied;
 }
 
 /// Copies bytes from a source buffer to a target buffer sequence.
@@ -1567,10 +1607,10 @@ std::size_t buffer_copy(const MutableBufferSequence& target,
  * @li @c buffer_size(source)
  */
 template <typename MutableBufferSequence>
-inline std::size_t buffer_copy(const MutableBufferSequence& target,
-    const const_buffers_1& source)
+inline std::size_t buffer_copy(const MutableBufferSequence &target,
+                               const const_buffers_1 &source)
 {
-  return buffer_copy(target, static_cast<const const_buffer&>(source));
+    return buffer_copy(target, static_cast<const const_buffer &>(source));
 }
 
 /// Copies bytes from a source buffer to a target buffer sequence.
@@ -1591,10 +1631,10 @@ inline std::size_t buffer_copy(const MutableBufferSequence& target,
  * @li @c buffer_size(source)
  */
 template <typename MutableBufferSequence>
-inline std::size_t buffer_copy(const MutableBufferSequence& target,
-    const mutable_buffer& source)
+inline std::size_t buffer_copy(const MutableBufferSequence &target,
+                               const mutable_buffer &source)
 {
-  return buffer_copy(target, const_buffer(source));
+    return buffer_copy(target, const_buffer(source));
 }
 
 /// Copies bytes from a source buffer to a target buffer sequence.
@@ -1615,10 +1655,10 @@ inline std::size_t buffer_copy(const MutableBufferSequence& target,
  * @li @c buffer_size(source)
  */
 template <typename MutableBufferSequence>
-inline std::size_t buffer_copy(const MutableBufferSequence& target,
-    const mutable_buffers_1& source)
+inline std::size_t buffer_copy(const MutableBufferSequence &target,
+                               const mutable_buffers_1 &source)
 {
-  return buffer_copy(target, const_buffer(source));
+    return buffer_copy(target, const_buffer(source));
 }
 
 /// Copies bytes from a source buffer sequence to a target buffer sequence.
@@ -1638,48 +1678,52 @@ inline std::size_t buffer_copy(const MutableBufferSequence& target,
  * @li @c buffer_size(source)
  */
 template <typename MutableBufferSequence, typename ConstBufferSequence>
-std::size_t buffer_copy(const MutableBufferSequence& target,
-    const ConstBufferSequence& source)
+std::size_t buffer_copy(const MutableBufferSequence &target,
+                        const ConstBufferSequence &source)
 {
-  std::size_t total_bytes_copied = 0;
+    std::size_t total_bytes_copied = 0;
 
-  typename MutableBufferSequence::const_iterator target_iter = target.begin();
-  typename MutableBufferSequence::const_iterator target_end = target.end();
-  std::size_t target_buffer_offset = 0;
+    typename MutableBufferSequence::const_iterator target_iter = target.begin();
+    typename MutableBufferSequence::const_iterator target_end = target.end();
+    std::size_t target_buffer_offset = 0;
 
-  typename ConstBufferSequence::const_iterator source_iter = source.begin();
-  typename ConstBufferSequence::const_iterator source_end = source.end();
-  std::size_t source_buffer_offset = 0;
+    typename ConstBufferSequence::const_iterator source_iter = source.begin();
+    typename ConstBufferSequence::const_iterator source_end = source.end();
+    std::size_t source_buffer_offset = 0;
 
-  while (target_iter != target_end && source_iter != source_end)
-  {
-    mutable_buffer target_buffer =
-      mutable_buffer(*target_iter) + target_buffer_offset;
-
-    const_buffer source_buffer =
-      const_buffer(*source_iter) + source_buffer_offset;
-
-    std::size_t bytes_copied = buffer_copy(target_buffer, source_buffer);
-    total_bytes_copied += bytes_copied;
-
-    if (bytes_copied == buffer_size(target_buffer))
+    while (target_iter != target_end && source_iter != source_end)
     {
-      ++target_iter;
-      target_buffer_offset = 0;
-    }
-    else
-      target_buffer_offset += bytes_copied;
+        mutable_buffer target_buffer =
+            mutable_buffer(*target_iter) + target_buffer_offset;
 
-    if (bytes_copied == buffer_size(source_buffer))
-    {
-      ++source_iter;
-      source_buffer_offset = 0;
-    }
-    else
-      source_buffer_offset += bytes_copied;
-  }
+        const_buffer source_buffer =
+            const_buffer(*source_iter) + source_buffer_offset;
 
-  return total_bytes_copied;
+        std::size_t bytes_copied = buffer_copy(target_buffer, source_buffer);
+        total_bytes_copied += bytes_copied;
+
+        if (bytes_copied == buffer_size(target_buffer))
+        {
+            ++target_iter;
+            target_buffer_offset = 0;
+        }
+        else
+        {
+            target_buffer_offset += bytes_copied;
+        }
+
+        if (bytes_copied == buffer_size(source_buffer))
+        {
+            ++source_iter;
+            source_buffer_offset = 0;
+        }
+        else
+        {
+            source_buffer_offset += bytes_copied;
+        }
+    }
+
+    return total_bytes_copied;
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer.
@@ -1702,10 +1746,10 @@ std::size_t buffer_copy(const MutableBufferSequence& target,
  *
  * @li @c max_bytes_to_copy
  */
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const const_buffer& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const const_buffer &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer.
@@ -1728,10 +1772,10 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  *
  * @li @c max_bytes_to_copy
  */
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const const_buffers_1& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const const_buffers_1 &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer.
@@ -1755,10 +1799,10 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  *
  * @li @c max_bytes_to_copy
  */
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const mutable_buffer& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const mutable_buffer &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer.
@@ -1782,10 +1826,10 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  *
  * @li @c max_bytes_to_copy
  */
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const mutable_buffers_1& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const mutable_buffers_1 &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer sequence to a target
@@ -1810,10 +1854,10 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  * @li @c max_bytes_to_copy
  */
 template <typename ConstBufferSequence>
-inline std::size_t buffer_copy(const mutable_buffer& target,
-    const ConstBufferSequence& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffer &target,
+                               const ConstBufferSequence &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer.
@@ -1836,10 +1880,10 @@ inline std::size_t buffer_copy(const mutable_buffer& target,
  *
  * @li @c max_bytes_to_copy
  */
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const const_buffer& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const const_buffer &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer.
@@ -1862,10 +1906,10 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  *
  * @li @c max_bytes_to_copy
  */
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const const_buffers_1& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const const_buffers_1 &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer.
@@ -1889,10 +1933,10 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  *
  * @li @c max_bytes_to_copy
  */
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const mutable_buffer& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const mutable_buffer &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer.
@@ -1916,10 +1960,10 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  *
  * @li @c max_bytes_to_copy
  */
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const mutable_buffers_1& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const mutable_buffers_1 &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer sequence to a target
@@ -1944,10 +1988,10 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  * @li @c max_bytes_to_copy
  */
 template <typename ConstBufferSequence>
-inline std::size_t buffer_copy(const mutable_buffers_1& target,
-    const ConstBufferSequence& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const mutable_buffers_1 &target,
+                               const ConstBufferSequence &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(buffer(target, max_bytes_to_copy), source);
+    return buffer_copy(buffer(target, max_bytes_to_copy), source);
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer
@@ -1972,10 +2016,10 @@ inline std::size_t buffer_copy(const mutable_buffers_1& target,
  * @li @c max_bytes_to_copy
  */
 template <typename MutableBufferSequence>
-inline std::size_t buffer_copy(const MutableBufferSequence& target,
-    const const_buffer& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const MutableBufferSequence &target,
+                               const const_buffer &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(target, buffer(source, max_bytes_to_copy));
+    return buffer_copy(target, buffer(source, max_bytes_to_copy));
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer
@@ -2000,10 +2044,10 @@ inline std::size_t buffer_copy(const MutableBufferSequence& target,
  * @li @c max_bytes_to_copy
  */
 template <typename MutableBufferSequence>
-inline std::size_t buffer_copy(const MutableBufferSequence& target,
-    const const_buffers_1& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const MutableBufferSequence &target,
+                               const const_buffers_1 &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(target, buffer(source, max_bytes_to_copy));
+    return buffer_copy(target, buffer(source, max_bytes_to_copy));
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer
@@ -2029,10 +2073,10 @@ inline std::size_t buffer_copy(const MutableBufferSequence& target,
  * @li @c max_bytes_to_copy
  */
 template <typename MutableBufferSequence>
-inline std::size_t buffer_copy(const MutableBufferSequence& target,
-    const mutable_buffer& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const MutableBufferSequence &target,
+                               const mutable_buffer &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(target, buffer(source, max_bytes_to_copy));
+    return buffer_copy(target, buffer(source, max_bytes_to_copy));
 }
 
 /// Copies a limited number of bytes from a source buffer to a target buffer
@@ -2058,10 +2102,10 @@ inline std::size_t buffer_copy(const MutableBufferSequence& target,
  * @li @c max_bytes_to_copy
  */
 template <typename MutableBufferSequence>
-inline std::size_t buffer_copy(const MutableBufferSequence& target,
-    const mutable_buffers_1& source, std::size_t max_bytes_to_copy)
+inline std::size_t buffer_copy(const MutableBufferSequence &target,
+                               const mutable_buffers_1 &source, std::size_t max_bytes_to_copy)
 {
-  return buffer_copy(target, buffer(source, max_bytes_to_copy));
+    return buffer_copy(target, buffer(source, max_bytes_to_copy));
 }
 
 /// Copies a limited number of bytes from a source buffer sequence to a target
@@ -2086,50 +2130,53 @@ inline std::size_t buffer_copy(const MutableBufferSequence& target,
  * @li @c max_bytes_to_copy
  */
 template <typename MutableBufferSequence, typename ConstBufferSequence>
-std::size_t buffer_copy(const MutableBufferSequence& target,
-    const ConstBufferSequence& source, std::size_t max_bytes_to_copy)
+std::size_t buffer_copy(const MutableBufferSequence &target,
+                        const ConstBufferSequence &source, std::size_t max_bytes_to_copy)
 {
-  std::size_t total_bytes_copied = 0;
+    std::size_t total_bytes_copied = 0;
 
-  typename MutableBufferSequence::const_iterator target_iter = target.begin();
-  typename MutableBufferSequence::const_iterator target_end = target.end();
-  std::size_t target_buffer_offset = 0;
+    typename MutableBufferSequence::const_iterator target_iter = target.begin();
+    typename MutableBufferSequence::const_iterator target_end = target.end();
+    std::size_t target_buffer_offset = 0;
 
-  typename ConstBufferSequence::const_iterator source_iter = source.begin();
-  typename ConstBufferSequence::const_iterator source_end = source.end();
-  std::size_t source_buffer_offset = 0;
+    typename ConstBufferSequence::const_iterator source_iter = source.begin();
+    typename ConstBufferSequence::const_iterator source_end = source.end();
+    std::size_t source_buffer_offset = 0;
 
-  while (total_bytes_copied != max_bytes_to_copy
-      && target_iter != target_end && source_iter != source_end)
-  {
-    mutable_buffer target_buffer =
-      mutable_buffer(*target_iter) + target_buffer_offset;
-
-    const_buffer source_buffer =
-      const_buffer(*source_iter) + source_buffer_offset;
-
-    std::size_t bytes_copied = buffer_copy(target_buffer,
-        source_buffer, max_bytes_to_copy - total_bytes_copied);
-    total_bytes_copied += bytes_copied;
-
-    if (bytes_copied == buffer_size(target_buffer))
+    while (total_bytes_copied != max_bytes_to_copy && target_iter != target_end && source_iter != source_end)
     {
-      ++target_iter;
-      target_buffer_offset = 0;
-    }
-    else
-      target_buffer_offset += bytes_copied;
+        mutable_buffer target_buffer =
+            mutable_buffer(*target_iter) + target_buffer_offset;
 
-    if (bytes_copied == buffer_size(source_buffer))
-    {
-      ++source_iter;
-      source_buffer_offset = 0;
-    }
-    else
-      source_buffer_offset += bytes_copied;
-  }
+        const_buffer source_buffer =
+            const_buffer(*source_iter) + source_buffer_offset;
 
-  return total_bytes_copied;
+        std::size_t bytes_copied = buffer_copy(target_buffer,
+                                               source_buffer, max_bytes_to_copy - total_bytes_copied);
+        total_bytes_copied += bytes_copied;
+
+        if (bytes_copied == buffer_size(target_buffer))
+        {
+            ++target_iter;
+            target_buffer_offset = 0;
+        }
+        else
+        {
+            target_buffer_offset += bytes_copied;
+        }
+
+        if (bytes_copied == buffer_size(source_buffer))
+        {
+            ++source_iter;
+            source_buffer_offset = 0;
+        }
+        else
+        {
+            source_buffer_offset += bytes_copied;
+        }
+    }
+
+    return total_bytes_copied;
 }
 
 /*@}*/

@@ -5,8 +5,8 @@
 #ifndef BOOST_TYPEOF_STD_valarray_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_valarray_hpp_INCLUDED
 
-#include <valarray>
 #include <boost/typeof/typeof.hpp>
+#include <valarray>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -18,4 +18,4 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::gslice_array, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::mask_array, 1)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::indirect_array, 1)
 
-#endif//BOOST_TYPEOF_STD_valarray_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_valarray_hpp_INCLUDED

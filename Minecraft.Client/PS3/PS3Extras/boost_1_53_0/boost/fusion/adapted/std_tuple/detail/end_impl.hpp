@@ -11,33 +11,36 @@
 #include <boost/type_traits/remove_const.hpp>
 #include <tuple>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct std_tuple_tag;
+namespace fusion
+{
+struct std_tuple_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct end_impl;
+
+template <>
+struct end_impl<std_tuple_tag>
+{
+    template <typename Sequence>
+    struct apply
     {
-        template<typename T>
-        struct end_impl;
+        typedef typename remove_const<Sequence>::type seq_type;
+        static int const size = std::tuple_size<seq_type>::value;
+        typedef std_tuple_iterator<Sequence, size> type;
 
-        template <>
-        struct end_impl<std_tuple_tag>
+        static type
+        call(Sequence &v)
         {
-            template <typename Sequence>
-            struct apply
-            {
-                typedef typename remove_const<Sequence>::type seq_type;
-                static int const size = std::tuple_size<seq_type>::value;
-                typedef std_tuple_iterator<Sequence, size> type;
-
-                static type
-                call(Sequence& v)
-                {
-                    return type(v);
-                }
-            };
-        };
-    }
-}}
+            return type(v);
+        }
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

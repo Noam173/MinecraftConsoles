@@ -3,48 +3,52 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef PROXY_DWA2002615_HPP
-# define PROXY_DWA2002615_HPP
-# include <boost/python/detail/prefix.hpp>
-# include <boost/python/object_core.hpp>
-# include <boost/python/object_operators.hpp>
+#define PROXY_DWA2002615_HPP
+#include <boost/python/detail/prefix.hpp>
+#include <boost/python/object_core.hpp>
+#include <boost/python/object_operators.hpp>
 
-namespace boost { namespace python { namespace api {
+namespace boost
+{
+namespace python
+{
+namespace api
+{
 
 template <class Policies>
-class proxy : public object_operators<proxy<Policies> >
+class proxy : public object_operators<proxy<Policies>>
 {
     typedef typename Policies::key_type key_type;
-    
-# if !defined(BOOST_MSVC) || BOOST_MSVC >= 1300
-    typedef proxy const& assignment_self;
-# else
+
+#if !defined(BOOST_MSVC) || BOOST_MSVC >= 1300
+    typedef proxy const &assignment_self;
+#else
     typedef proxy assignment_self;
-# endif
- public:
-    proxy(object const& target, key_type const& key);
+#endif
+  public:
+    proxy(object const &target, key_type const &key);
     operator object() const;
 
     // to support a[b] = c[d]
-    proxy const& operator=(assignment_self) const;
-    
+    proxy const &operator=(assignment_self) const;
+
     template <class T>
-    inline proxy const& operator=(T const& rhs) const
+    inline proxy const &operator=(T const &rhs) const
     {
         Policies::set(m_target, m_key, object(rhs));
         return *this;
     }
 
- public: // implementation detail
+  public: // implementation detail
     void del() const;
-        
- private:
+
+  private:
     object m_target;
     key_type m_key;
 };
 
-
 template <class T>
-inline void del(proxy<T> const& x)
+inline void del(proxy<T> const &x)
 {
     x.del();
 }
@@ -54,9 +58,10 @@ inline void del(proxy<T> const& x)
 //
 
 template <class Policies>
-inline proxy<Policies>::proxy(object const& target, key_type const& key)
+inline proxy<Policies>::proxy(object const &target, key_type const &key)
     : m_target(target), m_key(key)
-{}
+{
+}
 
 template <class Policies>
 inline proxy<Policies>::operator object() const
@@ -66,18 +71,18 @@ inline proxy<Policies>::operator object() const
 
 // to support a[b] = c[d]
 template <class Policies>
-inline proxy<Policies> const& proxy<Policies>::operator=(typename proxy::assignment_self rhs) const
+inline proxy<Policies> const &proxy<Policies>::operator=(typename proxy::assignment_self rhs) const
 {
     return *this = python::object(rhs);
 }
 
-# define BOOST_PYTHON_PROXY_INPLACE(op)                                         \
-template <class Policies, class R>                                              \
-proxy<Policies> const& operator op(proxy<Policies> const& lhs, R const& rhs)    \
-{                                                                               \
-    object old(lhs);                                                            \
-    return lhs = (old op rhs);                                                  \
-} 
+#define BOOST_PYTHON_PROXY_INPLACE(op)                                           \
+    template <class Policies, class R>                                           \
+    proxy<Policies> const &operator op(proxy<Policies> const &lhs, R const &rhs) \
+    {                                                                            \
+        object old(lhs);                                                         \
+        return lhs = (old op rhs);                                               \
+    }
 BOOST_PYTHON_PROXY_INPLACE(+=)
 BOOST_PYTHON_PROXY_INPLACE(-=)
 BOOST_PYTHON_PROXY_INPLACE(*=)
@@ -88,7 +93,7 @@ BOOST_PYTHON_PROXY_INPLACE(>>=)
 BOOST_PYTHON_PROXY_INPLACE(&=)
 BOOST_PYTHON_PROXY_INPLACE(^=)
 BOOST_PYTHON_PROXY_INPLACE(|=)
-# undef BOOST_PYTHON_PROXY_INPLACE
+#undef BOOST_PYTHON_PROXY_INPLACE
 
 template <class Policies>
 inline void proxy<Policies>::del() const
@@ -96,6 +101,8 @@ inline void proxy<Policies>::del() const
     Policies::del(m_target, m_key);
 }
 
-}}} // namespace boost::python::api
+} // namespace api
+} // namespace python
+} // namespace boost
 
 #endif // PROXY_DWA2002615_HPP

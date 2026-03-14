@@ -1,26 +1,26 @@
-#include "stdafx.h"
+#include "CommandBlockEntity.h"
+#include "..\Minecraft.Client\MinecraftServer.h"
+#include "net.minecraft.commands.h"
 #include "net.minecraft.network.packet.h"
 #include "net.minecraft.world.level.h"
-#include "net.minecraft.commands.h"
-#include "..\Minecraft.Client\MinecraftServer.h"
-#include "CommandBlockEntity.h"
+#include "stdafx.h"
 
 CommandBlockEntity::CommandBlockEntity()
 {
-	successCount = 0;
-	command = L"";
-	name = L"@";
+    successCount = 0;
+    command = L"";
+    name = L"@";
 }
 
 void CommandBlockEntity::setCommand(const wstring &command)
 {
-	this->command = command;
-	setChanged();
+    this->command = command;
+    setChanged();
 }
 
 wstring CommandBlockEntity::getCommand()
 {
-	return command;
+    return command;
 }
 
 int CommandBlockEntity::performCommand(Level *level)
@@ -39,83 +39,86 @@ int CommandBlockEntity::performCommand(Level *level)
 	}
 	return 0;
 #else
-	// 4J-JEV: Cannot decide what to do with the command field.
-	assert(false);
-	return 0;
+    // 4J-JEV: Cannot decide what to do with the command field.
+    assert(false);
+    return 0;
 #endif
 }
 
 wstring CommandBlockEntity::getName()
 {
-	return name;
+    return name;
 }
 
 void CommandBlockEntity::setName(const wstring &name)
 {
-	this->name = name;
+    this->name = name;
 }
 
-void CommandBlockEntity::sendMessage(const wstring& message, ChatPacket::EChatPacketMessage type, int customData , const wstring& additionalMessage)
+void CommandBlockEntity::sendMessage(const wstring &message, ChatPacket::EChatPacketMessage type, int customData, const wstring &additionalMessage)
 {
 }
 
 bool CommandBlockEntity::hasPermission(EGameCommand command)
 {
-	return false;
+    return false;
 }
 
 void CommandBlockEntity::save(CompoundTag *tag)
 {
-	TileEntity::save(tag);
-	tag->putString(L"Command", command);
-	tag->putInt(L"SuccessCount", successCount);
-	tag->putString(L"CustomName", name);
+    TileEntity::save(tag);
+    tag->putString(L"Command", command);
+    tag->putInt(L"SuccessCount", successCount);
+    tag->putString(L"CustomName", name);
 }
 
 void CommandBlockEntity::load(CompoundTag *tag)
 {
-	TileEntity::load(tag);
-	command = tag->getString(L"Command");
-	successCount = tag->getInt(L"SuccessCount");
-	if (tag->contains(L"CustomName")) name = tag->getString(L"CustomName");
+    TileEntity::load(tag);
+    command = tag->getString(L"Command");
+    successCount = tag->getInt(L"SuccessCount");
+    if (tag->contains(L"CustomName"))
+    {
+        name = tag->getString(L"CustomName");
+    }
 }
 
 Pos *CommandBlockEntity::getCommandSenderWorldPosition()
 {
-	return new Pos(x, y, z);
+    return new Pos(x, y, z);
 }
 
 Level *CommandBlockEntity::getCommandSenderWorld()
 {
-	return getLevel();
+    return getLevel();
 }
 
 shared_ptr<Packet> CommandBlockEntity::getUpdatePacket()
 {
-	CompoundTag *tag = new CompoundTag();
-	save(tag);
-	return std::make_shared<TileEntityDataPacket>(x, y, z, TileEntityDataPacket::TYPE_ADV_COMMAND, tag);
+    CompoundTag *tag = new CompoundTag();
+    save(tag);
+    return std::make_shared<TileEntityDataPacket>(x, y, z, TileEntityDataPacket::TYPE_ADV_COMMAND, tag);
 }
 
 int CommandBlockEntity::getSuccessCount()
 {
-	return successCount;
+    return successCount;
 }
 
 void CommandBlockEntity::setSuccessCount(int successCount)
 {
-	this->successCount = successCount;
+    this->successCount = successCount;
 }
 
 // 4J Added
 shared_ptr<TileEntity> CommandBlockEntity::clone()
 {
-	shared_ptr<CommandBlockEntity> result = std::make_shared<CommandBlockEntity>();
-	TileEntity::clone(result);
+    shared_ptr<CommandBlockEntity> result = std::make_shared<CommandBlockEntity>();
+    TileEntity::clone(result);
 
-	result->successCount = successCount;
-	result->command = command;
-	result->name = name;
+    result->successCount = successCount;
+    result->command = command;
+    result->name = name;
 
-	return result;
+    return result;
 }

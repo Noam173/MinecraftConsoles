@@ -1,12 +1,12 @@
-#include "stdafx.h"
 #include "ReceivingLevelScreen.h"
-#include "ClientConnection.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
+#include "ClientConnection.h"
+#include "stdafx.h"
 
 ReceivingLevelScreen::ReceivingLevelScreen(ClientConnection *connection)
 {
-	tickCount = 0;
-	this->connection = connection;
+    tickCount = 0;
+    this->connection = connection;
 }
 
 void ReceivingLevelScreen::keyPressed(char eventCharacter, int eventKey)
@@ -15,18 +15,18 @@ void ReceivingLevelScreen::keyPressed(char eventCharacter, int eventKey)
 
 void ReceivingLevelScreen::init()
 {
-	buttons.clear();
+    buttons.clear();
 }
 
 void ReceivingLevelScreen::tick()
 {
     tickCount++;
     if (tickCount % 20 == 0)
-	{
+    {
         connection->send(std::make_shared<KeepAlivePacket>());
     }
     if (connection != nullptr)
-	{
+    {
         connection->tick();
     }
 }

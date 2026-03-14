@@ -10,38 +10,49 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <vector>
 #include <boost/intrusive_ptr.hpp>
-#include <boost/xpressive/regex_traits.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/dynamic/matchable.hpp>
-#include <boost/xpressive/detail/utility/tracking_ptr.hpp>
 #include <boost/xpressive/detail/utility/counted_base.hpp>
+#include <boost/xpressive/detail/utility/tracking_ptr.hpp>
+#include <boost/xpressive/regex_traits.hpp>
+#include <vector>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // finder
-template<typename BidiIter>
+template <typename BidiIter>
 struct finder
-  : counted_base<finder<BidiIter> >
+    : counted_base<finder<BidiIter>>
 {
-    virtual ~finder() {}
-    virtual bool ok_for_partial_matches() const { return true; }
-    virtual bool operator ()(match_state<BidiIter> &state) const = 0;
+    virtual ~finder()
+    {
+    }
+    virtual bool ok_for_partial_matches() const
+    {
+        return true;
+    }
+    virtual bool operator()(match_state<BidiIter> &state) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 // traits
-template<typename Char>
+template <typename Char>
 struct traits
-  : counted_base<traits<Char> >
+    : counted_base<traits<Char>>
 {
-    virtual ~traits() {}
+    virtual ~traits()
+    {
+    }
     virtual Char tolower(Char ch) const = 0;
     virtual Char toupper(Char ch) const = 0;
     virtual bool in_range(Char from, Char to, Char ch) const = 0;
@@ -50,15 +61,15 @@ struct traits
 
 ///////////////////////////////////////////////////////////////////////////////
 // named_mark
-template<typename Char>
+template <typename Char>
 struct named_mark
 {
     typedef typename detail::string_type<Char>::type string_type;
 
     named_mark(string_type name, std::size_t mark_nbr)
-      : name_(name)
-      , mark_nbr_(mark_nbr)
-    {}
+        : name_(name), mark_nbr_(mark_nbr)
+    {
+    }
 
     string_type name_;
     std::size_t mark_nbr_;
@@ -66,14 +77,14 @@ struct named_mark
 
 ///////////////////////////////////////////////////////////////////////////////
 // traits_holder
-template<typename Traits>
+template <typename Traits>
 struct traits_holder
-  : traits<typename Traits::char_type>
+    : traits<typename Traits::char_type>
 {
     typedef typename Traits::char_type char_type;
 
     explicit traits_holder(Traits const &tr)
-      : traits_(tr)
+        : traits_(tr)
     {
     }
 
@@ -102,7 +113,7 @@ struct traits_holder
         return this->traits_.in_range(from, to, ch);
     }
 
-private:
+  private:
     char_type tolower_(char_type ch, regex_traits_version_1_tag) const
     {
         return ch;
@@ -129,50 +140,38 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 // regex_impl
 //
-template<typename BidiIter>
+template <typename BidiIter>
 struct regex_impl
-  : enable_reference_tracking<regex_impl<BidiIter> >
+    : enable_reference_tracking<regex_impl<BidiIter>>
 {
     typedef typename iterator_value<BidiIter>::type char_type;
 
     regex_impl()
-      : enable_reference_tracking<regex_impl<BidiIter> >()
-      , xpr_()
-      , traits_()
-      , finder_()
-      , named_marks_()
-      , mark_count_(0)
-      , hidden_mark_count_(0)
+        : enable_reference_tracking<regex_impl<BidiIter>>(), xpr_(), traits_(), finder_(), named_marks_(), mark_count_(0), hidden_mark_count_(0)
     {
-        #ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
+#ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
         ++instances;
-        #endif
+#endif
     }
 
     regex_impl(regex_impl<BidiIter> const &that)
-      : enable_reference_tracking<regex_impl<BidiIter> >(that)
-      , xpr_(that.xpr_)
-      , traits_(that.traits_)
-      , finder_(that.finder_)
-      , named_marks_(that.named_marks_)
-      , mark_count_(that.mark_count_)
-      , hidden_mark_count_(that.hidden_mark_count_)
+        : enable_reference_tracking<regex_impl<BidiIter>>(that), xpr_(that.xpr_), traits_(that.traits_), finder_(that.finder_), named_marks_(that.named_marks_), mark_count_(that.mark_count_), hidden_mark_count_(that.hidden_mark_count_)
     {
-        #ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
+#ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
         ++instances;
-        #endif
+#endif
     }
 
     ~regex_impl()
     {
-        #ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
+#ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
         --instances;
-        #endif
+#endif
     }
 
     void swap(regex_impl<BidiIter> &that)
     {
-        enable_reference_tracking<regex_impl<BidiIter> >::swap(that);
+        enable_reference_tracking<regex_impl<BidiIter>>::swap(that);
         this->xpr_.swap(that.xpr_);
         this->traits_.swap(that.traits_);
         this->finder_.swap(that.finder_);
@@ -183,30 +182,32 @@ struct regex_impl
 
     intrusive_ptr<matchable_ex<BidiIter> const> xpr_;
     intrusive_ptr<traits<char_type> const> traits_;
-    intrusive_ptr<finder<BidiIter> > finder_;
-    std::vector<named_mark<char_type> > named_marks_;
+    intrusive_ptr<finder<BidiIter>> finder_;
+    std::vector<named_mark<char_type>> named_marks_;
     std::size_t mark_count_;
     std::size_t hidden_mark_count_;
 
-    #ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
+#ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
     static int instances;
-    #endif
+#endif
 
-private:
-    regex_impl &operator =(regex_impl const &);
+  private:
+    regex_impl &operator=(regex_impl const &);
 };
 
-template<typename BidiIter>
+template <typename BidiIter>
 void swap(regex_impl<BidiIter> &left, regex_impl<BidiIter> &right)
 {
     left.swap(right);
 }
 
 #ifdef BOOST_XPRESSIVE_DEBUG_CYCLE_TEST
-template<typename BidiIter>
+template <typename BidiIter>
 int regex_impl<BidiIter>::instances = 0;
 #endif
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

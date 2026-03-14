@@ -10,15 +10,20 @@
 #pragma once
 #endif
 
-#include <boost/math/tools/rational.hpp>
-#include <boost/math/tools/big_constant.hpp>
 #include <boost/assert.hpp>
+#include <boost/math/tools/big_constant.hpp>
+#include <boost/math/tools/rational.hpp>
 
 // Modified Bessel function of the first kind of order zero
 // minimax rational approximations on intervals, see
 // Blair and Edwards, Chalk River Report AECL-4928, 1974
 
-namespace boost { namespace math { namespace detail{
+namespace boost
+{
+namespace math
+{
+namespace detail
+{
 
 template <typename T>
 T bessel_i0(T x);
@@ -26,23 +31,25 @@ T bessel_i0(T x);
 template <class T>
 struct bessel_i0_initializer
 {
-   struct init
-   {
-      init()
-      {
-         do_init();
-      }
-      static void do_init()
-      {
-         bessel_i0(T(1));
-      }
-      void force_instantiate()const{}
-   };
-   static const init initializer;
-   static void force_instantiate()
-   {
-      initializer.force_instantiate();
-   }
+    struct init
+    {
+        init()
+        {
+            do_init();
+        }
+        static void do_init()
+        {
+            bessel_i0(T(1));
+        }
+        void force_instantiate() const
+        {
+        }
+    };
+    static const init initializer;
+    static void force_instantiate()
+    {
+        initializer.force_instantiate();
+    }
 };
 
 template <class T>
@@ -104,18 +111,18 @@ T bessel_i0(T x)
 
     if (x < 0)
     {
-        x = -x;                         // even function
+        x = -x; // even function
     }
     if (x == 0)
     {
         return static_cast<T>(1);
     }
-    if (x <= 15)                        // x in (0, 15]
+    if (x <= 15) // x in (0, 15]
     {
         T y = x * x;
         value = evaluate_polynomial(P1, y) / evaluate_polynomial(Q1, y);
     }
-    else                                // x in (15, \infty)
+    else // x in (15, \infty)
     {
         T y = 1 / x - T(1) / 15;
         r = evaluate_polynomial(P2, y) / evaluate_polynomial(Q2, y);
@@ -126,7 +133,8 @@ T bessel_i0(T x)
     return value;
 }
 
-}}} // namespaces
+} // namespace detail
+} // namespace math
+} // namespace boost
 
 #endif // BOOST_MATH_BESSEL_I0_HPP
-

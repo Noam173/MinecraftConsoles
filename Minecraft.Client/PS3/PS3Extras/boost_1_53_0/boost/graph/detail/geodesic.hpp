@@ -7,11 +7,11 @@
 #ifndef BOOST_GRAPH_DETAIL_GEODESIC_HPP
 #define BOOST_GRAPH_DETAIL_GEODESIC_HPP
 
-#include <functional>
+#include <boost/concept/assert.hpp>
 #include <boost/config.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/numeric_values.hpp>
-#include <boost/concept/assert.hpp>
+#include <functional>
 
 // TODO: Should this really be in detail?
 
@@ -39,68 +39,77 @@ namespace boost
 //         }
 //     }
 
-namespace detail {
-    // Note that this assumes T == property_traits<DistanceMap>::value_type
-    // and that the args and return of combine are also T.
-    template <typename Graph,
-                typename DistanceMap,
-                typename Combinator,
-                typename Distance>
-    inline Distance
-    combine_distances(const Graph& g,
-                        DistanceMap dist,
-                        Combinator combine,
-                        Distance init)
-    {
-        BOOST_CONCEPT_ASSERT(( VertexListGraphConcept<Graph> ));
-        typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
-        typedef typename graph_traits<Graph>::vertex_iterator VertexIterator;
-        BOOST_CONCEPT_ASSERT(( ReadablePropertyMapConcept<DistanceMap,Vertex> ));
-        BOOST_CONCEPT_ASSERT(( NumericValueConcept<Distance> ));
-        typedef numeric_values<Distance> DistanceNumbers;
-        BOOST_CONCEPT_ASSERT(( AdaptableBinaryFunction<Combinator,Distance,Distance,Distance> ));
+namespace detail
+{
+// Note that this assumes T == property_traits<DistanceMap>::value_type
+// and that the args and return of combine are also T.
+template <typename Graph,
+          typename DistanceMap,
+          typename Combinator,
+          typename Distance>
+inline Distance
+combine_distances(const Graph &g,
+                  DistanceMap dist,
+                  Combinator combine,
+                  Distance init)
+{
+    BOOST_CONCEPT_ASSERT((VertexListGraphConcept<Graph>));
+    typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
+    typedef typename graph_traits<Graph>::vertex_iterator VertexIterator;
+    BOOST_CONCEPT_ASSERT((ReadablePropertyMapConcept<DistanceMap, Vertex>));
+    BOOST_CONCEPT_ASSERT((NumericValueConcept<Distance>));
+    typedef numeric_values<Distance> DistanceNumbers;
+    BOOST_CONCEPT_ASSERT((AdaptableBinaryFunction<Combinator, Distance, Distance, Distance>));
 
-        // If there's ever an infinite distance, then we simply return
-        // infinity. Note that this /will/ include the a non-zero
-        // distance-to-self in the combined values. However, this is usually
-        // zero, so it shouldn't be too problematic.
-        Distance ret = init;
-        VertexIterator i, end;
-        for(boost::tie(i, end) = vertices(g); i != end; ++i) {
-            Vertex v = *i;
-            if(get(dist, v) != DistanceNumbers::infinity()) {
-                ret = combine(ret, get(dist, v));
-            }
-            else {
-                ret = DistanceNumbers::infinity();
-                break;
-            }
+    // If there's ever an infinite distance, then we simply return
+    // infinity. Note that this /will/ include the a non-zero
+    // distance-to-self in the combined values. However, this is usually
+    // zero, so it shouldn't be too problematic.
+    Distance ret = init;
+    VertexIterator i, end;
+    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    {
+        Vertex v = *i;
+        if (get(dist, v) != DistanceNumbers::infinity())
+        {
+            ret = combine(ret, get(dist, v));
         }
-        return ret;
+        else
+        {
+            ret = DistanceNumbers::infinity();
+            break;
+        }
     }
+    return ret;
+}
 
-    // Similar to std::plus<T>, but maximizes parameters
-    // rather than adding them.
-    template <typename T>
-    struct maximize : public std::binary_function<T, T, T>
+// Similar to std::plus<T>, but maximizes parameters
+// rather than adding them.
+template <typename T>
+struct maximize : public std::binary_function<T, T, T>
+{
+    T operator()(T x, T y) const
     {
-        T operator ()(T x, T y) const
-        { BOOST_USING_STD_MAX(); return max BOOST_PREVENT_MACRO_SUBSTITUTION (x, y); }
-    };
+        BOOST_USING_STD_MAX();
+        return max BOOST_PREVENT_MACRO_SUBSTITUTION(x, y);
+    }
+};
 
-    // Another helper, like maximize() to help abstract functional
-    // concepts. This is trivially instantiated for builtin numeric
-    // types, but should be specialized for those types that have
-    // discrete notions of reciprocals.
-    template <typename T>
-    struct reciprocal : public std::unary_function<T, T>
+// Another helper, like maximize() to help abstract functional
+// concepts. This is trivially instantiated for builtin numeric
+// types, but should be specialized for those types that have
+// discrete notions of reciprocals.
+template <typename T>
+struct reciprocal : public std::unary_function<T, T>
+{
+    typedef std::unary_function<T, T> function_type;
+    typedef typename function_type::result_type result_type;
+    typedef typename function_type::argument_type argument_type;
+    T operator()(T t)
     {
-        typedef std::unary_function<T, T> function_type;
-        typedef typename function_type::result_type result_type;
-        typedef typename function_type::argument_type argument_type;
-        T operator ()(T t)
-        { return T(1) / t; }
-    };
+        return T(1) / t;
+    }
+};
 } /* namespace detail */
 
 // This type defines the basic facilities used for computing values
@@ -117,13 +126,19 @@ struct geodesic_measure
     typedef numeric_values<result_type> result_values;
 
     static inline distance_type infinite_distance()
-    { return distance_values::infinity(); }
+    {
+        return distance_values::infinity();
+    }
 
     static inline result_type infinite_result()
-    { return result_values::infinity(); }
+    {
+        return result_values::infinity();
+    }
 
     static inline result_type zero_result()
-    { return result_values::zero(); }
+    {
+        return result_values::zero();
+    }
 };
 
 } /* namespace boost */

@@ -8,44 +8,48 @@
 
 #include "eof_iterator.hpp"
 
-#include <utility>
-#include <string>
 #include <cassert>
+#include <string>
+#include <utility>
 
-namespace boost {
+namespace boost
+{
 
-    class environment_iterator 
-        : public eof_iterator<environment_iterator, 
-                              std::pair<std::string, std::string> >
-    {
-    public:
-        environment_iterator(char** environment)
+class environment_iterator
+    : public eof_iterator<environment_iterator,
+                          std::pair<std::string, std::string>>
+{
+  public:
+    environment_iterator(char **environment)
         : m_environment(environment)
-        {
-            get();
-        }
-        
-        environment_iterator()
+    {
+        get();
+    }
+
+    environment_iterator()
+    {
+        found_eof();
+    }
+
+    void get()
+    {
+        if (*m_environment == 0)
         {
             found_eof();
         }
-        
-        void get()
+        else
         {
-            if (*m_environment == 0)
-                found_eof();
-            else {
-                std::string s(*m_environment);
-                std::string::size_type n = s.find('=');
-                assert(n != s.npos);
-                value().first = s.substr(0, n);
-                value().second = s.substr(n+1);
-            }            
-            ++m_environment;
+            std::string s(*m_environment);
+            std::string::size_type n = s.find('=');
+            assert(n != s.npos);
+            value().first = s.substr(0, n);
+            value().second = s.substr(n + 1);
         }
-        
-    private:
-        char** m_environment;
-    };
-}
+        ++m_environment;
+    }
+
+  private:
+    char **m_environment;
+};
+} // namespace boost
 #endif

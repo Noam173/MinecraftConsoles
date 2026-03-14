@@ -1,38 +1,38 @@
-#include "stdafx.h"
-#include "net.minecraft.world.scores.h"
 #include "Objective.h"
+#include "net.minecraft.world.scores.h"
+#include "stdafx.h"
 
 Objective::Objective(Scoreboard *scoreboard, const wstring &name, ObjectiveCriteria *criteria)
 {
-	this->scoreboard = scoreboard;
-	this->name = name;
-	this->criteria = criteria;
+    this->scoreboard = scoreboard;
+    this->name = name;
+    this->criteria = criteria;
 
-	displayName = name;
+    displayName = name;
 }
 
 Scoreboard *Objective::getScoreboard()
 {
-	return scoreboard;
+    return scoreboard;
 }
 
 wstring Objective::getName()
 {
-	return name;
+    return name;
 }
 
 ObjectiveCriteria *Objective::getCriteria()
 {
-	return criteria;
+    return criteria;
 }
 
 wstring Objective::getDisplayName()
 {
-	return displayName;
+    return displayName;
 }
 
 void Objective::setDisplayName(const wstring &name)
 {
-	displayName = name;
-	scoreboard->onObjectiveChanged(this);
+    displayName = name;
+    scoreboard->onObjectiveChanged(this);
 }

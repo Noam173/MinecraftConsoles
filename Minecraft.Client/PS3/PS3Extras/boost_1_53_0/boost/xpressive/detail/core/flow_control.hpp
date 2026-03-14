@@ -10,32 +10,32 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/regex_impl.hpp>
 #include <boost/xpressive/detail/core/state.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/utility/ignore_unused.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // push_context_match
 //
-template<typename BidiIter>
-inline bool push_context_match
-(
-    regex_impl<BidiIter> const &impl
-  , match_state<BidiIter> &state
-  , matchable<BidiIter> const &next
-)
+template <typename BidiIter>
+inline bool push_context_match(
+    regex_impl<BidiIter> const &impl, match_state<BidiIter> &state, matchable<BidiIter> const &next)
 {
     // avoid infinite recursion
     // BUGBUG this only catches direct infinite recursion, like sregex::compile("(?R)"), but
     // not indirect infinite recursion where two rules invoke each other recursively.
-    if(state.is_active_regex(impl) && state.cur_ == state.sub_match(0).begin_)
+    if (state.is_active_regex(impl) && state.cur_ == state.sub_match(0).begin_)
     {
         return next.match(state);
     }
@@ -52,7 +52,7 @@ inline bool push_context_match
 ///////////////////////////////////////////////////////////////////////////////
 // pop_context_match
 //
-template<typename BidiIter>
+template <typename BidiIter>
 inline bool pop_context_match(match_state<BidiIter> &state)
 {
     // save state
@@ -68,7 +68,8 @@ inline bool pop_context_match(match_state<BidiIter> &state)
     return success;
 }
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif
-

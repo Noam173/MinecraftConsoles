@@ -12,23 +12,24 @@
 #define BOOST_RANGE_VALUE_TYPE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/range/config.hpp>
 #include <boost/range/iterator.hpp>
 
-//#ifdef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-//#include <boost/range/detail/value_type.hpp>
-//#else
+// #ifdef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+// #include <boost/range/detail/value_type.hpp>
+// #else
 
 #include <boost/iterator/iterator_traits.hpp>
 
 namespace boost
 {
-    template< class T >
-    struct range_value : iterator_value< typename range_iterator<T>::type >
-    { };
-}
+template <class T>
+struct range_value : iterator_value<typename range_iterator<T>::type>
+{
+};
+} // namespace boost
 
 #endif

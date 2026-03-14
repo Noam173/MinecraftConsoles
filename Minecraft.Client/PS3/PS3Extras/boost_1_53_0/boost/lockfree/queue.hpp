@@ -11,7 +11,7 @@
 #ifndef BOOST_LOCKFREE_FIFO_HPP_INCLUDED
 #define BOOST_LOCKFREE_FIFO_HPP_INCLUDED
 
-#include <memory>               /* std::auto_ptr */
+#include <memory> /* std::auto_ptr */
 
 #include <boost/assert.hpp>
 #include <boost/noncopyable.hpp>
@@ -25,16 +25,18 @@
 #include <boost/lockfree/detail/parameter.hpp>
 #include <boost/lockfree/detail/tagged_ptr.hpp>
 
-namespace boost    {
-namespace lockfree {
-namespace detail   {
+namespace boost
+{
+namespace lockfree
+{
+namespace detail
+{
 
 typedef parameter::parameters<boost::parameter::optional<tag::allocator>,
-                              boost::parameter::optional<tag::capacity>
-                             > queue_signature;
+                              boost::parameter::optional<tag::capacity>>
+    queue_signature;
 
 } /* namespace detail */
-
 
 /** The queue class provides a multi-writer/multi-reader queue, pushing and popping is lock-free,
  *  construction/destruction has to be synchronized. It uses a freelist for memory management,
@@ -67,12 +69,11 @@ template <typename T,
           class A1 = boost::parameter::void_,
           class A2 = boost::parameter::void_>
 #else
-template <typename T, ...Options>
+template <typename T, ... Options>
 #endif
-class queue:
-    boost::noncopyable
+class queue : boost::noncopyable
 {
-private:
+  private:
 #ifndef BOOST_DOXYGEN_INVOKED
 
 #ifdef BOOST_HAS_TRIVIAL_DESTRUCTOR
@@ -96,21 +97,21 @@ private:
         typedef typename detail::select_tagged_handle<node, node_based>::tagged_handle_type tagged_node_handle;
         typedef typename detail::select_tagged_handle<node, node_based>::handle_type handle_type;
 
-        node(T const & v, handle_type null_handle):
-            data(v)//, next(tagged_node_handle(0, 0))
+        node(T const &v, handle_type null_handle) : data(v) //, next(tagged_node_handle(0, 0))
         {
             /* increment tag to avoid ABA problem */
             tagged_node_handle old_next = next.load(memory_order_relaxed);
-            tagged_node_handle new_next (null_handle, old_next.get_tag()+1);
+            tagged_node_handle new_next(null_handle, old_next.get_tag() + 1);
             next.store(new_next, memory_order_release);
         }
 
-        node (handle_type null_handle):
-            next(tagged_node_handle(null_handle, 0))
-        {}
+        node(handle_type null_handle) : next(tagged_node_handle(null_handle, 0))
+        {
+        }
 
         node(void)
-        {}
+        {
+        }
 
         atomic<tagged_node_handle> next;
         T data;
@@ -123,7 +124,7 @@ private:
 
     void initialize(void)
     {
-        node * n = pool.template construct<true, false>(pool.null_handle());
+        node *n = pool.template construct<true, false>(pool.null_handle());
         tagged_node_handle dummy_node(pool.get_handle(n), 0);
         head_.store(dummy_node, memory_order_relaxed);
         tail_.store(dummy_node, memory_order_release);
@@ -137,7 +138,7 @@ private:
 
 #endif
 
-public:
+  public:
     typedef T value_type;
     typedef typename implementation_defined::allocator allocator;
     typedef typename implementation_defined::size_type size_type;
@@ -150,36 +151,33 @@ public:
      *       no possibility to provide a completely accurate implementation, because one would need to test every internal
      *       node, which is impossible if further nodes will be allocated from the operating system.
      * */
-    bool is_lock_free (void) const
+    bool is_lock_free(void) const
     {
         return head_.is_lock_free() && tail_.is_lock_free() && pool.is_lock_free();
     }
 
     //! Construct queue
     // @{
-    queue(void):
-        head_(tagged_node_handle(0, 0)),
-        tail_(tagged_node_handle(0, 0)),
-        pool(node_allocator(), capacity)
+    queue(void) : head_(tagged_node_handle(0, 0)),
+                  tail_(tagged_node_handle(0, 0)),
+                  pool(node_allocator(), capacity)
     {
         BOOST_ASSERT(has_capacity);
         initialize();
     }
 
     template <typename U>
-    explicit queue(typename node_allocator::template rebind<U>::other const & alloc):
-        head_(tagged_node_handle(0, 0)),
-        tail_(tagged_node_handle(0, 0)),
-        pool(alloc, capacity)
+    explicit queue(typename node_allocator::template rebind<U>::other const &alloc) : head_(tagged_node_handle(0, 0)),
+                                                                                      tail_(tagged_node_handle(0, 0)),
+                                                                                      pool(alloc, capacity)
     {
         BOOST_STATIC_ASSERT(has_capacity);
         initialize();
     }
 
-    explicit queue(allocator const & alloc):
-        head_(tagged_node_handle(0, 0)),
-        tail_(tagged_node_handle(0, 0)),
-        pool(alloc, capacity)
+    explicit queue(allocator const &alloc) : head_(tagged_node_handle(0, 0)),
+                                             tail_(tagged_node_handle(0, 0)),
+                                             pool(alloc, capacity)
     {
         BOOST_ASSERT(has_capacity);
         initialize();
@@ -188,20 +186,18 @@ public:
 
     //! Construct queue, allocate n nodes for the freelist.
     // @{
-    explicit queue(size_type n):
-        head_(tagged_node_handle(0, 0)),
-        tail_(tagged_node_handle(0, 0)),
-        pool(node_allocator(), n + 1)
+    explicit queue(size_type n) : head_(tagged_node_handle(0, 0)),
+                                  tail_(tagged_node_handle(0, 0)),
+                                  pool(node_allocator(), n + 1)
     {
         BOOST_ASSERT(!has_capacity);
         initialize();
     }
 
     template <typename U>
-    queue(size_type n, typename node_allocator::template rebind<U>::other const & alloc):
-        head_(tagged_node_handle(0, 0)),
-        tail_(tagged_node_handle(0, 0)),
-        pool(alloc, n + 1)
+    queue(size_type n, typename node_allocator::template rebind<U>::other const &alloc) : head_(tagged_node_handle(0, 0)),
+                                                                                          tail_(tagged_node_handle(0, 0)),
+                                                                                          pool(alloc, n + 1)
     {
         BOOST_STATIC_ASSERT(!has_capacity);
         initialize();
@@ -227,8 +223,9 @@ public:
     ~queue(void)
     {
         T dummy;
-        while(unsynchronized_pop(dummy))
-        {}
+        while (unsynchronized_pop(dummy))
+        {
+        }
 
         pool.template destruct<false>(head_.load(memory_order_relaxed));
     }
@@ -252,7 +249,7 @@ public:
      * \note Thread-safe. If internal memory pool is exhausted and the memory pool is not fixed-sized, a new node will be allocated
      *                    from the OS. This may not be lock-free.
      * */
-    bool push(T const & t)
+    bool push(T const &t)
     {
         return do_push<false>(t);
     }
@@ -265,42 +262,48 @@ public:
      * \note Thread-safe and non-blocking. If internal memory pool is exhausted, operation will fail
      * \throws if memory allocator throws
      * */
-    bool bounded_push(T const & t)
+    bool bounded_push(T const &t)
     {
         return do_push<true>(t);
     }
 
-
-private:
+  private:
 #ifndef BOOST_DOXYGEN_INVOKED
     template <bool Bounded>
-    bool do_push(T const & t)
+    bool do_push(T const &t)
     {
         using detail::likely;
 
-        node * n = pool.template construct<true, Bounded>(t, pool.null_handle());
+        node *n = pool.template construct<true, Bounded>(t, pool.null_handle());
         handle_type node_handle = pool.get_handle(n);
 
         if (n == NULL)
+        {
             return false;
+        }
 
-        for (;;) {
+        for (;;)
+        {
             tagged_node_handle tail = tail_.load(memory_order_acquire);
-            node * tail_node = pool.get_pointer(tail);
+            node *tail_node = pool.get_pointer(tail);
             tagged_node_handle next = tail_node->next.load(memory_order_acquire);
-            node * next_ptr = pool.get_pointer(next);
+            node *next_ptr = pool.get_pointer(next);
 
             tagged_node_handle tail2 = tail_.load(memory_order_acquire);
-            if (likely(tail == tail2)) {
-                if (next_ptr == 0) {
+            if (likely(tail == tail2))
+            {
+                if (next_ptr == 0)
+                {
                     tagged_node_handle new_tail_next(node_handle, next.get_tag() + 1);
-                    if ( tail_node->next.compare_exchange_weak(next, new_tail_next) ) {
+                    if (tail_node->next.compare_exchange_weak(next, new_tail_next))
+                    {
                         tagged_node_handle new_tail(node_handle, tail.get_tag() + 1);
                         tail_.compare_exchange_strong(tail, new_tail);
                         return true;
                     }
                 }
-                else {
+                else
+                {
                     tagged_node_handle new_tail(pool.get_handle(next_ptr), tail.get_tag() + 1);
                     tail_.compare_exchange_strong(tail, new_tail);
                 }
@@ -309,8 +312,7 @@ private:
     }
 #endif
 
-public:
-
+  public:
     /** Pushes object t to the queue.
      *
      * \post object will be pushed to the queue, if internal node can be allocated
@@ -320,25 +322,31 @@ public:
      *       from the OS. This may not be lock-free.
      * \throws if memory allocator throws
      * */
-    bool unsynchronized_push(T const & t)
+    bool unsynchronized_push(T const &t)
     {
-        node * n = pool.template construct<false, false>(t, pool.null_handle());
+        node *n = pool.template construct<false, false>(t, pool.null_handle());
 
         if (n == NULL)
+        {
             return false;
+        }
 
-        for (;;) {
+        for (;;)
+        {
             tagged_node_handle tail = tail_.load(memory_order_relaxed);
             tagged_node_handle next = tail->next.load(memory_order_relaxed);
-            node * next_ptr = next.get_ptr();
+            node *next_ptr = next.get_ptr();
 
-            if (next_ptr == 0) {
+            if (next_ptr == 0)
+            {
                 tail->next.store(tagged_node_handle(n, next.get_tag() + 1), memory_order_relaxed);
                 tail_.store(tagged_node_handle(n, tail.get_tag() + 1), memory_order_relaxed);
                 return true;
             }
             else
+            {
                 tail_.store(tagged_node_handle(next_ptr, tail.get_tag() + 1), memory_order_relaxed);
+            }
         }
     }
 
@@ -349,7 +357,7 @@ public:
      *
      * \note Thread-safe and non-blocking
      * */
-    bool pop (T & ret)
+    bool pop(T &ret)
     {
         return pop<T>(ret);
     }
@@ -363,38 +371,47 @@ public:
      * \note Thread-safe and non-blocking
      * */
     template <typename U>
-    bool pop (U & ret)
+    bool pop(U &ret)
     {
         using detail::likely;
-        for (;;) {
+        for (;;)
+        {
             tagged_node_handle head = head_.load(memory_order_acquire);
-            node * head_ptr = pool.get_pointer(head);
+            node *head_ptr = pool.get_pointer(head);
 
             tagged_node_handle tail = tail_.load(memory_order_acquire);
             tagged_node_handle next = head_ptr->next.load(memory_order_acquire);
-            node * next_ptr = pool.get_pointer(next);
+            node *next_ptr = pool.get_pointer(next);
 
             tagged_node_handle head2 = head_.load(memory_order_acquire);
-            if (likely(head == head2)) {
-                if (pool.get_handle(head) == pool.get_handle(tail)) {
+            if (likely(head == head2))
+            {
+                if (pool.get_handle(head) == pool.get_handle(tail))
+                {
                     if (next_ptr == 0)
+                    {
                         return false;
+                    }
 
                     tagged_node_handle new_tail(pool.get_handle(next), tail.get_tag() + 1);
                     tail_.compare_exchange_strong(tail, new_tail);
-
-                } else {
+                }
+                else
+                {
                     if (next_ptr == 0)
+                    {
                         /* this check is not part of the original algorithm as published by michael and scott
                          *
                          * however we reuse the tagged_ptr part for the freelist and clear the next part during node
                          * allocation. we can observe a null-pointer here.
                          * */
                         continue;
+                    }
                     detail::copy_payload(next_ptr->data, ret);
 
                     tagged_node_handle new_head(pool.get_handle(next), head.get_tag() + 1);
-                    if (head_.compare_exchange_weak(head, new_head)) {
+                    if (head_.compare_exchange_weak(head, new_head))
+                    {
                         pool.template destruct<true>(head);
                         return true;
                     }
@@ -411,7 +428,7 @@ public:
      * \note Not thread-safe, but non-blocking
      *
      * */
-    bool unsynchronized_pop (T & ret)
+    bool unsynchronized_pop(T &ret)
     {
         return unsynchronized_pop<T>(ret);
     }
@@ -426,29 +443,37 @@ public:
      *
      * */
     template <typename U>
-    bool unsynchronized_pop (U & ret)
+    bool unsynchronized_pop(U &ret)
     {
-        for (;;) {
+        for (;;)
+        {
             tagged_node_handle head = head_.load(memory_order_relaxed);
-            node * head_ptr = pool.get_pointer(head);
+            node *head_ptr = pool.get_pointer(head);
             tagged_node_handle tail = tail_.load(memory_order_relaxed);
             tagged_node_handle next = head_ptr->next.load(memory_order_relaxed);
-            node * next_ptr = pool.get_pointer(next);
+            node *next_ptr = pool.get_pointer(next);
 
-            if (pool.get_handle(head) == pool.get_handle(tail)) {
+            if (pool.get_handle(head) == pool.get_handle(tail))
+            {
                 if (next_ptr == 0)
+                {
                     return false;
+                }
 
                 tagged_node_handle new_tail(pool.get_handle(next), tail.get_tag() + 1);
                 tail_.store(new_tail);
-            } else {
+            }
+            else
+            {
                 if (next_ptr == 0)
+                {
                     /* this check is not part of the original algorithm as published by michael and scott
                      *
                      * however we reuse the tagged_ptr part for the freelist and clear the next part during node
                      * allocation. we can observe a null-pointer here.
                      * */
                     continue;
+                }
                 detail::copy_payload(next_ptr->data, ret);
                 tagged_node_handle new_head(pool.get_handle(next), head.get_tag() + 1);
                 head_.store(new_head);
@@ -458,7 +483,7 @@ public:
         }
     }
 
-private:
+  private:
 #ifndef BOOST_DOXYGEN_INVOKED
     atomic<tagged_node_handle> head_;
     static const int padding_size = BOOST_LOCKFREE_CACHELINE_BYTES - sizeof(tagged_node_handle);

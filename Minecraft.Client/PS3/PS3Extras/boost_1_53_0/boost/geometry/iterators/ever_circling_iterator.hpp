@@ -14,14 +14,16 @@
 #ifndef BOOST_GEOMETRY_ITERATORS_EVER_CIRCLING_ITERATOR_HPP
 #define BOOST_GEOMETRY_ITERATORS_EVER_CIRCLING_ITERATOR_HPP
 
-#include <boost/range.hpp>
 #include <boost/iterator.hpp>
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <boost/iterator/iterator_categories.hpp>
+#include <boost/range.hpp>
 
 #include <boost/geometry/iterators/base.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
@@ -35,29 +37,22 @@ namespace boost { namespace geometry
     "Chant Of The Ever Circling Skeletal Family"
 */
 template <typename Iterator>
-struct ever_circling_iterator :
-    public detail::iterators::iterator_base
-    <
-        ever_circling_iterator<Iterator>,
-        Iterator
-    >
+struct ever_circling_iterator : public detail::iterators::iterator_base<
+                                    ever_circling_iterator<Iterator>,
+                                    Iterator>
 {
     friend class boost::iterator_core_access;
 
     explicit inline ever_circling_iterator(Iterator begin, Iterator end,
-            bool skip_first = false)
-      : m_begin(begin)
-      , m_end(end)
-      , m_skip_first(skip_first)
+                                           bool skip_first = false)
+        : m_begin(begin), m_end(end), m_skip_first(skip_first)
     {
         this->base_reference() = begin;
     }
 
     explicit inline ever_circling_iterator(Iterator begin, Iterator end, Iterator start,
-            bool skip_first = false)
-      : m_begin(begin)
-      , m_end(end)
-      , m_skip_first(skip_first)
+                                           bool skip_first = false)
+        : m_begin(begin), m_end(end), m_skip_first(skip_first)
     {
         this->base_reference() = start;
     }
@@ -70,8 +65,7 @@ struct ever_circling_iterator :
         check_end();
     }
 
-private:
-
+  private:
     inline void increment(bool possibly_skip = true)
     {
         (this->base_reference())++;
@@ -97,29 +91,24 @@ private:
 
 template <typename Range>
 struct ever_circling_range_iterator
-    : public boost::iterator_facade
-    <
-        ever_circling_range_iterator<Range>,
-        typename boost::range_value<Range>::type const,
-        boost::random_access_traversal_tag
-    >
+    : public boost::iterator_facade<
+          ever_circling_range_iterator<Range>,
+          typename boost::range_value<Range>::type const,
+          boost::random_access_traversal_tag>
 {
     /// Constructor including the range it is based on
-    explicit inline ever_circling_range_iterator(Range& range)
-        : m_range(&range)
-        , m_iterator(boost::begin(range))
-        , m_size(boost::size(range))
-        , m_index(0)
-    {}
+    explicit inline ever_circling_range_iterator(Range &range)
+        : m_range(&range), m_iterator(boost::begin(range)), m_size(boost::size(range)), m_index(0)
+    {
+    }
 
     /// Default constructor
     explicit inline ever_circling_range_iterator()
-        : m_range(NULL)
-        , m_size(0)
-        , m_index(0)
-    {}
+        : m_range(NULL), m_size(0), m_index(0)
+    {
+    }
 
-    inline ever_circling_range_iterator<Range>& operator=(ever_circling_range_iterator<Range> const& source)
+    inline ever_circling_range_iterator<Range> &operator=(ever_circling_range_iterator<Range> const &source)
     {
         m_range = source.m_range;
         m_iterator = source.m_iterator;
@@ -130,23 +119,22 @@ struct ever_circling_range_iterator
 
     typedef std::ptrdiff_t difference_type;
 
-private:
+  private:
     friend class boost::iterator_core_access;
 
-    inline typename boost::range_value<Range>::type const& dereference() const
+    inline typename boost::range_value<Range>::type const &dereference() const
     {
         return *m_iterator;
     }
 
-    inline difference_type distance_to(ever_circling_range_iterator<Range> const& other) const
+    inline difference_type distance_to(ever_circling_range_iterator<Range> const &other) const
     {
         return other.m_index - this->m_index;
     }
 
-    inline bool equal(ever_circling_range_iterator<Range> const& other) const
+    inline bool equal(ever_circling_range_iterator<Range> const &other) const
     {
-        return this->m_range == other.m_range
-            && this->m_index == other.m_index;
+        return this->m_range == other.m_range && this->m_index == other.m_index;
     }
 
     inline void increment()
@@ -177,8 +165,7 @@ private:
 
     inline void advance(difference_type n)
     {
-        if (m_index >= 0 && m_index < m_size 
-            && m_index + n >= 0 && m_index + n < m_size)
+        if (m_index >= 0 && m_index < m_size && m_index + n >= 0 && m_index + n < m_size)
         {
             m_index += n;
             m_iterator += n;
@@ -196,17 +183,17 @@ private:
         {
             m_index += m_size;
         }
-		m_index = m_index % m_size;
+        m_index = m_index % m_size;
         this->m_iterator = boost::begin(*m_range) + m_index;
     }
 
-    Range* m_range;
+    Range *m_range;
     typename boost::range_iterator<Range>::type m_iterator;
     difference_type m_size;
     difference_type m_index;
 };
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ITERATORS_EVER_CIRCLING_ITERATOR_HPP

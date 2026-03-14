@@ -15,7 +15,8 @@
 // should be the last #include
 #include <boost/type_traits/detail/type_trait_def.hpp>
 
-namespace boost {
+namespace boost
+{
 
 // * convert a type T to const type - add_const<T>
 // this is not required since the result is always
@@ -26,18 +27,18 @@ namespace boost {
 // This bogus warning will appear when add_const is applied to a
 // const volatile reference because we can't detect const volatile
 // references with MSVC6.
-#   pragma warning(push)
-#   pragma warning(disable:4181) // warning C4181: qualifier applied to reference type ignored
-#endif 
+#pragma warning(push)
+#pragma warning(disable : 4181) // warning C4181: qualifier applied to reference type ignored
+#endif
 
-BOOST_TT_AUX_TYPE_TRAIT_DEF1(add_const,T,T const)
+BOOST_TT_AUX_TYPE_TRAIT_DEF1(add_const, T, T const)
 
 #if defined(BOOST_MSVC)
-#   pragma warning(pop)
-#endif 
+#pragma warning(pop)
+#endif
 
 #ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-BOOST_TT_AUX_TYPE_TRAIT_PARTIAL_SPEC1_1(typename T,add_const,T&,T&)
+BOOST_TT_AUX_TYPE_TRAIT_PARTIAL_SPEC1_1(typename T, add_const, T &, T &)
 #endif
 
 } // namespace boost

@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_MULTI_HPP
 #define BOOST_GEOMETRY_MULTI_HPP
 
-
 #include <boost/geometry/multi/core/closure.hpp>
 #include <boost/geometry/multi/core/geometry_id.hpp>
 #include <boost/geometry/multi/core/interior_rings.hpp>
@@ -64,15 +63,14 @@
 #include <boost/geometry/multi/algorithms/detail/overlay/self_turn_points.hpp>
 
 #include <boost/geometry/multi/geometries/concepts/check.hpp>
-#include <boost/geometry/multi/geometries/concepts/multi_point_concept.hpp>
 #include <boost/geometry/multi/geometries/concepts/multi_linestring_concept.hpp>
+#include <boost/geometry/multi/geometries/concepts/multi_point_concept.hpp>
 #include <boost/geometry/multi/geometries/concepts/multi_polygon_concept.hpp>
 
-#include <boost/geometry/multi/views/detail/range_type.hpp>
 #include <boost/geometry/multi/strategies/cartesian/centroid_average.hpp>
+#include <boost/geometry/multi/views/detail/range_type.hpp>
 
 #include <boost/geometry/multi/io/dsv/write.hpp>
 #include <boost/geometry/multi/io/wkt/wkt.hpp>
-
 
 #endif // BOOST_GEOMETRY_MULTI_HPP

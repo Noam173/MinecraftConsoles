@@ -4,8 +4,8 @@
 
 // Copyright Aleksey Gurtovoy 2001-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -14,11 +14,11 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
-#include <boost/mpl/void_fwd.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/aux_/na_spec.hpp>
 #include <boost/mpl/aux_/config/msvc.hpp>
 #include <boost/mpl/aux_/config/workaround.hpp>
+#include <boost/mpl/aux_/na_spec.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/void_fwd.hpp>
 
 BOOST_MPL_AUX_ADL_BARRIER_NAMESPACE_OPEN
 
@@ -26,13 +26,19 @@ BOOST_MPL_AUX_ADL_BARRIER_NAMESPACE_OPEN
 //  instantiated so that it can be passed in as an object that can be
 //  used to select an overloaded function. Possible use includes signaling
 //  a zero arity functor evaluation call.
-struct void_ { typedef void_ type; };
+struct void_
+{
+    typedef void_ type;
+};
 
 BOOST_MPL_AUX_ADL_BARRIER_NAMESPACE_CLOSE
 
-namespace boost { namespace mpl {
+namespace boost
+{
+namespace mpl
+{
 
-template< typename T >
+template <typename T>
 struct is_void_
     : false_
 {
@@ -41,7 +47,7 @@ struct is_void_
 #endif
 };
 
-template<>
+template <>
 struct is_void_<void_>
     : true_
 {
@@ -50,7 +56,7 @@ struct is_void_<void_>
 #endif
 };
 
-template< typename T >
+template <typename T>
 struct is_not_void_
     : true_
 {
@@ -59,7 +65,7 @@ struct is_not_void_
 #endif
 };
 
-template<>
+template <>
 struct is_not_void_<void_>
     : false_
 {
@@ -71,6 +77,7 @@ struct is_not_void_<void_>
 BOOST_MPL_AUX_NA_SPEC(1, is_void_)
 BOOST_MPL_AUX_NA_SPEC(1, is_not_void_)
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_VOID_HPP_INCLUDED

@@ -1,9 +1,7 @@
-#include "stdafx.h"
 #include "TexOffs.h"
+#include "stdafx.h"
 
-TexOffs::TexOffs(int x, int y) :
-x(x),
-y(y)
+TexOffs::TexOffs(int x, int y) : x(x),
+                                 y(y)
 {
-
 }

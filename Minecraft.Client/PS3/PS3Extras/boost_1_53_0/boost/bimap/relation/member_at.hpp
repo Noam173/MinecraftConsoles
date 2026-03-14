@@ -12,17 +12,20 @@
 #ifndef BOOST_BIMAP_RELATION_MEMBER_AT_HPP
 #define BOOST_BIMAP_RELATION_MEMBER_AT_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
-namespace boost {
-namespace bimaps {
-namespace relation {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
 
-/// \brief member_at::side idiom to access relation values and types using metaprogramming. 
+/// \brief member_at::side idiom to access relation values and types using metaprogramming.
 /**
 
 This tags are used to specify which member you want to acces when using a metafunction over
@@ -40,30 +43,37 @@ value_type_of, pair_by, pair_type_by.
 
 \ingroup relation_group
                                                                                         **/
-namespace member_at {
+namespace member_at
+{
 
-    /// \brief Member at left tag
-    /**
-    See also member_at, rigth.
-                                            **/
+/// \brief Member at left tag
+/**
+See also member_at, rigth.
+                                        **/
 
-    struct left  {};
+struct left
+{
+};
 
-    /// \brief Member at right tag
-    /**
-    See also member_at, left.
-                                            **/
+/// \brief Member at right tag
+/**
+See also member_at, left.
+                                        **/
 
-    struct right {};
+struct right
+{
+};
 
-    /// \brief Member info tag
-    /**
-    See also member_at, left, right.
-                                            **/
+/// \brief Member info tag
+/**
+See also member_at, left, right.
+                                        **/
 
-    struct info  {};
+struct info
+{
+};
 
-}
+} // namespace member_at
 
 } // namespace relation
 } // namespace bimaps

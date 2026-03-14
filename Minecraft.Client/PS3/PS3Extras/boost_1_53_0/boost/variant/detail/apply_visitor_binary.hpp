@@ -20,12 +20,13 @@
 #include "boost/variant/detail/apply_visitor_unary.hpp"
 
 #if BOOST_WORKAROUND(__EDG__, BOOST_TESTED_AT(302))
-#include "boost/utility/enable_if.hpp"
 #include "boost/mpl/not.hpp"
 #include "boost/type_traits/is_const.hpp"
+#include "boost/utility/enable_if.hpp"
 #endif
 
-namespace boost {
+namespace boost
+{
 
 //////////////////////////////////////////////////////////////////////////
 // function template apply_visitor(visitor, visitable1, visitable2)
@@ -35,84 +36,75 @@ namespace boost {
 // expression visitor(x, y).
 //
 
-namespace detail { namespace variant {
+namespace detail
+{
+namespace variant
+{
 
 template <typename Visitor, typename Value1>
 class apply_visitor_binary_invoke
 {
-public: // visitor typedefs
-
+  public: // visitor typedefs
     typedef typename Visitor::result_type
         result_type;
 
-private: // representation
+  private: // representation
+    Visitor &visitor_;
+    Value1 &value1_;
 
-    Visitor& visitor_;
-    Value1& value1_;
-
-public: // structors
-
-    apply_visitor_binary_invoke(Visitor& visitor, Value1& value1)
-        : visitor_(visitor)
-        , value1_(value1)
+  public: // structors
+    apply_visitor_binary_invoke(Visitor &visitor, Value1 &value1)
+        : visitor_(visitor), value1_(value1)
     {
     }
 
-public: // visitor interfaces
-
+  public: // visitor interfaces
     template <typename Value2>
-        BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(result_type)
-    operator()(Value2& value2)
+    BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(result_type)
+    operator()(Value2 &value2)
     {
         return visitor_(value1_, value2);
     }
 
-private:
-    apply_visitor_binary_invoke& operator=(const apply_visitor_binary_invoke&);
-
+  private:
+    apply_visitor_binary_invoke &operator=(const apply_visitor_binary_invoke &);
 };
 
 template <typename Visitor, typename Visitable2>
 class apply_visitor_binary_unwrap
 {
-public: // visitor typedefs
-
+  public: // visitor typedefs
     typedef typename Visitor::result_type
         result_type;
 
-private: // representation
+  private: // representation
+    Visitor &visitor_;
+    Visitable2 &visitable2_;
 
-    Visitor& visitor_;
-    Visitable2& visitable2_;
-
-public: // structors
-
-    apply_visitor_binary_unwrap(Visitor& visitor, Visitable2& visitable2)
-        : visitor_(visitor)
-        , visitable2_(visitable2)
+  public: // structors
+    apply_visitor_binary_unwrap(Visitor &visitor, Visitable2 &visitable2)
+        : visitor_(visitor), visitable2_(visitable2)
     {
     }
 
-public: // visitor interfaces
-
+  public: // visitor interfaces
     template <typename Value1>
-        BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(result_type)
-    operator()(Value1& value1)
+    BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(result_type)
+    operator()(Value1 &value1)
     {
         apply_visitor_binary_invoke<
-              Visitor
-            , Value1
-            > invoker(visitor_, value1);
+            Visitor, Value1>
+            invoker(visitor_, value1);
 
         return boost::apply_visitor(invoker, visitable2_);
     }
 
-private:
-    apply_visitor_binary_unwrap& operator=(const apply_visitor_binary_unwrap&);
-
+  private:
+    apply_visitor_binary_unwrap &operator=(const apply_visitor_binary_unwrap &);
 };
 
-}} // namespace detail::variant
+} // namespace variant
+} // namespace detail
 
 //
 // nonconst-visitor version:
@@ -120,32 +112,26 @@ private:
 
 #if !BOOST_WORKAROUND(__EDG__, BOOST_TESTED_AT(302))
 
-#   define BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(V) \
+#define BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(V)   \
     BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(typename V::result_type) \
     /**/
 
 #else // EDG-based compilers
 
-#   define BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(V) \
-    typename enable_if< \
-          mpl::not_< is_const< V > > \
-        , BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(typename V::result_type) \
-        >::type \
-    /**/
+#define BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(V) \
+    typename enable_if<                                          \
+        mpl::not_<is_const<V>>, BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(typename V::result_type)>::type /**/
 
 #endif // EDG-based compilers workaround
 
 template <typename Visitor, typename Visitable1, typename Visitable2>
-inline
-    BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(Visitor)
-apply_visitor(
-      Visitor& visitor
-    , Visitable1& visitable1, Visitable2& visitable2
-    )
+inline BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(Visitor)
+    apply_visitor(
+        Visitor &visitor, Visitable1 &visitable1, Visitable2 &visitable2)
 {
     ::boost::detail::variant::apply_visitor_binary_unwrap<
-          Visitor, Visitable2
-        > unwrapper(visitor, visitable2);
+        Visitor, Visitable2>
+        unwrapper(visitor, visitable2);
 
     return boost::apply_visitor(unwrapper, visitable1);
 }
@@ -159,18 +145,14 @@ apply_visitor(
 #if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
 
 template <typename Visitor, typename Visitable1, typename Visitable2>
-inline
-    BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(
-          typename Visitor::result_type
-        )
-apply_visitor(
-      const Visitor& visitor
-    , Visitable1& visitable1, Visitable2& visitable2
-    )
+inline BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(
+    typename Visitor::result_type)
+    apply_visitor(
+        const Visitor &visitor, Visitable1 &visitable1, Visitable2 &visitable2)
 {
     ::boost::detail::variant::apply_visitor_binary_unwrap<
-          const Visitor, Visitable2
-        > unwrapper(visitor, visitable2);
+        const Visitor, Visitable2>
+        unwrapper(visitor, visitable2);
 
     return boost::apply_visitor(unwrapper, visitable1);
 }

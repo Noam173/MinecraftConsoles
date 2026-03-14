@@ -21,7 +21,9 @@
 
 #include <boost/geometry/util/select_most_precise.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace math
@@ -31,11 +33,10 @@ namespace math
 namespace detail
 {
 
-
 template <typename Type, bool IsFloatingPoint>
 struct equals
 {
-    static inline bool apply(Type const& a, Type const& b)
+    static inline bool apply(Type const &a, Type const &b)
     {
         return a == b;
     }
@@ -44,17 +45,17 @@ struct equals
 template <typename Type>
 struct equals<Type, true>
 {
-	static inline Type get_max(Type const& a, Type const& b, Type const& c)
-	{
-		return (std::max)((std::max)(a, b), c);
-	}
-
-    static inline bool apply(Type const& a, Type const& b)
+    static inline Type get_max(Type const &a, Type const &b, Type const &c)
     {
-		if (a == b)
-		{
-			return true;
-		}
+        return (std::max)((std::max)(a, b), c);
+    }
+
+    static inline bool apply(Type const &a, Type const &b)
+    {
+        if (a == b)
+        {
+            return true;
+        }
 
         // See http://www.parashift.com/c++-faq-lite/newbie.html#faq-29.17,
         // FUTURE: replace by some boost tool or boost::test::close_at_tolerance
@@ -65,7 +66,7 @@ struct equals<Type, true>
 template <typename Type, bool IsFloatingPoint>
 struct smaller
 {
-    static inline bool apply(Type const& a, Type const& b)
+    static inline bool apply(Type const &a, Type const &b)
     {
         return a < b;
     }
@@ -74,20 +75,20 @@ struct smaller
 template <typename Type>
 struct smaller<Type, true>
 {
-    static inline bool apply(Type const& a, Type const& b)
+    static inline bool apply(Type const &a, Type const &b)
     {
-		if (equals<Type, true>::apply(a, b))
-		{
-			return false;
-		}
-		return a < b;
+        if (equals<Type, true>::apply(a, b))
+        {
+            return false;
+        }
+        return a < b;
     }
 };
 
-
-template <typename Type, bool IsFloatingPoint> 
-struct equals_with_epsilon : public equals<Type, IsFloatingPoint> {};
-
+template <typename Type, bool IsFloatingPoint>
+struct equals_with_epsilon : public equals<Type, IsFloatingPoint>
+{
+};
 
 /*!
 \brief Short construct to enable partial specialization for PI, currently not possible in Math.
@@ -102,14 +103,14 @@ struct define_pi
     }
 };
 
-
 } // namespace detail
 #endif
 
-
 template <typename T>
-inline T pi() { return detail::define_pi<T>::apply(); }
-
+inline T pi()
+{
+    return detail::define_pi<T>::apply();
+}
 
 // Maybe replace this by boost equals or boost ublas numeric equals or so
 
@@ -127,50 +128,40 @@ inline T pi() { return detail::define_pi<T>::apply(); }
 */
 
 template <typename T1, typename T2>
-inline bool equals(T1 const& a, T2 const& b)
+inline bool equals(T1 const &a, T2 const &b)
 {
     typedef typename select_most_precise<T1, T2>::type select_type;
-    return detail::equals
-        <
-            select_type,
-            boost::is_floating_point<select_type>::type::value
-        >::apply(a, b);
+    return detail::equals<
+        select_type,
+        boost::is_floating_point<select_type>::type::value>::apply(a, b);
 }
 
 template <typename T1, typename T2>
-inline bool equals_with_epsilon(T1 const& a, T2 const& b)
+inline bool equals_with_epsilon(T1 const &a, T2 const &b)
 {
     typedef typename select_most_precise<T1, T2>::type select_type;
-    return detail::equals_with_epsilon
-        <
-            select_type, 
-            boost::is_floating_point<select_type>::type::value
-        >::apply(a, b);
+    return detail::equals_with_epsilon<
+        select_type,
+        boost::is_floating_point<select_type>::type::value>::apply(a, b);
 }
 
 template <typename T1, typename T2>
-inline bool smaller(T1 const& a, T2 const& b)
+inline bool smaller(T1 const &a, T2 const &b)
 {
     typedef typename select_most_precise<T1, T2>::type select_type;
-    return detail::smaller
-        <
-            select_type,
-            boost::is_floating_point<select_type>::type::value
-        >::apply(a, b);
+    return detail::smaller<
+        select_type,
+        boost::is_floating_point<select_type>::type::value>::apply(a, b);
 }
 
 template <typename T1, typename T2>
-inline bool larger(T1 const& a, T2 const& b)
+inline bool larger(T1 const &a, T2 const &b)
 {
     typedef typename select_most_precise<T1, T2>::type select_type;
-    return detail::smaller
-        <
-            select_type,
-            boost::is_floating_point<select_type>::type::value
-        >::apply(b, a);
+    return detail::smaller<
+        select_type,
+        boost::is_floating_point<select_type>::type::value>::apply(b, a);
 }
-
-
 
 double const d2r = geometry::math::pi<double>() / 180.0;
 double const r2d = 1.0 / d2r;
@@ -182,7 +173,7 @@ double const r2d = 1.0 / d2r;
     haversin(alpha) = sin2(alpha/2)
 */
 template <typename T>
-inline T hav(T const& theta)
+inline T hav(T const &theta)
 {
     T const half = T(0.5);
     T const sn = sin(half * theta);
@@ -196,27 +187,25 @@ inline T hav(T const& theta)
 \return The squared value
 */
 template <typename T>
-inline T sqr(T const& value)
+inline T sqr(T const &value)
 {
     return value * value;
 }
-
 
 /*!
 \brief Short utility to workaround gcc/clang problem that abs is converting to integer
 \ingroup utility
 */
-template<typename T>
-inline T abs(const T& t)
+template <typename T>
+inline T abs(const T &t)
 {
     using std::abs;
     return abs(t);
 }
 
-
 } // namespace math
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_MATH_HPP

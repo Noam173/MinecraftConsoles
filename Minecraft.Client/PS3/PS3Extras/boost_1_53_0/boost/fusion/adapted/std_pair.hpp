@@ -14,6 +14,6 @@
 #include <utility>
 
 BOOST_FUSION_ADAPT_TPL_STRUCT(
-    (T1)(T2),(std::pair)(T1)(T2),(T1, first)(T2, second))
+    (T1)(T2), (std::pair)(T1)(T2), (T1, first)(T2, second))
 
 #endif

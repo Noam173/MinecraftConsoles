@@ -14,24 +14,26 @@
 /// @cond
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
 //                        Standard predeclarations
 //////////////////////////////////////////////////////////////////////////////
 
-#include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/container/container_fwd.hpp>
+#include <boost/interprocess/detail/config_begin.hpp>
 
-namespace boost {
-namespace interprocess {
+namespace boost
+{
+namespace interprocess
+{
 
 using boost::container::ordered_range;
 using boost::container::ordered_unique_range;
 
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 

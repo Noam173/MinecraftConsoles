@@ -14,21 +14,20 @@
 #ifndef BOOST_GEOMETRY_VIEWS_SEGMENT_VIEW_HPP
 #define BOOST_GEOMETRY_VIEWS_SEGMENT_VIEW_HPP
 
-
 #include <boost/range.hpp>
 
+#include <boost/geometry/algorithms/assign.hpp>
 #include <boost/geometry/core/point_type.hpp>
 #include <boost/geometry/views/detail/points_view.hpp>
-#include <boost/geometry/algorithms/assign.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 /*!
 \brief Makes a segment behave like a linestring or a range
-\details Adapts a segment to the Boost.Range concept, enabling the user to 
+\details Adapts a segment to the Boost.Range concept, enabling the user to
     iterate the two segment points. The segment_view is registered as a LineString Concept
 \tparam Segment \tparam_geometry{Segment}
 \ingroup views
@@ -43,39 +42,37 @@ namespace boost { namespace geometry
 */
 template <typename Segment>
 struct segment_view
-    : public detail::points_view
-        <
-            typename geometry::point_type<Segment>::type, 
-            2
-        >
+    : public detail::points_view<
+          typename geometry::point_type<Segment>::type,
+          2>
 {
     typedef typename geometry::point_type<Segment>::type point_type;
-    
+
     /// Constructor accepting the segment to adapt
-    explicit segment_view(Segment const& segment)
+    explicit segment_view(Segment const &segment)
         : detail::points_view<point_type, 2>(copy_policy(segment))
-    {}
-    
-private :    
-    
+    {
+    }
+
+  private:
     class copy_policy
     {
-    public :
-        inline copy_policy(Segment const& segment)
+      public:
+        inline copy_policy(Segment const &segment)
             : m_segment(segment)
-        {}
-        
-        inline void apply(point_type* points) const
+        {
+        }
+
+        inline void apply(point_type *points) const
         {
             geometry::detail::assign_point_from_index<0>(m_segment, points[0]);
             geometry::detail::assign_point_from_index<1>(m_segment, points[1]);
         }
-    private :
-        Segment const& m_segment;
+
+      private:
+        Segment const &m_segment;
     };
-
 };
-
 
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
@@ -83,18 +80,17 @@ private :
 namespace traits
 {
 
-template<typename Segment>
-struct tag<segment_view<Segment> >
+template <typename Segment>
+struct tag<segment_view<Segment>>
 {
     typedef linestring_tag type;
 };
 
-}
+} // namespace traits
 
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_VIEWS_SEGMENT_VIEW_HPP

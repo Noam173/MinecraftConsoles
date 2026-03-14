@@ -9,63 +9,73 @@
 #define BOOST_IOSTREAMS_INPUT_SEQUENCE_HPP_INCLUDED
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <utility>           // pair.
-#include <boost/config.hpp>  // DEDUCED_TYPENAME, MSVC.
+#include <boost/config.hpp> // DEDUCED_TYPENAME, MSVC.
 #include <boost/detail/workaround.hpp>
 #include <boost/iostreams/detail/wrap_unwrap.hpp>
-#include <boost/iostreams/operations_fwd.hpp>  // is_custom 
+#include <boost/iostreams/operations_fwd.hpp> // is_custom
 #include <boost/iostreams/traits.hpp>
 #include <boost/mpl/if.hpp>
+#include <utility> // pair.
 
 // Must come last.
 #include <boost/iostreams/detail/config/disable_warnings.hpp>
 
-namespace boost { namespace iostreams {
+namespace boost
+{
+namespace iostreams
+{
 
-namespace detail {
+namespace detail
+{
 
-template<typename T>
+template <typename T>
 struct input_sequence_impl;
 
 } // End namespace detail.
 
-template<typename T>
+template <typename T>
 inline std::pair<
-    BOOST_DEDUCED_TYPENAME char_type_of<T>::type*,
-    BOOST_DEDUCED_TYPENAME char_type_of<T>::type*
->
-input_sequence(T& t)
-{ return detail::input_sequence_impl<T>::input_sequence(t); }
+    BOOST_DEDUCED_TYPENAME char_type_of<T>::type *,
+    BOOST_DEDUCED_TYPENAME char_type_of<T>::type *>
+input_sequence(T &t)
+{
+    return detail::input_sequence_impl<T>::input_sequence(t);
+}
 
-namespace detail {
+namespace detail
+{
 
 //------------------Definition of direct_impl-------------------------------//
 
-template<typename T>
+template <typename T>
 struct input_sequence_impl
     : mpl::if_<
           detail::is_custom<T>,
           operations<T>,
-          input_sequence_impl<direct_tag>
-      >::type
-    { };
+          input_sequence_impl<direct_tag>>::type
+{
+};
 
-template<>
-struct input_sequence_impl<direct_tag> {
-    template<typename U>
+template <>
+struct input_sequence_impl<direct_tag>
+{
+    template <typename U>
     static std::pair<
-        BOOST_DEDUCED_TYPENAME char_type_of<U>::type*,
-        BOOST_DEDUCED_TYPENAME char_type_of<U>::type*
-    >
-    input_sequence(U& u) { return u.input_sequence(); }
+        BOOST_DEDUCED_TYPENAME char_type_of<U>::type *,
+        BOOST_DEDUCED_TYPENAME char_type_of<U>::type *>
+    input_sequence(U &u)
+    {
+        return u.input_sequence();
+    }
 };
 
 } // End namespace detail.
 
-} } // End namespaces iostreams, boost.
+} // namespace iostreams
+} // namespace boost
 
 #include <boost/iostreams/detail/config/enable_warnings.hpp>
 

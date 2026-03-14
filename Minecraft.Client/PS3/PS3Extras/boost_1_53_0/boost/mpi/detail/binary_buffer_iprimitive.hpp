@@ -9,113 +9,118 @@
 #ifndef BOOST_MPI_BINARY_BUFFER_IPRIMITIVE_HPP
 #define BOOST_MPI_BINARY_BUFFER_IPRIMITIVE_HPP
 
-#include <mpi.h>
-#include <iostream>
-#include <cstddef> // size_t
-#include <boost/config.hpp>
-#include <boost/mpi/exception.hpp>
 #include <boost/assert.hpp>
+#include <boost/config.hpp>
+#include <boost/mpi/allocator.hpp>
+#include <boost/mpi/exception.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/is_bitwise_serializable.hpp>
-#include <vector>
-#include <boost/mpi/allocator.hpp>
+#include <cstddef> // size_t
 #include <cstring> // for memcpy
+#include <iostream>
+#include <mpi.h>
+#include <vector>
 
-namespace boost { namespace mpi {
+namespace boost
+{
+namespace mpi
+{
 
 /// deserialization using MPI_Unpack
 
 class BOOST_MPI_DECL binary_buffer_iprimitive
 {
-public:
+  public:
     /// the type of the buffer from which the data is unpacked upon deserialization
-    typedef std::vector<char, allocator<char> > buffer_type;
+    typedef std::vector<char, allocator<char>> buffer_type;
 
-    binary_buffer_iprimitive(buffer_type & b, MPI_Comm const &, int position = 0)
-     : buffer_(b),
-       position(position)
+    binary_buffer_iprimitive(buffer_type &b, MPI_Comm const &, int position = 0)
+        : buffer_(b),
+          position(position)
     {
     }
 
-    void* address ()
+    void *address()
     {
-      return &buffer_.front();
+        return &buffer_.front();
     }
 
-    void const* address () const
+    void const *address() const
     {
-      return &buffer_.front();
+        return &buffer_.front();
     }
 
-    const std::size_t& size() const
+    const std::size_t &size() const
     {
-      return size_ = buffer_.size();
+        return size_ = buffer_.size();
     }
 
     void resize(std::size_t s)
     {
-      buffer_.resize(s);
+        buffer_.resize(s);
     }
 
     void load_binary(void *address, std::size_t count)
     {
-      load_impl(address,count);
+        load_impl(address, count);
     }
 
     // fast saving of arrays of fundamental types
-    template<class T>
-    void load_array(serialization::array<T> const& x, unsigned int /* file_version */)
+    template <class T>
+    void load_array(serialization::array<T> const &x, unsigned int /* file_version */)
     {
-      BOOST_MPL_ASSERT((serialization::is_bitwise_serializable<BOOST_DEDUCED_TYPENAME remove_const<T>::type>));
-      if (x.count())
-        load_impl(x.address(), sizeof(T)*x.count());
+        BOOST_MPL_ASSERT((serialization::is_bitwise_serializable<BOOST_DEDUCED_TYPENAME remove_const<T>::type>));
+        if (x.count())
+        {
+            load_impl(x.address(), sizeof(T) * x.count());
+        }
     }
 
     typedef serialization::is_bitwise_serializable<mpl::_1> use_array_optimization;
 
-    template<class T>
-    void load(serialization::array<T> const& x)
+    template <class T>
+    void load(serialization::array<T> const &x)
     {
-      load_array(x,0u);
+        load_array(x, 0u);
     }
 
     // default saving of primitives.
-    template<class T>
-    void load( T & t)
+    template <class T>
+    void load(T &t)
     {
-      BOOST_MPL_ASSERT((serialization::is_bitwise_serializable<BOOST_DEDUCED_TYPENAME remove_const<T>::type>));
-      load_impl(&t, sizeof(T));
+        BOOST_MPL_ASSERT((serialization::is_bitwise_serializable<BOOST_DEDUCED_TYPENAME remove_const<T>::type>));
+        load_impl(&t, sizeof(T));
     }
 
-    template<class CharType>
-    void load(std::basic_string<CharType> & s)
+    template <class CharType>
+    void load(std::basic_string<CharType> &s)
     {
-      unsigned int l;
-      load(l);
-      // borland de-allocator fixup
-      #if BOOST_WORKAROUND(_RWSTD_VER, BOOST_TESTED_AT(20101))
-      if(NULL != s.data())
-      #endif
-      s.resize(l);
-      // note breaking a rule here - could be a problem on some platform
-      load_impl(const_cast<char *>(s.data()),l);
+        unsigned int l;
+        load(l);
+// borland de-allocator fixup
+#if BOOST_WORKAROUND(_RWSTD_VER, BOOST_TESTED_AT(20101))
+        if (NULL != s.data())
+#endif
+            s.resize(l);
+        // note breaking a rule here - could be a problem on some platform
+        load_impl(const_cast<char *>(s.data()), l);
     }
 
-private:
-
-    void load_impl(void * p, int l)
+  private:
+    void load_impl(void *p, int l)
     {
-      assert(position+l<=static_cast<int>(buffer_.size()));
-      std::memcpy(p,&buffer_[position],l);
-      position += l;
+        assert(position + l <= static_cast<int>(buffer_.size()));
+        std::memcpy(p, &buffer_[position], l);
+        position += l;
     }
 
-    buffer_type & buffer_;
+    buffer_type &buffer_;
     mutable std::size_t size_;
     int position;
 };
 
-} } // end namespace boost::mpi
+} // namespace mpi
+} // namespace boost
 
 #endif // BOOST_MPI_PACKED_IPRIMITIVE_HPP

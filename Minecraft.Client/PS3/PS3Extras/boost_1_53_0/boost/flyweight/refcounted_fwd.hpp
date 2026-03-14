@@ -9,13 +9,15 @@
 #ifndef BOOST_FLYWEIGHT_REFCOUNTED_FWD_HPP
 #define BOOST_FLYWEIGHT_REFCOUNTED_FWD_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
-namespace boost{
+namespace boost
+{
 
-namespace flyweights{
+namespace flyweights
+{
 
 struct refcounted;
 

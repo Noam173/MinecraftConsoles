@@ -12,7 +12,7 @@
 #define BOOST_INTERPROCESS_MUTEX_FAMILY_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 #include <boost/interprocess/detail/config_begin.hpp>
@@ -23,34 +23,34 @@
 #include <boost/interprocess/sync/null_mutex.hpp>
 
 //!\file
-//!Describes a shared interprocess_mutex family fit algorithm used to allocate objects in shared memory.
+//! Describes a shared interprocess_mutex family fit algorithm used to allocate objects in shared memory.
 
-namespace boost {
+namespace boost
+{
 
-namespace interprocess {
+namespace interprocess
+{
 
-//!Describes interprocess_mutex family to use with Interprocess framework
-//!based on boost::interprocess synchronization objects.
+//! Describes interprocess_mutex family to use with Interprocess framework
+//! based on boost::interprocess synchronization objects.
 struct mutex_family
 {
-   typedef boost::interprocess::interprocess_mutex                 mutex_type;
-   typedef boost::interprocess::interprocess_recursive_mutex       recursive_mutex_type;
+    typedef boost::interprocess::interprocess_mutex mutex_type;
+    typedef boost::interprocess::interprocess_recursive_mutex recursive_mutex_type;
 };
 
-//!Describes interprocess_mutex family to use with Interprocess frameworks
-//!based on null operation synchronization objects.
+//! Describes interprocess_mutex family to use with Interprocess frameworks
+//! based on null operation synchronization objects.
 struct null_mutex_family
 {
-   typedef boost::interprocess::null_mutex                   mutex_type;
-   typedef boost::interprocess::null_mutex                   recursive_mutex_type;
+    typedef boost::interprocess::null_mutex mutex_type;
+    typedef boost::interprocess::null_mutex recursive_mutex_type;
 };
 
-}  //namespace interprocess {
+} // namespace interprocess
 
-}  //namespace boost {
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif   //#ifndef BOOST_INTERPROCESS_MUTEX_FAMILY_HPP
-
-
+#endif // #ifndef BOOST_INTERPROCESS_MUTEX_FAMILY_HPP

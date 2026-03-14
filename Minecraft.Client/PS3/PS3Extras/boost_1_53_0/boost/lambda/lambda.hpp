@@ -5,11 +5,10 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
-// For more information, see http://lambda.cs.utu.fi 
+// For more information, see http://lambda.cs.utu.fi
 
 #ifndef BOOST_LAMBDA_LAMBDA_HPP
 #define BOOST_LAMBDA_LAMBDA_HPP
-
 
 #include "boost/lambda/core.hpp"
 
@@ -22,13 +21,11 @@
 #include "boost/lambda/detail/operator_lambda_func_base.hpp"
 #include "boost/lambda/detail/operator_return_type_traits.hpp"
 
-
 #include "boost/lambda/detail/operators.hpp"
 
 #ifndef BOOST_LAMBDA_FAILS_IN_TEMPLATE_KEYWORD_AFTER_SCOPE_OPER
 // sorry, member ptr does not work with gcc2.95
 #include "boost/lambda/detail/member_ptr.hpp"
 #endif
-
 
 #endif

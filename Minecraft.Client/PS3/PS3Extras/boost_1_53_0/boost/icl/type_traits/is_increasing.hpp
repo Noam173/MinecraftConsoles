@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------+    
+/*-----------------------------------------------------------------------------+
 Copyright (c) 2011-2011: Joachim Faulhaber
 +------------------------------------------------------------------------------+
    Distributed under the Boost Software License, Version 1.0.
@@ -10,7 +10,9 @@ Copyright (c) 2011-2011: Joachim Faulhaber
 
 #include <functional>
 
-namespace boost{ namespace icl
+namespace boost
+{
+namespace icl
 {
 
 template <class DomainT, class Compare>
@@ -21,14 +23,13 @@ struct is_increasing
 };
 
 template <class DomainT>
-struct is_increasing<DomainT, std::greater<DomainT> >
+struct is_increasing<DomainT, std::greater<DomainT>>
 {
     typedef is_increasing type;
     BOOST_STATIC_CONSTANT(bool, value = false);
 };
 
-}} // namespace boost icl
+} // namespace icl
+} // namespace boost
 
 #endif
-
-

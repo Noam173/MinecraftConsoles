@@ -16,37 +16,34 @@
 
 #include <boost/range.hpp>
 
-#include <boost/geometry/multi/core/tags.hpp>
 #include <boost/geometry/algorithms/detail/point_on_border.hpp>
+#include <boost/geometry/multi/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace point_on_border
+namespace detail
+{
+namespace point_on_border
 {
 
-
-template
-<
+template <
     typename Point,
     typename MultiGeometry,
-    typename Policy
->
+    typename Policy>
 struct point_on_multi
 {
-    static inline bool apply(Point& point, MultiGeometry const& multi, bool midpoint)
+    static inline bool apply(Point &point, MultiGeometry const &multi, bool midpoint)
     {
         // Take a point on the first multi-geometry
         // (i.e. the first that is not empty)
-        for (typename boost::range_iterator
-                <
-                    MultiGeometry const
-                >::type it = boost::begin(multi);
-            it != boost::end(multi);
-            ++it)
+        for (typename boost::range_iterator<
+                 MultiGeometry const>::type it = boost::begin(multi);
+             it != boost::end(multi);
+             ++it)
         {
             if (Policy::apply(point, *it, midpoint))
             {
@@ -57,39 +54,29 @@ struct point_on_multi
     }
 };
 
-
-
-
-}} // namespace detail::point_on_border
+} // namespace point_on_border
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
-template<typename Point, typename Multi>
+template <typename Point, typename Multi>
 struct point_on_border<multi_polygon_tag, Point, Multi>
-    : detail::point_on_border::point_on_multi
-        <
-            Point,
-            Multi,
-            detail::point_on_border::point_on_polygon
-                <
-                    Point,
-                    typename boost::range_value<Multi>::type
-                >
-        >
-{};
-
-
+    : detail::point_on_border::point_on_multi<
+          Point,
+          Multi,
+          detail::point_on_border::point_on_polygon<
+              Point,
+              typename boost::range_value<Multi>::type>>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_POINT_ON_BORDER_HPP

@@ -22,84 +22,94 @@
 #define BOOST_UUID_SEED_RNG_HPP
 
 #include <boost/config.hpp>
-#include <cstring> // for memcpy
-#include <limits>
-#include <ctime> // for time_t, time, clock_t, clock
-#include <cstdlib> // for rand
-#include <cstdio> // for FILE, fopen, fread, fclose
 #include <boost/uuid/sha1.hpp>
-//#include <boost/nondet_random.hpp> //forward declare boost::random::random_device
+#include <cstdio>  // for FILE, fopen, fread, fclose
+#include <cstdlib> // for rand
+#include <cstring> // for memcpy
+#include <ctime>   // for time_t, time, clock_t, clock
+#include <limits>
+// #include <boost/nondet_random.hpp> //forward declare boost::random::random_device
 
 // can't use boost::generator_iterator since boost::random number seed(Iter&, Iter)
 // functions need a last iterator
-//#include <boost/generator_iterator.hpp>
-# include <boost/iterator/iterator_facade.hpp>
+// #include <boost/generator_iterator.hpp>
+#include <boost/iterator/iterator_facade.hpp>
 
 #if defined(_MSC_VER)
-#pragma warning(push) // Save warning settings.
+#pragma warning(push)           // Save warning settings.
 #pragma warning(disable : 4996) // Disable deprecated std::fopen
 #endif
 
 #ifdef BOOST_NO_STDC_NAMESPACE
-namespace std {
-    using ::memcpy;
-    using ::time_t;
-    using ::time;
-    using ::clock_t;
-    using ::clock;
-    using ::rand;
-    using ::FILE;
-    using ::fopen;
-    using ::fread;
-    using ::fclose;
-} //namespace std
+namespace std
+{
+using ::clock;
+using ::clock_t;
+using ::fclose;
+using ::FILE;
+using ::fopen;
+using ::fread;
+using ::memcpy;
+using ::rand;
+using ::time;
+using ::time_t;
+} // namespace std
 #endif
 
 // forward declare random number generators
-namespace boost { namespace random {
+namespace boost
+{
+namespace random
+{
 class random_device;
-}} //namespace boost::random
+}
+} // namespace boost
 
-namespace boost {
-namespace uuids {
-namespace detail {
+namespace boost
+{
+namespace uuids
+{
+namespace detail
+{
 
 // should this be part of Boost.Random?
 class seed_rng
 {
-public:
+  public:
     typedef unsigned int result_type;
     BOOST_STATIC_CONSTANT(bool, has_fixed_range = false);
-    //BOOST_STATIC_CONSTANT(unsigned int, min_value = 0);
-    //BOOST_STATIC_CONSTANT(unsigned int, max_value = UINT_MAX);
+    // BOOST_STATIC_CONSTANT(unsigned int, min_value = 0);
+    // BOOST_STATIC_CONSTANT(unsigned int, max_value = UINT_MAX);
 
-public:
+  public:
     // note: rd_ intentionally left uninitialized
     seed_rng()
-        : rd_index_(5)
-        , random_(std::fopen( "/dev/urandom", "rb" ))
-    {}
+        : rd_index_(5), random_(std::fopen("/dev/urandom", "rb"))
+    {
+    }
 
     ~seed_rng()
     {
-        if (random_) {
+        if (random_)
+        {
             std::fclose(random_);
         }
     }
 
-    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION () const
+    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION() const
     {
         return (std::numeric_limits<result_type>::min)();
     }
-    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION () const
+    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION() const
     {
         return (std::numeric_limits<result_type>::max)();
     }
 
     result_type operator()()
     {
-        if (rd_index_ >= 5) {
-            //get new digest
+        if (rd_index_ >= 5)
+        {
+            // get new digest
             sha1_random_digest_();
 
             rd_index_ = 0;
@@ -108,12 +118,14 @@ public:
         return rd_[rd_index_++];
     }
 
-private:
-    inline void ignore_size(size_t) {}
-
-    static unsigned int * sha1_random_digest_state_()
+  private:
+    inline void ignore_size(size_t)
     {
-        static unsigned int state[ 5 ];
+    }
+
+    static unsigned int *sha1_random_digest_state_()
+    {
+        static unsigned int state[5];
         return state;
     }
 
@@ -121,127 +133,121 @@ private:
     {
         boost::uuids::detail::sha1 sha;
 
-        unsigned int * ps = sha1_random_digest_state_();
+        unsigned int *ps = sha1_random_digest_state_();
 
-        unsigned int state[ 5 ];
-        std::memcpy( state, ps, sizeof( state ) ); // harmless data race
+        unsigned int state[5];
+        std::memcpy(state, ps, sizeof(state)); // harmless data race
 
-        sha.process_bytes( (unsigned char const*)state, sizeof( state ) );
-        sha.process_bytes( (unsigned char const*)&ps, sizeof( ps ) );
+        sha.process_bytes((unsigned char const *)state, sizeof(state));
+        sha.process_bytes((unsigned char const *)&ps, sizeof(ps));
 
         {
-            std::time_t tm = std::time( 0 );
-            sha.process_bytes( (unsigned char const*)&tm, sizeof( tm ) );
+            std::time_t tm = std::time(0);
+            sha.process_bytes((unsigned char const *)&tm, sizeof(tm));
         }
 
         {
             std::clock_t ck = std::clock();
-            sha.process_bytes( (unsigned char const*)&ck, sizeof( ck ) );
+            sha.process_bytes((unsigned char const *)&ck, sizeof(ck));
         }
 
         {
             unsigned int rn[] =
-                { static_cast<unsigned int>(std::rand())
-                , static_cast<unsigned int>(std::rand())
-                , static_cast<unsigned int>(std::rand())
-                };
-            sha.process_bytes( (unsigned char const*)rn, sizeof( rn ) );
+                {static_cast<unsigned int>(std::rand()), static_cast<unsigned int>(std::rand()), static_cast<unsigned int>(std::rand())};
+            sha.process_bytes((unsigned char const *)rn, sizeof(rn));
         }
 
         {
             // intentionally left uninitialized
-            unsigned char buffer[ 20 ];
+            unsigned char buffer[20];
 
-            if(random_)
+            if (random_)
             {
-                ignore_size(std::fread( buffer, 1, 20, random_ ));
+                ignore_size(std::fread(buffer, 1, 20, random_));
             }
 
             // using an uninitialized buffer[] if fopen fails
             // intentional, we rely on its contents being random
-            sha.process_bytes( buffer, sizeof( buffer ) );
+            sha.process_bytes(buffer, sizeof(buffer));
         }
 
         {
             // *p is intentionally left uninitialized
-            unsigned int * p = new unsigned int;
+            unsigned int *p = new unsigned int;
 
-            sha.process_bytes( (unsigned char const*)p, sizeof( *p ) );
-            sha.process_bytes( (unsigned char const*)&p, sizeof( p ) );
+            sha.process_bytes((unsigned char const *)p, sizeof(*p));
+            sha.process_bytes((unsigned char const *)&p, sizeof(p));
 
             delete p;
         }
 
-        sha.process_bytes( (unsigned char const*)rd_, sizeof( rd_ ) );
+        sha.process_bytes((unsigned char const *)rd_, sizeof(rd_));
 
-        unsigned int digest[ 5 ];
-        sha.get_digest( digest );
+        unsigned int digest[5];
+        sha.get_digest(digest);
 
-        for( int i = 0; i < 5; ++i )
+        for (int i = 0; i < 5; ++i)
         {
             // harmless data race
-            ps[ i ] ^= digest[ i ];
-            rd_[ i ] ^= digest[ i ];
+            ps[i] ^= digest[i];
+            rd_[i] ^= digest[i];
         }
     }
 
-private:
+  private:
     unsigned int rd_[5];
     int rd_index_;
-    std::FILE * random_;
+    std::FILE *random_;
 
-private: // make seed_rng noncopyable
-    seed_rng(seed_rng const&);
-    seed_rng& operator=(seed_rng const&);
+  private: // make seed_rng noncopyable
+    seed_rng(seed_rng const &);
+    seed_rng &operator=(seed_rng const &);
 };
 
 // almost a copy of boost::generator_iterator
 // but default constructor sets m_g to NULL
 template <class Generator>
 class generator_iterator
-  : public iterator_facade<
-        generator_iterator<Generator>
-      , typename Generator::result_type
-      , single_pass_traversal_tag
-      , typename Generator::result_type const&
-    >
+    : public iterator_facade<
+          generator_iterator<Generator>, typename Generator::result_type, single_pass_traversal_tag, typename Generator::result_type const &>
 {
     typedef iterator_facade<
-        generator_iterator<Generator>
-      , typename Generator::result_type
-      , single_pass_traversal_tag
-      , typename Generator::result_type const&
-    > super_t;
+        generator_iterator<Generator>, typename Generator::result_type, single_pass_traversal_tag, typename Generator::result_type const &>
+        super_t;
 
- public:
-    generator_iterator() : m_g(NULL), m_value(0) {}
-    generator_iterator(Generator* g) : m_g(g), m_value((*m_g)()) {}
+  public:
+    generator_iterator() : m_g(NULL), m_value(0)
+    {
+    }
+    generator_iterator(Generator *g) : m_g(g), m_value((*m_g)())
+    {
+    }
 
     void increment()
     {
         m_value = (*m_g)();
     }
 
-    const typename Generator::result_type&
+    const typename Generator::result_type &
     dereference() const
     {
         return m_value;
     }
 
-    bool equal(generator_iterator const& y) const
+    bool equal(generator_iterator const &y) const
     {
         return this->m_g == y.m_g && this->m_value == y.m_value;
     }
 
- private:
-    Generator* m_g;
+  private:
+    Generator *m_g;
     typename Generator::result_type m_value;
 };
 
 // seed() seeds a random number generator with good seed values
 
 template <typename UniformRandomNumberGenerator>
-inline void seed(UniformRandomNumberGenerator& rng)
+inline void seed(UniformRandomNumberGenerator &rng)
 {
     seed_rng seed_gen;
     generator_iterator<seed_rng> begin(&seed_gen);
@@ -251,13 +257,19 @@ inline void seed(UniformRandomNumberGenerator& rng)
 
 // random_device does not / can not be seeded
 template <>
-inline void seed<boost::random::random_device>(boost::random::random_device&) {}
+inline void seed<boost::random::random_device>(boost::random::random_device &)
+{
+}
 
 // random_device does not / can not be seeded
 template <>
-inline void seed<seed_rng>(seed_rng&) {}
+inline void seed<seed_rng>(seed_rng &)
+{
+}
 
-}}} //namespace boost::uuids::detail
+} // namespace detail
+} // namespace uuids
+} // namespace boost
 
 #if defined(_MSC_VER)
 #pragma warning(pop) // Restore warnings to previous state.

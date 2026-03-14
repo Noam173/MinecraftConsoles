@@ -9,45 +9,41 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_APPEND_NO_DUPLICATES_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_APPEND_NO_DUPLICATES_HPP
 
-
 #include <boost/range.hpp>
 
 #include <boost/geometry/algorithms/append.hpp>
 #include <boost/geometry/algorithms/detail/disjoint.hpp>
 
-
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
+{
+namespace overlay
 {
 
 template <typename Range, typename Point>
-inline void append_no_duplicates(Range& range, Point const& point, bool force = false)
+inline void append_no_duplicates(Range &range, Point const &point, bool force = false)
 {
-    if (boost::size(range) == 0
-        || force 
-        || ! geometry::detail::equals::equals_point_point(*(boost::end(range)-1), point))
+    if (boost::size(range) == 0 || force || !geometry::detail::equals::equals_point_point(*(boost::end(range) - 1), point))
     {
 #ifdef BOOST_GEOMETRY_DEBUG_INTERSECTION
         std::cout << "  add: ("
-            << geometry::get<0>(point) << ", " << geometry::get<1>(point) << ")"
-            << std::endl;
+                  << geometry::get<0>(point) << ", " << geometry::get<1>(point) << ")"
+                  << std::endl;
 #endif
         geometry::append(range, point);
     }
 }
 
-
-}} // namespace detail::overlay
+} // namespace overlay
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_APPEND_NO_DUPLICATES_HPP

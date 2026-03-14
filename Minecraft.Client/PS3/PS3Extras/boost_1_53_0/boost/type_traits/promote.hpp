@@ -7,34 +7,31 @@
 #define FILE_boost_type_traits_promote_hpp_INCLUDED
 
 #include <boost/config.hpp>
-#include <boost/type_traits/integral_promotion.hpp>
 #include <boost/type_traits/floating_point_promotion.hpp>
+#include <boost/type_traits/integral_promotion.hpp>
 
 // Should be the last #include
 #include <boost/type_traits/detail/type_trait_def.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace detail {
+namespace detail
+{
 
-template<class T>
+template <class T>
 struct promote_impl
-  : public integral_promotion<
-        BOOST_DEDUCED_TYPENAME floating_point_promotion<T>::type
-      >
+    : public integral_promotion<
+          BOOST_DEDUCED_TYPENAME floating_point_promotion<T>::type>
 {
 };
 
-}
+} // namespace detail
 
 BOOST_TT_AUX_TYPE_TRAIT_DEF1(
-      promote
-    , T
-    , BOOST_DEDUCED_TYPENAME boost::detail::promote_impl<T>::type
-    )
-}
+    promote, T, BOOST_DEDUCED_TYPENAME boost::detail::promote_impl<T>::type)
+} // namespace boost
 
 #include <boost/type_traits/detail/type_trait_undef.hpp>
 
 #endif // #ifndef FILE_boost_type_traits_promote_hpp_INCLUDED
-

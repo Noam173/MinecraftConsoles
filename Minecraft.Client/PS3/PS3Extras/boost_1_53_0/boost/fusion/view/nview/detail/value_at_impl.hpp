@@ -1,7 +1,7 @@
 /*=============================================================================
     Copyright (c) 2009 Hartmut Kaiser
 
-    Distributed under the Boost Software License, Version 1.0. (See accompanying 
+    Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
 
@@ -10,30 +10,33 @@
 
 #include <boost/fusion/sequence/intrinsic/value_at.hpp>
 
-namespace boost { namespace fusion 
+namespace boost
 {
-    struct nview_tag;
+namespace fusion
+{
+struct nview_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct value_at_impl;
+
+template <>
+struct value_at_impl<nview_tag>
+{
+    template <typename Sequence, typename N>
+    struct apply
     {
-        template<typename Tag>
-        struct value_at_impl;
+        typedef typename Sequence::sequence_type sequence_type;
+        typedef typename Sequence::index_type index_type;
 
-        template<>
-        struct value_at_impl<nview_tag>
-        {
-            template<typename Sequence, typename N>
-            struct apply
-            {
-                typedef typename Sequence::sequence_type sequence_type;
-                typedef typename Sequence::index_type index_type;
+        typedef typename result_of::at<index_type, N>::type index;
+        typedef typename result_of::at<sequence_type, index>::type type;
+    };
+};
+} // namespace extension
 
-                typedef typename result_of::at<index_type, N>::type index;
-                typedef typename result_of::at<sequence_type, index>::type type;
-            };
-        };
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif

@@ -8,8 +8,8 @@
 #ifndef BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_HPP_
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_HPP_
 
-#include <boost/local_function/detail/preprocessor/keyword/facility/is.hpp>
 #include <boost/local_function/detail/preprocessor/keyword/facility/add.hpp>
+#include <boost/local_function/detail/preprocessor/keyword/facility/is.hpp>
 #include <boost/local_function/detail/preprocessor/keyword/facility/remove.hpp>
 
 // PRIVATE //
@@ -25,36 +25,35 @@
 // Is.
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_FRONT(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_IS_)
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_FRONT(tokens,      \
+                                                             BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_IS_)
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_BACK(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_BACK(tokens, \
-            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_IS)
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_BACK(tokens,      \
+                                                            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_IS)
 
 // Remove.
 
-#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_REMOVE_FRONT(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_FRONT, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_REMOVE_)
+#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_REMOVE_FRONT(tokens)                                               \
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_FRONT(tokens,                                                    \
+                                                                 BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_FRONT, \
+                                                                 BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_REMOVE_)
 
-#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_REMOVE_BACK(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_BACK(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_BACK, \
-            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_REMOVE)
+#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_REMOVE_BACK(tokens)                                              \
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_BACK(tokens,                                                   \
+                                                                BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_BACK, \
+                                                                _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_REMOVE)
 
 // Add.
 
-#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_ADD_FRONT(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_FRONT, \
-            recursive)
+#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_ADD_FRONT(tokens)                                               \
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_FRONT(tokens,                                                    \
+                                                              BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_FRONT, \
+                                                              recursive)
 
-#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_ADD_BACK(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_BACK(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_BACK, \
-            recursive)
+#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_RECURSIVE_ADD_BACK(tokens)                                              \
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_BACK(tokens,                                                   \
+                                                             BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_RECURSIVE_BACK, \
+                                                             recursive)
 
 #endif // #include guard
-

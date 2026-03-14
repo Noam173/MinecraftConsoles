@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,17 +11,20 @@
 #ifndef BOOST_UNITS_SI_MOMENT_OF_INERTIA_HPP
 #define BOOST_UNITS_SI_MOMENT_OF_INERTIA_HPP
 
-#include <boost/units/systems/si/base.hpp>
 #include <boost/units/physical_dimensions/moment_of_inertia.hpp>
+#include <boost/units/systems/si/base.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units { 
+namespace units
+{
 
-namespace si {
+namespace si
+{
 
-typedef unit<moment_of_inertia_dimension,si::system>      moment_of_inertia;
-    
+typedef unit<moment_of_inertia_dimension, si::system> moment_of_inertia;
+
 } // namespace si
 
 } // namespace units

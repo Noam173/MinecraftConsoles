@@ -1,8 +1,8 @@
-#include "stdafx.h"
-#include <iostream>
+#include "PlayerActionPacket.h"
 #include "InputOutputStream.h"
 #include "PacketListener.h"
-#include "PlayerActionPacket.h"
+#include "stdafx.h"
+#include <iostream>
 
 const int PlayerActionPacket::START_DESTROY_BLOCK = 0;
 const int PlayerActionPacket::ABORT_DESTROY_BLOCK = 1;
@@ -13,46 +13,46 @@ const int PlayerActionPacket::RELEASE_USE_ITEM = 5;
 
 PlayerActionPacket::PlayerActionPacket()
 {
-	x = 0;
-	y = 0;
-	z = 0;
-	face = 0;
-	action = 0;
+    x = 0;
+    y = 0;
+    z = 0;
+    face = 0;
+    action = 0;
 }
 
 PlayerActionPacket::PlayerActionPacket(int action, int x, int y, int z, int face)
 {
-	this->action = action;
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->face = face;
+    this->action = action;
+    this->x = x;
+    this->y = y;
+    this->z = z;
+    this->face = face;
 }
 
-void PlayerActionPacket::read(DataInputStream *dis) //throws IOException 
+void PlayerActionPacket::read(DataInputStream *dis) // throws IOException
 {
-	action = dis->readUnsignedByte();
-	x = dis->readInt();
-	y = dis->readUnsignedByte();
-	z = dis->readInt();
-	face = dis->readUnsignedByte();
+    action = dis->readUnsignedByte();
+    x = dis->readInt();
+    y = dis->readUnsignedByte();
+    z = dis->readInt();
+    face = dis->readUnsignedByte();
 }
 
-void PlayerActionPacket::write(DataOutputStream *dos) //throws IOException 
+void PlayerActionPacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->write(action);
-	dos->writeInt(x);
-	dos->write(y);
-	dos->writeInt(z);
-	dos->write(face);
+    dos->write(action);
+    dos->writeInt(x);
+    dos->write(y);
+    dos->writeInt(z);
+    dos->write(face);
 }
 
-void PlayerActionPacket::handle(PacketListener *listener) 
+void PlayerActionPacket::handle(PacketListener *listener)
 {
-	listener->handlePlayerAction(shared_from_this());
+    listener->handlePlayerAction(shared_from_this());
 }
 
 int PlayerActionPacket::getEstimatedSize()
 {
-	return 11;
+    return 11;
 }

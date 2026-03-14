@@ -29,20 +29,22 @@
 #if !defined(BOOST_NO_VOID_RETURNS)
 
 #define BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(T) \
-    T   \
-    /**/
+    T /**/
 
-#define BOOST_VARIANT_AUX_RETURN_VOID  \
-    /**/
+#define BOOST_VARIANT_AUX_RETURN_VOID
+/**/
 
 #define BOOST_VARIANT_AUX_RETURN_VOID_TYPE \
-    void    \
-    /**/
+    void /**/
 
 #else // defined(BOOST_NO_VOID_RETURNS)
 
-namespace boost {
-namespace detail { namespace variant {
+namespace boost
+{
+namespace detail
+{
+namespace variant
+{
 
 struct fake_return_void
 {
@@ -51,7 +53,7 @@ struct fake_return_void
     }
 
     template <typename T>
-    fake_return_void(const T&)
+    fake_return_void(const T &)
     {
     }
 };
@@ -68,19 +70,18 @@ struct no_void_returns_helper<void>
     typedef fake_return_void type;
 };
 
-}} // namespace detail::variant
+} // namespace variant
+} // namespace detail
 } // namespace boost
 
 #define BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(T) \
-    BOOST_DEDUCED_TYPENAME                                           \
-        ::boost::detail::variant::no_void_returns_helper< T >::type  \
-    /**/
+    BOOST_DEDUCED_TYPENAME                       \
+    ::boost::detail::variant::no_void_returns_helper<T>::type /**/
 
-#define BOOST_VARIANT_AUX_RETURN_VOID  \
-    return ::boost::detail::variant::fake_return_void()     \
-    /**/
+#define BOOST_VARIANT_AUX_RETURN_VOID \
+    return ::boost::detail::variant::fake_return_void() /**/
 
-#define BOOST_VARIANT_AUX_RETURN_VOID_TYPE  \
+#define BOOST_VARIANT_AUX_RETURN_VOID_TYPE \
     ::boost::detail::variant::fake_return_void
 
 #endif // BOOST_NO_VOID_RETURNS workaround

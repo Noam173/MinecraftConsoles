@@ -8,36 +8,36 @@
 #ifndef BOOST_PROTO_DETAIL_FUSION_POP_FRONT_EAH_01_22_2008
 #define BOOST_PROTO_DETAIL_FUSION_POP_FRONT_EAH_01_22_2008
 
-#include <boost/spirit/fusion/sequence/range.hpp>
+#include <boost/spirit/fusion/iterator/next.hpp>
 #include <boost/spirit/fusion/sequence/begin.hpp>
 #include <boost/spirit/fusion/sequence/end.hpp>
-#include <boost/spirit/fusion/iterator/next.hpp>
+#include <boost/spirit/fusion/sequence/range.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    namespace meta
-    {
-        template <typename Sequence>
-        struct pop_front
-        {
-            typedef
-                range<
-                    typename next<
-                        typename begin<Sequence>::type
-                    >::type
-                  , typename end<Sequence>::type
-                >
-            type;
-        };
-    }
+namespace fusion
+{
+namespace meta
+{
+template <typename Sequence>
+struct pop_front
+{
+    typedef range<
+        typename next<
+            typename begin<Sequence>::type>::type,
+        typename end<Sequence>::type>
+        type;
+};
+} // namespace meta
 
-    template <typename Sequence>
-    inline typename meta::pop_front<Sequence const>::type
-    pop_front(Sequence const& seq)
-    {
-        typedef typename meta::pop_front<Sequence const>::type result;
-        return result(fusion::next(fusion::begin(seq)), fusion::end(seq));
-    }
-}}
+template <typename Sequence>
+inline typename meta::pop_front<Sequence const>::type
+pop_front(Sequence const &seq)
+{
+    typedef typename meta::pop_front<Sequence const>::type result;
+    return result(fusion::next(fusion::begin(seq)), fusion::end(seq));
+}
+} // namespace fusion
+} // namespace boost
 
 #endif

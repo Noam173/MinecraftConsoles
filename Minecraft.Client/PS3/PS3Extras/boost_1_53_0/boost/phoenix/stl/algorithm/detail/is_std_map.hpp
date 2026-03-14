@@ -15,40 +15,36 @@
 #ifndef BOOST_PHOENIX_IS_STD_MAP_EN_16_12_2004
 #define BOOST_PHOENIX_IS_STD_MAP_EN_16_12_2004
 
-#include <boost/mpl/bool.hpp>
 #include <boost/detail/container_fwd.hpp>
+#include <boost/mpl/bool.hpp>
 
 namespace boost
 {
-    template<class T>
-    struct is_std_map
-        : boost::mpl::false_
-    {};
+template <class T>
+struct is_std_map
+    : boost::mpl::false_
+{
+};
 
-    template<
-        class Kty
-      , class Ty
-      , class Pr
-      , class Alloc
-    >
-    struct is_std_map< ::std::map<Kty,Ty,Pr,Alloc> >
-        : boost::mpl::true_
-    {};
+template <
+    class Kty, class Ty, class Pr, class Alloc>
+struct is_std_map<::std::map<Kty, Ty, Pr, Alloc>>
+    : boost::mpl::true_
+{
+};
 
-    template<class T>
-    struct is_std_multimap
-        : boost::mpl::false_
-    {};
+template <class T>
+struct is_std_multimap
+    : boost::mpl::false_
+{
+};
 
-    template<
-        class Kty
-      , class Ty
-      , class Pr
-      , class Alloc
-    >
-    struct is_std_multimap< ::std::multimap<Kty,Ty,Pr,Alloc> >
-        : boost::mpl::true_
-    {};
-}
+template <
+    class Kty, class Ty, class Pr, class Alloc>
+struct is_std_multimap<::std::multimap<Kty, Ty, Pr, Alloc>>
+    : boost::mpl::true_
+{
+};
+} // namespace boost
 
 #endif

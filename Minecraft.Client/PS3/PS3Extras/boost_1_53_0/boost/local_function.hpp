@@ -10,48 +10,48 @@
 
 #ifndef DOXYGEN
 
+#include <boost/config.hpp>
 #include <boost/local_function/aux_/macro/decl.hpp>
 #include <boost/local_function/aux_/macro/name.hpp>
 #include <boost/local_function/aux_/macro/typeof.hpp>
 #include <boost/local_function/aux_/preprocessor/traits/decl.hpp>
 #include <boost/local_function/detail/preprocessor/line_counter.hpp>
 #include <boost/local_function/detail/preprocessor/void_list.hpp>
-#include <boost/config.hpp>
 
 // PUBLIC //
 
 #ifdef BOOST_NO_CXX11_VARIADIC_MACROS
-#   define BOOST_LOCAL_FUNCTION_ID(id, declarations) \
-        BOOST_LOCAL_FUNCTION_AUX_DECL(id, 0 /* not within template */, \
-                BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS( \
-                        BOOST_LOCAL_FUNCTION_DETAIL_PP_VOID_LIST( \
-                                declarations)))
-#   define BOOST_LOCAL_FUNCTION(declarations) \
-        BOOST_LOCAL_FUNCTION_ID( \
-                BOOST_LOCAL_FUNCTION_DETAIL_PP_LINE_COUNTER, declarations)
-#   define BOOST_LOCAL_FUNCTION_ID_TPL(id, declarations) \
-        BOOST_LOCAL_FUNCTION_AUX_DECL(id, 1 /* within template */, \
-                BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS( \
-                        BOOST_LOCAL_FUNCTION_DETAIL_PP_VOID_LIST( \
-                                declarations)))
-#   define BOOST_LOCAL_FUNCTION_TPL(declarations) \
-        BOOST_LOCAL_FUNCTION_ID_TPL( \
-                BOOST_LOCAL_FUNCTION_DETAIL_PP_LINE_COUNTER, declarations)
+#define BOOST_LOCAL_FUNCTION_ID(id, declarations)                               \
+    BOOST_LOCAL_FUNCTION_AUX_DECL(id, 0 /* not within template */,              \
+                                  BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS(      \
+                                      BOOST_LOCAL_FUNCTION_DETAIL_PP_VOID_LIST( \
+                                          declarations)))
+#define BOOST_LOCAL_FUNCTION(declarations) \
+    BOOST_LOCAL_FUNCTION_ID(               \
+        BOOST_LOCAL_FUNCTION_DETAIL_PP_LINE_COUNTER, declarations)
+#define BOOST_LOCAL_FUNCTION_ID_TPL(id, declarations)                           \
+    BOOST_LOCAL_FUNCTION_AUX_DECL(id, 1 /* within template */,                  \
+                                  BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS(      \
+                                      BOOST_LOCAL_FUNCTION_DETAIL_PP_VOID_LIST( \
+                                          declarations)))
+#define BOOST_LOCAL_FUNCTION_TPL(declarations) \
+    BOOST_LOCAL_FUNCTION_ID_TPL(               \
+        BOOST_LOCAL_FUNCTION_DETAIL_PP_LINE_COUNTER, declarations)
 #else // VARIADIC
-#   define BOOST_LOCAL_FUNCTION_ID(id, ...) \
-        BOOST_LOCAL_FUNCTION_AUX_DECL(id, 0 /* not within template */, \
-                BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS( \
-                        BOOST_LOCAL_FUNCTION_DETAIL_PP_VOID_LIST(__VA_ARGS__)))
-#   define BOOST_LOCAL_FUNCTION(...) \
-        BOOST_LOCAL_FUNCTION_ID( \
-                BOOST_LOCAL_FUNCTION_DETAIL_PP_LINE_COUNTER, __VA_ARGS__)
-#   define BOOST_LOCAL_FUNCTION_ID_TPL(id, ...) \
-        BOOST_LOCAL_FUNCTION_AUX_DECL(id, 1 /* within template */, \
-                BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS( \
-                        BOOST_LOCAL_FUNCTION_DETAIL_PP_VOID_LIST(__VA_ARGS__)))
-#   define BOOST_LOCAL_FUNCTION_TPL(...) \
-        BOOST_LOCAL_FUNCTION_ID_TPL( \
-                BOOST_LOCAL_FUNCTION_DETAIL_PP_LINE_COUNTER, __VA_ARGS__)
+#define BOOST_LOCAL_FUNCTION_ID(id, ...)                                   \
+    BOOST_LOCAL_FUNCTION_AUX_DECL(id, 0 /* not within template */,         \
+                                  BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS( \
+                                      BOOST_LOCAL_FUNCTION_DETAIL_PP_VOID_LIST(__VA_ARGS__)))
+#define BOOST_LOCAL_FUNCTION(...) \
+    BOOST_LOCAL_FUNCTION_ID(      \
+        BOOST_LOCAL_FUNCTION_DETAIL_PP_LINE_COUNTER, __VA_ARGS__)
+#define BOOST_LOCAL_FUNCTION_ID_TPL(id, ...)                               \
+    BOOST_LOCAL_FUNCTION_AUX_DECL(id, 1 /* within template */,             \
+                                  BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS( \
+                                      BOOST_LOCAL_FUNCTION_DETAIL_PP_VOID_LIST(__VA_ARGS__)))
+#define BOOST_LOCAL_FUNCTION_TPL(...) \
+    BOOST_LOCAL_FUNCTION_ID_TPL(      \
+        BOOST_LOCAL_FUNCTION_DETAIL_PP_LINE_COUNTER, __VA_ARGS__)
 #endif // VARIADIC
 
 #define BOOST_LOCAL_FUNCTION_NAME(qualified_name) \
@@ -132,7 +132,7 @@ cannot be used:
 <c>{expression}</c> means the token resulting from the expression.)
 }
 @EndParams
- 
+
 Note that on compilers that support variadic macros, commas can be used to
 separate the declarations resembling more closely the usual C++ function
 declaration syntax (this is the preferred syntax).
@@ -456,4 +456,3 @@ number of times Boost.Typeof is used to deduce types (see the
 #endif // DOXYGEN
 
 #endif // #include guard
-

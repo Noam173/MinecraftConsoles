@@ -12,22 +12,23 @@
 #define BOOST_INTERPROCESS_CONTAINERS_VERSION_TYPE_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
-#include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/container/detail/version_type.hpp>
+#include <boost/interprocess/detail/config_begin.hpp>
 
-namespace boost {
-namespace interprocess {
+namespace boost
+{
+namespace interprocess
+{
 
-using boost::container::container_detail::version_type;
 using boost::container::container_detail::version;
+using boost::container::container_detail::version_type;
 
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 
 #endif //   #ifndef  BOOST_INTERPROCESS_CONTAINERS_VERSION_TYPE_HPP
-

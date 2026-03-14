@@ -9,28 +9,35 @@
 #ifndef BOOST_GRAPH_ACCOUNTING_HPP
 #define BOOST_GRAPH_ACCOUNTING_HPP
 
+#include <boost/mpi/config.hpp>
 #include <iomanip>
 #include <iostream>
-#include <string>
 #include <sstream>
-#include <boost/mpi/config.hpp>
+#include <string>
 
-namespace boost { namespace graph { namespace accounting {
+namespace boost
+{
+namespace graph
+{
+namespace accounting
+{
 
 typedef double time_type;
 
 inline time_type get_time()
 {
-  return MPI_Wtime();
+    return MPI_Wtime();
 }
 
 inline std::string print_time(time_type t)
 {
-  std::ostringstream out;
-  out << std::setiosflags(std::ios::fixed) << std::setprecision(2) << t;
-  return out.str();
+    std::ostringstream out;
+    out << std::setiosflags(std::ios::fixed) << std::setprecision(2) << t;
+    return out.str();
 }
 
-} } } // end namespace boost::graph::accounting
+} // namespace accounting
+} // namespace graph
+} // namespace boost
 
 #endif // BOOST_GRAPH_ACCOUNTING_HPP

@@ -16,8 +16,9 @@
 
 #include <boost/range.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 #ifndef DOXYGEN_NO_DETAIL
 namespace detail
@@ -26,15 +27,13 @@ namespace detail
 struct multi_sum
 {
     template <typename ReturnType, typename Policy, typename MultiGeometry, typename Strategy>
-    static inline ReturnType apply(MultiGeometry const& geometry, Strategy const& strategy)
+    static inline ReturnType apply(MultiGeometry const &geometry, Strategy const &strategy)
     {
         ReturnType sum = ReturnType();
-        for (typename boost::range_iterator
-                <
-                    MultiGeometry const
-                >::type it = boost::begin(geometry);
-            it != boost::end(geometry);
-            ++it)
+        for (typename boost::range_iterator<
+                 MultiGeometry const>::type it = boost::begin(geometry);
+             it != boost::end(geometry);
+             ++it)
         {
             sum += Policy::apply(*it, strategy);
         }
@@ -42,11 +41,10 @@ struct multi_sum
     }
 };
 
-
 } // namespace detail
 #endif
 
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_SUM_HPP

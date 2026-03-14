@@ -4,68 +4,72 @@
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_TR1_REGEX_HPP_INCLUDED
-#  define BOOST_TR1_REGEX_HPP_INCLUDED
-#  include <boost/tr1/detail/config.hpp>
+#define BOOST_TR1_REGEX_HPP_INCLUDED
+#include <boost/tr1/detail/config.hpp>
 
 #ifdef BOOST_HAS_TR1_REGEX
 
-#  if defined(BOOST_HAS_INCLUDE_NEXT) && !defined(BOOST_TR1_DISABLE_INCLUDE_NEXT)
-#     include_next BOOST_TR1_HEADER(regex)
-#  else
-#     include <boost/tr1/detail/config_all.hpp>
-#     include BOOST_TR1_STD_HEADER(BOOST_TR1_PATH(regex))
-#  endif
+#if defined(BOOST_HAS_INCLUDE_NEXT) && !defined(BOOST_TR1_DISABLE_INCLUDE_NEXT)
+#include_next BOOST_TR1_HEADER(regex)
+#else
+#include <boost/tr1/detail/config_all.hpp>
+#include BOOST_TR1_STD_HEADER(BOOST_TR1_PATH(regex))
+#endif
 
 #else
 
 #include <boost/regex.hpp>
 
-namespace std{ namespace tr1{
+namespace std
+{
+namespace tr1
+{
 
 // [7.5] Regex constants
-namespace regex_constants {
+namespace regex_constants
+{
 
-using ::boost::regex_constants::syntax_option_type;
+using ::boost::regex_constants::awk;
+using ::boost::regex_constants::basic;
+using ::boost::regex_constants::collate;
+using ::boost::regex_constants::ECMAScript;
+using ::boost::regex_constants::egrep;
+using ::boost::regex_constants::extended;
+using ::boost::regex_constants::grep;
 using ::boost::regex_constants::icase;
 using ::boost::regex_constants::nosubs;
 using ::boost::regex_constants::optimize;
-using ::boost::regex_constants::collate;
-using ::boost::regex_constants::ECMAScript;
-using ::boost::regex_constants::basic;
-using ::boost::regex_constants::extended;
-using ::boost::regex_constants::awk;
-using ::boost::regex_constants::grep;
-using ::boost::regex_constants::egrep;
+using ::boost::regex_constants::syntax_option_type;
 
-using ::boost::regex_constants::match_flag_type;
-using ::boost::regex_constants::match_default;
-using ::boost::regex_constants::match_not_bol;
-using ::boost::regex_constants::match_not_eol;
-using ::boost::regex_constants::match_not_bow;
-using ::boost::regex_constants::match_not_eow;
-using ::boost::regex_constants::match_any;
-using ::boost::regex_constants::match_not_null;
-using ::boost::regex_constants::match_continuous;
-using ::boost::regex_constants::match_prev_avail;
 using ::boost::regex_constants::format_default;
-using ::boost::regex_constants::format_sed;
-using ::boost::regex_constants::format_no_copy;
 using ::boost::regex_constants::format_first_only;
+using ::boost::regex_constants::format_no_copy;
+using ::boost::regex_constants::format_sed;
+using ::boost::regex_constants::match_any;
+using ::boost::regex_constants::match_continuous;
+using ::boost::regex_constants::match_default;
+using ::boost::regex_constants::match_flag_type;
+using ::boost::regex_constants::match_not_bol;
+using ::boost::regex_constants::match_not_bow;
+using ::boost::regex_constants::match_not_eol;
+using ::boost::regex_constants::match_not_eow;
+using ::boost::regex_constants::match_not_null;
+using ::boost::regex_constants::match_prev_avail;
 
-using ::boost::regex_constants::error_type;
+using ::boost::regex_constants::error_backref;
+using ::boost::regex_constants::error_badbrace;
+using ::boost::regex_constants::error_badrepeat;
+using ::boost::regex_constants::error_brace;
+using ::boost::regex_constants::error_brack;
 using ::boost::regex_constants::error_collate;
+using ::boost::regex_constants::error_complexity;
 using ::boost::regex_constants::error_ctype;
 using ::boost::regex_constants::error_escape;
-using ::boost::regex_constants::error_backref;
-using ::boost::regex_constants::error_brack;
 using ::boost::regex_constants::error_paren;
-using ::boost::regex_constants::error_brace;
-using ::boost::regex_constants::error_badbrace;
 using ::boost::regex_constants::error_range;
 using ::boost::regex_constants::error_space;
-using ::boost::regex_constants::error_badrepeat;
-using ::boost::regex_constants::error_complexity;
 using ::boost::regex_constants::error_stack;
+using ::boost::regex_constants::error_type;
 
 } // namespace regex_constants
 
@@ -100,8 +104,8 @@ using ::boost::wssub_match;
 #endif
 
 // [7.10] Class template match_results
-using ::boost::match_results;
 using ::boost::cmatch;
+using ::boost::match_results;
 #ifndef BOOST_NO_WREGEX
 using ::boost::wcmatch;
 #endif
@@ -119,8 +123,8 @@ using ::boost::regex_search;
 using ::boost::regex_replace;
 
 // [7.12.1] Class template regex_iterator
-using ::boost::regex_iterator;
 using ::boost::cregex_iterator;
+using ::boost::regex_iterator;
 #ifndef BOOST_NO_WREGEX
 using ::boost::wcregex_iterator;
 #endif
@@ -130,8 +134,8 @@ using ::boost::wsregex_iterator;
 #endif
 
 // [7.12.2] Class template regex_token_iterator
-using ::boost::regex_token_iterator;
 using ::boost::cregex_token_iterator;
+using ::boost::regex_token_iterator;
 #ifndef BOOST_NO_WREGEX
 using ::boost::wcregex_token_iterator;
 #endif
@@ -140,7 +144,8 @@ using ::boost::sregex_token_iterator;
 using ::boost::wsregex_token_iterator;
 #endif
 
-} } // namespaces
+} // namespace tr1
+} // namespace std
 
 #endif
 

@@ -8,20 +8,22 @@
 #ifndef BOOST_ACCUMULATORS_FRAMEWORK_ACCUMULATORS_BASE_HPP_EAN_28_10_2005
 #define BOOST_ACCUMULATORS_FRAMEWORK_ACCUMULATORS_BASE_HPP_EAN_28_10_2005
 
-#include <boost/mpl/placeholders.hpp>
-#include <boost/mpl/joint_view.hpp>
-#include <boost/mpl/single_view.hpp>
-#include <boost/mpl/fold.hpp>
+#include <boost/accumulators/framework/accumulator_concept.hpp>
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/empty_sequence.hpp>
-#include <boost/accumulators/framework/accumulator_concept.hpp>
+#include <boost/mpl/fold.hpp>
+#include <boost/mpl/joint_view.hpp>
+#include <boost/mpl/placeholders.hpp>
+#include <boost/mpl/single_view.hpp>
 
-namespace boost { namespace accumulators
+namespace boost
+{
+namespace accumulators
 {
 
 namespace detail
 {
-    typedef void void_;
+typedef void void_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,7 +31,7 @@ namespace detail
 //
 struct dont_care
 {
-    template<typename Args>
+    template <typename Args>
     dont_care(Args const &)
     {
     }
@@ -41,7 +43,7 @@ struct dont_care
 struct accumulator_base
 {
     // hidden if defined in derived classes
-    detail::void_ operator ()(dont_care)
+    detail::void_ operator()(dont_care)
     {
     }
 
@@ -60,6 +62,7 @@ struct accumulator_base
     }
 };
 
-}} // namespace boost::accumulators
+} // namespace accumulators
+} // namespace boost
 
 #endif

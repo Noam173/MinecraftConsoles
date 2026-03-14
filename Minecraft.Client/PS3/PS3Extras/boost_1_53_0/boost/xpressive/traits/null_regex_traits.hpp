@@ -13,23 +13,27 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <vector>
 #include <boost/assert.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
-#include <boost/xpressive/detail/utility/never_true.hpp>
 #include <boost/xpressive/detail/utility/ignore_unused.hpp>
+#include <boost/xpressive/detail/utility/never_true.hpp>
+#include <vector>
 
-namespace boost { namespace xpressive
+namespace boost
+{
+namespace xpressive
 {
 
 namespace detail
 {
-    struct not_a_locale {};
-}
+struct not_a_locale
+{
+};
+} // namespace detail
 
 struct regex_traits_version_1_tag;
 
@@ -38,7 +42,7 @@ struct regex_traits_version_1_tag;
 //
 /// \brief stub regex_traits for non-char data
 ///
-template<typename Elem>
+template <typename Elem>
 struct null_regex_traits
 {
     typedef Elem char_type;
@@ -56,7 +60,7 @@ struct null_regex_traits
     /// Checks two null_regex_traits objects for equality
     ///
     /// \return true.
-    bool operator ==(null_regex_traits<char_type> const &that) const
+    bool operator==(null_regex_traits<char_type> const &that) const
     {
         detail::ignore_unused(that);
         return true;
@@ -65,7 +69,7 @@ struct null_regex_traits
     /// Checks two null_regex_traits objects for inequality
     ///
     /// \return false.
-    bool operator !=(null_regex_traits<char_type> const &that) const
+    bool operator!=(null_regex_traits<char_type> const &that) const
     {
         detail::ignore_unused(that);
         return false;
@@ -136,7 +140,7 @@ struct null_regex_traits
     /// then v.transform(G1, G2) < v.transform(H1, H2).
     ///
     /// \attention Not currently used
-    template<typename FwdIter>
+    template <typename FwdIter>
     static string_type transform(FwdIter begin, FwdIter end)
     {
         return string_type(begin, end);
@@ -148,7 +152,7 @@ struct null_regex_traits
     /// v.transform_primary(G1, G2) < v.transform_primary(H1, H2).
     ///
     /// \attention Not currently used
-    template<typename FwdIter>
+    template <typename FwdIter>
     static string_type transform_primary(FwdIter begin, FwdIter end)
     {
         return string_type(begin, end);
@@ -159,7 +163,7 @@ struct null_regex_traits
     /// Returns an empty string if the character sequence is not a valid collating element.
     ///
     /// \attention Not currently used
-    template<typename FwdIter>
+    template <typename FwdIter>
     static string_type lookup_collatename(FwdIter begin, FwdIter end)
     {
         detail::ignore_unused(begin);
@@ -174,7 +178,7 @@ struct null_regex_traits
     /// \param end not used
     /// \param icase not used
     /// \return static_cast\<char_class_type\>(0)
-    template<typename FwdIter>
+    template <typename FwdIter>
     static char_class_type lookup_classname(FwdIter begin, FwdIter end, bool icase)
     {
         detail::ignore_unused(begin);
@@ -226,6 +230,7 @@ struct null_regex_traits
     }
 };
 
-}}
+} // namespace xpressive
+} // namespace boost
 
 #endif

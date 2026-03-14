@@ -9,49 +9,51 @@
 #ifndef BOOST_MULTI_INDEX_DETAIL_PREVENT_ETI_HPP
 #define BOOST_MULTI_INDEX_DETAIL_PREVENT_ETI_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
 #include <boost/detail/workaround.hpp>
 
-#if BOOST_WORKAROUND(BOOST_MSVC,<1300)
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+#include <boost/mpl/aux_/msvc_never_true.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/integral_c.hpp>
-#include <boost/mpl/aux_/msvc_never_true.hpp>
 #endif
 
-namespace boost{
+namespace boost
+{
 
-namespace multi_index{
+namespace multi_index
+{
 
-namespace detail{
+namespace detail
+{
 
-#if BOOST_WORKAROUND(BOOST_MSVC,<1300)
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
 /* See
  * http://www.crystalclearsoftware.com/cgi-bin/boost_wiki/wiki.pl?Effective_MPL
  * Item 5.6, Beware of the 'early template instantiation' trap.
  */
 
-template<typename Type,typename Construct>
+template <typename Type, typename Construct>
 struct prevent_eti
 {
-  typedef typename mpl::if_<
-    mpl::aux::msvc_never_true<Type>,
-    mpl::integral_c<int,0>,
-    Construct
-  >::type type;
+    typedef typename mpl::if_<
+        mpl::aux::msvc_never_true<Type>,
+        mpl::integral_c<int, 0>,
+        Construct>::type type;
 };
 #else
-template<typename Type,typename Construct>
+template <typename Type, typename Construct>
 struct prevent_eti
 {
-  typedef Construct type;
+    typedef Construct type;
 };
 #endif
 
-} /* namespace multi_index::detail */
+} // namespace detail
 
 } /* namespace multi_index */
 

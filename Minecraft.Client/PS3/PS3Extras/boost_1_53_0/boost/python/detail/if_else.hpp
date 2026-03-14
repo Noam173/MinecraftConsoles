@@ -3,12 +3,18 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef IF_ELSE_DWA2002322_HPP
-# define IF_ELSE_DWA2002322_HPP
-# include <boost/config.hpp>
+#define IF_ELSE_DWA2002322_HPP
+#include <boost/config.hpp>
 
-namespace boost { namespace python { namespace detail { 
+namespace boost
+{
+namespace python
+{
+namespace detail
+{
 
-template <class T> struct elif_selected;
+template <class T>
+struct elif_selected;
 
 template <class T>
 struct if_selected
@@ -25,26 +31,33 @@ struct if_selected
     };
 };
 
-# if defined(BOOST_MSVC) && (BOOST_MSVC == 1300)
-namespace msvc70_aux {
-
-template< bool > struct inherit_from
+#if defined(BOOST_MSVC) && (BOOST_MSVC == 1300)
+namespace msvc70_aux
 {
-    template< typename T > struct result
+
+template <bool>
+struct inherit_from
+{
+    template <typename T>
+    struct result
     {
         typedef T type;
     };
 };
 
-template<> struct inherit_from<true>
+template <>
+struct inherit_from<true>
 {
-    template< typename T > struct result
+    template <typename T>
+    struct result
     {
-        struct type {};
+        struct type
+        {
+        };
     };
 };
 
-template< typename T >
+template <typename T>
 struct never_true
 {
     BOOST_STATIC_CONSTANT(bool, value = false);
@@ -57,31 +70,32 @@ struct never_true
 template <class T>
 struct elif_selected
 {
-# if !(defined(BOOST_MSVC) && BOOST_MSVC <= 1300 || defined(__MWERKS__) && __MWERKS__ <= 0x2407)
-    template <class U> class then;
-# elif defined(BOOST_MSVC) && (BOOST_MSVC == 1300)
+#if !(defined(BOOST_MSVC) && BOOST_MSVC <= 1300 || defined(__MWERKS__) && __MWERKS__ <= 0x2407)
     template <class U>
-    struct then : msvc70_aux::inherit_from< msvc70_aux::never_true<U>::value >
-        ::template result< if_selected<T> >::type
+    class then;
+#elif defined(BOOST_MSVC) && (BOOST_MSVC == 1300)
+    template <class U>
+    struct then : msvc70_aux::inherit_from<msvc70_aux::never_true<U>::value>::template result<if_selected<T>>::type
     {
     };
-# else
+#else
     template <class U>
     struct then : if_selected<T>
     {
     };
-# endif 
+#endif
 };
 
-# if !(defined(BOOST_MSVC) && BOOST_MSVC <= 1300 || defined(__MWERKS__) && __MWERKS__ <= 0x2407)
+#if !(defined(BOOST_MSVC) && BOOST_MSVC <= 1300 || defined(__MWERKS__) && __MWERKS__ <= 0x2407)
 template <class T>
 template <class U>
 class elif_selected<T>::then : public if_selected<T>
 {
 };
-# endif 
+#endif
 
-template <bool b> struct if_
+template <bool b>
+struct if_
 {
     template <class T>
     struct then : if_selected<T>
@@ -91,7 +105,8 @@ template <bool b> struct if_
 
 struct if_unselected
 {
-    template <bool b> struct elif : if_<b>
+    template <bool b>
+    struct elif : if_<b>
     {
     };
 
@@ -111,6 +126,8 @@ struct if_<false>
     };
 };
 
-}}} // namespace boost::python::detail
+} // namespace detail
+} // namespace python
+} // namespace boost
 
 #endif // IF_ELSE_DWA2002322_HPP

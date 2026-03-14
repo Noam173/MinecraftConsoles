@@ -12,7 +12,7 @@
 #define BOOST_ASIO_HANDLER_ALLOC_HOOK_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -20,8 +20,10 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
+namespace boost
+{
+namespace asio
+{
 
 /// Default allocation function for handlers.
 /**
@@ -55,7 +57,7 @@ namespace asio {
  * }
  * @endcode
  */
-BOOST_ASIO_DECL void* asio_handler_allocate(
+BOOST_ASIO_DECL void *asio_handler_allocate(
     std::size_t size, ...);
 
 /// Default deallocation function for handlers.
@@ -69,7 +71,7 @@ BOOST_ASIO_DECL void* asio_handler_allocate(
  * @sa asio_handler_allocate.
  */
 BOOST_ASIO_DECL void asio_handler_deallocate(
-    void* pointer, std::size_t size, ...);
+    void *pointer, std::size_t size, ...);
 
 } // namespace asio
 } // namespace boost
@@ -77,7 +79,7 @@ BOOST_ASIO_DECL void asio_handler_deallocate(
 #include <boost/asio/detail/pop_options.hpp>
 
 #if defined(BOOST_ASIO_HEADER_ONLY)
-# include <boost/asio/impl/handler_alloc_hook.ipp>
+#include <boost/asio/impl/handler_alloc_hook.ipp>
 #endif // defined(BOOST_ASIO_HEADER_ONLY)
 
 #endif // BOOST_ASIO_HANDLER_ALLOC_HOOK_HPP

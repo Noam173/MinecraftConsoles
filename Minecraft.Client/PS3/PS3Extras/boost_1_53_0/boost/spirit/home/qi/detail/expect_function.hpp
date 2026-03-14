@@ -11,95 +11,102 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/support/unused.hpp>
 #include <boost/spirit/home/support/multi_pass_wrapper.hpp>
+#include <boost/spirit/home/support/unused.hpp>
 #include <boost/throw_exception.hpp>
 
-namespace boost { namespace spirit { namespace qi { namespace detail
+namespace boost
 {
-    template <
-        typename Iterator, typename Context
-      , typename Skipper, typename Exception>
-    struct expect_function
+namespace spirit
+{
+namespace qi
+{
+namespace detail
+{
+template <
+    typename Iterator, typename Context, typename Skipper, typename Exception>
+struct expect_function
+{
+    typedef Iterator iterator_type;
+    typedef Context context_type;
+
+    expect_function(
+        Iterator &first, Iterator const &last, Context &context, Skipper const &skipper)
+        : first(first), last(last), context(context), skipper(skipper), is_first(true)
     {
-        typedef Iterator iterator_type;
-        typedef Context context_type;
+    }
 
-        expect_function(
-            Iterator& first, Iterator const& last
-          , Context& context, Skipper const& skipper)
-          : first(first)
-          , last(last)
-          , context(context)
-          , skipper(skipper)
-          , is_first(true)
+    template <typename Component, typename Attribute>
+    bool operator()(Component const &component, Attribute &attr) const
+    {
+        // if this is not the first component in the expect chain we
+        // need to flush any multi_pass iterator we might be acting on
+        if (!is_first)
         {
+            spirit::traits::clear_queue(first);
         }
 
-        template <typename Component, typename Attribute>
-        bool operator()(Component const& component, Attribute& attr) const
+        // if we are testing the first component in the sequence,
+        // return true if the parser fails, if this is not the first
+        // component, throw exception if the parser fails
+        if (!component.parse(first, last, context, skipper, attr))
         {
-            // if this is not the first component in the expect chain we 
-            // need to flush any multi_pass iterator we might be acting on
-            if (!is_first)
-                spirit::traits::clear_queue(first);
-
-            // if we are testing the first component in the sequence,
-            // return true if the parser fails, if this is not the first
-            // component, throw exception if the parser fails
-            if (!component.parse(first, last, context, skipper, attr))
+            if (is_first)
             {
-                if (is_first)
-                {
-                    is_first = false;
-                    return true;        // true means the match failed
-                }
-                boost::throw_exception(Exception(first, last, component.what(context)));
-#if defined(BOOST_NO_EXCEPTIONS)
-                return true;            // for systems not supporting exceptions
-#endif
+                is_first = false;
+                return true; // true means the match failed
             }
-            is_first = false;
-            return false;
+            boost::throw_exception(Exception(first, last, component.what(context)));
+#if defined(BOOST_NO_EXCEPTIONS)
+            return true; // for systems not supporting exceptions
+#endif
         }
+        is_first = false;
+        return false;
+    }
 
-        template <typename Component>
-        bool operator()(Component const& component) const
+    template <typename Component>
+    bool operator()(Component const &component) const
+    {
+        // if this is not the first component in the expect chain we
+        // need to flush any multi_pass iterator we might be acting on
+        if (!is_first)
         {
-            // if this is not the first component in the expect chain we 
-            // need to flush any multi_pass iterator we might be acting on
-            if (!is_first)
-                spirit::traits::clear_queue(first);
-
-            // if we are testing the first component in the sequence,
-            // return true if the parser fails, if this not the first
-            // component, throw exception if the parser fails
-            if (!component.parse(first, last, context, skipper, unused))
-            {
-                if (is_first)
-                {
-                    is_first = false;
-                    return true;
-                }
-                boost::throw_exception(Exception(first, last, component.what(context)));
-#if defined(BOOST_NO_EXCEPTIONS)
-                return false;   // for systems not supporting exceptions
-#endif
-            }
-            is_first = false;
-            return false;
+            spirit::traits::clear_queue(first);
         }
 
-        Iterator& first;
-        Iterator const& last;
-        Context& context;
-        Skipper const& skipper;
-        mutable bool is_first;
+        // if we are testing the first component in the sequence,
+        // return true if the parser fails, if this not the first
+        // component, throw exception if the parser fails
+        if (!component.parse(first, last, context, skipper, unused))
+        {
+            if (is_first)
+            {
+                is_first = false;
+                return true;
+            }
+            boost::throw_exception(Exception(first, last, component.what(context)));
+#if defined(BOOST_NO_EXCEPTIONS)
+            return false; // for systems not supporting exceptions
+#endif
+        }
+        is_first = false;
+        return false;
+    }
 
-    private:
-        // silence MSVC warning C4512: assignment operator could not be generated
-        expect_function& operator= (expect_function const&);
-    };
-}}}}
+    Iterator &first;
+    Iterator const &last;
+    Context &context;
+    Skipper const &skipper;
+    mutable bool is_first;
+
+  private:
+    // silence MSVC warning C4512: assignment operator could not be generated
+    expect_function &operator=(expect_function const &);
+};
+} // namespace detail
+} // namespace qi
+} // namespace spirit
+} // namespace boost
 
 #endif

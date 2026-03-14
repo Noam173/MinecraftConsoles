@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_ARITHMETIC_DOT_PRODUCT_HPP
 #define BOOST_GEOMETRY_ARITHMETIC_DOT_PRODUCT_HPP
 
-
 #include <cstddef>
 
 #include <boost/concept/requires.hpp>
@@ -22,7 +21,9 @@
 #include <boost/geometry/geometries/concepts/point_concept.hpp>
 #include <boost/geometry/util/select_coordinate_type.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
@@ -34,10 +35,9 @@ struct dot_product_maker
 {
     typedef typename select_coordinate_type<P1, P2>::type coordinate_type;
 
-    static inline coordinate_type apply(P1 const& p1, P2 const& p2)
+    static inline coordinate_type apply(P1 const &p1, P2 const &p2)
     {
-        return get<Dimension>(p1) * get<Dimension>(p2)
-            + dot_product_maker<P1, P2, Dimension+1, DimensionCount>::apply(p1, p2);
+        return get<Dimension>(p1) * get<Dimension>(p2) + dot_product_maker<P1, P2, Dimension + 1, DimensionCount>::apply(p1, p2);
     }
 };
 
@@ -46,7 +46,7 @@ struct dot_product_maker<P1, P2, DimensionCount, DimensionCount>
 {
     typedef typename select_coordinate_type<P1, P2>::type coordinate_type;
 
-    static inline coordinate_type apply(P1 const& p1, P2 const& p2)
+    static inline coordinate_type apply(P1 const &p1, P2 const &p2)
     {
         return get<DimensionCount>(p1) * get<DimensionCount>(p2);
     }
@@ -54,7 +54,6 @@ struct dot_product_maker<P1, P2, DimensionCount, DimensionCount>
 
 } // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 /*!
     \brief Computes the dot product (or scalar product) of 2 vectors (points).
@@ -65,18 +64,17 @@ struct dot_product_maker<P1, P2, DimensionCount, DimensionCount>
  */
 template <typename P1, typename P2>
 inline typename select_coordinate_type<P1, P2>::type dot_product(
-        P1 const& p1, P2 const& p2)
+    P1 const &p1, P2 const &p2)
 {
-    BOOST_CONCEPT_ASSERT( (concept::ConstPoint<P1>) );
-    BOOST_CONCEPT_ASSERT( (concept::ConstPoint<P2>) );
+    BOOST_CONCEPT_ASSERT((concept ::ConstPoint<P1>));
+    BOOST_CONCEPT_ASSERT((concept ::ConstPoint<P2>));
 
-    return detail::dot_product_maker
-        <
-            P1, P2,
-            0, dimension<P1>::type::value - 1
-        >::apply(p1, p2);
+    return detail::dot_product_maker<
+        P1, P2,
+        0, dimension<P1>::type::value - 1>::apply(p1, p2);
 }
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ARITHMETIC_DOT_PRODUCT_HPP

@@ -2,7 +2,7 @@
 #define BOOST_DETAIL_NO_EXCEPTIONS_SUPPORT_HPP_
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 //----------------------------------------------------------------------
@@ -16,7 +16,7 @@
 // disabled (as indicated by macro BOOST_NO_EXCEPTIONS).
 //
 // Before picking up these macros you may consider using RAII techniques
-// to deal with exceptions - their syntax can be always the same with 
+// to deal with exceptions - their syntax can be always the same with
 // or without exception support enabled.
 //
 
@@ -67,21 +67,26 @@ void foo() {
 #include <boost/detail/workaround.hpp>
 
 #if !(defined BOOST_NO_EXCEPTIONS)
-#    define BOOST_TRY { try
-#    define BOOST_CATCH(x) catch(x)
-#    define BOOST_RETHROW throw;
-#    define BOOST_CATCH_END }
+#define BOOST_TRY \
+    {             \
+        try
+#define BOOST_CATCH(x) catch (x)
+#define BOOST_RETHROW throw;
+#define BOOST_CATCH_END }
 #else
-#    if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#        define BOOST_TRY { if ("")
-#        define BOOST_CATCH(x) else if (!"")
-#    else
-#        define BOOST_TRY { if (true)
-#        define BOOST_CATCH(x) else if (false)
-#    endif
-#    define BOOST_RETHROW
-#    define BOOST_CATCH_END }
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#define BOOST_TRY \
+    {             \
+        if ("")
+#define BOOST_CATCH(x) else if (!"")
+#else
+#define BOOST_TRY \
+    {             \
+        if (true)
+#define BOOST_CATCH(x) else if (false)
+#endif
+#define BOOST_RETHROW
+#define BOOST_CATCH_END }
 #endif
 
-
-#endif 
+#endif

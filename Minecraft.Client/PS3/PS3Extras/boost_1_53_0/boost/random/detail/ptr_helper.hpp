@@ -16,41 +16,61 @@
 
 #include <boost/config.hpp>
 
-
-namespace boost {
-namespace random {
-namespace detail {
+namespace boost
+{
+namespace random
+{
+namespace detail
+{
 
 // type_traits could help here, but I don't want to depend on type_traits.
-template<class T>
+template <class T>
 struct ptr_helper
 {
-  typedef T value_type;
-  typedef T& reference_type;
-  typedef const T& rvalue_type;
-  static reference_type ref(T& r) { return r; }
-  static const T& ref(const T& r) { return r; }
+    typedef T value_type;
+    typedef T &reference_type;
+    typedef const T &rvalue_type;
+    static reference_type ref(T &r)
+    {
+        return r;
+    }
+    static const T &ref(const T &r)
+    {
+        return r;
+    }
 };
 
 #ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-template<class T>
-struct ptr_helper<T&>
+template <class T>
+struct ptr_helper<T &>
 {
-  typedef T value_type;
-  typedef T& reference_type;
-  typedef T& rvalue_type;
-  static reference_type ref(T& r) { return r; }
-  static const T& ref(const T& r) { return r; }
+    typedef T value_type;
+    typedef T &reference_type;
+    typedef T &rvalue_type;
+    static reference_type ref(T &r)
+    {
+        return r;
+    }
+    static const T &ref(const T &r)
+    {
+        return r;
+    }
 };
 
-template<class T>
-struct ptr_helper<T*>
+template <class T>
+struct ptr_helper<T *>
 {
-  typedef T value_type;
-  typedef T& reference_type;
-  typedef T* rvalue_type;
-  static reference_type ref(T * p) { return *p; }
-  static const T& ref(const T * p) { return *p; }
+    typedef T value_type;
+    typedef T &reference_type;
+    typedef T *rvalue_type;
+    static reference_type ref(T *p)
+    {
+        return *p;
+    }
+    static const T &ref(const T *p)
+    {
+        return *p;
+    }
 };
 #endif
 
@@ -65,30 +85,49 @@ struct ptr_helper<T*>
 //  ptr_helper.
 //
 #ifdef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-# define BOOST_RANDOM_PTR_HELPER_SPEC(T)                \
-namespace boost { namespace random { namespace detail { \
-template<>                                              \
-struct ptr_helper<T&>                                   \
-{                                                       \
-  typedef T value_type;                                 \
-  typedef T& reference_type;                            \
-  typedef T& rvalue_type;                               \
-  static reference_type ref(T& r) { return r; }         \
-  static const T& ref(const T& r) { return r; }         \
-};                                                      \
-                                                        \
-template<>                                              \
-struct ptr_helper<T*>                                   \
-{                                                       \
-  typedef T value_type;                                 \
-  typedef T& reference_type;                            \
-  typedef T* rvalue_type;                               \
-  static reference_type ref(T * p) { return *p; }       \
-  static const T& ref(const T * p) { return *p; }       \
-};                                                      \
-}}}
+#define BOOST_RANDOM_PTR_HELPER_SPEC(T) \
+    namespace boost                     \
+    {                                   \
+    namespace random                    \
+    {                                   \
+    namespace detail                    \
+    {                                   \
+    template <>                         \
+    struct ptr_helper<T &>              \
+    {                                   \
+        typedef T value_type;           \
+        typedef T &reference_type;      \
+        typedef T &rvalue_type;         \
+        static reference_type ref(T &r) \
+        {                               \
+            return r;                   \
+        }                               \
+        static const T &ref(const T &r) \
+        {                               \
+            return r;                   \
+        }                               \
+    };                                  \
+                                        \
+    template <>                         \
+    struct ptr_helper<T *>              \
+    {                                   \
+        typedef T value_type;           \
+        typedef T &reference_type;      \
+        typedef T *rvalue_type;         \
+        static reference_type ref(T *p) \
+        {                               \
+            return *p;                  \
+        }                               \
+        static const T &ref(const T *p) \
+        {                               \
+            return *p;                  \
+        }                               \
+    };                                  \
+    }                                   \
+    }                                   \
+    }
 #else
-# define BOOST_RANDOM_PTR_HELPER_SPEC(T)
-#endif 
+#define BOOST_RANDOM_PTR_HELPER_SPEC(T)
+#endif
 
 #endif // BOOST_RANDOM_DETAIL_PTR_HELPER_HPP

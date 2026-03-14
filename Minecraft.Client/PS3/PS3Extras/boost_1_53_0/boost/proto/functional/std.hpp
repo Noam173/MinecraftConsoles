@@ -9,7 +9,7 @@
 #ifndef BOOST_PROTO_FUNCTIONAL_STD_HPP_EAN_11_27_2010
 #define BOOST_PROTO_FUNCTIONAL_STD_HPP_EAN_11_27_2010
 
-#include <boost/proto/functional/std/utility.hpp>
 #include <boost/proto/functional/std/iterator.hpp>
+#include <boost/proto/functional/std/utility.hpp>
 
 #endif

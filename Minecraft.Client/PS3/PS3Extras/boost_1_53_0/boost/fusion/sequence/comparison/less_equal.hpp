@@ -8,10 +8,10 @@
 #if !defined(FUSION_LESS_EQUAL_05052005_0432)
 #define FUSION_LESS_EQUAL_05052005_0432
 
+#include <boost/fusion/sequence/comparison/enable_comparison.hpp>
 #include <boost/fusion/sequence/intrinsic/begin.hpp>
 #include <boost/fusion/sequence/intrinsic/end.hpp>
 #include <boost/fusion/sequence/intrinsic/size.hpp>
-#include <boost/fusion/sequence/comparison/enable_comparison.hpp>
 #include <boost/fusion/support/is_sequence.hpp>
 
 #if defined(FUSION_DIRECT_OPERATOR_USAGE)
@@ -20,62 +20,62 @@
 #include <boost/fusion/sequence/comparison/less.hpp>
 #endif
 
-namespace boost { namespace fusion
+namespace boost
 {
-    template <typename Seq1, typename Seq2>
-    inline bool
-    less_equal(Seq1 const& a, Seq2 const& b)
-    {
+namespace fusion
+{
+template <typename Seq1, typename Seq2>
+inline bool
+less_equal(Seq1 const &a, Seq2 const &b)
+{
 #if defined(FUSION_DIRECT_OPERATOR_USAGE)
-        return detail::sequence_less_equal<Seq1 const, Seq2 const>::
-            call(fusion::begin(a), fusion::begin(b));
+    return detail::sequence_less_equal<Seq1 const, Seq2 const>::
+        call(fusion::begin(a), fusion::begin(b));
 #else
-        return !(b < a);
+    return !(b < a);
 #endif
-    }
+}
 
-    namespace operators
-    {
+namespace operators
+{
 #if defined(BOOST_MSVC) && (BOOST_MSVC <= 1400)
 // Workaround for  VC8.0 and VC7.1
-        template <typename Seq1, typename Seq2>
-        inline bool
-        operator<=(sequence_base<Seq1> const& a, sequence_base<Seq2> const& b)
-        {
-            return less_equal(a.derived(), b.derived());
-        }
+template <typename Seq1, typename Seq2>
+inline bool
+operator<=(sequence_base<Seq1> const &a, sequence_base<Seq2> const &b)
+{
+    return less_equal(a.derived(), b.derived());
+}
 
-        template <typename Seq1, typename Seq2>
-        inline typename disable_if<traits::is_native_fusion_sequence<Seq2>, bool>::type
-        operator<=(sequence_base<Seq1> const& a, Seq2 const& b)
-        {
-            return less_equal(a.derived(), b);
-        }
+template <typename Seq1, typename Seq2>
+inline typename disable_if<traits::is_native_fusion_sequence<Seq2>, bool>::type
+operator<=(sequence_base<Seq1> const &a, Seq2 const &b)
+{
+    return less_equal(a.derived(), b);
+}
 
-        template <typename Seq1, typename Seq2>
-        inline typename disable_if<traits::is_native_fusion_sequence<Seq1>, bool>::type
-        operator<=(Seq1 const& a, sequence_base<Seq2> const& b)
-        {
-            return less_equal(a, b.derived());
-        }
+template <typename Seq1, typename Seq2>
+inline typename disable_if<traits::is_native_fusion_sequence<Seq1>, bool>::type
+operator<=(Seq1 const &a, sequence_base<Seq2> const &b)
+{
+    return less_equal(a, b.derived());
+}
 
 #else
 // Somehow VC8.0 and VC7.1 does not like this code
 // but barfs somewhere else.
 
-        template <typename Seq1, typename Seq2>
-        inline typename
-            boost::enable_if<
-                traits::enable_comparison<Seq1, Seq2>
-              , bool
-            >::type
-        operator<=(Seq1 const& a, Seq2 const& b)
-        {
-            return fusion::less_equal(a, b);
-        }
+template <typename Seq1, typename Seq2>
+inline typename boost::enable_if<
+    traits::enable_comparison<Seq1, Seq2>, bool>::type
+operator<=(Seq1 const &a, Seq2 const &b)
+{
+    return fusion::less_equal(a, b);
+}
 #endif
-    }
-    using operators::operator<=;
-}}
+} // namespace operators
+using operators::operator<=;
+} // namespace fusion
+} // namespace boost
 
 #endif

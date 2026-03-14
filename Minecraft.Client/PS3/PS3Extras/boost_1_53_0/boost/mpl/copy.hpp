@@ -5,8 +5,8 @@
 // Copyright Aleksey Gurtovoy 2000-2004
 // Copyright David Abrahams 2003-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -15,37 +15,31 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
+#include <boost/mpl/aux_/inserter_algorithm.hpp>
 #include <boost/mpl/fold.hpp>
 #include <boost/mpl/reverse_fold.hpp>
-#include <boost/mpl/aux_/inserter_algorithm.hpp>
 
-namespace boost { namespace mpl {
+namespace boost
+{
+namespace mpl
+{
 
-namespace aux {
+namespace aux
+{
 
-template<
-      typename Sequence
-    , typename Inserter
-    >
+template <
+    typename Sequence, typename Inserter>
 struct copy_impl
-    : fold< 
-          Sequence
-        , typename Inserter::state
-        , typename Inserter::operation
-        >
+    : fold<
+          Sequence, typename Inserter::state, typename Inserter::operation>
 {
 };
 
-template<
-      typename Sequence
-    , typename Inserter
-    >
+template <
+    typename Sequence, typename Inserter>
 struct reverse_copy_impl
     : reverse_fold<
-          Sequence
-        , typename Inserter::state
-        , typename Inserter::operation
-        >
+          Sequence, typename Inserter::state, typename Inserter::operation>
 {
 };
 
@@ -53,6 +47,7 @@ struct reverse_copy_impl
 
 BOOST_MPL_AUX_INSERTER_ALGORITHM_DEF(2, copy)
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_COPY_HPP_INCLUDED

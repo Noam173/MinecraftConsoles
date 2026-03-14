@@ -14,77 +14,63 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_SECTIONS_RANGE_BY_SECTION_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_SECTIONS_RANGE_BY_SECTION_HPP
 
-
 #include <boost/assert.hpp>
 #include <boost/range.hpp>
 
-#include <boost/geometry/multi/core/tags.hpp>
-#include <boost/geometry/multi/core/ring_type.hpp>
 #include <boost/geometry/algorithms/detail/sections/range_by_section.hpp>
+#include <boost/geometry/multi/core/ring_type.hpp>
+#include <boost/geometry/multi/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace section
+namespace detail
+{
+namespace section
 {
 
-
-template
-<
+template <
     typename MultiGeometry,
     typename Section,
-    typename Policy
->
+    typename Policy>
 struct full_section_multi
 {
     static inline typename ring_return_type<MultiGeometry const>::type apply(
-                MultiGeometry const& multi, Section const& section)
+        MultiGeometry const &multi, Section const &section)
     {
-        BOOST_ASSERT
-            (
-                section.ring_id.multi_index >= 0
-                && section.ring_id.multi_index < int(boost::size(multi))
-            );
+        BOOST_ASSERT(
+            section.ring_id.multi_index >= 0 && section.ring_id.multi_index < int(boost::size(multi)));
 
         return Policy::apply(multi[section.ring_id.multi_index], section);
     }
 };
 
-
-}} // namespace detail::section
+} // namespace section
+} // namespace detail
 #endif
-
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
 template <typename MultiPolygon, typename Section>
 struct range_by_section<multi_polygon_tag, MultiPolygon, Section>
-    : detail::section::full_section_multi
-        <
-            MultiPolygon,
-            Section,
-            detail::section::full_section_polygon
-                <
-                    typename boost::range_value<MultiPolygon>::type,
-                    Section
-                >
-       >
-{};
-
+    : detail::section::full_section_multi<
+          MultiPolygon,
+          Section,
+          detail::section::full_section_polygon<
+              typename boost::range_value<MultiPolygon>::type,
+              Section>>
+{
+};
 
 } // namespace dispatch
 #endif
 
-
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_DETAIL_SECTIONS_RANGE_BY_SECTION_HPP

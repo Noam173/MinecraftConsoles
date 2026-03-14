@@ -15,8 +15,8 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#if defined( __ia64__ ) && defined( __INTEL_COMPILER )
-# include <ia64intrin.h>
+#if defined(__ia64__) && defined(__INTEL_COMPILER)
+#include <ia64intrin.h>
 #endif
 
 namespace boost
@@ -27,29 +27,29 @@ namespace detail
 
 class atomic_count
 {
-public:
-
-    explicit atomic_count( long v ) : value_( v ) {}
+  public:
+    explicit atomic_count(long v) : value_(v)
+    {
+    }
 
     long operator++()
     {
-        return __sync_add_and_fetch( &value_, 1 );
+        return __sync_add_and_fetch(&value_, 1);
     }
 
     long operator--()
     {
-        return __sync_add_and_fetch( &value_, -1 );
+        return __sync_add_and_fetch(&value_, -1);
     }
 
     operator long() const
     {
-        return __sync_fetch_and_add( &value_, 0 );
+        return __sync_fetch_and_add(&value_, 0);
     }
 
-private:
-
+  private:
     atomic_count(atomic_count const &);
-    atomic_count & operator=(atomic_count const &);
+    atomic_count &operator=(atomic_count const &);
 
     mutable long value_;
 };

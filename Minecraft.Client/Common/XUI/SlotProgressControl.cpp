@@ -1,88 +1,92 @@
 #include "stdafx.h"
 
-#include "..\..\..\Minecraft.World\Slot.h"
 #include "..\..\..\Minecraft.World\ItemInstance.h"
+#include "..\..\..\Minecraft.World\Slot.h"
 
 #include "SlotItemControlBase.h"
 #include "SlotProgressControl.h"
 
 int SlotProgressControl::GetValue()
 {
-	int value = 0;
+    int value = 0;
 
-	HXUIOBJ hVisual, hParent;
-	this->GetParent( &hVisual );
-	XuiElementGetParent( hVisual, &hParent);
+    HXUIOBJ hVisual, hParent;
+    this->GetParent(&hVisual);
+    XuiElementGetParent(hVisual, &hParent);
 
-	void* pvUserData;
-	XuiElementGetUserData( hParent, &pvUserData );
+    void *pvUserData;
+    XuiElementGetUserData(hParent, &pvUserData);
 
-	if( pvUserData != NULL )
-	{
-		SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
-	
-		shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>();
+    if (pvUserData != NULL)
+    {
+        SlotControlUserDataContainer *pUserDataContainer = (SlotControlUserDataContainer *)pvUserData;
 
-		if( pUserDataContainer->slot != NULL )
-		{
-			item = pUserDataContainer->slot->getItem();
-		}
-		else
-		{
-			item = pUserDataContainer->item;
-		}
+        shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>();
 
-		if( item != NULL )
-		{
-			// TODO Should use getDamage instead even though it returns the same value
-			if( item->isDamaged() )
-				value = item->getDamageValue();
-			else
-				value = 0;
-		}
-	}
-	else
-	{
-		LPCWSTR name;
-		XuiElementGetId( hParent, &name );
+        if (pUserDataContainer->slot != NULL)
+        {
+            item = pUserDataContainer->slot->getItem();
+        }
+        else
+        {
+            item = pUserDataContainer->item;
+        }
 
-		OutputDebugStringW( name );
-		OutputDebugString( "\n" );
-	}
+        if (item != NULL)
+        {
+            // TODO Should use getDamage instead even though it returns the same value
+            if (item->isDamaged())
+            {
+                value = item->getDamageValue();
+            }
+            else
+            {
+                value = 0;
+            }
+        }
+    }
+    else
+    {
+        LPCWSTR name;
+        XuiElementGetId(hParent, &name);
 
-	return value;
+        OutputDebugStringW(name);
+        OutputDebugString("\n");
+    }
+
+    return value;
 }
 
 void SlotProgressControl::GetRange(int *pnRangeMin, int *pnRangeMax)
 {
-	*pnRangeMin = 0;
-	*pnRangeMax = 0;
+    *pnRangeMin = 0;
+    *pnRangeMax = 0;
 
-	HXUIOBJ hVisual, hParent;
-	this->GetParent( &hVisual );
-	XuiElementGetParent( hVisual, &hParent);
+    HXUIOBJ hVisual, hParent;
+    this->GetParent(&hVisual);
+    XuiElementGetParent(hVisual, &hParent);
 
-	void* pvUserData;
-	XuiElementGetUserData( hParent, &pvUserData );
+    void *pvUserData;
+    XuiElementGetUserData(hParent, &pvUserData);
 
-	if( pvUserData != NULL )
-	{
-		SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
-	
-		shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>();
+    if (pvUserData != NULL)
+    {
+        SlotControlUserDataContainer *pUserDataContainer = (SlotControlUserDataContainer *)pvUserData;
 
-		if( pUserDataContainer->slot != NULL )
-		{
-			item = pUserDataContainer->slot->getItem();
-		}
-		else
-		{
-			item = pUserDataContainer->item;
-		}
+        shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>();
 
-		if( item != NULL )
-		{
-			*pnRangeMax = item->getMaxDamage();
-		}
-	}
+        if (pUserDataContainer->slot != NULL)
+        {
+            item = pUserDataContainer->slot->getItem();
+        }
+        else
+        {
+            item = pUserDataContainer->item;
+        }
+
+        if (item != NULL)
+        {
+            *pnRangeMax = item->getMaxDamage();
+        }
+    }
 }

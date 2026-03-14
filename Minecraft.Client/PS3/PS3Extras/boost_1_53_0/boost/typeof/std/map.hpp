@@ -5,11 +5,11 @@
 #ifndef BOOST_TYPEOF_STD_map_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_map_hpp_INCLUDED
 
-#include <map>
-#include <boost/typeof/typeof.hpp>
-#include <boost/typeof/std/memory.hpp>
 #include <boost/typeof/std/functional.hpp>
+#include <boost/typeof/std/memory.hpp>
 #include <boost/typeof/std/utility.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <map>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -20,4 +20,4 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::multimap, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::multimap, 3)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::multimap, 4)
 
-#endif//BOOST_TYPEOF_STD_map_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_map_hpp_INCLUDED

@@ -16,13 +16,17 @@
 
 #include <boost/geometry/algorithms/detail/overlay/append_no_duplicates.hpp>
 
-#include <boost/geometry/util/select_coordinate_type.hpp>
 #include <boost/geometry/geometries/segment.hpp>
+#include <boost/geometry/util/select_coordinate_type.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace strategy { namespace intersection
+namespace strategy
+{
+namespace intersection
 {
 
 /*!
@@ -40,45 +44,54 @@ namespace strategy { namespace intersection
     - A tutorial: http://www.skytopia.com/project/articles/compsci/clipping.html
     - a German applet (link broken): http://ls7-www.cs.uni-dortmund.de/students/projectgroups/acit/lineclip.shtml
 */
-template<typename Box, typename Point>
+template <typename Box, typename Point>
 class liang_barsky
 {
-private:
+  private:
     typedef model::referring_segment<Point> segment_type;
 
     template <typename T>
-    inline bool check_edge(T const& p, T const& q, T& t1, T& t2) const
+    inline bool check_edge(T const &p, T const &q, T &t1, T &t2) const
     {
         bool visible = true;
 
-        if(p < 0)
+        if (p < 0)
         {
             T const r = q / p;
             if (r > t2)
+            {
                 visible = false;
+            }
             else if (r > t1)
+            {
                 t1 = r;
+            }
         }
-        else if(p > 0)
+        else if (p > 0)
         {
             T const r = q / p;
             if (r < t1)
+            {
                 visible = false;
+            }
             else if (r < t2)
+            {
                 t2 = r;
+            }
         }
         else
         {
             if (q < 0)
+            {
                 visible = false;
+            }
         }
 
         return visible;
     }
 
-public:
-
-    inline bool clip_segment(Box const& b, segment_type& s, bool& sp1_clipped, bool& sp2_clipped) const
+  public:
+    inline bool clip_segment(Box const &b, segment_type &s, bool &sp1_clipped, bool &sp2_clipped) const
     {
         typedef typename select_coordinate_type<Box, Point>::type coordinate_type;
 
@@ -98,10 +111,10 @@ public:
         coordinate_type const q3 = get<0, 1>(s) - get<min_corner, 1>(b);
         coordinate_type const q4 = get<max_corner, 1>(b) - get<0, 1>(s);
 
-        if (check_edge(p1, q1, t1, t2)      // left
-            && check_edge(p2, q2, t1, t2)   // right
-            && check_edge(p3, q3, t1, t2)   // bottom
-            && check_edge(p4, q4, t1, t2))   // top
+        if (check_edge(p1, q1, t1, t2)     // left
+            && check_edge(p2, q2, t1, t2)  // right
+            && check_edge(p3, q3, t1, t2)  // bottom
+            && check_edge(p4, q4, t1, t2)) // top
         {
             sp1_clipped = t1 > 0;
             sp2_clipped = t2 < 1;
@@ -112,7 +125,7 @@ public:
                 set<1, 1>(s, get<0, 1>(s) + t2 * dy);
             }
 
-            if(sp1_clipped)
+            if (sp1_clipped)
             {
                 set<0, 0>(s, get<0, 0>(s) + t1 * dx);
                 set<0, 1>(s, get<0, 1>(s) + t1 * dy);
@@ -124,8 +137,8 @@ public:
         return false;
     }
 
-    template<typename Linestring, typename OutputIterator>
-    inline void apply(Linestring& line_out, OutputIterator out) const
+    template <typename Linestring, typename OutputIterator>
+    inline void apply(Linestring &line_out, OutputIterator out) const
     {
         if (!boost::empty(line_out))
         {
@@ -136,12 +149,13 @@ public:
     }
 };
 
-
-}} // namespace strategy::intersection
-
+} // namespace intersection
+} // namespace strategy
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace intersection
+namespace detail
+{
+namespace intersection
 {
 
 /*!
@@ -155,16 +169,14 @@ namespace detail { namespace intersection
     \tparam Box box type
     \tparam Strategy strategy, a clipping strategy which should implement the methods "clip_segment" and "apply"
 */
-template
-<
+template <
     typename OutputLinestring,
     typename OutputIterator,
     typename Range,
     typename Box,
-    typename Strategy
->
-OutputIterator clip_range_with_box(Box const& b, Range const& range,
-            OutputIterator out, Strategy const& strategy)
+    typename Strategy>
+OutputIterator clip_range_with_box(Box const &b, Range const &range,
+                                   OutputIterator out, Strategy const &strategy)
 {
     if (boost::begin(range) == boost::end(range))
     {
@@ -177,9 +189,9 @@ OutputIterator clip_range_with_box(Box const& b, Range const& range,
 
     typedef typename boost::range_iterator<Range const>::type iterator_type;
     iterator_type vertex = boost::begin(range);
-    for(iterator_type previous = vertex++;
-            vertex != boost::end(range);
-            ++previous, ++vertex)
+    for (iterator_type previous = vertex++;
+         vertex != boost::end(range);
+         ++previous, ++vertex)
     {
         point_type p1, p2;
         geometry::convert(*previous, p1);
@@ -226,7 +238,6 @@ OutputIterator clip_range_with_box(Box const& b, Range const& range,
                 strategy.apply(line_out, out);
             }
         }
-
     }
 
     // Add last part
@@ -234,9 +245,11 @@ OutputIterator clip_range_with_box(Box const& b, Range const& range,
     return out;
 }
 
-}} // namespace detail::intersection
+} // namespace intersection
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_CLIP_LINESTRING_HPP

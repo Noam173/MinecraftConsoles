@@ -8,45 +8,36 @@
 #ifndef BOOST_FUSION_ALGORITHM_ITERATION_ITER_FOLD_FWD_HPP
 #define BOOST_FUSION_ALGORITHM_ITERATION_ITER_FOLD_FWD_HPP
 
-namespace boost { namespace fusion
+namespace boost
 {
-    namespace result_of
-    {
-        template<typename Seq, typename State, typename F>
-        struct iter_fold;
-    }
+namespace fusion
+{
+namespace result_of
+{
+template <typename Seq, typename State, typename F>
+struct iter_fold;
+}
 
-    template<typename Seq, typename State, typename F>
-    typename result_of::iter_fold<
-        Seq
-      , State const
-      , F
-    >::type
-    iter_fold(Seq& seq, State const& state, F f);
+template <typename Seq, typename State, typename F>
+typename result_of::iter_fold<
+    Seq, State const, F>::type
+iter_fold(Seq &seq, State const &state, F f);
 
-    template<typename Seq, typename State, typename F>
-    typename result_of::iter_fold<
-        Seq const
-      , State const
-      , F
-    >::type
-    iter_fold(Seq const& seq, State const& state, F f);
+template <typename Seq, typename State, typename F>
+typename result_of::iter_fold<
+    Seq const, State const, F>::type
+iter_fold(Seq const &seq, State const &state, F f);
 
-    template<typename Seq, typename State, typename F>
-    typename result_of::iter_fold<
-        Seq
-      , State const
-      , F
-    >::type
-    iter_fold(Seq& seq, State& state, F f);
+template <typename Seq, typename State, typename F>
+typename result_of::iter_fold<
+    Seq, State const, F>::type
+iter_fold(Seq &seq, State &state, F f);
 
-    template<typename Seq, typename State, typename F>
-    typename result_of::iter_fold<
-        Seq const
-      , State const
-      , F
-    >::type
-    iter_fold(Seq const& seq, State& state, F f);
-}}
+template <typename Seq, typename State, typename F>
+typename result_of::iter_fold<
+    Seq const, State const, F>::type
+iter_fold(Seq const &seq, State &state, F f);
+} // namespace fusion
+} // namespace boost
 
 #endif

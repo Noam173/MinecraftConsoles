@@ -18,11 +18,15 @@
 
 #include <boost/geometry/geometries/concepts/check.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace make
+namespace detail
+{
+namespace make
 {
 
 /*!
@@ -43,16 +47,17 @@ namespace detail { namespace make
 }
  */
 template <typename Geometry, typename Range>
-inline Geometry make_points(Range const& range)
+inline Geometry make_points(Range const &range)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     Geometry geometry;
     geometry::append(geometry, range);
     return geometry;
 }
 
-}} // namespace detail::make
+} // namespace make
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
 /*!
@@ -76,17 +81,15 @@ inline Geometry make_points(Range const& range)
 }
 */
 template <typename Geometry, typename Type>
-inline Geometry make(Type const& c1, Type const& c2)
+inline Geometry make(Type const &c1, Type const &c2)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     Geometry geometry;
-    dispatch::assign
-        <
-            typename tag<Geometry>::type,
-            Geometry,
-            geometry::dimension<Geometry>::type::value
-        >::apply(geometry, c1, c2);
+    dispatch::assign<
+        typename tag<Geometry>::type,
+        Geometry,
+        geometry::dimension<Geometry>::type::value>::apply(geometry, c1, c2);
     return geometry;
 }
 
@@ -110,38 +113,30 @@ inline Geometry make(Type const& c1, Type const& c2)
 }
  */
 template <typename Geometry, typename Type>
-inline Geometry make(Type const& c1, Type const& c2, Type const& c3)
+inline Geometry make(Type const &c1, Type const &c2, Type const &c3)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     Geometry geometry;
-    dispatch::assign
-        <
-            typename tag<Geometry>::type,
-            Geometry,
-            geometry::dimension<Geometry>::type::value
-        >::apply(geometry, c1, c2, c3);
+    dispatch::assign<
+        typename tag<Geometry>::type,
+        Geometry,
+        geometry::dimension<Geometry>::type::value>::apply(geometry, c1, c2, c3);
     return geometry;
 }
 
 template <typename Geometry, typename Type>
-inline Geometry make(Type const& c1, Type const& c2, Type const& c3, Type const& c4)
+inline Geometry make(Type const &c1, Type const &c2, Type const &c3, Type const &c4)
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     Geometry geometry;
-    dispatch::assign
-        <
-            typename tag<Geometry>::type,
-            Geometry,
-            geometry::dimension<Geometry>::type::value
-        >::apply(geometry, c1, c2, c3, c4);
+    dispatch::assign<
+        typename tag<Geometry>::type,
+        Geometry,
+        geometry::dimension<Geometry>::type::value>::apply(geometry, c1, c2, c3, c4);
     return geometry;
 }
-
-
-
-
 
 /*!
 \brief Construct a box with inverse infinite coordinates
@@ -163,14 +158,12 @@ inline Geometry make(Type const& c1, Type const& c2, Type const& c3, Type const&
 template <typename Geometry>
 inline Geometry make_inverse()
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     Geometry geometry;
-    dispatch::assign_inverse
-        <
-            typename tag<Geometry>::type,
-            Geometry
-        >::apply(geometry);
+    dispatch::assign_inverse<
+        typename tag<Geometry>::type,
+        Geometry>::apply(geometry);
     return geometry;
 }
 
@@ -184,17 +177,16 @@ inline Geometry make_inverse()
 template <typename Geometry>
 inline Geometry make_zero()
 {
-    concept::check<Geometry>();
+    concept ::check<Geometry>();
 
     Geometry geometry;
-    dispatch::assign_zero
-        <
-            typename tag<Geometry>::type,
-            Geometry
-        >::apply(geometry);
+    dispatch::assign_zero<
+        typename tag<Geometry>::type,
+        Geometry>::apply(geometry);
     return geometry;
 }
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_MAKE_HPP

@@ -1,131 +1,139 @@
-#include "stdafx.h"
-#include <string>
-#include <unordered_map>
+#include "ControllerTask.h"
 #include "..\..\Minecraft.h"
 #include "..\..\MultiplayerLocalPlayer.h"
 #include "Tutorial.h"
 #include "TutorialConstraints.h"
-#include "ControllerTask.h"
+#include "stdafx.h"
+#include <string>
+#include <unordered_map>
 
 ControllerTask::ControllerTask(Tutorial *tutorial, int descriptionId, bool enablePreCompletion, bool showMinimumTime,
-								int mappings[], unsigned int mappingsLength, int iCompletionMaskA[], int iCompletionMaskACount, int iSouthpawMappings[], unsigned int uiSouthpawMappingsCount)
-	: TutorialTask( tutorial, descriptionId, enablePreCompletion, nullptr, showMinimumTime )
+                               int mappings[], unsigned int mappingsLength, int iCompletionMaskA[], int iCompletionMaskACount, int iSouthpawMappings[], unsigned int uiSouthpawMappingsCount)
+    : TutorialTask(tutorial, descriptionId, enablePreCompletion, nullptr, showMinimumTime)
 {
-	for(unsigned int i = 0; i < mappingsLength; ++i)
-	{
-		constraints.push_back( new InputConstraint( mappings[i] ) );
-		completedMappings[mappings[i]] = false;
-	}
-	if(uiSouthpawMappingsCount > 0 ) m_bHasSouthpaw = true;
-	for(unsigned int i = 0; i < uiSouthpawMappingsCount; ++i)
-	{
-		southpawCompletedMappings[iSouthpawMappings[i]] = false;
-	}
+    for (unsigned int i = 0; i < mappingsLength; ++i)
+    {
+        constraints.push_back(new InputConstraint(mappings[i]));
+        completedMappings[mappings[i]] = false;
+    }
+    if (uiSouthpawMappingsCount > 0)
+    {
+        m_bHasSouthpaw = true;
+    }
+    for (unsigned int i = 0; i < uiSouthpawMappingsCount; ++i)
+    {
+        southpawCompletedMappings[iSouthpawMappings[i]] = false;
+    }
 
-	m_iCompletionMaskA= new int [iCompletionMaskACount];
-	for(int i=0;i<iCompletionMaskACount;i++)
-	{
-		m_iCompletionMaskA[i]=iCompletionMaskA[i];
-	}
-	m_iCompletionMaskACount=iCompletionMaskACount;
-	m_uiCompletionMask=0;
+    m_iCompletionMaskA = new int[iCompletionMaskACount];
+    for (int i = 0; i < iCompletionMaskACount; i++)
+    {
+        m_iCompletionMaskA[i] = iCompletionMaskA[i];
+    }
+    m_iCompletionMaskACount = iCompletionMaskACount;
+    m_uiCompletionMask = 0;
 
-	// If we don't want to be able to complete it early..then assume we want the constraints active
-	//if( !enablePreCompletion )
-	//	enableConstraints( true );
+    // If we don't want to be able to complete it early..then assume we want the constraints active
+    // if( !enablePreCompletion )
+    //	enableConstraints( true );
 }
 
 ControllerTask::~ControllerTask()
 {
-	delete[] m_iCompletionMaskA;
+    delete[] m_iCompletionMaskA;
 }
 
 bool ControllerTask::isCompleted()
 {
-	if( bIsCompleted )
-		return true;
+    if (bIsCompleted)
+    {
+        return true;
+    }
 
-	bool bAllComplete = true;
-	
-	Minecraft *pMinecraft = Minecraft::GetInstance();
+    bool bAllComplete = true;
 
-	int iCurrent=0;
+    Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	if(m_bHasSouthpaw && app.GetGameSettings(pMinecraft->player->GetXboxPad(),eGameSetting_ControlSouthPaw))
-	{
-		for (auto& it : southpawCompletedMappings )
-		{
-			bool current = it.second;
-			if(!current)
-			{
-				// TODO Use a different pad
-				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), it.first) > 0 )
-				{
-					it.second = true;
-					m_uiCompletionMask|=1<<iCurrent;
-				}
-				else
-				{
+    int iCurrent = 0;
+
+    if (m_bHasSouthpaw && app.GetGameSettings(pMinecraft->player->GetXboxPad(), eGameSetting_ControlSouthPaw))
+    {
+        for (auto &it : southpawCompletedMappings)
+        {
+            bool current = it.second;
+            if (!current)
+            {
+                // TODO Use a different pad
+                if (InputManager.GetValue(pMinecraft->player->GetXboxPad(), it.first) > 0)
+                {
+                    it.second = true;
+                    m_uiCompletionMask |= 1 << iCurrent;
+                }
+                else
+                {
 #ifdef _WINDOWS64
-					bAllComplete = true;
+                    bAllComplete = true;
 #else
-					bAllComplete = false;
+                    bAllComplete = false;
 #endif
-				}
-			}
-			iCurrent++;
-		}
-	}
-	else
-	{
-		for (auto& it : completedMappings )
-		{
-			bool current = it.second;
-			if(!current)
-			{
-				// TODO Use a different pad
-				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), it.first) > 0 )
-				{
-					it.second = true;
-					m_uiCompletionMask|=1<<iCurrent;
-				}
-				else
-				{
+                }
+            }
+            iCurrent++;
+        }
+    }
+    else
+    {
+        for (auto &it : completedMappings)
+        {
+            bool current = it.second;
+            if (!current)
+            {
+                // TODO Use a different pad
+                if (InputManager.GetValue(pMinecraft->player->GetXboxPad(), it.first) > 0)
+                {
+                    it.second = true;
+                    m_uiCompletionMask |= 1 << iCurrent;
+                }
+                else
+                {
 #ifdef _WINDOWS64
-					bAllComplete = true;
+                    bAllComplete = true;
 #else
-					bAllComplete = false;
+                    bAllComplete = false;
 #endif
-				}
-			}
-			iCurrent++;
-		}
-	}
+                }
+            }
+            iCurrent++;
+        }
+    }
 
-	// If this has a list of completion masks then check if there is a matching one to mark the task as complete
-	if(m_iCompletionMaskA && CompletionMaskIsValid())
-	{
-		bIsCompleted = true;
-	}
-	else
-	{
-		bIsCompleted = bAllComplete;
-	}
+    // If this has a list of completion masks then check if there is a matching one to mark the task as complete
+    if (m_iCompletionMaskA && CompletionMaskIsValid())
+    {
+        bIsCompleted = true;
+    }
+    else
+    {
+        bIsCompleted = bAllComplete;
+    }
 
-	return bIsCompleted;
+    return bIsCompleted;
 }
 
 bool ControllerTask::CompletionMaskIsValid()
 {
-	for(int i=0;i<m_iCompletionMaskACount;i++)
-	{
-		if(m_uiCompletionMask==m_iCompletionMaskA[i]) return true;
-	}
+    for (int i = 0; i < m_iCompletionMaskACount; i++)
+    {
+        if (m_uiCompletionMask == m_iCompletionMaskA[i])
+        {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 void ControllerTask::setAsCurrentTask(bool active /*= true*/)
 {
-	TutorialTask::setAsCurrentTask(active);
-	enableConstraints(!active);
+    TutorialTask::setAsCurrentTask(active);
+    enableConstraints(!active);
 }

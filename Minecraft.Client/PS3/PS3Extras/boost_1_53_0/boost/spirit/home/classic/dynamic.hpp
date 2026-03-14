@@ -17,14 +17,14 @@
 //  Master header for Spirit.Dynamic
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <boost/spirit/home/classic/dynamic/if.hpp>
 #include <boost/spirit/home/classic/dynamic/for.hpp>
-#include <boost/spirit/home/classic/dynamic/while.hpp>
+#include <boost/spirit/home/classic/dynamic/if.hpp>
 #include <boost/spirit/home/classic/dynamic/lazy.hpp>
-#include <boost/spirit/home/classic/dynamic/stored_rule.hpp>
 #include <boost/spirit/home/classic/dynamic/rule_alias.hpp>
 #include <boost/spirit/home/classic/dynamic/select.hpp>
+#include <boost/spirit/home/classic/dynamic/stored_rule.hpp>
 #include <boost/spirit/home/classic/dynamic/switch.hpp>
+#include <boost/spirit/home/classic/dynamic/while.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 #endif // BOOST_SPIRIT_DYNAMIC_HPP

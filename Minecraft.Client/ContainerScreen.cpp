@@ -1,20 +1,19 @@
-#include "stdafx.h"
 #include "ContainerScreen.h"
-#include "Textures.h"
 #include "..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "Textures.h"
+#include "stdafx.h"
 
 ContainerScreen::ContainerScreen(shared_ptr<Container> inventory, shared_ptr<Container> container) : AbstractContainerScreen(new ContainerMenu(inventory, container))
 {
-	this->inventory = inventory;
-	this->container = container;
-	this->passEvents = false;
+    this->inventory = inventory;
+    this->container = container;
+    this->passEvents = false;
 
-	int defaultHeight = 222;
-	int noRowHeight = defaultHeight - 6 * 18;
-	containerRows = container->getContainerSize() / 9;
+    int defaultHeight = 222;
+    int noRowHeight = defaultHeight - 6 * 18;
+    containerRows = container->getContainerSize() / 9;
 
-	imageHeight = noRowHeight + containerRows * 18;
-
+    imageHeight = noRowHeight + containerRows * 18;
 }
 
 void ContainerScreen::renderLabels()
@@ -27,7 +26,7 @@ void ContainerScreen::renderLabels()
 
 void ContainerScreen::renderBg(float a)
 {
-	// 4J Unused
+    // 4J Unused
 #if 0
 	int tex = minecraft->textures->loadTexture(L"/gui/container.png");
 	glColor4f(1, 1, 1, 1);

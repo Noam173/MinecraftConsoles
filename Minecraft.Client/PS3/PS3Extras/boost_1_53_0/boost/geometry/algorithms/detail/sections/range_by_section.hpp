@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_SECTIONS_RANGE_BY_SECTION_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_SECTIONS_RANGE_BY_SECTION_HPP
 
-
 #include <boost/mpl/assert.hpp>
 #include <boost/range.hpp>
 
@@ -23,84 +22,75 @@
 #include <boost/geometry/core/exterior_ring.hpp>
 #include <boost/geometry/core/interior_rings.hpp>
 
-
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace section
+namespace detail
 {
-
+namespace section
+{
 
 template <typename Range, typename Section>
 struct full_section_range
 {
-    static inline Range const& apply(Range const& range, Section const& )
+    static inline Range const &apply(Range const &range, Section const &)
     {
         return range;
     }
 };
 
-
 template <typename Polygon, typename Section>
 struct full_section_polygon
 {
-    static inline typename ring_return_type<Polygon const>::type apply(Polygon const& polygon, Section const& section)
+    static inline typename ring_return_type<Polygon const>::type apply(Polygon const &polygon, Section const &section)
     {
         return section.ring_id.ring_index < 0
-            ? geometry::exterior_ring(polygon)
-            : geometry::interior_rings(polygon)[section.ring_id.ring_index];
+                   ? geometry::exterior_ring(polygon)
+                   : geometry::interior_rings(polygon)[section.ring_id.ring_index];
     }
 };
 
-
-}} // namespace detail::section
+} // namespace section
+} // namespace detail
 #endif
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
-template
-<
+template <
     typename Tag,
     typename Geometry,
-    typename Section
->
+    typename Section>
 struct range_by_section
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_OR_NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE
-            , (types<Geometry>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_OR_NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE, (types<Geometry>));
 };
-
 
 template <typename LineString, typename Section>
 struct range_by_section<linestring_tag, LineString, Section>
     : detail::section::full_section_range<LineString, Section>
-{};
-
+{
+};
 
 template <typename Ring, typename Section>
 struct range_by_section<ring_tag, Ring, Section>
     : detail::section::full_section_range<Ring, Section>
-{};
-
+{
+};
 
 template <typename Polygon, typename Section>
 struct range_by_section<polygon_tag, Polygon, Section>
     : detail::section::full_section_polygon<Polygon, Section>
-{};
-
+{
+};
 
 } // namespace dispatch
 #endif
-
 
 /*!
     \brief Get full ring (exterior, one of interiors, one from multi)
@@ -113,19 +103,17 @@ struct range_by_section<polygon_tag, Polygon, Section>
  */
 template <typename Geometry, typename Section>
 inline typename ring_return_type<Geometry const>::type
-            range_by_section(Geometry const& geometry, Section const& section)
+range_by_section(Geometry const &geometry, Section const &section)
 {
-    concept::check<Geometry const>();
+    concept ::check<Geometry const>();
 
-    return dispatch::range_by_section
-        <
-            typename tag<Geometry>::type,
-            Geometry,
-            Section
-        >::apply(geometry, section);
+    return dispatch::range_by_section<
+        typename tag<Geometry>::type,
+        Geometry,
+        Section>::apply(geometry, section);
 }
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_SECTIONS_RANGE_BY_SECTION_HPP

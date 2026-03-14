@@ -4,21 +4,21 @@
 
 DummyCriteria::DummyCriteria(const wstring &name)
 {
-	this->name = name;
-	ObjectiveCriteria::CRITERIA_BY_NAME[name] = this;
+    this->name = name;
+    ObjectiveCriteria::CRITERIA_BY_NAME[name] = this;
 }
 
 wstring DummyCriteria::getName()
 {
-	return name;
+    return name;
 }
 
-int DummyCriteria::getScoreModifier(vector<shared_ptr<Player> > *players)
+int DummyCriteria::getScoreModifier(vector<shared_ptr<Player>> *players)
 {
-	return 0;
+    return 0;
 }
 
 bool DummyCriteria::isReadOnly()
 {
-	return false;
+    return false;
 }

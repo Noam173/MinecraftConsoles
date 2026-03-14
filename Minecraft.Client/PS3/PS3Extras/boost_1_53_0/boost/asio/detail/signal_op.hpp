@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_SIGNAL_OP_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -20,26 +20,29 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 class signal_op
-  : public operation
+    : public operation
 {
-public:
-  // The error code to be passed to the completion handler.
-  boost::system::error_code ec_;
+  public:
+    // The error code to be passed to the completion handler.
+    boost::system::error_code ec_;
 
-  // The signal number to be passed to the completion handler.
-  int signal_number_;
+    // The signal number to be passed to the completion handler.
+    int signal_number_;
 
-protected:
-  signal_op(func_type func)
-    : operation(func),
-      signal_number_(0)
-  {
-  }
+  protected:
+    signal_op(func_type func)
+        : operation(func),
+          signal_number_(0)
+    {
+    }
 };
 
 } // namespace detail

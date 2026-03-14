@@ -10,35 +10,46 @@ Copyright (c) 2010-2010: Joachim Faulhaber
 
 #include <functional>
 
-namespace boost{namespace icl
+namespace boost
 {
-    // naming convention
-    // predicate: n-ary predicate
-    // property:  unary predicate
-    // relation:  binary predicate
+namespace icl
+{
+// naming convention
+// predicate: n-ary predicate
+// property:  unary predicate
+// relation:  binary predicate
 
-    // Unary predicates
+// Unary predicates
 
-    template <class Type>
-    class property : public std::unary_function<Type,bool>{};
+template <class Type>
+class property : public std::unary_function<Type, bool>
+{
+};
 
-    template <class Type>
-    class member_property : public property<Type>
+template <class Type>
+class member_property : public property<Type>
+{
+  public:
+    member_property(bool (Type::*pred)() const) : property<Type>(), m_pred(pred)
     {
-    public:
-        member_property( bool(Type::* pred)()const ): property<Type>(), m_pred(pred){}
-        bool operator()(const Type& x)const { return (x.*m_pred)(); }
-    private:
-        bool(Type::* m_pred)()const;
-    } ;
+    }
+    bool operator()(const Type &x) const
+    {
+        return (x.*m_pred)();
+    }
 
-    // Binary predicates: relations
+  private:
+    bool (Type::*m_pred)() const;
+};
 
-    template <class LeftT, class RightT>
-    class relation : public std::binary_function<LeftT,RightT,bool>{};
+// Binary predicates: relations
 
+template <class LeftT, class RightT>
+class relation : public std::binary_function<LeftT, RightT, bool>
+{
+};
 
-}} // namespace icl boost
+} // namespace icl
+} // namespace boost
 
 #endif
-

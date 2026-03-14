@@ -29,8 +29,8 @@
  */
 
 #ifndef BOOST_ALGORITHM_HPP
-# define BOOST_ALGORITHM_HPP
-# include <boost/detail/iterator.hpp>
+#define BOOST_ALGORITHM_HPP
+#include <boost/detail/iterator.hpp>
 // Algorithms on sequences
 //
 // The functions in this file have not yet gone through formal
@@ -39,43 +39,44 @@
 // there are some graph algorithms that use these functions.
 
 #include <algorithm>
-#include <vector>
-#include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/algorithm/copy.hpp>
-#include <boost/range/algorithm/equal.hpp>
-#include <boost/range/algorithm/sort.hpp>
-#include <boost/range/algorithm/stable_sort.hpp>
-#include <boost/range/algorithm/find_if.hpp>
 #include <boost/range/algorithm/count.hpp>
 #include <boost/range/algorithm/count_if.hpp>
-#include <boost/range/algorithm_ext/is_sorted.hpp>
+#include <boost/range/algorithm/equal.hpp>
+#include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm/sort.hpp>
+#include <boost/range/algorithm/stable_sort.hpp>
 #include <boost/range/algorithm_ext/iota.hpp>
+#include <boost/range/algorithm_ext/is_sorted.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+#include <vector>
 
-namespace boost {
+namespace boost
+{
 
-  template <typename InputIterator, typename Predicate>
-  bool any_if(InputIterator first, InputIterator last, Predicate p)
-  {
+template <typename InputIterator, typename Predicate>
+bool any_if(InputIterator first, InputIterator last, Predicate p)
+{
     return std::find_if(first, last, p) != last;
-  }
+}
 
-  template <typename Container, typename Predicate>
-  bool any_if(const Container& c, Predicate p)
-  {
+template <typename Container, typename Predicate>
+bool any_if(const Container &c, Predicate p)
+{
     return any_if(boost::begin(c), boost::end(c), p);
-  }
+}
 
-  template <typename InputIterator, typename T>
-  bool container_contains(InputIterator first, InputIterator last, T value)
-  {
+template <typename InputIterator, typename T>
+bool container_contains(InputIterator first, InputIterator last, T value)
+{
     return std::find(first, last, value) != last;
-  }
-  template <typename Container, typename T>
-  bool container_contains(const Container& c, const T& value)
-  {
+}
+template <typename Container, typename T>
+bool container_contains(const Container &c, const T &value)
+{
     return container_contains(boost::begin(c), boost::end(c), value);
-  }
+}
 
 } // namespace boost
 

@@ -8,9 +8,12 @@
 #ifndef BOOST_LOCKFREE_BRANCH_HINTS_HPP_INCLUDED
 #define BOOST_LOCKFREE_BRANCH_HINTS_HPP_INCLUDED
 
-namespace boost    {
-namespace lockfree {
-namespace detail   {
+namespace boost
+{
+namespace lockfree
+{
+namespace detail
+{
 /** \brief hint for the branch prediction */
 inline bool likely(bool expr)
 {
@@ -19,7 +22,7 @@ inline bool likely(bool expr)
 #else
     return expr;
 #endif
-    }
+}
 
 /** \brief hint for the branch prediction */
 inline bool unlikely(bool expr)

@@ -1,18 +1,21 @@
-#include "stdafx.h"
 #include "NameEntryScreen.h"
-#include "Button.h"
 #include "..\Minecraft.World\StringHelpers.h"
+#include "Button.h"
+#include "stdafx.h"
 
 const wstring NameEntryScreen::allowedChars = L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_'*!\"#%/()=+?[]{}<>";
 
-NameEntryScreen::NameEntryScreen(Screen *lastScreen, const wstring& oldName, int slot)
+NameEntryScreen::NameEntryScreen(Screen *lastScreen, const wstring &oldName, int slot)
 {
-	frame = 0; // 4J added
+    frame = 0; // 4J added
 
     this->lastScreen = lastScreen;
     this->slot = slot;
     this->name = oldName;
-    if (name==L"-") name = L"";
+    if (name == L"-")
+    {
+        name = L"";
+    }
 }
 
 void NameEntryScreen::init()
@@ -26,23 +29,26 @@ void NameEntryScreen::init()
 
 void NameEntryScreen::removed()
 {
-	Keyboard::enableRepeatEvents(false);
+    Keyboard::enableRepeatEvents(false);
 }
 
 void NameEntryScreen::tick()
 {
-	frame++;
+    frame++;
 }
 
 void NameEntryScreen::buttonClicked(Button button)
 {
-    if (!button.active) return;
+    if (!button.active)
+    {
+        return;
+    }
 
     if (button.id == 0 && trimString(name).length() > 1)
     {
         minecraft->saveSlot(slot, trimString(name));
         minecraft->setScreen(nullptr);
-//        minecraft->grabMouse();	// 4J - removed
+        //        minecraft->grabMouse();	// 4J - removed
     }
     if (button.id == 1)
     {
@@ -52,8 +58,11 @@ void NameEntryScreen::buttonClicked(Button button)
 
 void NameEntryScreen::keyPressed(wchar_t ch, int eventKey)
 {
-    if (eventKey == Keyboard::KEY_BACK && name.length() > 0) name = name.substr(0, name.length() - 1);
-    if (allowedChars.find(ch) != wstring::npos && name.length()<64)
+    if (eventKey == Keyboard::KEY_BACK && name.length() > 0)
+    {
+        name = name.substr(0, name.length() - 1);
+    }
+    if (allowedChars.find(ch) != wstring::npos && name.length() < 64)
     {
         name += ch;
     }

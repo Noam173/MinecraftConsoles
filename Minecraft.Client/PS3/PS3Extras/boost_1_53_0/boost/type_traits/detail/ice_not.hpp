@@ -10,8 +10,10 @@
 
 #include <boost/config.hpp>
 
-namespace boost {
-namespace type_traits {
+namespace boost
+{
+namespace type_traits
+{
 
 template <bool b>
 struct ice_not

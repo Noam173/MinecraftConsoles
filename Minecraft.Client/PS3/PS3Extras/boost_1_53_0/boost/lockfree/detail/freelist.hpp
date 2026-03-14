@@ -21,15 +21,16 @@
 #include <boost/lockfree/detail/parameter.hpp>
 #include <boost/lockfree/detail/tagged_ptr.hpp>
 
-namespace boost    {
-namespace lockfree {
-namespace detail   {
+namespace boost
+{
+namespace lockfree
+{
+namespace detail
+{
 
 template <typename T,
-          typename Alloc = std::allocator<T>
-         >
-class freelist_stack:
-    Alloc
+          typename Alloc = std::allocator<T>>
+class freelist_stack : Alloc
 {
     struct freelist_node
     {
@@ -38,16 +39,16 @@ class freelist_stack:
 
     typedef tagged_ptr<freelist_node> tagged_node_ptr;
 
-public:
+  public:
     typedef tagged_ptr<T> tagged_node_handle;
 
     template <typename Allocator>
-    freelist_stack (Allocator const & alloc, std::size_t n = 0):
-        Alloc(alloc),
-        pool_(tagged_node_ptr(NULL))
+    freelist_stack(Allocator const &alloc, std::size_t n = 0) : Alloc(alloc),
+                                                                pool_(tagged_node_ptr(NULL))
     {
-        for (std::size_t i = 0; i != n; ++i) {
-            T * node = Alloc::allocate(1);
+        for (std::size_t i = 0; i != n; ++i)
+        {
+            T *node = Alloc::allocate(1);
 #ifdef BOOST_LOCKFREE_FREELIST_INIT_RUNS_DTOR
             destruct<false>(node);
 #else
@@ -57,51 +58,58 @@ public:
     }
 
     template <bool ThreadSafe>
-    void reserve (std::size_t count)
+    void reserve(std::size_t count)
     {
-        for (std::size_t i = 0; i != count; ++i) {
-            T * node = Alloc::allocate(1);
+        for (std::size_t i = 0; i != count; ++i)
+        {
+            T *node = Alloc::allocate(1);
             deallocate<ThreadSafe>(node);
         }
     }
 
     template <bool ThreadSafe, bool Bounded>
-    T * construct (void)
+    T *construct(void)
     {
-        T * node = allocate<ThreadSafe, Bounded>();
+        T *node = allocate<ThreadSafe, Bounded>();
         if (node)
-            new(node) T();
+        {
+            new (node) T();
+        }
         return node;
     }
 
     template <bool ThreadSafe, bool Bounded, typename ArgumentType>
-    T * construct (ArgumentType const & arg)
+    T *construct(ArgumentType const &arg)
     {
-        T * node = allocate<ThreadSafe, Bounded>();
+        T *node = allocate<ThreadSafe, Bounded>();
         if (node)
-            new(node) T(arg);
+        {
+            new (node) T(arg);
+        }
         return node;
     }
 
     template <bool ThreadSafe, bool Bounded, typename ArgumentType1, typename ArgumentType2>
-    T * construct (ArgumentType1 const & arg1, ArgumentType2 const & arg2)
+    T *construct(ArgumentType1 const &arg1, ArgumentType2 const &arg2)
     {
-        T * node = allocate<ThreadSafe, Bounded>();
+        T *node = allocate<ThreadSafe, Bounded>();
         if (node)
-            new(node) T(arg1, arg2);
+        {
+            new (node) T(arg1, arg2);
+        }
         return node;
     }
 
     template <bool ThreadSafe>
-    void destruct (tagged_node_handle tagged_ptr)
+    void destruct(tagged_node_handle tagged_ptr)
     {
-        T * n = tagged_ptr.get_ptr();
+        T *n = tagged_ptr.get_ptr();
         n->~T();
         deallocate<ThreadSafe>(n);
     }
 
     template <bool ThreadSafe>
-    void destruct (T * n)
+    void destruct(T *n)
     {
         n->~T();
         deallocate<ThreadSafe>(n);
@@ -109,13 +117,16 @@ public:
 
     ~freelist_stack(void)
     {
-        tagged_node_ptr current (pool_);
+        tagged_node_ptr current(pool_);
 
-        while (current) {
-            freelist_node * current_ptr = current.get_ptr();
+        while (current)
+        {
+            freelist_node *current_ptr = current.get_ptr();
             if (current_ptr)
+            {
                 current = current_ptr->next;
-            Alloc::deallocate((T*)current_ptr, 1);
+            }
+            Alloc::deallocate((T *)current_ptr, 1);
         }
     }
 
@@ -124,118 +135,141 @@ public:
         return pool_.is_lock_free();
     }
 
-    T * get_handle(T * pointer) const
+    T *get_handle(T *pointer) const
     {
         return pointer;
     }
 
-    T * get_handle(tagged_node_handle const & handle) const
+    T *get_handle(tagged_node_handle const &handle) const
     {
         return get_pointer(handle);
     }
 
-    T * get_pointer(tagged_node_handle const & tptr) const
+    T *get_pointer(tagged_node_handle const &tptr) const
     {
         return tptr.get_ptr();
     }
 
-    T * get_pointer(T * pointer) const
+    T *get_pointer(T *pointer) const
     {
         return pointer;
     }
 
-    T * null_handle(void) const
+    T *null_handle(void) const
     {
         return NULL;
     }
 
-protected: // allow use from subclasses
+  protected: // allow use from subclasses
     template <bool ThreadSafe, bool Bounded>
-    T * allocate (void)
+    T *allocate(void)
     {
         if (ThreadSafe)
+        {
             return allocate_impl<Bounded>();
+        }
         else
+        {
             return allocate_impl_unsafe<Bounded>();
+        }
     }
 
-private:
+  private:
     template <bool Bounded>
-    T * allocate_impl (void)
+    T *allocate_impl(void)
     {
         tagged_node_ptr old_pool = pool_.load(memory_order_consume);
 
-        for(;;) {
-            if (!old_pool.get_ptr()) {
+        for (;;)
+        {
+            if (!old_pool.get_ptr())
+            {
                 if (!Bounded)
+                {
                     return Alloc::allocate(1);
+                }
                 else
+                {
                     return 0;
+                }
             }
 
-            freelist_node * new_pool_ptr = old_pool->next.get_ptr();
-            tagged_node_ptr new_pool (new_pool_ptr, old_pool.get_tag() + 1);
+            freelist_node *new_pool_ptr = old_pool->next.get_ptr();
+            tagged_node_ptr new_pool(new_pool_ptr, old_pool.get_tag() + 1);
 
-            if (pool_.compare_exchange_weak(old_pool, new_pool)) {
-                void * ptr = old_pool.get_ptr();
-                return reinterpret_cast<T*>(ptr);
+            if (pool_.compare_exchange_weak(old_pool, new_pool))
+            {
+                void *ptr = old_pool.get_ptr();
+                return reinterpret_cast<T *>(ptr);
             }
         }
     }
 
     template <bool Bounded>
-    T * allocate_impl_unsafe (void)
+    T *allocate_impl_unsafe(void)
     {
         tagged_node_ptr old_pool = pool_.load(memory_order_relaxed);
 
-        if (!old_pool.get_ptr()) {
+        if (!old_pool.get_ptr())
+        {
             if (!Bounded)
+            {
                 return Alloc::allocate(1);
+            }
             else
+            {
                 return 0;
+            }
         }
 
-        freelist_node * new_pool_ptr = old_pool->next.get_ptr();
-        tagged_node_ptr new_pool (new_pool_ptr, old_pool.get_tag() + 1);
+        freelist_node *new_pool_ptr = old_pool->next.get_ptr();
+        tagged_node_ptr new_pool(new_pool_ptr, old_pool.get_tag() + 1);
 
         pool_.store(new_pool, memory_order_relaxed);
-        void * ptr = old_pool.get_ptr();
-        return reinterpret_cast<T*>(ptr);
+        void *ptr = old_pool.get_ptr();
+        return reinterpret_cast<T *>(ptr);
     }
 
-protected:
+  protected:
     template <bool ThreadSafe>
-    void deallocate (T * n)
+    void deallocate(T *n)
     {
         if (ThreadSafe)
+        {
             deallocate_impl(n);
+        }
         else
+        {
             deallocate_impl_unsafe(n);
+        }
     }
 
-private:
-    void deallocate_impl (T * n)
+  private:
+    void deallocate_impl(T *n)
     {
-        void * node = n;
+        void *node = n;
         tagged_node_ptr old_pool = pool_.load(memory_order_consume);
-        freelist_node * new_pool_ptr = reinterpret_cast<freelist_node*>(node);
+        freelist_node *new_pool_ptr = reinterpret_cast<freelist_node *>(node);
 
-        for(;;) {
-            tagged_node_ptr new_pool (new_pool_ptr, old_pool.get_tag());
+        for (;;)
+        {
+            tagged_node_ptr new_pool(new_pool_ptr, old_pool.get_tag());
             new_pool->next.set_ptr(old_pool.get_ptr());
 
             if (pool_.compare_exchange_weak(old_pool, new_pool))
+            {
                 return;
+            }
         }
     }
 
-    void deallocate_impl_unsafe (T * n)
+    void deallocate_impl_unsafe(T *n)
     {
-        void * node = n;
+        void *node = n;
         tagged_node_ptr old_pool = pool_.load(memory_order_relaxed);
-        freelist_node * new_pool_ptr = reinterpret_cast<freelist_node*>(node);
+        freelist_node *new_pool_ptr = reinterpret_cast<freelist_node *>(node);
 
-        tagged_node_ptr new_pool (new_pool_ptr, old_pool.get_tag());
+        tagged_node_ptr new_pool(new_pool_ptr, old_pool.get_tag());
         new_pool->next.set_ptr(old_pool.get_ptr());
 
         pool_.store(new_pool, memory_order_relaxed);
@@ -246,26 +280,27 @@ private:
 
 class tagged_index
 {
-public:
+  public:
     typedef boost::uint16_t tag_t;
     typedef boost::uint16_t index_t;
 
     /** uninitialized constructor */
     tagged_index(void) BOOST_NOEXCEPT //: index(0), tag(0)
-    {}
+    {
+    }
 
     /** copy constructor */
 #ifdef BOOST_NO_CXX11_DEFAULTED_FUNCTIONS
-    tagged_index(tagged_index const & rhs):
-        index(rhs.index), tag(rhs.tag)
-    {}
+    tagged_index(tagged_index const &rhs) : index(rhs.index), tag(rhs.tag)
+    {
+    }
 #else
-    tagged_index(tagged_index const & rhs) = default;
+    tagged_index(tagged_index const &rhs) = default;
 #endif
 
-    explicit tagged_index(index_t i, tag_t t = 0):
-        index(i), tag(t)
-    {}
+    explicit tagged_index(index_t i, tag_t t = 0) : index(i), tag(t)
+    {
+    }
 
     /** index access */
     /* @{ */
@@ -293,12 +328,12 @@ public:
     }
     /* @} */
 
-    bool operator==(tagged_index const & rhs) const
+    bool operator==(tagged_index const &rhs) const
     {
         return (index == rhs.index) && (tag == rhs.tag);
     }
 
-protected:
+  protected:
     index_t index;
     tag_t tag;
 };
@@ -314,12 +349,13 @@ struct compiletime_sized_freelist_storage
 
     // unused ... only for API purposes
     template <typename Allocator>
-    compiletime_sized_freelist_storage(Allocator const & alloc, std::size_t count)
-    {}
-
-    T * nodes(void) const
+    compiletime_sized_freelist_storage(Allocator const &alloc, std::size_t count)
     {
-        return reinterpret_cast<T*>(const_cast<char*>(data.data()));
+    }
+
+    T *nodes(void) const
+    {
+        return reinterpret_cast<T *>(const_cast<char *>(data.data()));
     }
 
     std::size_t node_count(void) const
@@ -329,19 +365,19 @@ struct compiletime_sized_freelist_storage
 };
 
 template <typename T,
-          typename Alloc = std::allocator<T> >
-struct runtime_sized_freelist_storage:
-    Alloc
+          typename Alloc = std::allocator<T>>
+struct runtime_sized_freelist_storage : Alloc
 {
-    T * nodes_;
+    T *nodes_;
     std::size_t node_count_;
 
     template <typename Allocator>
-    runtime_sized_freelist_storage(Allocator const & alloc, std::size_t count):
-        Alloc(alloc), node_count_(count)
+    runtime_sized_freelist_storage(Allocator const &alloc, std::size_t count) : Alloc(alloc), node_count_(count)
     {
         if (count > 65535)
+        {
             boost::throw_exception(std::runtime_error("boost.lockfree: freelist size is limited to a maximum of 65535 objects"));
+        }
         nodes_ = Alloc::allocate(count);
     }
 
@@ -350,7 +386,7 @@ struct runtime_sized_freelist_storage:
         Alloc::deallocate(nodes_, node_count_);
     }
 
-    T * nodes(void) const
+    T *nodes(void) const
     {
         return nodes_;
     }
@@ -361,12 +397,9 @@ struct runtime_sized_freelist_storage:
     }
 };
 
-
 template <typename T,
-          typename NodeStorage = runtime_sized_freelist_storage<T>
-         >
-class fixed_size_freelist:
-    NodeStorage
+          typename NodeStorage = runtime_sized_freelist_storage<T>>
+class fixed_size_freelist : NodeStorage
 {
     struct freelist_node
     {
@@ -377,9 +410,10 @@ class fixed_size_freelist:
 
     void initialize(void)
     {
-        T * nodes = NodeStorage::nodes();
-        for (std::size_t i = 0; i != NodeStorage::node_count(); ++i) {
-            tagged_index * next_index = reinterpret_cast<tagged_index*>(nodes + i);
+        T *nodes = NodeStorage::nodes();
+        for (std::size_t i = 0; i != NodeStorage::node_count(); ++i)
+        {
+            tagged_index *next_index = reinterpret_cast<tagged_index *>(nodes + i);
             next_index->set_index(null_handle());
 
 #ifdef BOOST_LOCKFREE_FREELIST_INIT_RUNS_DTOR
@@ -390,70 +424,74 @@ class fixed_size_freelist:
         }
     }
 
-public:
+  public:
     typedef tagged_index tagged_node_handle;
 
     template <typename Allocator>
-    fixed_size_freelist (Allocator const & alloc, std::size_t count):
-        NodeStorage(alloc, count),
-        pool_(tagged_index(static_cast<index_t>(count), 0))
+    fixed_size_freelist(Allocator const &alloc, std::size_t count) : NodeStorage(alloc, count),
+                                                                     pool_(tagged_index(static_cast<index_t>(count), 0))
     {
         initialize();
     }
 
-    fixed_size_freelist (void):
-        pool_(tagged_index(NodeStorage::node_count(), 0))
+    fixed_size_freelist(void) : pool_(tagged_index(NodeStorage::node_count(), 0))
     {
         initialize();
     }
 
     template <bool ThreadSafe, bool Bounded>
-    T * construct (void)
+    T *construct(void)
     {
         index_t node_index = allocate<ThreadSafe>();
         if (node_index == null_handle())
+        {
             return NULL;
+        }
 
-        T * node = NodeStorage::nodes() + node_index;
-        new(node) T();
+        T *node = NodeStorage::nodes() + node_index;
+        new (node) T();
         return node;
     }
 
     template <bool ThreadSafe, bool Bounded, typename ArgumentType>
-    T * construct (ArgumentType const & arg)
+    T *construct(ArgumentType const &arg)
     {
         index_t node_index = allocate<ThreadSafe>();
         if (node_index == null_handle())
+        {
             return NULL;
+        }
 
-        T * node = NodeStorage::nodes() + node_index;
-        new(node) T(arg);
+        T *node = NodeStorage::nodes() + node_index;
+        new (node) T(arg);
         return node;
     }
 
     template <bool ThreadSafe, bool Bounded, typename ArgumentType1, typename ArgumentType2>
-    T * construct (ArgumentType1 const & arg1, ArgumentType2 const & arg2)
+    T *construct(ArgumentType1 const &arg1, ArgumentType2 const &arg2)
     {
         index_t node_index = allocate<ThreadSafe>();
         if (node_index == null_handle())
+        {
             return NULL;
+        }
 
-        T * node = NodeStorage::nodes() + node_index;
-        new(node) T(arg1, arg2);
+        T *node = NodeStorage::nodes() + node_index;
+        new (node) T(arg1, arg2);
         return node;
     }
 
     template <bool ThreadSafe>
-    void destruct (tagged_node_handle tagged_index)
+    void destruct(tagged_node_handle tagged_index)
     {
         index_t index = tagged_index.get_index();
-        T * n = NodeStorage::nodes() + index;
+        T *n = NodeStorage::nodes() + index;
         n->~T();
         deallocate<ThreadSafe>(index);
     }
 
     template <bool ThreadSafe>
-    void destruct (T * n)
+    void destruct(T *n)
     {
         n->~T();
         deallocate<ThreadSafe>(n - NodeStorage::nodes());
@@ -469,77 +507,96 @@ public:
         return static_cast<index_t>(NodeStorage::node_count());
     }
 
-    index_t get_handle(T * pointer) const
+    index_t get_handle(T *pointer) const
     {
         if (pointer == NULL)
+        {
             return null_handle();
+        }
         else
+        {
             return static_cast<index_t>(pointer - NodeStorage::nodes());
+        }
     }
 
-    index_t get_handle(tagged_node_handle const & handle) const
+    index_t get_handle(tagged_node_handle const &handle) const
     {
         return handle.get_index();
     }
 
-    T * get_pointer(tagged_node_handle const & tptr) const
+    T *get_pointer(tagged_node_handle const &tptr) const
     {
         return get_pointer(tptr.get_index());
     }
 
-    T * get_pointer(index_t index) const
+    T *get_pointer(index_t index) const
     {
         if (index == null_handle())
+        {
             return 0;
+        }
         else
+        {
             return NodeStorage::nodes() + index;
+        }
     }
 
-    T * get_pointer(T * ptr) const
+    T *get_pointer(T *ptr) const
     {
         return ptr;
     }
 
-protected: // allow use from subclasses
+  protected: // allow use from subclasses
     template <bool ThreadSafe>
-    index_t allocate (void)
+    index_t allocate(void)
     {
         if (ThreadSafe)
+        {
             return allocate_impl();
+        }
         else
+        {
             return allocate_impl_unsafe();
+        }
     }
 
-private:
-    index_t allocate_impl (void)
+  private:
+    index_t allocate_impl(void)
     {
         tagged_index old_pool = pool_.load(memory_order_consume);
 
-        for(;;) {
+        for (;;)
+        {
             index_t index = old_pool.get_index();
             if (index == null_handle())
+            {
                 return index;
+            }
 
-            T * old_node = NodeStorage::nodes() + index;
-            tagged_index * next_index = reinterpret_cast<tagged_index*>(old_node);
+            T *old_node = NodeStorage::nodes() + index;
+            tagged_index *next_index = reinterpret_cast<tagged_index *>(old_node);
 
             tagged_index new_pool(next_index->get_index(), old_pool.get_tag() + 1);
 
             if (pool_.compare_exchange_weak(old_pool, new_pool))
+            {
                 return old_pool.get_index();
+            }
         }
     }
 
-    index_t allocate_impl_unsafe (void)
+    index_t allocate_impl_unsafe(void)
     {
         tagged_index old_pool = pool_.load(memory_order_consume);
 
         index_t index = old_pool.get_index();
         if (index == null_handle())
+        {
             return index;
+        }
 
-        T * old_node = NodeStorage::nodes() + index;
-        tagged_index * next_index = reinterpret_cast<tagged_index*>(old_node);
+        T *old_node = NodeStorage::nodes() + index;
+        tagged_index *next_index = reinterpret_cast<tagged_index *>(old_node);
 
         tagged_index new_pool(next_index->get_index(), old_pool.get_tag() + 1);
 
@@ -548,34 +605,41 @@ private:
     }
 
     template <bool ThreadSafe>
-    void deallocate (index_t index)
+    void deallocate(index_t index)
     {
         if (ThreadSafe)
+        {
             deallocate_impl(index);
+        }
         else
+        {
             deallocate_impl_unsafe(index);
-    }
-
-    void deallocate_impl (index_t index)
-    {
-        freelist_node * new_pool_node = reinterpret_cast<freelist_node*>(NodeStorage::nodes() + index);
-        tagged_index old_pool = pool_.load(memory_order_consume);
-
-        for(;;) {
-            tagged_index new_pool (index, old_pool.get_tag());
-            new_pool_node->next.set_index(old_pool.get_index());
-
-            if (pool_.compare_exchange_weak(old_pool, new_pool))
-                return;
         }
     }
 
-    void deallocate_impl_unsafe (index_t index)
+    void deallocate_impl(index_t index)
     {
-        freelist_node * new_pool_node = reinterpret_cast<freelist_node*>(NodeStorage::nodes() + index);
+        freelist_node *new_pool_node = reinterpret_cast<freelist_node *>(NodeStorage::nodes() + index);
         tagged_index old_pool = pool_.load(memory_order_consume);
 
-        tagged_index new_pool (index, old_pool.get_tag());
+        for (;;)
+        {
+            tagged_index new_pool(index, old_pool.get_tag());
+            new_pool_node->next.set_index(old_pool.get_index());
+
+            if (pool_.compare_exchange_weak(old_pool, new_pool))
+            {
+                return;
+            }
+        }
+    }
+
+    void deallocate_impl_unsafe(index_t index)
+    {
+        freelist_node *new_pool_node = reinterpret_cast<freelist_node *>(NodeStorage::nodes() + index);
+        tagged_index old_pool = pool_.load(memory_order_consume);
+
+        tagged_index new_pool(index, old_pool.get_tag());
         new_pool_node->next.set_index(old_pool.get_index());
 
         pool_.store(new_pool);
@@ -588,19 +652,16 @@ template <typename T,
           typename Alloc,
           bool IsCompileTimeSized,
           bool IsFixedSize,
-          std::size_t Capacity
-          >
+          std::size_t Capacity>
 struct select_freelist
 {
     typedef typename mpl::if_c<IsCompileTimeSized,
                                compiletime_sized_freelist_storage<T, Capacity>,
-                               runtime_sized_freelist_storage<T, Alloc>
-                              >::type fixed_sized_storage_type;
+                               runtime_sized_freelist_storage<T, Alloc>>::type fixed_sized_storage_type;
 
     typedef typename mpl::if_c<IsCompileTimeSized || IsFixedSize,
                                fixed_size_freelist<T, fixed_sized_storage_type>,
-                               freelist_stack<T, Alloc>
-                              >::type type;
+                               freelist_stack<T, Alloc>>::type type;
 };
 
 template <typename T, bool IsNodeBased>
@@ -608,15 +669,12 @@ struct select_tagged_handle
 {
     typedef typename mpl::if_c<IsNodeBased,
                                tagged_ptr<T>,
-                               tagged_index
-                              >::type tagged_handle_type;
+                               tagged_index>::type tagged_handle_type;
 
     typedef typename mpl::if_c<IsNodeBased,
-                               T*,
-                               typename tagged_index::index_t
-                              >::type handle_type;
+                               T *,
+                               typename tagged_index::index_t>::type handle_type;
 };
-
 
 } /* namespace detail */
 } /* namespace lockfree */

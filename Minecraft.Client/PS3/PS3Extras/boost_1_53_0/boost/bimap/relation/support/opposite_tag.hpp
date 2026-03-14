@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_RELATION_SUPPORT_OPPOSITE_TAG_HPP
 #define BOOST_BIMAP_RELATION_SUPPORT_OPPOSITE_TAG_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -37,25 +37,25 @@ struct opposite_tag
 \ingroup relation_group
                                                                     **/
 
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
 // Implementation of const pair reference type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     opossite_tag,
     right_tag,
-    left_tag
-)
+    left_tag)
 
 } // namespace support
 } // namespace relation
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_RELATION_SUPPORT_OPPOSITE_TAG_HPP
-

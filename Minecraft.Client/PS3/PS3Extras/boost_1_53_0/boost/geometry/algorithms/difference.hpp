@@ -13,11 +13,15 @@
 
 #include <boost/geometry/algorithms/detail/overlay/intersection_insert.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace difference
+namespace detail
+{
+namespace difference
 {
 
 /*!
@@ -38,30 +42,26 @@ namespace detail { namespace difference
 
 \qbk{distinguish,with strategy}
 */
-template
-<
+template <
     typename GeometryOut,
     typename Geometry1,
     typename Geometry2,
     typename OutputIterator,
-    typename Strategy
->
-inline OutputIterator difference_insert(Geometry1 const& geometry1,
-            Geometry2 const& geometry2, OutputIterator out,
-            Strategy const& strategy)
+    typename Strategy>
+inline OutputIterator difference_insert(Geometry1 const &geometry1,
+                                        Geometry2 const &geometry2, OutputIterator out,
+                                        Strategy const &strategy)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
-    concept::check<GeometryOut>();
-    
-    return geometry::dispatch::intersection_insert
-        <
-            Geometry1, Geometry2,
-            GeometryOut,
-            overlay_difference,
-            geometry::detail::overlay::do_reverse<geometry::point_order<Geometry1>::value>::value,
-            geometry::detail::overlay::do_reverse<geometry::point_order<Geometry2>::value, true>::value
-        >::apply(geometry1, geometry2, out, strategy);
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
+    concept ::check<GeometryOut>();
+
+    return geometry::dispatch::intersection_insert<
+        Geometry1, Geometry2,
+        GeometryOut,
+        overlay_difference,
+        geometry::detail::overlay::do_reverse<geometry::point_order<Geometry1>::value>::value,
+        geometry::detail::overlay::do_reverse<geometry::point_order<Geometry2>::value, true>::value>::apply(geometry1, geometry2, out, strategy);
 }
 
 /*!
@@ -80,37 +80,32 @@ inline OutputIterator difference_insert(Geometry1 const& geometry1,
 
 \qbk{[include reference/algorithms/difference_insert.qbk]}
 */
-template
-<
+template <
     typename GeometryOut,
     typename Geometry1,
     typename Geometry2,
-    typename OutputIterator
->
-inline OutputIterator difference_insert(Geometry1 const& geometry1,
-            Geometry2 const& geometry2, OutputIterator out)
+    typename OutputIterator>
+inline OutputIterator difference_insert(Geometry1 const &geometry1,
+                                        Geometry2 const &geometry2, OutputIterator out)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
-    concept::check<GeometryOut>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
+    concept ::check<GeometryOut>();
 
-    typedef strategy_intersection
-        <
-            typename cs_tag<GeometryOut>::type,
-            Geometry1,
-            Geometry2,
-            typename geometry::point_type<GeometryOut>::type
-        > strategy;
+    typedef strategy_intersection<
+        typename cs_tag<GeometryOut>::type,
+        Geometry1,
+        Geometry2,
+        typename geometry::point_type<GeometryOut>::type>
+        strategy;
 
     return difference_insert<GeometryOut>(geometry1, geometry2,
-            out, strategy());
+                                          out, strategy());
 }
 
-
-}} // namespace detail::difference
+} // namespace difference
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
-
 
 /*!
 \brief_calc2{difference}
@@ -125,28 +120,25 @@ inline OutputIterator difference_insert(Geometry1 const& geometry1,
 
 \qbk{[include reference/algorithms/difference.qbk]}
 */
-template
-<
+template <
     typename Geometry1,
     typename Geometry2,
-    typename Collection
->
-inline void difference(Geometry1 const& geometry1,
-            Geometry2 const& geometry2, Collection& output_collection)
+    typename Collection>
+inline void difference(Geometry1 const &geometry1,
+                       Geometry2 const &geometry2, Collection &output_collection)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
 
     typedef typename boost::range_value<Collection>::type geometry_out;
-    concept::check<geometry_out>();
+    concept ::check<geometry_out>();
 
     detail::difference::difference_insert<geometry_out>(
-            geometry1, geometry2,
-            std::back_inserter(output_collection));
+        geometry1, geometry2,
+        std::back_inserter(output_collection));
 }
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DIFFERENCE_HPP

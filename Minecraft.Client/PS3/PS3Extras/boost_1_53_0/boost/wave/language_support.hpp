@@ -19,18 +19,21 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost {
-namespace wave {
+namespace boost
+{
+namespace wave
+{
 
-enum language_support {
-//  support flags for C++98
+enum language_support
+{
+    //  support flags for C++98
     support_normal = 0x01,
     support_cpp = support_normal,
 
     support_option_long_long = 0x02,
 
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
-//  support flags for C99
+    //  support flags for C99
     support_option_variadics = 0x04,
     support_c99 = support_option_variadics | support_option_long_long | 0x08,
 #endif
@@ -104,7 +107,7 @@ need_c99(language_support language)
     return (language & ~support_option_mask) == support_c99;
 }
 
-#else  // BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
+#else // BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
 
 ///////////////////////////////////////////////////////////////////////////////
 inline bool
@@ -158,55 +161,55 @@ set_support_options(language_support language, language_support option)
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Get and set different language options
-#define BOOST_WAVE_NEED_OPTION(option)                                        \
-    inline bool need_ ## option(language_support language)                    \
-    {                                                                         \
-        return (language & support_option_ ## option) ? true : false;         \
-    }                                                                         \
+#define BOOST_WAVE_NEED_OPTION(option)                              \
+    inline bool need_##option(language_support language)            \
+    {                                                               \
+        return (language & support_option_##option) ? true : false; \
+    }                                                               \
     /**/
 
-#define BOOST_WAVE_ENABLE_OPTION(option)                                      \
-    inline language_support                                                   \
-    enable_ ## option(language_support language, bool enable = true)          \
-    {                                                                         \
-        if (enable)                                                           \
-            return static_cast<language_support>(language | support_option_ ## option); \
-        return static_cast<language_support>(language & ~support_option_ ## option);    \
-    }                                                                         \
+#define BOOST_WAVE_ENABLE_OPTION(option)                                              \
+    inline language_support                                                           \
+    enable_##option(language_support language, bool enable = true)                    \
+    {                                                                                 \
+        if (enable)                                                                   \
+            return static_cast<language_support>(language | support_option_##option); \
+        return static_cast<language_support>(language & ~support_option_##option);    \
+    }                                                                                 \
     /**/
 
-#define BOOST_WAVE_OPTION(option)                                             \
-    BOOST_WAVE_NEED_OPTION(option)                                            \
-    BOOST_WAVE_ENABLE_OPTION(option)                                          \
+#define BOOST_WAVE_OPTION(option)    \
+    BOOST_WAVE_NEED_OPTION(option)   \
+    BOOST_WAVE_ENABLE_OPTION(option) \
     /**/
 
 ///////////////////////////////////////////////////////////////////////////////
-BOOST_WAVE_OPTION(long_long)                // support_option_long_long
-BOOST_WAVE_OPTION(no_character_validation)  // support_option_no_character_validation
-BOOST_WAVE_OPTION(preserve_comments)        // support_option_preserve_comments
-BOOST_WAVE_OPTION(prefer_pp_numbers)        // support_option_prefer_pp_numbers
-BOOST_WAVE_OPTION(emit_line_directives)     // support_option_emit_line_directives
-BOOST_WAVE_OPTION(single_line)              // support_option_single_line
-BOOST_WAVE_OPTION(convert_trigraphs)        // support_option_convert_trigraphs
+BOOST_WAVE_OPTION(long_long)               // support_option_long_long
+BOOST_WAVE_OPTION(no_character_validation) // support_option_no_character_validation
+BOOST_WAVE_OPTION(preserve_comments)       // support_option_preserve_comments
+BOOST_WAVE_OPTION(prefer_pp_numbers)       // support_option_prefer_pp_numbers
+BOOST_WAVE_OPTION(emit_line_directives)    // support_option_emit_line_directives
+BOOST_WAVE_OPTION(single_line)             // support_option_single_line
+BOOST_WAVE_OPTION(convert_trigraphs)       // support_option_convert_trigraphs
 #if BOOST_WAVE_SUPPORT_PRAGMA_ONCE != 0
-BOOST_WAVE_OPTION(include_guard_detection)  // support_option_include_guard_detection
+BOOST_WAVE_OPTION(include_guard_detection) // support_option_include_guard_detection
 #endif
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
-BOOST_WAVE_OPTION(variadics)                // support_option_variadics
+BOOST_WAVE_OPTION(variadics) // support_option_variadics
 #endif
 #if BOOST_WAVE_EMIT_PRAGMA_DIRECTIVES != 0
-BOOST_WAVE_OPTION(emit_pragma_directives)   // support_option_emit_pragma_directives
+BOOST_WAVE_OPTION(emit_pragma_directives) // support_option_emit_pragma_directives
 #endif
-BOOST_WAVE_OPTION(insert_whitespace)        // support_option_insert_whitespace
-BOOST_WAVE_OPTION(emit_contnewlines)        // support_option_emit_contnewlines
+BOOST_WAVE_OPTION(insert_whitespace) // support_option_insert_whitespace
+BOOST_WAVE_OPTION(emit_contnewlines) // support_option_emit_contnewlines
 
 #undef BOOST_WAVE_NEED_OPTION
 #undef BOOST_WAVE_ENABLE_OPTION
 #undef BOOST_WAVE_OPTION
 
 ///////////////////////////////////////////////////////////////////////////////
-}   // namespace wave
-}   // namespace boost
+} // namespace wave
+} // namespace boost
 
 // the suffix header occurs after all of the code
 #ifdef BOOST_HAS_ABI_HEADERS

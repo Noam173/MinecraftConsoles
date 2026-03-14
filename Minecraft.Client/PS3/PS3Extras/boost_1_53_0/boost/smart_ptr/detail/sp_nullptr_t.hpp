@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //  detail/sp_nullptr_t.hpp
@@ -18,7 +18,7 @@
 #include <boost/config.hpp>
 #include <cstddef>
 
-#if !defined( BOOST_NO_CXX11_NULLPTR )
+#if !defined(BOOST_NO_CXX11_NULLPTR)
 
 namespace boost
 {
@@ -26,13 +26,13 @@ namespace boost
 namespace detail
 {
 
-#if defined( __clang__ ) && !defined( _LIBCPP_VERSION ) && !defined( BOOST_NO_CXX11_DECLTYPE )
+#if defined(__clang__) && !defined(_LIBCPP_VERSION) && !defined(BOOST_NO_CXX11_DECLTYPE)
 
-    typedef decltype(nullptr) sp_nullptr_t;
+typedef decltype(nullptr) sp_nullptr_t;
 
 #else
 
-    typedef std::nullptr_t sp_nullptr_t;
+typedef std::nullptr_t sp_nullptr_t;
 
 #endif
 
@@ -42,4 +42,4 @@ namespace detail
 
 #endif // !defined( BOOST_NO_CXX11_NULLPTR )
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_NULLPTR_T_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_SP_NULLPTR_T_HPP_INCLUDED

@@ -1,53 +1,52 @@
-#include "stdafx.h"
-#include "Tile.h"
 #include "MultiTextureTileItem.h"
+#include "Tile.h"
 #include "net.minecraft.world.item.crafting.h"
-
+#include "stdafx.h"
 
 MultiTextureTileItem::MultiTextureTileItem(int id, Tile *parentTile, int *nameExtensions, int iLength, int anyValueName) : TileItem(id)
 {
-	this->parentTile = parentTile;
-	this->nameExtensions = nameExtensions;
-	this->m_iNameExtensionsLength=iLength;
+    this->parentTile = parentTile;
+    this->nameExtensions = nameExtensions;
+    this->m_iNameExtensionsLength = iLength;
 
-	if(anyValueName != -1)
-	{
-		m_anyValueName = anyValueName;
-	}
-	else
-	{
-		m_anyValueName = nameExtensions[0];
-	}
+    if (anyValueName != -1)
+    {
+        m_anyValueName = anyValueName;
+    }
+    else
+    {
+        m_anyValueName = nameExtensions[0];
+    }
 
-	setMaxDamage(0);
-	setStackedByData(true);
+    setMaxDamage(0);
+    setStackedByData(true);
 }
 
-Icon *MultiTextureTileItem::getIcon(int itemAuxValue) 
+Icon *MultiTextureTileItem::getIcon(int itemAuxValue)
 {
-	return parentTile->getTexture(2, itemAuxValue);
+    return parentTile->getTexture(2, itemAuxValue);
 }
 
-int MultiTextureTileItem::getLevelDataForAuxValue(int auxValue) 
+int MultiTextureTileItem::getLevelDataForAuxValue(int auxValue)
 {
-		return auxValue;
+    return auxValue;
 }
 
 unsigned int MultiTextureTileItem::getDescriptionId(int iData)
 {
-	if (iData < 0 || iData >= m_iNameExtensionsLength) 
-	{
-		iData = 0;
-	}
-	return nameExtensions[iData];
+    if (iData < 0 || iData >= m_iNameExtensionsLength)
+    {
+        iData = 0;
+    }
+    return nameExtensions[iData];
 }
 
-unsigned int MultiTextureTileItem::getDescriptionId(shared_ptr<ItemInstance> instance) 
+unsigned int MultiTextureTileItem::getDescriptionId(shared_ptr<ItemInstance> instance)
 {
-	int auxValue = instance->getAuxValue();
-	if (auxValue == Recipes::ANY_AUX_VALUE || auxValue < 0 || auxValue >= m_iNameExtensionsLength) 
-	{
-		return m_anyValueName;
-	}
-	return nameExtensions[auxValue];
+    int auxValue = instance->getAuxValue();
+    if (auxValue == Recipes::ANY_AUX_VALUE || auxValue < 0 || auxValue >= m_iNameExtensionsLength)
+    {
+        return m_anyValueName;
+    }
+    return nameExtensions[auxValue];
 }

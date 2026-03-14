@@ -28,7 +28,6 @@
 #include <boost/geometry/core/radian_access.hpp>
 #include <boost/geometry/core/topological_dimension.hpp>
 
-
 #include <boost/geometry/arithmetic/arithmetic.hpp>
 #include <boost/geometry/arithmetic/dot_product.hpp>
 
@@ -77,11 +76,11 @@
 // check includes all concepts
 #include <boost/geometry/geometries/concepts/check.hpp>
 
+#include <boost/geometry/io/dsv/write.hpp>
 #include <boost/geometry/util/for_each_coordinate.hpp>
 #include <boost/geometry/util/math.hpp>
-#include <boost/geometry/util/select_most_precise.hpp>
 #include <boost/geometry/util/select_coordinate_type.hpp>
-#include <boost/geometry/io/dsv/write.hpp>
+#include <boost/geometry/util/select_most_precise.hpp>
 
 #include <boost/geometry/views/box_view.hpp>
 #include <boost/geometry/views/segment_view.hpp>

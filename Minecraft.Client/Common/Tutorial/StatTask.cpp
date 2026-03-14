@@ -1,25 +1,27 @@
-#include "stdafx.h"
-#include "..\..\Minecraft.h"
-#include "..\..\LocalPlayer.h"
-#include "..\..\StatsCounter.h"
-#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
 #include "StatTask.h"
+#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
+#include "..\..\LocalPlayer.h"
+#include "..\..\Minecraft.h"
+#include "..\..\StatsCounter.h"
+#include "stdafx.h"
 
 StatTask::StatTask(Tutorial *tutorial, int descriptionId, bool enablePreCompletion, Stat *stat, int variance /*= 1*/)
-	: TutorialTask( tutorial, descriptionId, enablePreCompletion, nullptr )
+    : TutorialTask(tutorial, descriptionId, enablePreCompletion, nullptr)
 {
-	this->stat = stat;
+    this->stat = stat;
 
-	Minecraft *minecraft = Minecraft::GetInstance();
-	targetValue = minecraft->stats[ProfileManager.GetPrimaryPad()]->getTotalValue( stat ) + variance;
+    Minecraft *minecraft = Minecraft::GetInstance();
+    targetValue = minecraft->stats[ProfileManager.GetPrimaryPad()]->getTotalValue(stat) + variance;
 }
 
 bool StatTask::isCompleted()
 {
-	if( bIsCompleted )
-		return true;
+    if (bIsCompleted)
+    {
+        return true;
+    }
 
-	Minecraft *minecraft = Minecraft::GetInstance();
-	bIsCompleted = minecraft->stats[ProfileManager.GetPrimaryPad()]->getTotalValue( stat ) >= static_cast<unsigned int>(targetValue);
-	return bIsCompleted;
+    Minecraft *minecraft = Minecraft::GetInstance();
+    bIsCompleted = minecraft->stats[ProfileManager.GetPrimaryPad()]->getTotalValue(stat) >= static_cast<unsigned int>(targetValue);
+    return bIsCompleted;
 }

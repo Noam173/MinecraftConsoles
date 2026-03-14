@@ -12,7 +12,7 @@
 #define BOOST_RANGE_RBEGIN_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/range/end.hpp>
@@ -23,43 +23,42 @@ namespace boost
 
 #ifdef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
-template< class C >
+template <class C>
 inline BOOST_DEDUCED_TYPENAME range_reverse_iterator<C>::type
-rbegin( C& c )
+rbegin(C &c)
 {
-    return BOOST_DEDUCED_TYPENAME range_reverse_iterator<C>::type( boost::end( c ) );
+    return BOOST_DEDUCED_TYPENAME range_reverse_iterator<C>::type(boost::end(c));
 }
 
 #else
 
-template< class C >
+template <class C>
 inline BOOST_DEDUCED_TYPENAME range_reverse_iterator<C>::type
-rbegin( C& c )
+rbegin(C &c)
 {
     typedef BOOST_DEDUCED_TYPENAME range_reverse_iterator<C>::type
         iter_type;
-    return iter_type( boost::end( c ) );
+    return iter_type(boost::end(c));
 }
 
-template< class C >
+template <class C>
 inline BOOST_DEDUCED_TYPENAME range_reverse_iterator<const C>::type
-rbegin( const C& c )
+rbegin(const C &c)
 {
     typedef BOOST_DEDUCED_TYPENAME range_reverse_iterator<const C>::type
         iter_type;
-    return iter_type( boost::end( c ) );
+    return iter_type(boost::end(c));
 }
 
 #endif // BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
-template< class T >
+template <class T>
 inline BOOST_DEDUCED_TYPENAME range_reverse_iterator<const T>::type
-const_rbegin( const T& r )
+const_rbegin(const T &r)
 {
-    return boost::rbegin( r );
+    return boost::rbegin(r);
 }
 
-} // namespace 'boost'
+} // namespace boost
 
 #endif
-

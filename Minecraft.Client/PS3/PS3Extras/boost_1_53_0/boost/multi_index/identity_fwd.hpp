@@ -9,15 +9,18 @@
 #ifndef BOOST_MULTI_INDEX_IDENTITY_FWD_HPP
 #define BOOST_MULTI_INDEX_IDENTITY_FWD_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
-namespace boost{
+namespace boost
+{
 
-namespace multi_index{
+namespace multi_index
+{
 
-template<class Type> struct identity;
+template <class Type>
+struct identity;
 
 } /* namespace multi_index */
 

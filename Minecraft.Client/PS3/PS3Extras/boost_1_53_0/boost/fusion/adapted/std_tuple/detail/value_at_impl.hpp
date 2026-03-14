@@ -9,22 +9,27 @@
 
 #include <tuple>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct std_tuple_tag;
+namespace fusion
+{
+struct std_tuple_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct value_at_impl;
+
+template <>
+struct value_at_impl<std_tuple_tag>
+{
+    template <typename Sequence, typename N>
+    struct apply : std::tuple_element<N::value, Sequence>
     {
-        template<typename T>
-        struct value_at_impl;
-
-        template <>
-        struct value_at_impl<std_tuple_tag>
-        {
-            template <typename Sequence, typename N>
-            struct apply : std::tuple_element<N::value, Sequence> {};
-        };
-    }
-}}
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

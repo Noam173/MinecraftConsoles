@@ -3,10 +3,15 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef AS_TO_PYTHON_FUNCTION_DWA2002121_HPP
-# define AS_TO_PYTHON_FUNCTION_DWA2002121_HPP
-# include <boost/python/converter/to_python_function_type.hpp>
+#define AS_TO_PYTHON_FUNCTION_DWA2002121_HPP
+#include <boost/python/converter/to_python_function_type.hpp>
 
-namespace boost { namespace python { namespace converter { 
+namespace boost
+{
+namespace python
+{
+namespace converter
+{
 
 // Given a typesafe to_python conversion function, produces a
 // to_python_function_t which can be registered in the usual way.
@@ -18,14 +23,18 @@ struct as_to_python_function
     // the first overload ensures it isn't used in case T is a
     // reference.
     template <class U>
-    static void convert_function_must_take_value_or_const_reference(U(*)(T), int, T* = 0) {}
+    static void convert_function_must_take_value_or_const_reference(U (*)(T), int, T * = 0)
+    {
+    }
     template <class U>
-    static void convert_function_must_take_value_or_const_reference(U(*)(T const&), long ...) {}
-        
-    static PyObject* convert(void const* x)
+    static void convert_function_must_take_value_or_const_reference(U (*)(T const &), long...)
+    {
+    }
+
+    static PyObject *convert(void const *x)
     {
         convert_function_must_take_value_or_const_reference(&ToPython::convert, 1L);
-        
+
         // Yes, the const_cast below opens a hole in const-correctness,
         // but it's needed to convert auto_ptr<U> to python.
         //
@@ -37,13 +46,18 @@ struct as_to_python_function
         // modify its argument is if T is an auto_ptr-like type. There
         // is still a const-correctness hole w.r.t. auto_ptr<U> const,
         // but c'est la vie.
-        return ToPython::convert(*const_cast<T*>(static_cast<T const*>(x)));
+        return ToPython::convert(*const_cast<T *>(static_cast<T const *>(x)));
     }
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
-    static PyTypeObject const * get_pytype() { return ToPython::get_pytype(); }
+    static PyTypeObject const *get_pytype()
+    {
+        return ToPython::get_pytype();
+    }
 #endif
 };
 
-}}} // namespace boost::python::converter
+} // namespace converter
+} // namespace python
+} // namespace boost
 
 #endif // AS_TO_PYTHON_FUNCTION_DWA2002121_HPP

@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -24,16 +24,16 @@
 
 #define BOOST_COMPILER_FENCE __memory_barrier();
 
-#elif defined( _MSC_VER ) && _MSC_VER >= 1310
+#elif defined(_MSC_VER) && _MSC_VER >= 1310
 
 extern "C" void _ReadWriteBarrier();
-#pragma intrinsic( _ReadWriteBarrier )
+#pragma intrinsic(_ReadWriteBarrier)
 
 #define BOOST_COMPILER_FENCE _ReadWriteBarrier();
 
 #elif defined(__GNUC__)
 
-#define BOOST_COMPILER_FENCE __asm__ __volatile__( "" : : : "memory" );
+#define BOOST_COMPILER_FENCE __asm__ __volatile__("" : : : "memory");
 
 #else
 
@@ -51,15 +51,13 @@ namespace detail
 
 class spinlock
 {
-public:
-
+  public:
     long v_;
 
-public:
-
+  public:
     bool try_lock()
     {
-        long r = BOOST_INTERLOCKED_EXCHANGE( &v_, 1 );
+        long r = BOOST_INTERLOCKED_EXCHANGE(&v_, 1);
 
         BOOST_COMPILER_FENCE
 
@@ -68,32 +66,29 @@ public:
 
     void lock()
     {
-        for( unsigned k = 0; !try_lock(); ++k )
+        for (unsigned k = 0; !try_lock(); ++k)
         {
-            boost::detail::yield( k );
+            boost::detail::yield(k);
         }
     }
 
     void unlock()
     {
         BOOST_COMPILER_FENCE
-        *const_cast< long volatile* >( &v_ ) = 0;
+        *const_cast<long volatile *>(&v_) = 0;
     }
 
-public:
-
+  public:
     class scoped_lock
     {
-    private:
+      private:
+        spinlock &sp_;
 
-        spinlock & sp_;
+        scoped_lock(scoped_lock const &);
+        scoped_lock &operator=(scoped_lock const &);
 
-        scoped_lock( scoped_lock const & );
-        scoped_lock & operator=( scoped_lock const & );
-
-    public:
-
-        explicit scoped_lock( spinlock & sp ): sp_( sp )
+      public:
+        explicit scoped_lock(spinlock &sp) : sp_(sp)
         {
             sp.lock();
         }

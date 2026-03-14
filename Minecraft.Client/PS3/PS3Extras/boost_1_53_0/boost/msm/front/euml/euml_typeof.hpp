@@ -13,7 +13,6 @@
 
 #include <boost/typeof/typeof.hpp>
 
-
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
 BOOST_TYPEOF_REGISTER_TEMPLATE(::boost::mpl::vector0, 1)
@@ -118,4 +117,4 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(boost::msm::front::euml::GreaterEqual_, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(boost::msm::front::euml::EqualTo_, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(boost::msm::front::euml::NotEqualTo_, 2)
 
-#endif //BOOST_MSM_FRONT_EUML_TYPEOF_H
+#endif // BOOST_MSM_FRONT_EUML_TYPEOF_H

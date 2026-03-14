@@ -11,62 +11,62 @@
 #ifndef BOOST_RANGE_DETAIL_VALUE_TYPE_HPP
 #define BOOST_RANGE_DETAIL_VALUE_TYPE_HPP
 
+#include <boost/iterator/iterator_traits.hpp>
 #include <boost/range/detail/common.hpp>
 #include <boost/range/detail/remove_extent.hpp>
-#include <boost/iterator/iterator_traits.hpp>
 
 //////////////////////////////////////////////////////////////////////////////
 // missing partial specialization  workaround.
 //////////////////////////////////////////////////////////////////////////////
 
-namespace boost 
+namespace boost
 {
-    namespace range_detail 
-    {        
-        template< typename T >
-        struct range_value_type_;
+namespace range_detail
+{
+template <typename T>
+struct range_value_type_;
 
-        template<>
-        struct range_value_type_<std_container_>
-        {
-            template< typename C >
-            struct pts
-            {
-                typedef BOOST_RANGE_DEDUCED_TYPENAME C::value_type type;
-            };
-        };
-
-        template<>
-        struct range_value_type_<std_pair_>
-        {
-            template< typename P >
-            struct pts
-            {
-                typedef BOOST_RANGE_DEDUCED_TYPENAME boost::iterator_value< BOOST_RANGE_DEDUCED_TYPENAME P::first_type >::type type;
-            };
-        };
-
-        template<>
-        struct range_value_type_<array_>
-        { 
-            template< typename T >
-            struct pts
-            {
-                typedef BOOST_DEDUCED_TYPENAME remove_extent<T>::type type;
-            };
-        };
-        
-    } 
-    
-    template< typename C >
-    class range_value
+template <>
+struct range_value_type_<std_container_>
+{
+    template <typename C>
+    struct pts
     {
-        typedef BOOST_DEDUCED_TYPENAME range_detail::range<C>::type c_type;
-    public:
-        typedef BOOST_DEDUCED_TYPENAME range_detail::range_value_type_<c_type>::BOOST_NESTED_TEMPLATE pts<C>::type type; 
+        typedef BOOST_RANGE_DEDUCED_TYPENAME C::value_type type;
     };
+};
 
-}
+template <>
+struct range_value_type_<std_pair_>
+{
+    template <typename P>
+    struct pts
+    {
+        typedef BOOST_RANGE_DEDUCED_TYPENAME boost::iterator_value<BOOST_RANGE_DEDUCED_TYPENAME P::first_type>::type type;
+    };
+};
+
+template <>
+struct range_value_type_<array_>
+{
+    template <typename T>
+    struct pts
+    {
+        typedef BOOST_DEDUCED_TYPENAME remove_extent<T>::type type;
+    };
+};
+
+} // namespace range_detail
+
+template <typename C>
+class range_value
+{
+    typedef BOOST_DEDUCED_TYPENAME range_detail::range<C>::type c_type;
+
+  public:
+    typedef BOOST_DEDUCED_TYPENAME range_detail::range_value_type_<c_type>::BOOST_NESTED_TEMPLATE pts<C>::type type;
+};
+
+} // namespace boost
 
 #endif
-

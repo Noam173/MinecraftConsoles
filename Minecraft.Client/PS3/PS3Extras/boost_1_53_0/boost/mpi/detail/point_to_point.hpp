@@ -10,15 +10,20 @@
 
 // For (de-)serializing sends and receives
 #include <boost/mpi/config.hpp>
-#include <boost/mpi/packed_oarchive.hpp>
 #include <boost/mpi/packed_iarchive.hpp>
+#include <boost/mpi/packed_oarchive.hpp>
 
-namespace boost { namespace mpi { namespace detail {
+namespace boost
+{
+namespace mpi
+{
+namespace detail
+{
 
 /** Sends a packed archive using MPI_Send. */
 BOOST_MPI_DECL void
 packed_archive_send(MPI_Comm comm, int dest, int tag,
-                    const packed_oarchive& ar);
+                    const packed_oarchive &ar);
 
 /** Sends a packed archive using MPI_Isend.
  *
@@ -31,22 +36,24 @@ packed_archive_send(MPI_Comm comm, int dest, int tag,
  */
 BOOST_MPI_DECL int
 packed_archive_isend(MPI_Comm comm, int dest, int tag,
-                     const packed_oarchive& ar,
-                     MPI_Request* out_requests, int num_out_requests);
+                     const packed_oarchive &ar,
+                     MPI_Request *out_requests, int num_out_requests);
 
 /**
  * \overload
  */
 BOOST_MPI_DECL int
 packed_archive_isend(MPI_Comm comm, int dest, int tag,
-                     const packed_iarchive& ar,
-                     MPI_Request* out_requests, int num_out_requests);
+                     const packed_iarchive &ar,
+                     MPI_Request *out_requests, int num_out_requests);
 
 /** Receives a packed archive using MPI_Recv. */
 BOOST_MPI_DECL void
-packed_archive_recv(MPI_Comm comm, int source, int tag, packed_iarchive& ar,
-                    MPI_Status& status);
+packed_archive_recv(MPI_Comm comm, int source, int tag, packed_iarchive &ar,
+                    MPI_Status &status);
 
-} } } // end namespace boost::mpi::detail
+} // namespace detail
+} // namespace mpi
+} // namespace boost
 
 #endif // BOOST_MPI_DETAIL_POINT_TO_POINT_HPP

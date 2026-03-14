@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,25 +11,35 @@
 #ifndef BOOST_UNIT_BASE_UNITS_US_GRAIN_HPP_INCLUDED
 #define BOOST_UNIT_BASE_UNITS_US_GRAIN_HPP_INCLUDED
 
+#include <boost/units/base_units/us/pound.hpp>
+#include <boost/units/scale.hpp>
 #include <boost/units/scaled_base_unit.hpp>
 #include <boost/units/static_rational.hpp>
-#include <boost/units/scale.hpp>
-#include <boost/units/base_units/us/pound.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units {
+namespace units
+{
 
-namespace us {
+namespace us
+{
 
-typedef scaled_base_unit<pound_base_unit, scale<7000, static_rational<-1> > > grain_base_unit;
+typedef scaled_base_unit<pound_base_unit, scale<7000, static_rational<-1>>> grain_base_unit;
 
 } // namespace us
 
-template<>
-struct base_unit_info<us::grain_base_unit> {
-    static const char* name()   { return("grain"); }
-    static const char* symbol() { return("gr"); }
+template <>
+struct base_unit_info<us::grain_base_unit>
+{
+    static const char *name()
+    {
+        return ("grain");
+    }
+    static const char *symbol()
+    {
+        return ("gr");
+    }
 };
 
 } // namespace units

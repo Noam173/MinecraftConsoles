@@ -12,7 +12,7 @@
 #define BOOST_INTERPROCESS_DETAIL_NODE_TOOLS_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 #include <boost/interprocess/detail/config_begin.hpp>
@@ -20,31 +20,32 @@
 
 #include <boost/intrusive/slist.hpp>
 
-namespace boost {
-namespace interprocess {
-namespace ipcdetail {
+namespace boost
+{
+namespace interprocess
+{
+namespace ipcdetail
+{
 
-
-template<class VoidPointer>
+template <class VoidPointer>
 struct node_slist
 {
-   //This hook will be used to chain the individual nodes
-    typedef typename bi::make_slist_base_hook
-      <bi::void_pointer<VoidPointer>, bi::link_mode<bi::normal_link> >::type slist_hook_t;
+    // This hook will be used to chain the individual nodes
+    typedef typename bi::make_slist_base_hook<bi::void_pointer<VoidPointer>, bi::link_mode<bi::normal_link>>::type slist_hook_t;
 
-   //A node object will hold node_t when it's not allocated
-   struct node_t
-      :  public slist_hook_t
-   {};
+    // A node object will hold node_t when it's not allocated
+    struct node_t
+        : public slist_hook_t
+    {
+    };
 
-   typedef typename bi::make_slist
-      <node_t, bi::linear<true>, bi::base_hook<slist_hook_t> >::type node_slist_t;
+    typedef typename bi::make_slist<node_t, bi::linear<true>, bi::base_hook<slist_hook_t>>::type node_slist_t;
 };
 
-}  //namespace ipcdetail {
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace ipcdetail
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif   //#ifndef BOOST_INTERPROCESS_DETAIL_NODE_TOOLS_HPP
+#endif // #ifndef BOOST_INTERPROCESS_DETAIL_NODE_TOOLS_HPP

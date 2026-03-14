@@ -15,20 +15,19 @@
 
 namespace boost
 {
-  namespace chrono
-  {
+namespace chrono
+{
 
-    /**
-     * rounds down
-     */
-    template <class To, class Rep, class Period>
-    To floor(const duration<Rep, Period>& d)
-    {
-        return duration_cast<To>(d);
-    }
+/**
+ * rounds down
+ */
+template <class To, class Rep, class Period>
+To floor(const duration<Rep, Period> &d)
+{
+    return duration_cast<To>(d);
+}
 
-
-  } // namespace chrono
+} // namespace chrono
 } // namespace boost
 
 #endif

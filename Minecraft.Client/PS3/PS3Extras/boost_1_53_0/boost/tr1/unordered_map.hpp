@@ -4,29 +4,33 @@
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_TR1_UNORDERED_MAP_HPP_INCLUDED
-#  define BOOST_TR1_UNORDERED_MAP_HPP_INCLUDED
-#  include <boost/tr1/detail/config.hpp>
+#define BOOST_TR1_UNORDERED_MAP_HPP_INCLUDED
+#include <boost/tr1/detail/config.hpp>
 
 #ifdef BOOST_HAS_TR1_UNORDERED_MAP
 
-#  if defined(BOOST_HAS_INCLUDE_NEXT) && !defined(BOOST_TR1_DISABLE_INCLUDE_NEXT)
-#     include_next BOOST_TR1_HEADER(unordered_map)
-#  else
-#     include <boost/tr1/detail/config_all.hpp>
-#     include BOOST_TR1_STD_HEADER(BOOST_TR1_PATH(unordered_map))
-#  endif
+#if defined(BOOST_HAS_INCLUDE_NEXT) && !defined(BOOST_TR1_DISABLE_INCLUDE_NEXT)
+#include_next BOOST_TR1_HEADER(unordered_map)
+#else
+#include <boost/tr1/detail/config_all.hpp>
+#include BOOST_TR1_STD_HEADER(BOOST_TR1_PATH(unordered_map))
+#endif
 
 #else
 
 #include <boost/unordered_map.hpp>
 
-namespace std{ namespace tr1{
+namespace std
+{
+namespace tr1
+{
 
-   using ::boost::unordered_map;
-   using ::boost::unordered_multimap;
-   using ::boost::swap;
+using ::boost::swap;
+using ::boost::unordered_map;
+using ::boost::unordered_multimap;
 
-} } // namespaces
+} // namespace tr1
+} // namespace std
 
 #endif
 

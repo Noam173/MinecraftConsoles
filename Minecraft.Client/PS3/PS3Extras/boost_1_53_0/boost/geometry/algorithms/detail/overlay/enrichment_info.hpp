@@ -9,18 +9,18 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_ENRICHMENT_INFO_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_ENRICHMENT_INFO_HPP
 
-
 #include <boost/geometry/strategies/distance.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
 {
-
+namespace overlay
+{
 
 /*!
 \brief Keeps info to enrich intersection info (per source)
@@ -28,27 +28,19 @@ namespace detail { namespace overlay
     of the overlay process). The information is gathered during the
     enrichment phase
  */
-template<typename P>
+template <typename P>
 struct enrichment_info
 {
-    typedef typename strategy::distance::services::return_type
-        <
-            typename strategy::distance::services::comparable_type
-                <
-                    typename strategy::distance::services::default_strategy
-                        <
-                            point_tag,
-                            P
-                        >::type
-                >::type
-        >::type distance_type;
+    typedef typename strategy::distance::services::return_type<
+        typename strategy::distance::services::comparable_type<
+            typename strategy::distance::services::default_strategy<
+                point_tag,
+                P>::type>::type>::type distance_type;
 
     inline enrichment_info()
-        : travels_to_vertex_index(-1)
-        , travels_to_ip_index(-1)
-        , next_ip_index(-1)
-        , distance(distance_type())
-    {}
+        : travels_to_vertex_index(-1), travels_to_ip_index(-1), next_ip_index(-1), distance(distance_type())
+    {
+    }
 
     // vertex to which is free travel after this IP,
     // so from "segment_index+1" to "travels_to_vertex_index", without IP-s,
@@ -64,13 +56,11 @@ struct enrichment_info
     distance_type distance; // distance-measurement from segment.first to IP
 };
 
+} // namespace overlay
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
 
-}} // namespace detail::overlay
-#endif //DOXYGEN_NO_DETAIL
-
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_ENRICHMENT_INFO_HPP

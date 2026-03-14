@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -27,25 +27,25 @@
 
 // BOOST_SMT_PAUSE
 
-#if defined(_MSC_VER) && _MSC_VER >= 1310 && ( defined(_M_IX86) || defined(_M_X64) )
+#if defined(_MSC_VER) && _MSC_VER >= 1310 && (defined(_M_IX86) || defined(_M_X64))
 
 extern "C" void _mm_pause();
-#pragma intrinsic( _mm_pause )
+#pragma intrinsic(_mm_pause)
 
 #define BOOST_SMT_PAUSE _mm_pause();
 
-#elif defined(__GNUC__) && ( defined(__i386__) || defined(__x86_64__) )
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
 
-#define BOOST_SMT_PAUSE __asm__ __volatile__( "rep; nop" : : : "memory" );
+#define BOOST_SMT_PAUSE __asm__ __volatile__("rep; nop" : : : "memory");
 
 #endif
 
 //
 
-#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32__ ) || defined( __CYGWIN__ )
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
 
-#if defined( BOOST_USE_WINDOWS_H )
-# include <windows.h>
+#if defined(BOOST_USE_WINDOWS_H)
+#include <windows.h>
 #endif
 
 namespace boost
@@ -54,28 +54,28 @@ namespace boost
 namespace detail
 {
 
-#if !defined( BOOST_USE_WINDOWS_H )
-  extern "C" void __stdcall Sleep( unsigned long ms );
+#if !defined(BOOST_USE_WINDOWS_H)
+extern "C" void __stdcall Sleep(unsigned long ms);
 #endif
 
-inline void yield( unsigned k )
+inline void yield(unsigned k)
 {
-    if( k < 4 )
+    if (k < 4)
     {
     }
-#if defined( BOOST_SMT_PAUSE )
-    else if( k < 16 )
+#if defined(BOOST_SMT_PAUSE)
+    else if (k < 16)
     {
         BOOST_SMT_PAUSE
     }
 #endif
-    else if( k < 32 )
+    else if (k < 32)
     {
-        Sleep( 0 );
+        Sleep(0);
     }
     else
     {
-        Sleep( 1 );
+        Sleep(1);
     }
 }
 
@@ -83,7 +83,7 @@ inline void yield( unsigned k )
 
 } // namespace boost
 
-#elif defined( BOOST_HAS_PTHREADS )
+#elif defined(BOOST_HAS_PTHREADS)
 
 #include <sched.h>
 #include <time.h>
@@ -94,25 +94,25 @@ namespace boost
 namespace detail
 {
 
-inline void yield( unsigned k )
+inline void yield(unsigned k)
 {
-    if( k < 4 )
+    if (k < 4)
     {
     }
-#if defined( BOOST_SMT_PAUSE )
-    else if( k < 16 )
+#if defined(BOOST_SMT_PAUSE)
+    else if (k < 16)
     {
         BOOST_SMT_PAUSE
     }
 #endif
-    else if( k < 32 || k & 1 )
+    else if (k < 32 || k & 1)
     {
         sched_yield();
     }
     else
     {
         // g++ -Wextra warns on {} or {0}
-        struct timespec rqtp = { 0, 0 };
+        struct timespec rqtp = {0, 0};
 
         // POSIX says that timespec has tv_sec and tv_nsec
         // But it doesn't guarantee order or placement
@@ -120,7 +120,7 @@ inline void yield( unsigned k )
         rqtp.tv_sec = 0;
         rqtp.tv_nsec = 1000;
 
-        nanosleep( &rqtp, 0 );
+        nanosleep(&rqtp, 0);
     }
 }
 
@@ -136,7 +136,7 @@ namespace boost
 namespace detail
 {
 
-inline void yield( unsigned )
+inline void yield(unsigned)
 {
 }
 

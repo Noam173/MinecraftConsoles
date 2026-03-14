@@ -9,24 +9,27 @@
 
 #include <boost/fusion/container/list/cons.hpp>
 #include <boost/fusion/container/list/limits.hpp>
+#include <boost/preprocessor/arithmetic/dec.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_shifted_params.hpp>
-#include <boost/preprocessor/arithmetic/dec.hpp>
 
 #define FUSION_VOID(z, n, _) void_
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct nil;
-    struct void_;
-}}
+namespace fusion
+{
+struct nil;
+struct void_;
+} // namespace fusion
+} // namespace boost
 
 #if !defined(BOOST_FUSION_DONT_USE_PREPROCESSED_FILES)
 #include <boost/fusion/container/list/detail/preprocessed/list_to_cons.hpp>
 #else
 #if defined(__WAVE__) && defined(BOOST_FUSION_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 2, line: 0, output: "preprocessed/list_to_cons" FUSION_MAX_LIST_SIZE_STR ".hpp")
+#pragma wave option(preserve : 2, line : 0, output : "preprocessed/list_to_cons" FUSION_MAX_LIST_SIZE_STR ".hpp")
 #endif
 
 /*=============================================================================
@@ -39,34 +42,40 @@ namespace boost { namespace fusion
 ==============================================================================*/
 
 #if defined(__WAVE__) && defined(BOOST_FUSION_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 1)
+#pragma wave option(preserve : 1)
 #endif
 
-namespace boost { namespace fusion { namespace detail
+namespace boost
 {
-    template <BOOST_PP_ENUM_PARAMS(FUSION_MAX_LIST_SIZE, typename T)>
-    struct list_to_cons
-    {
-        typedef T0 head_type;
-        typedef list_to_cons<
-            BOOST_PP_ENUM_SHIFTED_PARAMS(FUSION_MAX_LIST_SIZE, T), void_>
+namespace fusion
+{
+namespace detail
+{
+template <BOOST_PP_ENUM_PARAMS(FUSION_MAX_LIST_SIZE, typename T)>
+struct list_to_cons
+{
+    typedef T0 head_type;
+    typedef list_to_cons<
+        BOOST_PP_ENUM_SHIFTED_PARAMS(FUSION_MAX_LIST_SIZE, T), void_>
         tail_list_to_cons;
-        typedef typename tail_list_to_cons::type tail_type;
+    typedef typename tail_list_to_cons::type tail_type;
 
-        typedef cons<head_type, tail_type> type;
+    typedef cons<head_type, tail_type> type;
 
-        #include <boost/fusion/container/list/detail/list_to_cons_call.hpp>
-    };
+#include <boost/fusion/container/list/detail/list_to_cons_call.hpp>
+};
 
-    template <>
-    struct list_to_cons<BOOST_PP_ENUM(FUSION_MAX_LIST_SIZE, FUSION_VOID, _)>
-    {
-        typedef nil type;
-    };
-}}}
+template <>
+struct list_to_cons<BOOST_PP_ENUM(FUSION_MAX_LIST_SIZE, FUSION_VOID, _)>
+{
+    typedef nil type;
+};
+} // namespace detail
+} // namespace fusion
+} // namespace boost
 
 #if defined(__WAVE__) && defined(BOOST_FUSION_CREATE_PREPROCESSED_FILES)
-#pragma wave option(output: null)
+#pragma wave option(output : null)
 #endif
 
 #endif // BOOST_FUSION_DONT_USE_PREPROCESSED_FILES

@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "Distort.h"
+#include "stdafx.h"
 
 Distort::Distort(Synth *source, Synth *distort)
 {

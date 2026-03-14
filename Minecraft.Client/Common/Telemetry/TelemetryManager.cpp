@@ -2,9 +2,9 @@
 
 #include "MultiPlayerLocalPlayer.h"
 
-#include "..\Minecraft.World\LevelSettings.h"
-#include "..\Minecraft.World\LevelData.h"
 #include "..\Minecraft.World\Level.h"
+#include "..\Minecraft.World\LevelData.h"
+#include "..\Minecraft.World\LevelSettings.h"
 
 #include "TelemetryManager.h"
 
@@ -16,139 +16,140 @@ CTelemetryManager *TelemetryManager = new CTelemetryManager();
 
 HRESULT CTelemetryManager::Init()
 {
-	return S_OK;
+    return S_OK;
 }
 
 HRESULT CTelemetryManager::Tick()
 {
-	return S_OK;
+    return S_OK;
 }
 
 HRESULT CTelemetryManager::Flush()
 {
-	return S_OK;
+    return S_OK;
 }
 
 bool CTelemetryManager::RecordPlayerSessionStart(int iPad)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordPlayerSessionExit(int iPad, int exitStatus)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordHeartBeat(int iPad)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordLevelStart(int iPad, ESen_FriendOrMatch friendsOrMatch, ESen_CompeteOrCoop competeOrCoop, int difficulty, int numberOfLocalPlayers, int numberOfOnlinePlayers)
 {
-	if(iPad == ProfileManager.GetPrimaryPad() ) m_bFirstFlush = true;
+    if (iPad == ProfileManager.GetPrimaryPad())
+    {
+        m_bFirstFlush = true;
+    }
 
-	++m_levelInstanceID;
-	m_fLevelStartTime[iPad] = app.getAppTime();
+    ++m_levelInstanceID;
+    m_fLevelStartTime[iPad] = app.getAppTime();
 
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordLevelExit(int iPad, ESen_LevelExitStatus levelExitStatus)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordLevelSaveOrCheckpoint(int iPad, int saveOrCheckPointID, int saveSizeInBytes)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordLevelResume(int iPad, ESen_FriendOrMatch friendsOrMatch, ESen_CompeteOrCoop competeOrCoop, int difficulty, int numberOfLocalPlayers, int numberOfOnlinePlayers, int saveOrCheckPointID)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordPauseOrInactive(int iPad)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordUnpauseOrActive(int iPad)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordMenuShown(int iPad, EUIScene menuID, int optionalMenuSubID)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordAchievementUnlocked(int iPad, int achievementID, int achievementGamerscore)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordMediaShareUpload(int iPad, ESen_MediaDestination mediaDestination, ESen_MediaType mediaType)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordUpsellPresented(int iPad, ESen_UpsellID upsellId, int marketplaceOfferID)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordUpsellResponded(int iPad, ESen_UpsellID upsellId, int marketplaceOfferID, ESen_UpsellOutcome upsellOutcome)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordPlayerDiedOrFailed(int iPad, int lowResMapX, int lowResMapY, int lowResMapZ, int mapID, int playerWeaponID, int enemyWeaponID, ETelemetryChallenges enemyTypeID)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordEnemyKilledOrOvercome(int iPad, int lowResMapX, int lowResMapY, int lowResMapZ, int mapID, int playerWeaponID, int enemyWeaponID, ETelemetryChallenges enemyTypeID)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordTexturePackLoaded(int iPad, int texturePackId, bool purchased)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordSkinChanged(int iPad, int dwSkinId)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordBanLevel(int iPad)
 {
-	return true;
+    return true;
 }
 
 bool CTelemetryManager::RecordUnBanLevel(int iPad)
 {
-	return true;
+    return true;
 }
 
-
-	 ///////////////////////////////////////////////////////////////////
-	// 4J-JEV: FOLLOWING LOGIC TAKEN FROM XBOX 'SentientManager.cpp' //
-   ///////////////////////////////////////////////////////////////////
-
+///////////////////////////////////////////////////////////////////
+// 4J-JEV: FOLLOWING LOGIC TAKEN FROM XBOX 'SentientManager.cpp' //
+///////////////////////////////////////////////////////////////////
 
 /*
 Number of seconds elapsed since Sentient initialize.
 Title needs to track this and report it as a property.
-These times will be used to create timelines and understand durations. 
+These times will be used to create timelines and understand durations.
 This should be tracked independently of saved games (restoring a save should not reset the seconds since initialize)
 */
 INT CTelemetryManager::GetSecondsSinceInitialize()
 {
-	return static_cast<INT>(app.getAppTime() - m_initialiseTime);
+    return static_cast<INT>(app.getAppTime() - m_initialiseTime);
 }
 
 /*
@@ -161,28 +162,28 @@ The intent is to answer the question "How are players playing your game?"
 */
 INT CTelemetryManager::GetMode(DWORD dwUserId)
 {
-	INT mode = (INT)eTelem_ModeId_Undefined;
-	
-	Minecraft *pMinecraft = Minecraft::GetInstance();
+    INT mode = (INT)eTelem_ModeId_Undefined;
 
-	if( pMinecraft->localplayers[dwUserId] != nullptr && pMinecraft->localplayers[dwUserId]->level != nullptr && pMinecraft->localplayers[dwUserId]->level->getLevelData() != nullptr )
-	{
-		GameType *gameType = pMinecraft->localplayers[dwUserId]->level->getLevelData()->getGameType();
+    Minecraft *pMinecraft = Minecraft::GetInstance();
 
-		if (gameType->isSurvival())
-		{
-			mode = static_cast<INT>(eTelem_ModeId_Survival);
-		}
-		else if (gameType->isCreative())
-		{
-			mode = static_cast<INT>(eTelem_ModeId_Creative);
-		}
-		else
-		{
-			mode = static_cast<INT>(eTelem_ModeId_Undefined);
-		}
-	}
-	return mode;
+    if (pMinecraft->localplayers[dwUserId] != nullptr && pMinecraft->localplayers[dwUserId]->level != nullptr && pMinecraft->localplayers[dwUserId]->level->getLevelData() != nullptr)
+    {
+        GameType *gameType = pMinecraft->localplayers[dwUserId]->level->getLevelData()->getGameType();
+
+        if (gameType->isSurvival())
+        {
+            mode = static_cast<INT>(eTelem_ModeId_Survival);
+        }
+        else if (gameType->isCreative())
+        {
+            mode = static_cast<INT>(eTelem_ModeId_Creative);
+        }
+        else
+        {
+            mode = static_cast<INT>(eTelem_ModeId_Undefined);
+        }
+    }
+    return mode;
 }
 
 /*
@@ -194,18 +195,18 @@ LevelIDs and SubLevelIDs can be reused as they will always be paired with a Mode
 */
 INT CTelemetryManager::GetSubMode(DWORD dwUserId)
 {
-	INT subMode = (INT)eTelem_SubModeId_Undefined;
+    INT subMode = (INT)eTelem_SubModeId_Undefined;
 
-	if(Minecraft::GetInstance()->isTutorial())
-	{
-		subMode = static_cast<INT>(eTelem_SubModeId_Tutorial);
-	}
-	else
-	{
-		subMode = static_cast<INT>(eTelem_SubModeId_Normal);
-	}
+    if (Minecraft::GetInstance()->isTutorial())
+    {
+        subMode = static_cast<INT>(eTelem_SubModeId_Tutorial);
+    }
+    else
+    {
+        subMode = static_cast<INT>(eTelem_SubModeId_Normal);
+    }
 
-	return subMode;
+    return subMode;
 }
 
 /*
@@ -218,11 +219,11 @@ LevelID = 0 means undefined or unknown.
 */
 INT CTelemetryManager::GetLevelId(DWORD dwUserId)
 {
-	INT levelId = (INT)eTelem_LevelId_Undefined;
+    INT levelId = (INT)eTelem_LevelId_Undefined;
 
-	levelId = static_cast<INT>(eTelem_LevelId_PlayerGeneratedLevel);
+    levelId = static_cast<INT>(eTelem_LevelId_PlayerGeneratedLevel);
 
-	return levelId;
+    return levelId;
 }
 
 /*
@@ -233,27 +234,27 @@ LevelIDs and SubLevelIDs can be reused as they will always be paired with a Mode
 */
 INT CTelemetryManager::GetSubLevelId(DWORD dwUserId)
 {
-	INT subLevelId = (INT)eTelem_SubLevelId_Undefined;
+    INT subLevelId = (INT)eTelem_SubLevelId_Undefined;
 
-	Minecraft *pMinecraft = Minecraft::GetInstance();
+    Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	if(pMinecraft->localplayers[dwUserId] != nullptr)	
-	{
-		switch(pMinecraft->localplayers[dwUserId]->dimension)
-		{
-		case 0:
-			subLevelId = static_cast<INT>(eTelem_SubLevelId_Overworld);
-			break;
-		case -1:
-			subLevelId = static_cast<INT>(eTelem_SubLevelId_Nether);
-			break;
-		case 1:
-			subLevelId = static_cast<INT>(eTelem_SubLevelId_End);
-			break;
-		};
-	}
+    if (pMinecraft->localplayers[dwUserId] != nullptr)
+    {
+        switch (pMinecraft->localplayers[dwUserId]->dimension)
+        {
+        case 0:
+            subLevelId = static_cast<INT>(eTelem_SubLevelId_Overworld);
+            break;
+        case -1:
+            subLevelId = static_cast<INT>(eTelem_SubLevelId_Nether);
+            break;
+        case 1:
+            subLevelId = static_cast<INT>(eTelem_SubLevelId_End);
+            break;
+        };
+    }
 
-	return subLevelId;
+    return subLevelId;
 }
 
 /*
@@ -262,7 +263,7 @@ Allows developer to separate out stats from different builds
 */
 INT CTelemetryManager::GetTitleBuildId()
 {
-	return (INT)VER_PRODUCTBUILD;
+    return (INT)VER_PRODUCTBUILD;
 }
 
 /*
@@ -272,7 +273,7 @@ Helps differentiate level attempts when a play plays the same mode/level - espec
 */
 INT CTelemetryManager::GetLevelInstanceID()
 {
-	return static_cast<INT>(m_levelInstanceID);
+    return static_cast<INT>(m_levelInstanceID);
 }
 
 /*
@@ -281,23 +282,23 @@ Link up players into a single multiplayer session ID.
 */
 INT CTelemetryManager::GetMultiplayerInstanceID()
 {
-	return m_multiplayerInstanceID;
+    return m_multiplayerInstanceID;
 }
 
 INT CTelemetryManager::GenerateMultiplayerInstanceId()
 {
 #if defined(_DURANGO) || defined(_XBOX)
-	FILETIME SystemTimeAsFileTime;
-	GetSystemTimeAsFileTime( &SystemTimeAsFileTime );
-	return *((INT *)&SystemTimeAsFileTime.dwLowDateTime);
+    FILETIME SystemTimeAsFileTime;
+    GetSystemTimeAsFileTime(&SystemTimeAsFileTime);
+    return *((INT *)&SystemTimeAsFileTime.dwLowDateTime);
 #else
-	return 0;
+    return 0;
 #endif
 }
 
 void CTelemetryManager::SetMultiplayerInstanceId(INT value)
 {
-	m_multiplayerInstanceID = value;
+    m_multiplayerInstanceID = value;
 }
 
 /*
@@ -306,30 +307,30 @@ How social is your game?  How do people play it?
 */
 INT CTelemetryManager::GetSingleOrMultiplayer()
 {
-	INT singleOrMultiplayer = (INT)eSen_SingleOrMultiplayer_Undefined;
+    INT singleOrMultiplayer = (INT)eSen_SingleOrMultiplayer_Undefined;
 
-	// Unused
-	//eSen_SingleOrMultiplayer_Single_Player
-	//eSen_SingleOrMultiplayer_Multiplayer_Live
+    // Unused
+    // eSen_SingleOrMultiplayer_Single_Player
+    // eSen_SingleOrMultiplayer_Multiplayer_Live
 
-	if(app.GetLocalPlayerCount() == 1 && g_NetworkManager.GetOnlinePlayerCount() == 0)
-	{
-		singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Single_Player);
-	}
-	else if(app.GetLocalPlayerCount() > 1 && g_NetworkManager.GetOnlinePlayerCount() == 0)
-	{
-		singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Local);
-	}
-	else if(app.GetLocalPlayerCount() == 1 && g_NetworkManager.GetOnlinePlayerCount() > 0)
-	{
-		singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Live);
-	}
-	else if(app.GetLocalPlayerCount() > 1 && g_NetworkManager.GetOnlinePlayerCount() > 0)
-	{
-		singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Both_Local_and_Live);
-	}
+    if (app.GetLocalPlayerCount() == 1 && g_NetworkManager.GetOnlinePlayerCount() == 0)
+    {
+        singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Single_Player);
+    }
+    else if (app.GetLocalPlayerCount() > 1 && g_NetworkManager.GetOnlinePlayerCount() == 0)
+    {
+        singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Local);
+    }
+    else if (app.GetLocalPlayerCount() == 1 && g_NetworkManager.GetOnlinePlayerCount() > 0)
+    {
+        singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Live);
+    }
+    else if (app.GetLocalPlayerCount() > 1 && g_NetworkManager.GetOnlinePlayerCount() > 0)
+    {
+        singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Both_Local_and_Live);
+    }
 
-	return singleOrMultiplayer;
+    return singleOrMultiplayer;
 }
 
 /*
@@ -338,28 +339,28 @@ Normalized to a standard 5-point scale.	Are players changing the difficulty?
 */
 INT CTelemetryManager::GetDifficultyLevel(INT diff)
 {
-	INT difficultyLevel = (INT)eSen_DifficultyLevel_Undefined;
+    INT difficultyLevel = (INT)eSen_DifficultyLevel_Undefined;
 
-	switch(diff)
-	{
-	case 0:
-		difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Easiest);
-		break;
-	case 1:
-		difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Easier);
-		break;
-	case 2:
-		difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Normal);
-		break;
-	case 3:
-		difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Harder);
-		break;
-	}
+    switch (diff)
+    {
+    case 0:
+        difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Easiest);
+        break;
+    case 1:
+        difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Easier);
+        break;
+    case 2:
+        difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Normal);
+        break;
+    case 3:
+        difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Harder);
+        break;
+    }
 
-	// Unused
-	//eSen_DifficultyLevel_Hardest = 5,
+    // Unused
+    // eSen_DifficultyLevel_Hardest = 5,
 
-	return difficultyLevel;
+    return difficultyLevel;
 }
 
 /*
@@ -368,17 +369,17 @@ Is this a full title or demo?
 */
 INT CTelemetryManager::GetLicense()
 {
-	INT license = eSen_License_Undefined;
+    INT license = eSen_License_Undefined;
 
-	if(ProfileManager.IsFullVersion())
-	{
-		license = static_cast<INT>(eSen_License_Full_Purchased_Title);
-	}
-	else
-	{
-		license = static_cast<INT>(eSen_License_Trial_or_Demo);
-	}
-	return license;
+    if (ProfileManager.IsFullVersion())
+    {
+        license = static_cast<INT>(eSen_License_Full_Purchased_Title);
+    }
+    else
+    {
+        license = static_cast<INT>(eSen_License_Trial_or_Demo);
+    }
+    return license;
 }
 
 /*
@@ -387,14 +388,14 @@ Are players customizing your controls?
 */
 INT CTelemetryManager::GetDefaultGameControls()
 {
-	INT defaultGameControls = eSen_DefaultGameControls_Undefined;
+    INT defaultGameControls = eSen_DefaultGameControls_Undefined;
 
-	// Unused	
-	//eSen_DefaultGameControls_Custom_controls
+    // Unused
+    // eSen_DefaultGameControls_Custom_controls
 
-	defaultGameControls = eSen_DefaultGameControls_Default_controls;
+    defaultGameControls = eSen_DefaultGameControls_Default_controls;
 
-	return defaultGameControls;
+    return defaultGameControls;
 }
 
 /*
@@ -403,26 +404,26 @@ This is intended to capture whether players are playing with or without volume a
 */
 INT CTelemetryManager::GetAudioSettings(DWORD dwUserId)
 {
-	INT audioSettings = (INT)eSen_AudioSettings_Undefined;
+    INT audioSettings = (INT)eSen_AudioSettings_Undefined;
 
-	if(dwUserId == ProfileManager.GetPrimaryPad())
-	{
-		BYTE volume = app.GetGameSettings(dwUserId,eGameSetting_SoundFXVolume);
+    if (dwUserId == ProfileManager.GetPrimaryPad())
+    {
+        BYTE volume = app.GetGameSettings(dwUserId, eGameSetting_SoundFXVolume);
 
-		if(volume == 0)
-		{
-			audioSettings = static_cast<INT>(eSen_AudioSettings_Off);
-		}
-		else if(volume == DEFAULT_VOLUME_LEVEL)
-		{
-			audioSettings = static_cast<INT>(eSen_AudioSettings_On_Default);
-		}
-		else
-		{
-			audioSettings = static_cast<INT>(eSen_AudioSettings_On_CustomSetting);
-		}
-	}
-	return audioSettings;
+        if (volume == 0)
+        {
+            audioSettings = static_cast<INT>(eSen_AudioSettings_Off);
+        }
+        else if (volume == DEFAULT_VOLUME_LEVEL)
+        {
+            audioSettings = static_cast<INT>(eSen_AudioSettings_On_Default);
+        }
+        else
+        {
+            audioSettings = static_cast<INT>(eSen_AudioSettings_On_CustomSetting);
+        }
+    }
+    return audioSettings;
 }
 
 /*
@@ -433,8 +434,8 @@ How far did users progress before failing/exiting the level?
 */
 INT CTelemetryManager::GetLevelExitProgressStat1()
 {
-	// 4J Stu - Unused
-	return 0;
+    // 4J Stu - Unused
+    return 0;
 }
 
 /*
@@ -445,6 +446,6 @@ How far did users progress before failing/exiting the level?
 */
 INT CTelemetryManager::GetLevelExitProgressStat2()
 {
-	// 4J Stu - Unused
-	return 0;
+    // 4J Stu - Unused
+    return 0;
 }

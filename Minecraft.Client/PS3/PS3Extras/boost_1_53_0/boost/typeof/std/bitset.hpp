@@ -12,4 +12,4 @@
 
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::bitset, (BOOST_TYPEOF_INTEGRAL(std::size_t)))
 
-#endif//BOOST_TYPEOF_STD_bitset_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_bitset_hpp_INCLUDED

@@ -17,17 +17,19 @@
 #define BOOST_RANDOM_CAUCHY_DISTRIBUTION_HPP
 
 #include <boost/config/no_tr1/cmath.hpp>
-#include <iosfwd>
-#include <istream>
 #include <boost/limits.hpp>
 #include <boost/random/detail/config.hpp>
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/uniform_01.hpp>
+#include <iosfwd>
+#include <istream>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
-// Cauchy distribution: 
+// Cauchy distribution:
 
 /**
  * The cauchy distribution is a continuous distribution with two
@@ -35,37 +37,50 @@ namespace random {
  *
  * It has \f$\displaystyle p(x) = \frac{\sigma}{\pi(\sigma^2 + (x-m)^2)}\f$
  */
-template<class RealType = double>
+template <class RealType = double>
 class cauchy_distribution
 {
-public:
+  public:
     typedef RealType input_type;
     typedef RealType result_type;
 
     class param_type
     {
-    public:
-
+      public:
         typedef cauchy_distribution distribution_type;
 
         /** Constructs the parameters of the cauchy distribution. */
         explicit param_type(RealType median_arg = RealType(0.0),
                             RealType sigma_arg = RealType(1.0))
-          : _median(median_arg), _sigma(sigma_arg) {}
+            : _median(median_arg), _sigma(sigma_arg)
+        {
+        }
 
         // backwards compatibility for Boost.Random
 
         /** Returns the median of the distribution. */
-        RealType median() const { return _median; }
+        RealType median() const
+        {
+            return _median;
+        }
         /** Returns the sigma parameter of the distribution. */
-        RealType sigma() const { return _sigma; }
+        RealType sigma() const
+        {
+            return _sigma;
+        }
 
         // The new names in C++0x.
 
         /** Returns the median of the distribution. */
-        RealType a() const { return _median; }
+        RealType a() const
+        {
+            return _median;
+        }
         /** Returns the sigma parameter of the distribution. */
-        RealType b() const { return _sigma; }
+        RealType b() const
+        {
+            return _sigma;
+        }
 
         /** Writes the parameters to a std::ostream. */
         BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(os, param_type, parm)
@@ -83,12 +98,14 @@ public:
 
         /** Returns true if the two sets of parameters are equal. */
         BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(param_type, lhs, rhs)
-        { return lhs._median == rhs._median && lhs._sigma == rhs._sigma; }
+        {
+            return lhs._median == rhs._median && lhs._sigma == rhs._sigma;
+        }
 
         /** Returns true if the two sets of parameters are different. */
         BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(param_type)
 
-    private:
+      private:
         RealType _median;
         RealType _sigma;
     };
@@ -97,43 +114,66 @@ public:
      * Constructs a \cauchy_distribution with the paramters @c median
      * and @c sigma.
      */
-    explicit cauchy_distribution(RealType median_arg = RealType(0.0), 
+    explicit cauchy_distribution(RealType median_arg = RealType(0.0),
                                  RealType sigma_arg = RealType(1.0))
-      : _median(median_arg), _sigma(sigma_arg) { }
-    
+        : _median(median_arg), _sigma(sigma_arg)
+    {
+    }
+
     /**
      * Constructs a \cauchy_distribution from it's parameters.
      */
-    explicit cauchy_distribution(const param_type& parm)
-      : _median(parm.median()), _sigma(parm.sigma()) { }
+    explicit cauchy_distribution(const param_type &parm)
+        : _median(parm.median()), _sigma(parm.sigma())
+    {
+    }
 
     // compiler-generated copy ctor and assignment operator are fine
 
     // backwards compatibility for Boost.Random
 
     /** Returns: the "median" parameter of the distribution */
-    RealType median() const { return _median; }
+    RealType median() const
+    {
+        return _median;
+    }
     /** Returns: the "sigma" parameter of the distribution */
-    RealType sigma() const { return _sigma; }
-    
+    RealType sigma() const
+    {
+        return _sigma;
+    }
+
     // The new names in C++0x
 
     /** Returns: the "median" parameter of the distribution */
-    RealType a() const { return _median; }
+    RealType a() const
+    {
+        return _median;
+    }
     /** Returns: the "sigma" parameter of the distribution */
-    RealType b() const { return _sigma; }
+    RealType b() const
+    {
+        return _sigma;
+    }
 
     /** Returns the smallest value that the distribution can produce. */
-    RealType min BOOST_PREVENT_MACRO_SUBSTITUTION () const
-    { return -(std::numeric_limits<RealType>::infinity)(); }
+    RealType min BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return -(std::numeric_limits<RealType>::infinity)();
+    }
 
     /** Returns the largest value that the distribution can produce. */
-    RealType max BOOST_PREVENT_MACRO_SUBSTITUTION () const
-    { return (std::numeric_limits<RealType>::infinity)(); }
+    RealType max BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return (std::numeric_limits<RealType>::infinity)();
+    }
 
-    param_type param() const { return param_type(_median, _sigma); }
+    param_type param() const
+    {
+        return param_type(_median, _sigma);
+    }
 
-    void param(const param_type& parm)
+    void param(const param_type &parm)
     {
         _median = parm.median();
         _sigma = parm.sigma();
@@ -143,28 +183,30 @@ public:
      * Effects: Subsequent uses of the distribution do not depend
      * on values produced by any engine prior to invoking reset.
      */
-    void reset() { }
+    void reset()
+    {
+    }
 
     /**
      * Returns: A random variate distributed according to the
      * cauchy distribution.
      */
-    template<class Engine>
-    result_type operator()(Engine& eng)
+    template <class Engine>
+    result_type operator()(Engine &eng)
     {
         // Can we have a boost::mathconst please?
         const result_type pi = result_type(3.14159265358979323846);
         using std::tan;
-        RealType val = uniform_01<RealType>()(eng)-result_type(0.5);
-        return _median + _sigma * tan(pi*val);
+        RealType val = uniform_01<RealType>()(eng) - result_type(0.5);
+        return _median + _sigma * tan(pi * val);
     }
 
     /**
      * Returns: A random variate distributed according to the
      * cauchy distribution with parameters specified by param.
      */
-    template<class Engine>
-    result_type operator()(Engine& eng, const param_type& parm)
+    template <class Engine>
+    result_type operator()(Engine &eng, const param_type &parm)
     {
         return cauchy_distribution(parm)(eng);
     }
@@ -192,7 +234,9 @@ public:
      * identical sequences of values, given equal generators.
      */
     BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(cauchy_distribution, lhs, rhs)
-    { return lhs._median == rhs._median && lhs._sigma == rhs._sigma; }
+    {
+        return lhs._median == rhs._median && lhs._sigma == rhs._sigma;
+    }
 
     /**
      * Returns true if the two distributions may produce
@@ -200,7 +244,7 @@ public:
      */
     BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(cauchy_distribution)
 
-private:
+  private:
     RealType _median;
     RealType _sigma;
 };

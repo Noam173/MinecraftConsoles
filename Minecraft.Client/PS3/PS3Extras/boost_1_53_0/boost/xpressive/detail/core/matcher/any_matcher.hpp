@@ -10,42 +10,48 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
 #include <boost/xpressive/detail/core/state.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // any_matcher
-    //
-    struct any_matcher
+///////////////////////////////////////////////////////////////////////////////
+// any_matcher
+//
+struct any_matcher
+{
+    BOOST_XPR_QUANT_STYLE(quant_fixed_width, 1, true)
+
+    template <typename BidiIter, typename Next>
+    static bool match(match_state<BidiIter> &state, Next const &next)
     {
-        BOOST_XPR_QUANT_STYLE(quant_fixed_width, 1, true)
-
-        template<typename BidiIter, typename Next>
-        static bool match(match_state<BidiIter> &state, Next const &next)
+        if (state.eos())
         {
-            if(state.eos())
-            {
-                return false;
-            }
-
-            ++state.cur_;
-            if(next.match(state))
-            {
-                return true;
-            }
-
-            --state.cur_;
             return false;
         }
-    };
 
-}}}
+        ++state.cur_;
+        if (next.match(state))
+        {
+            return true;
+        }
+
+        --state.cur_;
+        return false;
+    }
+};
+
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

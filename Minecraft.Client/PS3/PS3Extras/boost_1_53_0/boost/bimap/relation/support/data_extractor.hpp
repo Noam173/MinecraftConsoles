@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_RELATION_SUPPORT_DATA_EXTRACTOR_HPP
 #define BOOST_BIMAP_RELATION_SUPPORT_DATA_EXTRACTOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -30,70 +30,72 @@
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
-template< class Tag, class Relation >
+template <class Tag, class Relation>
 struct data_extractor_implementation;
 
-template< class Relation >
-struct data_extractor_implementation< member_at::left, Relation > :
-    public std::unary_function<Relation,BOOST_DEDUCED_TYPENAME Relation::left_value_type>
+template <class Relation>
+struct data_extractor_implementation<member_at::left, Relation> : public std::unary_function<Relation, BOOST_DEDUCED_TYPENAME Relation::left_value_type>
 {
     BOOST_DEDUCED_TYPENAME Relation::left_value_type const &
-        operator()(Relation const & rel) const
+    operator()(Relation const &rel) const
     {
         return rel.left;
     }
 
     BOOST_DEDUCED_TYPENAME Relation::left_value_type &
-        operator()(Relation       & rel) const
+    operator()(Relation &rel) const
     {
         return rel.left;
     }
 };
 
-template< class Relation >
-struct data_extractor_implementation< member_at::right, Relation > :
-    public std::unary_function<Relation,BOOST_DEDUCED_TYPENAME Relation::right_value_type>
+template <class Relation>
+struct data_extractor_implementation<member_at::right, Relation> : public std::unary_function<Relation, BOOST_DEDUCED_TYPENAME Relation::right_value_type>
 {
-    BOOST_DEDUCED_TYPENAME Relation::right_value_type const & 
-        operator()(Relation const & rel) const
+    BOOST_DEDUCED_TYPENAME Relation::right_value_type const &
+    operator()(Relation const &rel) const
     {
         return rel.right;
     }
 
-    BOOST_DEDUCED_TYPENAME Relation::right_value_type & 
-        operator()(Relation       & rel) const
+    BOOST_DEDUCED_TYPENAME Relation::right_value_type &
+    operator()(Relation &rel) const
     {
         return rel.right;
     }
 };
 
-template< class Tag, class Relation >
+template <class Tag, class Relation>
 struct data_extractor
 {
-    typedef data_extractor_implementation
-    <
-        BOOST_DEDUCED_TYPENAME member_with_tag<Tag,Relation>::type,
+    typedef data_extractor_implementation<
+        BOOST_DEDUCED_TYPENAME member_with_tag<Tag, Relation>::type,
         Relation
 
-    > type;
+        >
+        type;
 };
 
-template< class Relation >
+template <class Relation>
 struct both_keys_extractor
 {
     typedef BOOST_DEDUCED_TYPENAME Relation::storage_base result_type;
 
-     const result_type & operator()(const Relation & rel) const
+    const result_type &operator()(const Relation &rel) const
     {
         return rel;
     }
 
-    result_type & operator()( Relation & rel) const
+    result_type &operator()(Relation &rel) const
     {
         return rel;
     }
@@ -107,4 +109,3 @@ struct both_keys_extractor
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_RELATION_SUPPORT_DATA_EXTRACTOR_HPP
-

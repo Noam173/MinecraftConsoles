@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_UTIL_PARAMETER_TYPE_OF_HPP
 #define BOOST_GEOMETRY_UTIL_PARAMETER_TYPE_OF_HPP
 
-
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/is_member_function_pointer.hpp>
 #include <boost/function_types/parameter_types.hpp>
@@ -23,10 +22,10 @@
 #include <boost/mpl/plus.hpp>
 #include <boost/type_traits.hpp>
 
-
-namespace boost { namespace geometry
-{ 
-
+namespace boost
+{
+namespace geometry
+{
 
 /*!
 \brief Meta-function selecting a parameter type of a (member) function, by index
@@ -35,41 +34,28 @@ namespace boost { namespace geometry
 template <typename Method, std::size_t Index>
 struct parameter_type_of
 {
-    typedef typename boost::function_types::parameter_types
-        <
-            Method
-        >::type parameter_types;
+    typedef typename boost::function_types::parameter_types<
+        Method>::type parameter_types;
 
-    typedef typename boost::mpl::if_
-        <
-            boost::function_types::is_member_function_pointer<Method>,
-            boost::mpl::int_<1>,
-            boost::mpl::int_<0>
-        >::type base_index_type;
-        
-    typedef typename boost::mpl::if_c
-        <
-            Index == 0,
+    typedef typename boost::mpl::if_<
+        boost::function_types::is_member_function_pointer<Method>,
+        boost::mpl::int_<1>,
+        boost::mpl::int_<0>>::type base_index_type;
+
+    typedef typename boost::mpl::if_c<
+        Index == 0,
+        base_index_type,
+        typename boost::mpl::plus<
             base_index_type,
-            typename boost::mpl::plus
-                <
-                    base_index_type,
-                    boost::mpl::int_<Index>
-                >::type
-        >::type indexed_type;
+            boost::mpl::int_<Index>>::type>::type indexed_type;
 
-    typedef typename boost::remove_reference
-        <
-            typename boost::mpl::at
-                <
-                    parameter_types,
-                    indexed_type
-                >::type
-        >::type type;
+    typedef typename boost::remove_reference<
+        typename boost::mpl::at<
+            parameter_types,
+            indexed_type>::type>::type type;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_PARAMETER_TYPE_OF_HPP

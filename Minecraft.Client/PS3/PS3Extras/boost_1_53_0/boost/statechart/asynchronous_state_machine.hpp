@@ -6,50 +6,46 @@
 // ing file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //////////////////////////////////////////////////////////////////////////////
 
-
-
-#include <boost/statechart/state_machine.hpp>
+#include <boost/statechart/event_processor.hpp>
 #include <boost/statechart/fifo_scheduler.hpp>
 #include <boost/statechart/null_exception_translator.hpp>
-#include <boost/statechart/event_processor.hpp>
+#include <boost/statechart/state_machine.hpp>
 
-#include <memory>   // std::allocator
-
+#include <memory> // std::allocator
 
 namespace boost
 {
 namespace statechart
 {
 
-
-
 class event_base;
 
-
-
 //////////////////////////////////////////////////////////////////////////////
-template< class MostDerived,
+template <class MostDerived,
           class InitialState,
           class Scheduler = fifo_scheduler<>,
-          class Allocator = std::allocator< void >,
-          class ExceptionTranslator = null_exception_translator >
+          class Allocator = std::allocator<void>,
+          class ExceptionTranslator = null_exception_translator>
 class asynchronous_state_machine : public state_machine<
-  MostDerived, InitialState, Allocator, ExceptionTranslator >,
-  public event_processor< Scheduler >
+                                       MostDerived, InitialState, Allocator, ExceptionTranslator>,
+                                   public event_processor<Scheduler>
 {
-  typedef state_machine< MostDerived,
-    InitialState, Allocator, ExceptionTranslator > machine_base;
-  typedef event_processor< Scheduler > processor_base;
+    typedef state_machine<MostDerived,
+                          InitialState, Allocator, ExceptionTranslator>
+        machine_base;
+    typedef event_processor<Scheduler> processor_base;
+
   protected:
     //////////////////////////////////////////////////////////////////////////
     typedef asynchronous_state_machine my_base;
 
-    asynchronous_state_machine( typename processor_base::my_context ctx ) :
-      processor_base( ctx )
+    asynchronous_state_machine(typename processor_base::my_context ctx) : processor_base(ctx)
     {
     }
 
-    virtual ~asynchronous_state_machine() {}
+    virtual ~asynchronous_state_machine()
+    {
+    }
 
   public:
     //////////////////////////////////////////////////////////////////////////
@@ -58,32 +54,28 @@ class asynchronous_state_machine : public state_machine<
     //////////////////////////////////////////////////////////////////////////
     void terminate()
     {
-      processor_base::terminate();
+        processor_base::terminate();
     }
 
   private:
     //////////////////////////////////////////////////////////////////////////
     virtual void initiate_impl()
     {
-      machine_base::initiate();
+        machine_base::initiate();
     }
 
-    virtual void process_event_impl( const event_base & evt )
+    virtual void process_event_impl(const event_base &evt)
     {
-      machine_base::process_event( evt );
+        machine_base::process_event(evt);
     }
 
     virtual void terminate_impl()
     {
-      machine_base::terminate();
+        machine_base::terminate();
     }
 };
 
-
-
 } // namespace statechart
 } // namespace boost
-
-
 
 #endif

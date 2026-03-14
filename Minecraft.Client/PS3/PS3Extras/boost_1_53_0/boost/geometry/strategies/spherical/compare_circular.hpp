@@ -16,14 +16,15 @@
 #include <boost/geometry/strategies/compare.hpp>
 #include <boost/geometry/util/math.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
-namespace strategy { namespace compare
+namespace strategy
 {
-
+namespace compare
+{
 
 #ifndef DOXYGEN_NO_DETAIL
 namespace detail
@@ -37,15 +38,27 @@ struct shift
 template <>
 struct shift<degree>
 {
-    static inline double full() { return 360.0; }
-    static inline double half() { return 180.0; }
+    static inline double full()
+    {
+        return 360.0;
+    }
+    static inline double half()
+    {
+        return 180.0;
+    }
 };
 
 template <>
 struct shift<radian>
 {
-    static inline double full() { return 2.0 * boost::math::constants::pi<double>(); }
-    static inline double half() { return boost::math::constants::pi<double>(); }
+    static inline double full()
+    {
+        return 2.0 * boost::math::constants::pi<double>();
+    }
+    static inline double half()
+    {
+        return boost::math::constants::pi<double>();
+    }
 };
 
 } // namespace detail
@@ -60,8 +73,8 @@ struct shift<radian>
 template <typename CoordinateType, typename Units, typename Compare>
 struct circular_comparator
 {
-    static inline CoordinateType put_in_range(CoordinateType const& c,
-            double min_border, double max_border)
+    static inline CoordinateType put_in_range(CoordinateType const &c,
+                                              double min_border, double max_border)
     {
         CoordinateType value = c;
         while (value < min_border)
@@ -75,7 +88,7 @@ struct circular_comparator
         return value;
     }
 
-    inline bool operator()(CoordinateType const& c1, CoordinateType const& c2)  const
+    inline bool operator()(CoordinateType const &c1, CoordinateType const &c2) const
     {
         Compare compare;
 
@@ -106,47 +119,43 @@ struct circular_comparator
     }
 };
 
-}} // namespace strategy::compare
+} // namespace compare
+} // namespace strategy
 
 #ifndef DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
 
 // Specialize for the longitude (dim 0)
-template
-<
+template <
     typename Point,
-    template<typename> class CoordinateSystem,
-    typename Units
->
+    template <typename> class CoordinateSystem,
+    typename Units>
 struct strategy_compare<spherical_polar_tag, 1, Point, CoordinateSystem<Units>, 0>
 {
     typedef typename coordinate_type<Point>::type coordinate_type;
-    typedef strategy::compare::circular_comparator
-        <
-            coordinate_type,
-            Units,
-            std::less<coordinate_type>
-        > type;
+    typedef strategy::compare::circular_comparator<
+        coordinate_type,
+        Units,
+        std::less<coordinate_type>>
+        type;
 };
 
-template
-<
+template <
     typename Point,
-    template<typename> class CoordinateSystem,
-    typename Units
->
+    template <typename> class CoordinateSystem,
+    typename Units>
 struct strategy_compare<spherical_polar_tag, -1, Point, CoordinateSystem<Units>, 0>
 {
     typedef typename coordinate_type<Point>::type coordinate_type;
-    typedef strategy::compare::circular_comparator
-        <
-            coordinate_type,
-            Units,
-            std::greater<coordinate_type>
-        > type;
+    typedef strategy::compare::circular_comparator<
+        coordinate_type,
+        Units,
+        std::greater<coordinate_type>>
+        type;
 };
 
 #endif // DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_SPHERICAL_COMPARE_SPHERICAL_HPP

@@ -5,9 +5,9 @@
 #ifndef BOOST_TYPEOF_STD_fstream_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_fstream_hpp_INCLUDED
 
-#include <fstream>
-#include <boost/typeof/typeof.hpp>
 #include <boost/typeof/std/string.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <fstream>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -24,4 +24,4 @@ BOOST_TYPEOF_REGISTER_TYPE(std::ifstream)
 BOOST_TYPEOF_REGISTER_TYPE(std::ofstream)
 BOOST_TYPEOF_REGISTER_TYPE(std::fstream)
 
-#endif//BOOST_TYPEOF_STD_fstream_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_fstream_hpp_INCLUDED

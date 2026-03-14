@@ -1,7 +1,7 @@
 /*=============================================================================
     Copyright (c) 2001-2011 Joel de Guzman
 
-    Distributed under the Boost Software License, Version 1.0. (See accompanying 
+    Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
 #if !defined(BOOST_FUSION_END_IMPL_09272006_0721)
@@ -11,44 +11,45 @@
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_const.hpp>
 
-namespace boost { namespace tuples
+namespace boost
 {
-    struct null_type;
-}}
-    
-namespace boost { namespace fusion
+namespace tuples
 {
-    struct boost_tuple_tag;
+struct null_type;
+}
+} // namespace boost
 
-    namespace extension
+namespace boost
+{
+namespace fusion
+{
+struct boost_tuple_tag;
+
+namespace extension
+{
+template <typename Tag>
+struct end_impl;
+
+template <>
+struct end_impl<boost_tuple_tag>
+{
+    template <typename Sequence>
+    struct apply
     {
-        template <typename Tag>
-        struct end_impl;
+        typedef boost_tuple_iterator<
+            typename mpl::if_<
+                is_const<Sequence>, tuples::null_type const, tuples::null_type>::type>
+            type;
 
-        template <>
-        struct end_impl<boost_tuple_tag>
+        static type
+        call(Sequence &seq)
         {
-            template <typename Sequence>
-            struct apply 
-            {
-                typedef 
-                    boost_tuple_iterator<
-                        typename mpl::if_<
-                            is_const<Sequence>
-                          , tuples::null_type const
-                          , tuples::null_type
-                        >::type
-                    > 
-                type;
-
-                static type
-                call(Sequence& seq)
-                {
-                    return type(seq);
-                }
-            };
-        };
-    }
-}}
+            return type(seq);
+        }
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

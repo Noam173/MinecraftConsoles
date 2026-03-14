@@ -9,32 +9,32 @@
 #ifndef BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_RANGE_REVERSED_HPP
 #define BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_RANGE_REVERSED_HPP
 
-
 #include <boost/range/adaptor/reversed.hpp>
 
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace traits
 {
 
-template<typename Geometry>
+template <typename Geometry>
 #if BOOST_VERSION > 104500
-struct tag<boost::reversed_range<Geometry> >
+struct tag<boost::reversed_range<Geometry>>
 #else
-struct tag<boost::range_detail::reverse_range<Geometry> >
+struct tag<boost::range_detail::reverse_range<Geometry>>
 #endif
 {
     typedef typename geometry::tag<Geometry>::type type;
 };
 
-}
+} // namespace traits
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_RANGE_REVERSED_HPP
-

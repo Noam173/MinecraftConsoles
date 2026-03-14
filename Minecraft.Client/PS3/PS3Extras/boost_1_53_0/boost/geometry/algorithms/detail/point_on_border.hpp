@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_POINT_ON_BORDER_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_POINT_ON_BORDER_HPP
 
-
 #include <cstddef>
 
 #include <boost/range.hpp>
@@ -28,78 +27,72 @@
 #include <boost/geometry/algorithms/detail/convert_point_to_point.hpp>
 #include <boost/geometry/algorithms/detail/disjoint.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace point_on_border
+namespace detail
+{
+namespace point_on_border
 {
 
-
-template<typename Point>
+template <typename Point>
 struct get_point
 {
-    static inline bool apply(Point& destination, Point const& source, bool)
+    static inline bool apply(Point &destination, Point const &source, bool)
     {
         destination = source;
         return true;
     }
 };
 
-template<typename Point, std::size_t Dimension, std::size_t DimensionCount>
+template <typename Point, std::size_t Dimension, std::size_t DimensionCount>
 struct midpoint_helper
 {
     template <typename InputPoint>
-    static inline bool apply(Point& p, InputPoint const& p1, InputPoint const& p2)
+    static inline bool apply(Point &p, InputPoint const &p1, InputPoint const &p2)
     {
         typename coordinate_type<Point>::type const two = 2;
         set<Dimension>(p,
-                    (get<Dimension>(p1) + get<Dimension>(p2)) / two);
+                       (get<Dimension>(p1) + get<Dimension>(p2)) / two);
         return midpoint_helper<Point, Dimension + 1, DimensionCount>::apply(p, p1, p2);
     }
 };
-
 
 template <typename Point, std::size_t DimensionCount>
 struct midpoint_helper<Point, DimensionCount, DimensionCount>
 {
     template <typename InputPoint>
-    static inline bool apply(Point& , InputPoint const& , InputPoint const& )
+    static inline bool apply(Point &, InputPoint const &, InputPoint const &)
     {
         return true;
     }
 };
 
-
-template<typename Point, typename Range>
+template <typename Point, typename Range>
 struct point_on_range
 {
-    static inline bool apply(Point& point, Range const& range, bool midpoint)
+    static inline bool apply(Point &point, Range const &range, bool midpoint)
     {
         const std::size_t n = boost::size(range);
         if (midpoint && n > 1)
         {
-            typedef typename boost::range_iterator
-                <
-                    Range const
-                >::type iterator;
+            typedef typename boost::range_iterator<
+                Range const>::type iterator;
 
             iterator it = boost::begin(range);
             iterator prev = it++;
-            while (it != boost::end(range)
-                && detail::equals::equals_point_point(*it, *prev))
+            while (it != boost::end(range) && detail::equals::equals_point_point(*it, *prev))
             {
                 prev = it++;
             }
             if (it != boost::end(range))
             {
-                return midpoint_helper
-                    <
-                        Point,
-                        0, dimension<Point>::value
-                    >::apply(point, *prev, *it);
+                return midpoint_helper<
+                    Point,
+                    0, dimension<Point>::value>::apply(point, *prev, *it);
             }
         }
 
@@ -112,36 +105,30 @@ struct point_on_range
     }
 };
 
-
-template<typename Point, typename Polygon>
+template <typename Point, typename Polygon>
 struct point_on_polygon
 {
-    static inline bool apply(Point& point, Polygon const& polygon, bool midpoint)
+    static inline bool apply(Point &point, Polygon const &polygon, bool midpoint)
     {
-        return point_on_range
-            <
-                Point,
-                typename ring_type<Polygon>::type
-            >::apply(point, exterior_ring(polygon), midpoint);
+        return point_on_range<
+            Point,
+            typename ring_type<Polygon>::type>::apply(point, exterior_ring(polygon), midpoint);
     }
 };
 
-
-template<typename Point, typename Box>
+template <typename Point, typename Box>
 struct point_on_box
 {
-    static inline bool apply(Point& point, Box const& box, bool midpoint)
+    static inline bool apply(Point &point, Box const &box, bool midpoint)
     {
         if (midpoint)
         {
             Point p1, p2;
             detail::assign::assign_box_2d_corner<min_corner, min_corner>(box, p1);
             detail::assign::assign_box_2d_corner<max_corner, min_corner>(box, p2);
-            midpoint_helper
-                <
-                    Point,
-                    0, dimension<Point>::value
-                >::apply(point, p1, p2);
+            midpoint_helper<
+                Point,
+                0, dimension<Point>::value>::apply(point, p1, p2);
         }
         else
         {
@@ -152,60 +139,56 @@ struct point_on_box
     }
 };
 
-
-}} // namespace detail::point_on_border
+} // namespace point_on_border
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
-template
-<
+template <
     typename GeometryTag,
     typename Point,
     typename Geometry
 
->
+    >
 struct point_on_border
-{};
+{
+};
 
-
-template<typename Point>
+template <typename Point>
 struct point_on_border<point_tag, Point, Point>
     : detail::point_on_border::get_point<Point>
-{};
+{
+};
 
-
-template<typename Point, typename Linestring>
+template <typename Point, typename Linestring>
 struct point_on_border<linestring_tag, Point, Linestring>
     : detail::point_on_border::point_on_range<Point, Linestring>
-{};
+{
+};
 
-
-template<typename Point, typename Ring>
+template <typename Point, typename Ring>
 struct point_on_border<ring_tag, Point, Ring>
     : detail::point_on_border::point_on_range<Point, Ring>
-{};
+{
+};
 
-
-template<typename Point, typename Polygon>
+template <typename Point, typename Polygon>
 struct point_on_border<polygon_tag, Point, Polygon>
     : detail::point_on_border::point_on_polygon<Point, Polygon>
-{};
+{
+};
 
-
-template<typename Point, typename Box>
+template <typename Point, typename Box>
 struct point_on_border<box_tag, Point, Box>
     : detail::point_on_border::point_on_box<Point, Box>
-{};
-
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
 
 /*!
 \brief Take point on a border
@@ -222,25 +205,22 @@ struct point_on_border<box_tag, Point, Box>
     (unless there are no other).
  */
 template <typename Point, typename Geometry>
-inline bool point_on_border(Point& point,
-            Geometry const& geometry,
-            bool midpoint = false)
+inline bool point_on_border(Point &point,
+                            Geometry const &geometry,
+                            bool midpoint = false)
 {
-    concept::check<Point>();
-    concept::check<Geometry const>();
+    concept ::check<Point>();
+    concept ::check<Geometry const>();
 
     typedef typename point_type<Geometry>::type point_type;
 
-    return dispatch::point_on_border
-            <
-                typename tag<Geometry>::type,
-                Point,
-                Geometry
-            >::apply(point, geometry, midpoint);
+    return dispatch::point_on_border<
+        typename tag<Geometry>::type,
+        Point,
+        Geometry>::apply(point, geometry, midpoint);
 }
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_POINT_ON_BORDER_HPP

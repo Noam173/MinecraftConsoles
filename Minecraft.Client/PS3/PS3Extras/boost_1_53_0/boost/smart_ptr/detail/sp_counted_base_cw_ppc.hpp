@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -32,7 +32,7 @@ namespace boost
 namespace detail
 {
 
-inline void atomic_increment( register long * pw )
+inline void atomic_increment(register long *pw)
 {
     register int a;
 
@@ -47,7 +47,7 @@ loop:
     }
 }
 
-inline long atomic_decrement( register long * pw )
+inline long atomic_decrement(register long *pw)
 {
     register int a;
 
@@ -68,7 +68,7 @@ loop:
     return a;
 }
 
-inline long atomic_conditional_increment( register long * pw )
+inline long atomic_conditional_increment(register long *pw)
 {
     register int a;
 
@@ -93,17 +93,15 @@ store:
 
 class sp_counted_base
 {
-private:
+  private:
+    sp_counted_base(sp_counted_base const &);
+    sp_counted_base &operator=(sp_counted_base const &);
 
-    sp_counted_base( sp_counted_base const & );
-    sp_counted_base & operator= ( sp_counted_base const & );
+    long use_count_;  // #shared
+    long weak_count_; // #weak + (#shared != 0)
 
-    long use_count_;        // #shared
-    long weak_count_;       // #weak + (#shared != 0)
-
-public:
-
-    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
+  public:
+    sp_counted_base() : use_count_(1), weak_count_(1)
     {
     }
 
@@ -123,22 +121,22 @@ public:
         delete this;
     }
 
-    virtual void * get_deleter( sp_typeinfo const & ti ) = 0;
-    virtual void * get_untyped_deleter() = 0;
+    virtual void *get_deleter(sp_typeinfo const &ti) = 0;
+    virtual void *get_untyped_deleter() = 0;
 
     void add_ref_copy()
     {
-        atomic_increment( &use_count_ );
+        atomic_increment(&use_count_);
     }
 
     bool add_ref_lock() // true on success
     {
-        return atomic_conditional_increment( &use_count_ ) != 0;
+        return atomic_conditional_increment(&use_count_) != 0;
     }
 
     void release() // nothrow
     {
-        if( atomic_decrement( &use_count_ ) == 0 )
+        if (atomic_decrement(&use_count_) == 0)
         {
             dispose();
             weak_release();
@@ -147,12 +145,12 @@ public:
 
     void weak_add_ref() // nothrow
     {
-        atomic_increment( &weak_count_ );
+        atomic_increment(&weak_count_);
     }
 
     void weak_release() // nothrow
     {
-        if( atomic_decrement( &weak_count_ ) == 0 )
+        if (atomic_decrement(&weak_count_) == 0)
         {
             destroy();
         }
@@ -160,7 +158,7 @@ public:
 
     long use_count() const // nothrow
     {
-        return static_cast<long const volatile &>( use_count_ );
+        return static_cast<long const volatile &>(use_count_);
     }
 };
 
@@ -168,4 +166,4 @@ public:
 
 } // namespace boost
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_CW_PPC_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_CW_PPC_HPP_INCLUDED

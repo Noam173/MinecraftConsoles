@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //  Copyright (c) 2001, 2002, 2003 Peter Dimov and Multi Media Ltd.
@@ -28,57 +28,73 @@
 #include <boost/interprocess/detail/atomic.hpp>
 #include <typeinfo>
 
-namespace boost {
+namespace boost
+{
 
-namespace interprocess {
+namespace interprocess
+{
 
-namespace ipcdetail {
+namespace ipcdetail
+{
 
 class sp_counted_base
 {
-private:
+  private:
+    sp_counted_base(sp_counted_base const &);
+    sp_counted_base &operator=(sp_counted_base const &);
 
-    sp_counted_base( sp_counted_base const & );
-    sp_counted_base & operator= ( sp_counted_base const & );
+    boost::uint32_t use_count_;  // #shared
+    boost::uint32_t weak_count_; // #weak + (#shared != 0)
 
-    boost::uint32_t use_count_;        // #shared
-    boost::uint32_t weak_count_;       // #weak + (#shared != 0)
-
-public:
-
-    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
-    {}
+  public:
+    sp_counted_base() : use_count_(1), weak_count_(1)
+    {
+    }
 
     ~sp_counted_base() // nothrow
-    {}
+    {
+    }
 
     void add_ref_copy()
     {
-        ipcdetail::atomic_inc32( &use_count_ );
+        ipcdetail::atomic_inc32(&use_count_);
     }
 
     bool add_ref_lock() // true on success
     {
-        for( ;; )
+        for (;;)
         {
-            boost::uint32_t tmp = static_cast< boost::uint32_t const volatile& >( use_count_ );
-            if( tmp == 0 ) return false;
-            if( ipcdetail::atomic_cas32( &use_count_, tmp + 1, tmp ) == tmp )
-               return true;
+            boost::uint32_t tmp = static_cast<boost::uint32_t const volatile &>(use_count_);
+            if (tmp == 0)
+            {
+                return false;
+            }
+            if (ipcdetail::atomic_cas32(&use_count_, tmp + 1, tmp) == tmp)
+            {
+                return true;
+            }
         }
     }
 
-   bool ref_release() // nothrow
-   { return 1 == ipcdetail::atomic_dec32( &use_count_ );  }
+    bool ref_release() // nothrow
+    {
+        return 1 == ipcdetail::atomic_dec32(&use_count_);
+    }
 
-   void weak_add_ref() // nothrow
-   { ipcdetail::atomic_inc32( &weak_count_ ); }
+    void weak_add_ref() // nothrow
+    {
+        ipcdetail::atomic_inc32(&weak_count_);
+    }
 
-   bool weak_release() // nothrow
-   { return 1 == ipcdetail::atomic_dec32( &weak_count_ ); }
+    bool weak_release() // nothrow
+    {
+        return 1 == ipcdetail::atomic_dec32(&weak_count_);
+    }
 
-   long use_count() const // nothrow
-   { return (long)static_cast<boost::uint32_t const volatile &>( use_count_ ); }
+    long use_count() const // nothrow
+    {
+        return (long)static_cast<boost::uint32_t const volatile &>(use_count_);
+    }
 };
 
 } // namespace ipcdetail
@@ -89,4 +105,4 @@ public:
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif  // #ifndef BOOST_INTERPROCESS_DETAIL_SP_COUNTED_BASE_ATOMIC_HPP_INCLUDED
+#endif // #ifndef BOOST_INTERPROCESS_DETAIL_SP_COUNTED_BASE_ATOMIC_HPP_INCLUDED

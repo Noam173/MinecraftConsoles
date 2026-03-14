@@ -8,38 +8,41 @@
 #if !defined(FUSION_CONVERT_IMPL_20061213_2207)
 #define FUSION_CONVERT_IMPL_20061213_2207
 
-#include <boost/fusion/container/deque/detail/as_deque.hpp>
 #include <boost/fusion/container/deque/deque.hpp>
+#include <boost/fusion/container/deque/detail/as_deque.hpp>
 #include <boost/fusion/sequence/intrinsic/begin.hpp>
 #include <boost/fusion/sequence/intrinsic/size.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct deque_tag;
+namespace fusion
+{
+struct deque_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct convert_impl;
+
+template <>
+struct convert_impl<deque_tag>
+{
+    template <typename Sequence>
+    struct apply
     {
-        template <typename T>
-        struct convert_impl;
-
-        template <>
-        struct convert_impl<deque_tag>
-        {
-            template <typename Sequence>
-            struct apply
-            {
-                typedef detail::as_deque<result_of::size<Sequence>::value> gen;
-                typedef typename gen::
-                    template apply<typename result_of::begin<Sequence>::type>::type
+        typedef detail::as_deque<result_of::size<Sequence>::value> gen;
+        typedef typename gen::
+            template apply<typename result_of::begin<Sequence>::type>::type
                 type;
 
-                static type call(Sequence& seq)
-                {
-                    return gen::call(fusion::begin(seq));
-                }
-            };
-        };
-    }
-}}
+        static type call(Sequence &seq)
+        {
+            return gen::call(fusion::begin(seq));
+        }
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

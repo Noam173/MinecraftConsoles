@@ -21,40 +21,42 @@
 
 namespace boost
 {
-  namespace detail
-  {
+namespace detail
+{
 
-#if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
-    ! defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
+#if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
+    !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
 
-    // make_tuple_indices
+// make_tuple_indices
 
-    template <std::size_t...> struct tuple_indices
-    {};
+template <std::size_t...>
+struct tuple_indices
+{
+};
 
-    template <std::size_t Sp, class IntTuple, std::size_t Ep>
-    struct make_indices_imp;
+template <std::size_t Sp, class IntTuple, std::size_t Ep>
+struct make_indices_imp;
 
-    template <std::size_t Sp, std::size_t ...Indices, std::size_t Ep>
-    struct make_indices_imp<Sp, tuple_indices<Indices...>, Ep>
-    {
-      typedef typename make_indices_imp<Sp+1, tuple_indices<Indices..., Sp>, Ep>::type type;
-    };
+template <std::size_t Sp, std::size_t... Indices, std::size_t Ep>
+struct make_indices_imp<Sp, tuple_indices<Indices...>, Ep>
+{
+    typedef typename make_indices_imp<Sp + 1, tuple_indices<Indices..., Sp>, Ep>::type type;
+};
 
-    template <std::size_t Ep, std::size_t ...Indices>
-    struct make_indices_imp<Ep, tuple_indices<Indices...>, Ep>
-    {
-      typedef tuple_indices<Indices...> type;
-    };
+template <std::size_t Ep, std::size_t... Indices>
+struct make_indices_imp<Ep, tuple_indices<Indices...>, Ep>
+{
+    typedef tuple_indices<Indices...> type;
+};
 
-    template <std::size_t Ep, std::size_t Sp = 0>
-    struct make_tuple_indices
-    {
-      BOOST_STATIC_ASSERT_MSG(Sp <= Ep, "make_tuple_indices input error");
-      typedef typename make_indices_imp<Sp, tuple_indices<>, Ep>::type type;
-    };
+template <std::size_t Ep, std::size_t Sp = 0>
+struct make_tuple_indices
+{
+    BOOST_STATIC_ASSERT_MSG(Sp <= Ep, "make_tuple_indices input error");
+    typedef typename make_indices_imp<Sp, tuple_indices<>, Ep>::type type;
+};
 #endif
-  }
-}
+} // namespace detail
+} // namespace boost
 
 #endif // header

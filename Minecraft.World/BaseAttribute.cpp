@@ -4,28 +4,28 @@
 
 BaseAttribute::BaseAttribute(eATTRIBUTE_ID id, double defaultValue)
 {
-	this->id = id;
-	this->defaultValue = defaultValue;
-	syncable = false;
+    this->id = id;
+    this->defaultValue = defaultValue;
+    syncable = false;
 }
 
 eATTRIBUTE_ID BaseAttribute::getId()
 {
-	return id;
+    return id;
 }
 
 double BaseAttribute::getDefaultValue()
 {
-	return defaultValue;
+    return defaultValue;
 }
 
 bool BaseAttribute::isClientSyncable()
 {
-	return syncable;
+    return syncable;
 }
 
 BaseAttribute *BaseAttribute::setSyncable(bool syncable)
 {
-	this->syncable = syncable;
-	return this;
+    this->syncable = syncable;
+    return this;
 }

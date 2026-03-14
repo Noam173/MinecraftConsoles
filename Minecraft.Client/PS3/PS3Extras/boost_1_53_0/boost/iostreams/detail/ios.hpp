@@ -9,58 +9,72 @@
 #define BOOST_IOSTREAMS_DETAIL_IOS_HPP_INCLUDED
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
-#endif              
-                 
+#pragma once
+#endif
+
 #include <boost/config.hpp> // BOOST_MSVC.
 #include <boost/detail/workaround.hpp>
 #include <boost/iostreams/detail/config/wide_streams.hpp>
 #ifndef BOOST_IOSTREAMS_NO_STREAM_TEMPLATES
-# if !BOOST_WORKAROUND(__MWERKS__, <= 0x3003)
-#  include <ios>
-# else
-#  include <istream>
-#  include <ostream>
-# endif
-#else 
-# include <exception>
-# include <iosfwd>
-#endif 
+#if !BOOST_WORKAROUND(__MWERKS__, <= 0x3003)
+#include <ios>
+#else
+#include <istream>
+#include <ostream>
+#endif
+#else
+#include <exception>
+#include <iosfwd>
+#endif
 
-namespace boost { namespace iostreams { namespace detail {
+namespace boost
+{
+namespace iostreams
+{
+namespace detail
+{
 
 #ifndef BOOST_IOSTREAMS_NO_STREAM_TEMPLATES //--------------------------------//
-# define BOOST_IOSTREAMS_BASIC_IOS(ch, tr)  std::basic_ios< ch, tr >
-# if !BOOST_WORKAROUND(__MWERKS__, <= 0x3003) && \
-     !BOOST_WORKAROUND(__BORLANDC__, < 0x600) && \
-     !BOOST_WORKAROUND(BOOST_MSVC, < 1300) \
-     /**/
+#define BOOST_IOSTREAMS_BASIC_IOS(ch, tr) std::basic_ios<ch, tr>
+#if !BOOST_WORKAROUND(__MWERKS__, <= 0x3003) && \
+    !BOOST_WORKAROUND(__BORLANDC__, < 0x600) && \
+    !BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+/**/
 
-#define BOOST_IOS                std::ios
-#define BOOST_IOSTREAMS_FAILURE  std::ios::failure
+#define BOOST_IOS std::ios
+#define BOOST_IOSTREAMS_FAILURE std::ios::failure
 
-# else
+#else
 
-#define BOOST_IOS                std::ios_base
-#define BOOST_IOSTREAMS_FAILURE  std::ios_base::failure
+#define BOOST_IOS std::ios_base
+#define BOOST_IOSTREAMS_FAILURE std::ios_base::failure
 
-# endif
+#endif
 #else // #ifndef BOOST_IOSTREAMS_NO_STREAM_TEMPLATES //-----------------------//
 
-#define BOOST_IOS                          std::ios
-#define BOOST_IOSTREAMS_BASIC_IOS(ch, tr)  std::ios
-#define BOOST_IOSTREAMS_FAILURE            boost::iostreams::detail::failure
+#define BOOST_IOS std::ios
+#define BOOST_IOSTREAMS_BASIC_IOS(ch, tr) std::ios
+#define BOOST_IOSTREAMS_FAILURE boost::iostreams::detail::failure
 
-class failure : std::exception {    
-public:
-    explicit failure(const std::string& what_arg) : what_(what_arg) { }
-    const char* what() const { return what_.c_str(); }
-private:
+class failure : std::exception
+{
+  public:
+    explicit failure(const std::string &what_arg) : what_(what_arg)
+    {
+    }
+    const char *what() const
+    {
+        return what_.c_str();
+    }
+
+  private:
     std::string what_;
 };
 
 #endif // #ifndef BOOST_IOSTREAMS_NO_STREAM_TEMPLATES //----------------------//
 
-} } } // End namespace failure, iostreams, boost.
+} // namespace detail
+} // namespace iostreams
+} // namespace boost
 
 #endif // #ifndef BOOST_IOSTREAMS_DETAIL_IOS_HPP_INCLUDED

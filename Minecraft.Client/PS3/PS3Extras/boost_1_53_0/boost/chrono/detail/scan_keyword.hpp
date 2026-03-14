@@ -20,18 +20,24 @@
 #include <boost/chrono/config.hpp>
 
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
-#include <ios>
-#include <exception>
-#include <stdlib.h>
 #include <boost/throw_exception.hpp>
+#include <exception>
+#include <ios>
+#include <stdlib.h>
 
-namespace boost {
-    using interprocess::unique_ptr;
+namespace boost
+{
+using interprocess::unique_ptr;
 
-namespace chrono {
-namespace chrono_detail {
+namespace chrono
+{
+namespace chrono_detail
+{
 
-inline void free_aux(void* ptr) { free(ptr); }
+inline void free_aux(void *ptr)
+{
+    free(ptr);
+}
 
 // scan_keyword
 // Scans [b, e) until a match is found in the basic_strings range
@@ -53,10 +59,9 @@ inline void free_aux(void* ptr) { free(ptr); }
 
 template <class InputIterator, class ForwardIterator>
 ForwardIterator
-scan_keyword(InputIterator& b, InputIterator e,
-               ForwardIterator kb, ForwardIterator ke,
-               std::ios_base::iostate& err
-               )
+scan_keyword(InputIterator &b, InputIterator e,
+             ForwardIterator kb, ForwardIterator ke,
+             std::ios_base::iostate &err)
 {
     typedef typename std::iterator_traits<InputIterator>::value_type CharT;
     size_t nkw = std::distance(kb, ke);
@@ -64,25 +69,29 @@ scan_keyword(InputIterator& b, InputIterator e,
     const unsigned char might_match = '\1';
     const unsigned char does_match = '\2';
     unsigned char statbuf[100];
-    unsigned char* status = statbuf;
+    unsigned char *status = statbuf;
     //  Change free by free_aux to avoid
     // Error: Could not find a match for boost::interprocess::unique_ptr<unsigned char, void(*)(void*)>::unique_ptr(int, extern "C" void(void*))
-    unique_ptr<unsigned char, void(*)(void*)> stat_hold(0, free_aux);
+    unique_ptr<unsigned char, void (*)(void *)> stat_hold(0, free_aux);
     if (nkw > sizeof(statbuf))
     {
-        status = (unsigned char*)malloc(nkw);
+        status = (unsigned char *)malloc(nkw);
         if (status == 0)
-          throw_exception(std::bad_alloc());
+        {
+            throw_exception(std::bad_alloc());
+        }
         stat_hold.reset(status);
     }
-    size_t n_might_match = nkw;  // At this point, any keyword might match
-    size_t n_does_match = 0;       // but none of them definitely do
+    size_t n_might_match = nkw; // At this point, any keyword might match
+    size_t n_does_match = 0;    // but none of them definitely do
     // Initialize all statuses to might_match, except for "" keywords are does_match
-    unsigned char* st = status;
+    unsigned char *st = status;
     for (ForwardIterator ky = kb; ky != ke; ++ky, ++st)
     {
         if (!ky->empty())
+        {
             *st = might_match;
+        }
         else
         {
             *st = does_match;
@@ -111,7 +120,7 @@ scan_keyword(InputIterator& b, InputIterator e,
                 if (c == kc)
                 {
                     consume = true;
-                    if (ky->size() == indx+1)
+                    if (ky->size() == indx + 1)
                     {
                         *st = does_match;
                         --n_might_match;
@@ -137,7 +146,7 @@ scan_keyword(InputIterator& b, InputIterator e,
                 st = status;
                 for (ForwardIterator ky = kb; ky != ke; ++ky, ++st)
                 {
-                    if (*st == does_match && ky->size() != indx+1)
+                    if (*st == does_match && ky->size() != indx + 1)
                     {
                         *st = doesnt_match;
                         --n_does_match;
@@ -148,16 +157,24 @@ scan_keyword(InputIterator& b, InputIterator e,
     }
     // We've exited the loop because we hit eof and/or we have no more "might matches".
     if (b == e)
+    {
         err |= std::ios_base::eofbit;
+    }
     // Return the first matching result
     for (st = status; kb != ke; ++kb, ++st)
+    {
         if (*st == does_match)
+        {
             break;
+        }
+    }
     if (kb == ke)
+    {
         err |= std::ios_base::failbit;
+    }
     return kb;
 }
-}
-}
-}
+} // namespace chrono_detail
+} // namespace chrono
+} // namespace boost
 #endif // BOOST_CHRONO_DETAIL_SCAN_KEYWORD_HPP

@@ -14,11 +14,10 @@
 #include <boost/chrono/config.hpp>
 #include <boost/version.hpp>
 #if defined(BOOST_CHRONO_HAS_THREAD_CLOCK)
+#include <boost/chrono/detail/system.hpp>
 #include <boost/chrono/thread_clock.hpp>
-#include <boost/throw_exception.hpp>
 #include <boost/system/system_error.hpp>
 #include <boost/throw_exception.hpp>
-#include <boost/chrono/detail/system.hpp>
 
 //----------------------------------------------------------------------------//
 //                                Windows                                     //
@@ -38,7 +37,7 @@
 #elif defined(BOOST_CHRONO_POSIX_API)
 #include <boost/chrono/detail/inlined/posix/thread_clock.hpp>
 
-#endif  // POSIX
+#endif // POSIX
 
 #endif
 #endif

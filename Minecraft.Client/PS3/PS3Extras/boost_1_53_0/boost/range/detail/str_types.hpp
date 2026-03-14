@@ -11,28 +11,28 @@
 #ifndef BOOST_RANGE_DETAIL_STR_TYPES_HPP
 #define BOOST_RANGE_DETAIL_STR_TYPES_HPP
 
-#include <boost/range/size_type.hpp>
 #include <boost/range/iterator.hpp>
+#include <boost/range/size_type.hpp>
 
 namespace boost
 {
-    template< class T >
-    struct range_mutable_iterator<T*>
-    {
-        typedef T* type;
-    };
+template <class T>
+struct range_mutable_iterator<T *>
+{
+    typedef T *type;
+};
 
-    template< class T >
-    struct range_const_iterator<T*>
-    {
-        typedef const T* type;
-    };
+template <class T>
+struct range_const_iterator<T *>
+{
+    typedef const T *type;
+};
 
-    template< class T >
-    struct range_size<T*>
-    {
-       typedef std::size_t type;
-    };    
-}
+template <class T>
+struct range_size<T *>
+{
+    typedef std::size_t type;
+};
+} // namespace boost
 
 #endif

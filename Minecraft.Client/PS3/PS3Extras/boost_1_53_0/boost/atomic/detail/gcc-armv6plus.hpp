@@ -9,9 +9,9 @@
 //  Copyright (c) 2009 Phil Endecott
 //  ARM Code by Phil Endecott, based on other architectures.
 
-#include <cstddef>
-#include <boost/cstdint.hpp>
 #include <boost/atomic/detail/config.hpp>
+#include <boost/cstdint.hpp>
+#include <cstddef>
 
 #ifdef BOOST_ATOMIC_HAS_PRAGMA_ONCE
 #pragma once
@@ -42,9 +42,12 @@
 // A memory barrier is effected using a "co-processor 15" instruction,
 // though a separate assembler mnemonic is available for it in v7.
 
-namespace boost {
-namespace atomics {
-namespace detail {
+namespace boost
+{
+namespace atomics
+{
+namespace detail
+{
 
 // "Thumb 1" is a subset of the ARM instruction set that uses a 16-bit encoding.  It
 // doesn't include all instructions and in particular it doesn't include the co-processor
@@ -68,8 +71,16 @@ namespace detail {
 
 #if defined(__thumb__) && !defined(__ARM_ARCH_7A__)
 // FIXME also other v7 variants.
-#define BOOST_ATOMIC_ARM_ASM_START(TMPREG) "adr " #TMPREG ", 1f\n" "bx " #TMPREG "\n" ".arm\n" ".align 4\n" "1: "
-#define BOOST_ATOMIC_ARM_ASM_END(TMPREG)   "adr " #TMPREG ", 1f + 1\n" "bx " #TMPREG "\n" ".thumb\n" ".align 2\n" "1: "
+#define BOOST_ATOMIC_ARM_ASM_START(TMPREG) "adr " #TMPREG ", 1f\n" \
+                                           "bx " #TMPREG "\n"      \
+                                           ".arm\n"                \
+                                           ".align 4\n"            \
+                                           "1: "
+#define BOOST_ATOMIC_ARM_ASM_END(TMPREG) "adr " #TMPREG ", 1f + 1\n" \
+                                         "bx " #TMPREG "\n"          \
+                                         ".thumb\n"                  \
+                                         ".align 2\n"                \
+                                         "1: "
 
 #else
 // The tmpreg is wasted in this case, which is non-optimal.
@@ -88,36 +99,37 @@ inline void
 arm_barrier(void)
 {
     int brtmp;
-    __asm__ __volatile__ (
-        BOOST_ATOMIC_ARM_ASM_START(%0)
-        BOOST_ATOMIC_ARM_DMB
-        BOOST_ATOMIC_ARM_ASM_END(%0)
-        : "=&l" (brtmp) :: "memory"
-    );
+    __asm__ __volatile__(
+        BOOST_ATOMIC_ARM_ASM_START(% 0)
+            BOOST_ATOMIC_ARM_DMB
+                BOOST_ATOMIC_ARM_ASM_END(% 0)
+        : "=&l"(brtmp)::"memory");
 }
 
 inline void
 platform_fence_before(memory_order order)
 {
-    switch(order) {
-        case memory_order_release:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            arm_barrier();
-        case memory_order_consume:
-        default:;
+    switch (order)
+    {
+    case memory_order_release:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        arm_barrier();
+    case memory_order_consume:
+    default:;
     }
 }
 
 inline void
 platform_fence_after(memory_order order)
 {
-    switch(order) {
-        case memory_order_acquire:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            arm_barrier();
-        default:;
+    switch (order)
+    {
+    case memory_order_acquire:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        arm_barrier();
+    default:;
     }
 }
 
@@ -131,7 +143,9 @@ inline void
 platform_fence_after_store(memory_order order)
 {
     if (order == memory_order_seq_cst)
+    {
         arm_barrier();
+    }
 }
 
 inline void
@@ -140,47 +154,46 @@ platform_fence_after_load(memory_order order)
     platform_fence_after(order);
 }
 
-template<typename T>
+template <typename T>
 inline bool
-platform_cmpxchg32(T & expected, T desired, volatile T * ptr)
+platform_cmpxchg32(T &expected, T desired, volatile T *ptr)
 {
     int success;
     int tmp;
-    __asm__ (
-        BOOST_ATOMIC_ARM_ASM_START(%2)
-        "mov     %1, #0\n"        // success = 0
-        "ldrex   %0, %3\n"      // expected' = *(&i)
-        "teq     %0, %4\n"        // flags = expected'==expected
-        "ittt    eq\n"
-        "strexeq %2, %5, %3\n"  // if (flags.equal) *(&i) = desired, tmp = !OK
-        "teqeq   %2, #0\n"        // if (flags.equal) flags = tmp==0
-        "moveq   %1, #1\n"        // if (flags.equal) success = 1
-        BOOST_ATOMIC_ARM_ASM_END(%2)
-            : "=&r" (expected),  // %0
-            "=&r" (success),   // %1
-            "=&l" (tmp),       // %2
-            "+Q" (*ptr)          // %3
-            : "r" (expected),    // %4
-            "r" (desired) // %5
-            : "cc"
-        );
+    __asm__(
+        BOOST_ATOMIC_ARM_ASM_START(% 2) "mov     %1, #0\n" // success = 0
+                                        "ldrex   %0, %3\n" // expected' = *(&i)
+                                        "teq     %0, %4\n" // flags = expected'==expected
+                                        "ittt    eq\n"
+                                        "strexeq %2, %5, %3\n" // if (flags.equal) *(&i) = desired, tmp = !OK
+                                        "teqeq   %2, #0\n"     // if (flags.equal) flags = tmp==0
+                                        "moveq   %1, #1\n"     // if (flags.equal) success = 1
+        BOOST_ATOMIC_ARM_ASM_END(% 2)
+        : "=&r"(expected), // %0
+          "=&r"(success),  // %1
+          "=&l"(tmp),      // %2
+          "+Q"(*ptr)       // %3
+        : "r"(expected),   // %4
+          "r"(desired)     // %5
+        : "cc");
     return success;
 }
 
-}
-}
+} // namespace detail
+} // namespace atomics
 
 #define BOOST_ATOMIC_THREAD_FENCE 2
 inline void
 atomic_thread_fence(memory_order order)
 {
-    switch(order) {
-        case memory_order_acquire:
-        case memory_order_release:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            atomics::detail::arm_barrier();
-        default:;
+    switch (order)
+    {
+    case memory_order_acquire:
+    case memory_order_release:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        atomics::detail::arm_barrier();
+    default:;
     }
 }
 
@@ -188,16 +201,20 @@ atomic_thread_fence(memory_order order)
 inline void
 atomic_signal_fence(memory_order)
 {
-    __asm__ __volatile__ ("" ::: "memory");
+    __asm__ __volatile__("" ::: "memory");
 }
 
-class atomic_flag {
-private:
-    atomic_flag(const atomic_flag &) /* = delete */ ;
-    atomic_flag & operator=(const atomic_flag &) /* = delete */ ;
+class atomic_flag
+{
+  private:
+    atomic_flag(const atomic_flag &) /* = delete */;
+    atomic_flag &operator=(const atomic_flag &) /* = delete */;
     uint32_t v_;
-public:
-    atomic_flag(void) : v_(false) {}
+
+  public:
+    atomic_flag(void) : v_(false)
+    {
+    }
 
     void
     clear(memory_order order = memory_order_seq_cst) volatile
@@ -212,9 +229,12 @@ public:
     {
         atomics::detail::platform_fence_before(order);
         uint32_t expected = v_;
-        do {
+        do
+        {
             if (expected == 1)
+            {
                 break;
+            }
         } while (!atomics::detail::platform_cmpxchg32(expected, (uint32_t)1, &v_));
         atomics::detail::platform_fence_after(order);
         return expected;
@@ -222,7 +242,7 @@ public:
 };
 #define BOOST_ATOMIC_FLAG_LOCK_FREE 2
 
-}
+} // namespace boost
 
 #undef BOOST_ATOMIC_ARM_ASM_START
 #undef BOOST_ATOMIC_ARM_ASM_END
@@ -247,4 +267,3 @@ public:
 #endif /* !defined(BOOST_ATOMIC_FORCE_FALLBACK) */
 
 #endif
-

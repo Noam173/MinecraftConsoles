@@ -9,7 +9,6 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_TURN_INFO_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_TURN_INFO_HPP
 
-
 #include <boost/assert.hpp>
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/strategies/intersection.hpp>
@@ -19,27 +18,29 @@
 
 #include <boost/geometry/geometries/segment.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-#if ! defined(BOOST_GEOMETRY_OVERLAY_NO_THROW)
+#if !defined(BOOST_GEOMETRY_OVERLAY_NO_THROW)
 class turn_info_exception : public geometry::exception
 {
     std::string message;
-public:
 
+  public:
     // NOTE: "char" will be replaced by enum in future version
-    inline turn_info_exception(char const method) 
+    inline turn_info_exception(char const method)
     {
         message = "Boost.Geometry Turn exception: ";
         message += method;
     }
 
     virtual ~turn_info_exception() throw()
-    {}
+    {
+    }
 
-    virtual char const* what() const throw()
+    virtual char const *what() const throw()
     {
         return message.c_str();
     }
@@ -47,9 +48,10 @@ public:
 #endif
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
 {
-
+namespace overlay
+{
 
 struct base_turn_handler
 {
@@ -69,7 +71,7 @@ struct base_turn_handler
 
     // Both continue
     template <typename TurnInfo>
-    static inline void both(TurnInfo& ti, operation_type const op)
+    static inline void both(TurnInfo &ti, operation_type const op)
     {
         ti.operations[0].operation = op;
         ti.operations[1].operation = op;
@@ -77,45 +79,42 @@ struct base_turn_handler
 
     // If condition, first union/second intersection, else vice versa
     template <typename TurnInfo>
-    static inline void ui_else_iu(bool condition, TurnInfo& ti)
+    static inline void ui_else_iu(bool condition, TurnInfo &ti)
     {
         ti.operations[0].operation = condition
-                    ? operation_union : operation_intersection;
+                                         ? operation_union
+                                         : operation_intersection;
         ti.operations[1].operation = condition
-                    ? operation_intersection : operation_union;
+                                         ? operation_intersection
+                                         : operation_union;
     }
 
     // If condition, both union, else both intersection
     template <typename TurnInfo>
-    static inline void uu_else_ii(bool condition, TurnInfo& ti)
+    static inline void uu_else_ii(bool condition, TurnInfo &ti)
     {
         both(ti, condition ? operation_union : operation_intersection);
     }
 };
 
-
-template
-<
+template <
     typename TurnInfo,
-    typename SideStrategy
->
+    typename SideStrategy>
 struct touch_interior : public base_turn_handler
 {
     // Index: 0, P is the interior, Q is touching and vice versa
-    template
-    <
+    template <
         int Index,
         typename Point1,
         typename Point2,
         typename IntersectionInfo,
-        typename DirInfo
-    >
+        typename DirInfo>
     static inline void apply(
-                Point1 const& pi, Point1 const& pj, Point1 const& ,
-                Point2 const& qi, Point2 const& qj, Point2 const& qk,
-                TurnInfo& ti,
-                IntersectionInfo const& intersection_info,
-                DirInfo const& dir_info)
+        Point1 const &pi, Point1 const &pj, Point1 const &,
+        Point2 const &qi, Point2 const &qj, Point2 const &qk,
+        TurnInfo &ti,
+        IntersectionInfo const &intersection_info,
+        DirInfo const &dir_info)
     {
         ti.method = method_touch_interior;
         geometry::convert(intersection_info.intersections[0], ti.point);
@@ -187,8 +186,8 @@ struct touch_interior : public base_turn_handler
                 // If Q turns left, P continues for intersection
                 // If Q turns right, P continues for union
                 ti.operations[Index].operation = side_qk_q == 1
-                    ? operation_intersection
-                    : operation_union;
+                                                     ? operation_intersection
+                                                     : operation_union;
                 ti.operations[1 - Index].operation = operation_blocked;
             }
         }
@@ -200,17 +199,14 @@ struct touch_interior : public base_turn_handler
     }
 };
 
-
-template
-<
+template <
     typename TurnInfo,
-    typename SideStrategy
->
+    typename SideStrategy>
 struct touch : public base_turn_handler
 {
     static inline bool between(int side1, int side2, int turn)
     {
-        return side1 == side2 && ! opposite(side1, turn);
+        return side1 == side2 && !opposite(side1, turn);
     }
 
     /*static inline void block_second(bool block, TurnInfo& ti)
@@ -221,20 +217,17 @@ struct touch : public base_turn_handler
         }
     }*/
 
-
-    template
-    <
+    template <
         typename Point1,
         typename Point2,
         typename IntersectionInfo,
-        typename DirInfo
-    >
+        typename DirInfo>
     static inline void apply(
-                Point1 const& pi, Point1 const& pj, Point1 const& pk,
-                Point2 const& qi, Point2 const& qj, Point2 const& qk,
-                TurnInfo& ti,
-                IntersectionInfo const& intersection_info,
-                DirInfo const& dir_info)
+        Point1 const &pi, Point1 const &pj, Point1 const &pk,
+        Point2 const &qi, Point2 const &qj, Point2 const &qk,
+        TurnInfo &ti,
+        IntersectionInfo const &intersection_info,
+        DirInfo const &dir_info)
     {
         ti.method = method_touch;
         geometry::convert(intersection_info.intersections[0], ti.point);
@@ -242,42 +235,34 @@ struct touch : public base_turn_handler
         int const side_qi_p1 = dir_info.sides.template get<1, 0>();
         int const side_qk_p1 = SideStrategy::apply(pi, pj, qk);
 
-
         // If Qi and Qk are both at same side of Pi-Pj,
         // or collinear (so: not opposite sides)
-        if (! opposite(side_qi_p1, side_qk_p1))
+        if (!opposite(side_qi_p1, side_qk_p1))
         {
             int const side_pk_q2 = SideStrategy::apply(qj, qk, pk);
-            int const side_pk_p  = SideStrategy::apply(pi, pj, pk);
-            int const side_qk_q  = SideStrategy::apply(qi, qj, qk);
+            int const side_pk_p = SideStrategy::apply(pi, pj, pk);
+            int const side_qk_q = SideStrategy::apply(qi, qj, qk);
 
             bool const both_continue = side_pk_p == 0 && side_qk_q == 0;
             bool const robustness_issue_in_continue = both_continue && side_pk_q2 != 0;
 
             bool const q_turns_left = side_qk_q == 1;
-            bool const block_q = side_qk_p1 == 0
-                        && ! same(side_qi_p1, side_qk_q)
-                        && ! robustness_issue_in_continue
-                        ;
+            bool const block_q = side_qk_p1 == 0 && !same(side_qi_p1, side_qk_q) && !robustness_issue_in_continue;
 
             // If Pk at same side as Qi/Qk
             // (the "or" is for collinear case)
             // or Q is fully collinear && P turns not to left
-            if (side_pk_p == side_qi_p1
-                || side_pk_p == side_qk_p1
-                || (side_qi_p1 == 0 && side_qk_p1 == 0 && side_pk_p != -1)
-                )
+            if (side_pk_p == side_qi_p1 || side_pk_p == side_qk_p1 || (side_qi_p1 == 0 && side_qk_p1 == 0 && side_pk_p != -1))
             {
                 // Collinear -> lines join, continue
                 // (#BRL2)
-                if (side_pk_q2 == 0 && ! block_q)
+                if (side_pk_q2 == 0 && !block_q)
                 {
                     both(ti, operation_continue);
                     return;
                 }
 
                 int const side_pk_q1 = SideStrategy::apply(qi, qj, pk);
-
 
                 // Collinear opposite case -> block P
                 // (#BRL4, #BLR8)
@@ -286,9 +271,9 @@ struct touch : public base_turn_handler
                     ti.operations[0].operation = operation_blocked;
                     // Q turns right -> union (both independent),
                     // Q turns left -> intersection
-                    ti.operations[1].operation = block_q ? operation_blocked
-                        : q_turns_left ? operation_intersection
-                        : operation_union;
+                    ti.operations[1].operation = block_q        ? operation_blocked
+                                                 : q_turns_left ? operation_intersection
+                                                                : operation_union;
                     return;
                 }
 
@@ -301,7 +286,7 @@ struct touch : public base_turn_handler
                     {
                         ti.operations[1].operation = operation_blocked;
                     }
-                    //block_second(block_q, ti);
+                    // block_second(block_q, ti);
                     return;
                 }
 
@@ -309,7 +294,7 @@ struct touch : public base_turn_handler
                 // (#BRL1)
                 if (side_pk_q2 == -side_qk_q)
                 {
-                    ui_else_iu(! q_turns_left, ti);
+                    ui_else_iu(!q_turns_left, ti);
                     return;
                 }
 
@@ -317,12 +302,12 @@ struct touch : public base_turn_handler
                 // (#BRL5, #BRL9)
                 if (side_pk_q1 == -side_qk_q)
                 {
-                    uu_else_ii(! q_turns_left, ti);
+                    uu_else_ii(!q_turns_left, ti);
                     if (block_q)
                     {
                         ti.operations[1].operation = operation_blocked;
                     }
-                    //block_second(block_q, ti);
+                    // block_second(block_q, ti);
                     return;
                 }
             }
@@ -333,13 +318,13 @@ struct touch : public base_turn_handler
                 bool const q_turns_left = side_qk_q == 1;
 
                 ti.operations[0].operation = q_turns_left
-                            ? operation_intersection
-                            : operation_union;
+                                                 ? operation_intersection
+                                                 : operation_union;
                 ti.operations[1].operation = block_q
-                            ? operation_blocked
-                            : side_qi_p1 == 1 || side_qk_p1 == 1
-                            ? operation_union
-                            : operation_intersection;
+                                                 ? operation_blocked
+                                             : side_qi_p1 == 1 || side_qk_p1 == 1
+                                                 ? operation_union
+                                                 : operation_intersection;
 
                 return;
             }
@@ -347,7 +332,7 @@ struct touch : public base_turn_handler
         else
         {
             // From left to right or from right to left
-            int const side_pk_p  = SideStrategy::apply(pi, pj, pk);
+            int const side_pk_p = SideStrategy::apply(pi, pj, pk);
             bool const right_to_left = side_qk_p1 == 1;
 
             // If p turns into direction of qi (1,2)
@@ -360,7 +345,8 @@ struct touch : public base_turn_handler
                 {
                     ti.operations[0].operation = operation_blocked;
                     ti.operations[1].operation = right_to_left
-                                ? operation_union : operation_intersection;
+                                                     ? operation_union
+                                                     : operation_intersection;
                     return;
                 }
 
@@ -389,7 +375,7 @@ struct touch : public base_turn_handler
                 }
             }
             // otherwise (3)
-            ui_else_iu(! right_to_left, ti);
+            ui_else_iu(!right_to_left, ti);
             return;
         }
 
@@ -397,46 +383,40 @@ struct touch : public base_turn_handler
         // Normally a robustness issue.
         // TODO: more research if still occuring
         std::cout << "Not yet handled" << std::endl
-            << "pi " << get<0>(pi) << " , " << get<1>(pi)
-            << " pj " << get<0>(pj) << " , " << get<1>(pj)
-            << " pk " << get<0>(pk) << " , " << get<1>(pk)
-            << std::endl
-            << "qi " << get<0>(qi) << " , " << get<1>(qi)
-            << " qj " << get<0>(qj) << " , " << get<1>(qj)
-            << " qk " << get<0>(qk) << " , " << get<1>(qk)
-            << std::endl;
+                  << "pi " << get<0>(pi) << " , " << get<1>(pi)
+                  << " pj " << get<0>(pj) << " , " << get<1>(pj)
+                  << " pk " << get<0>(pk) << " , " << get<1>(pk)
+                  << std::endl
+                  << "qi " << get<0>(qi) << " , " << get<1>(qi)
+                  << " qj " << get<0>(qj) << " , " << get<1>(qj)
+                  << " qk " << get<0>(qk) << " , " << get<1>(qk)
+                  << std::endl;
 #endif
-
     }
 };
 
-
-template
-<
+template <
     typename TurnInfo,
-    typename SideStrategy
->
+    typename SideStrategy>
 struct equal : public base_turn_handler
 {
-    template
-    <
+    template <
         typename Point1,
         typename Point2,
         typename IntersectionInfo,
-        typename DirInfo
-    >
+        typename DirInfo>
     static inline void apply(
-                Point1 const& pi, Point1 const& pj, Point1 const& pk,
-                Point2 const& , Point2 const& qj, Point2 const& qk,
-                TurnInfo& ti,
-                IntersectionInfo const& intersection_info,
-                DirInfo const& )
+        Point1 const &pi, Point1 const &pj, Point1 const &pk,
+        Point2 const &, Point2 const &qj, Point2 const &qk,
+        TurnInfo &ti,
+        IntersectionInfo const &intersection_info,
+        DirInfo const &)
     {
         ti.method = method_equal;
         // Copy the SECOND intersection point
         geometry::convert(intersection_info.intersections[1], ti.point);
 
-        int const side_pk_q2  = SideStrategy::apply(qj, qk, pk);
+        int const side_pk_q2 = SideStrategy::apply(qj, qk, pk);
         int const side_pk_p = SideStrategy::apply(pi, pj, pk);
         int const side_qk_p = SideStrategy::apply(pi, pj, qk);
 
@@ -450,9 +430,8 @@ struct equal : public base_turn_handler
             return;
         }
 
-
         // If they turn to same side (not opposite sides)
-        if (! opposite(side_pk_p, side_qk_p))
+        if (!opposite(side_pk_p, side_qk_p))
         {
             int const side_pk_q2 = SideStrategy::apply(qj, qk, pk);
 
@@ -468,51 +447,44 @@ struct equal : public base_turn_handler
     }
 };
 
-
-template
-<
+template <
     typename TurnInfo,
-    typename AssignPolicy
->
+    typename AssignPolicy>
 struct equal_opposite : public base_turn_handler
 {
-    template
-    <
+    template <
         typename Point1,
         typename Point2,
         typename OutputIterator,
         typename IntersectionInfo,
-        typename DirInfo
-    >
-    static inline void apply(Point1 const& pi, Point2 const& qi,
-				/* by value: */ TurnInfo tp,
-                OutputIterator& out,
-                IntersectionInfo const& intersection_info,
-                DirInfo const& dir_info)
+        typename DirInfo>
+    static inline void apply(Point1 const &pi, Point2 const &qi,
+                             /* by value: */ TurnInfo tp,
+                             OutputIterator &out,
+                             IntersectionInfo const &intersection_info,
+                             DirInfo const &dir_info)
     {
         // For equal-opposite segments, normally don't do anything.
-		if (AssignPolicy::include_opposite)
-		{
-			tp.method = method_equal;
-			for (int i = 0; i < 2; i++)
-			{
-				tp.operations[i].operation = operation_opposite;
-			}
-			for (unsigned int i = 0; i < intersection_info.count; i++)
-			{
-				geometry::convert(intersection_info.intersections[i], tp.point);
-				AssignPolicy::apply(tp, pi, qi, intersection_info, dir_info);
-				*out++ = tp;
-			}
-		}
+        if (AssignPolicy::include_opposite)
+        {
+            tp.method = method_equal;
+            for (int i = 0; i < 2; i++)
+            {
+                tp.operations[i].operation = operation_opposite;
+            }
+            for (unsigned int i = 0; i < intersection_info.count; i++)
+            {
+                geometry::convert(intersection_info.intersections[i], tp.point);
+                AssignPolicy::apply(tp, pi, qi, intersection_info, dir_info);
+                *out++ = tp;
+            }
+        }
     }
 };
 
-template
-<
+template <
     typename TurnInfo,
-    typename SideStrategy
->
+    typename SideStrategy>
 struct collinear : public base_turn_handler
 {
     /*
@@ -543,23 +515,21 @@ struct collinear : public base_turn_handler
          ROBUSTNESS: p and q are collinear, so you would expect
          that side qk//p1 == pk//q1. But that is not always the case
          in near-epsilon ranges. Then decision logic is different.
-         If p arrives, q is further, so the angle qk//p1 is (normally) 
+         If p arrives, q is further, so the angle qk//p1 is (normally)
          more precise than pk//p1
 
     */
-    template
-    <
+    template <
         typename Point1,
         typename Point2,
         typename IntersectionInfo,
-        typename DirInfo
-    >
+        typename DirInfo>
     static inline void apply(
-                Point1 const& pi, Point1 const& pj, Point1 const& pk,
-                Point2 const& qi, Point2 const& qj, Point2 const& qk,
-                TurnInfo& ti,
-                IntersectionInfo const& intersection_info,
-                DirInfo const& dir_info)
+        Point1 const &pi, Point1 const &pj, Point1 const &pk,
+        Point2 const &qi, Point2 const &qj, Point2 const &qk,
+        TurnInfo &ti,
+        IntersectionInfo const &intersection_info,
+        DirInfo const &dir_info)
     {
         ti.method = method_collinear;
         geometry::convert(intersection_info.intersections[1], ti.point);
@@ -573,9 +543,8 @@ struct collinear : public base_turn_handler
 
         // If p arrives, use p, else use q
         int const side_p_or_q = arrival == 1
-            ? side_p
-            : side_q
-            ;
+                                    ? side_p
+                                    : side_q;
 
         int const side_pk = SideStrategy::apply(qi, qj, pk);
         int const side_qk = SideStrategy::apply(pi, pj, qk);
@@ -595,7 +564,7 @@ struct collinear : public base_turn_handler
         {
             handle_robustness(ti, arrival, side_p, side_q, side_pk, side_qk);
         }
-        else if(product == 0)
+        else if (product == 0)
         {
             both(ti, operation_continue);
         }
@@ -605,8 +574,8 @@ struct collinear : public base_turn_handler
         }
     }
 
-    static inline void handle_robustness(TurnInfo& ti, int arrival, 
-                    int side_p, int side_q, int side_pk, int side_qk)
+    static inline void handle_robustness(TurnInfo &ti, int arrival,
+                                         int side_p, int side_q, int side_pk, int side_qk)
     {
         // We take the longer one, i.e. if q arrives in p (arrival == -1),
         // then p exceeds q and we should take p for a union...
@@ -625,28 +594,25 @@ struct collinear : public base_turn_handler
             use_p_for_union = true;
         }
 
-        //std::cout << "ROBUSTNESS -> Collinear " 
-        //    << " arr: " << arrival
-        //    << " dir: " << side_p << " " << side_q
-        //    << " rev: " << side_pk << " " << side_qk
-        //    << " cst: " << cside_p << " " << cside_q
-        //    << std::boolalpha << " " << use_p_for_union
-        //    << std::endl;
+        // std::cout << "ROBUSTNESS -> Collinear "
+        //     << " arr: " << arrival
+        //     << " dir: " << side_p << " " << side_q
+        //     << " rev: " << side_pk << " " << side_qk
+        //     << " cst: " << cside_p << " " << cside_q
+        //     << std::boolalpha << " " << use_p_for_union
+        //     << std::endl;
 
         ui_else_iu(use_p_for_union, ti);
     }
-
 };
 
-template
-<
+template <
     typename TurnInfo,
     typename SideStrategy,
-    typename AssignPolicy
->
+    typename AssignPolicy>
 struct collinear_opposite : public base_turn_handler
 {
-private :
+  private:
     /*
         arrival P  arrival Q  pk//p1   qk//q1  case  result2  result
         --------------------------------------------------------------
@@ -671,44 +637,42 @@ private :
          1         -1         -1               CXO3    ux
     */
 
-    template
-    <
+    template <
         int Index,
         typename Point,
-        typename IntersectionInfo
-    >
-    static inline bool set_tp(Point const& ri, Point const& rj, Point const& rk,
-                TurnInfo& tp, IntersectionInfo const& intersection_info)
+        typename IntersectionInfo>
+    static inline bool set_tp(Point const &ri, Point const &rj, Point const &rk,
+                              TurnInfo &tp, IntersectionInfo const &intersection_info)
     {
         int const side_rk_r = SideStrategy::apply(ri, rj, rk);
-		operation_type blocked = operation_blocked;
-        switch(side_rk_r)
+        operation_type blocked = operation_blocked;
+        switch (side_rk_r)
         {
 
-            case 1 :
-                // Turning left on opposite collinear: intersection
-                tp.operations[Index].operation = operation_intersection;
-                break;
-            case -1 :
-                // Turning right on opposite collinear: union
-                tp.operations[Index].operation = operation_union;
-                break;
-            case 0 :
-                // No turn on opposite collinear: block, do not traverse
-                // But this "xx" is usually ignored, it is useless to include
-                // two operations blocked, so the whole point does not need
-                // to be generated.
-                // So return false to indicate nothing is to be done.
-				if (AssignPolicy::include_opposite)
-				{
-					tp.operations[Index].operation = operation_opposite;
-					blocked = operation_opposite;
-				}
-				else
-				{
-					return false;
-				}
-				break;
+        case 1:
+            // Turning left on opposite collinear: intersection
+            tp.operations[Index].operation = operation_intersection;
+            break;
+        case -1:
+            // Turning right on opposite collinear: union
+            tp.operations[Index].operation = operation_union;
+            break;
+        case 0:
+            // No turn on opposite collinear: block, do not traverse
+            // But this "xx" is usually ignored, it is useless to include
+            // two operations blocked, so the whole point does not need
+            // to be generated.
+            // So return false to indicate nothing is to be done.
+            if (AssignPolicy::include_opposite)
+            {
+                tp.operations[Index].operation = operation_opposite;
+                blocked = operation_opposite;
+            }
+            else
+            {
+                return false;
+            }
+            break;
         }
 
         // The other direction is always blocked when collinear opposite
@@ -721,89 +685,78 @@ private :
         return true;
     }
 
-public:
-    template
-    <
+  public:
+    template <
         typename Point1,
         typename Point2,
         typename OutputIterator,
         typename IntersectionInfo,
-        typename DirInfo
-    >
+        typename DirInfo>
     static inline void apply(
-                Point1 const& pi, Point1 const& pj, Point1 const& pk,
-                Point2 const& qi, Point2 const& qj, Point2 const& qk,
+        Point1 const &pi, Point1 const &pj, Point1 const &pk,
+        Point2 const &qi, Point2 const &qj, Point2 const &qk,
 
-                // Opposite collinear can deliver 2 intersection points,
-                TurnInfo const& tp_model,
-                OutputIterator& out,
+        // Opposite collinear can deliver 2 intersection points,
+        TurnInfo const &tp_model,
+        OutputIterator &out,
 
-                IntersectionInfo const& intersection_info,
-                DirInfo const& dir_info)
+        IntersectionInfo const &intersection_info,
+        DirInfo const &dir_info)
     {
         TurnInfo tp = tp_model;
 
         tp.method = method_collinear;
 
         // If P arrives within Q, there is a turn dependent on P
-        if (dir_info.arrival[0] == 1
-            && set_tp<0>(pi, pj, pk, tp, intersection_info))
+        if (dir_info.arrival[0] == 1 && set_tp<0>(pi, pj, pk, tp, intersection_info))
         {
             AssignPolicy::apply(tp, pi, qi, intersection_info, dir_info);
             *out++ = tp;
         }
 
         // If Q arrives within P, there is a turn dependent on Q
-        if (dir_info.arrival[1] == 1
-            && set_tp<1>(qi, qj, qk, tp, intersection_info))
+        if (dir_info.arrival[1] == 1 && set_tp<1>(qi, qj, qk, tp, intersection_info))
         {
             AssignPolicy::apply(tp, pi, qi, intersection_info, dir_info);
             *out++ = tp;
         }
 
-		if (AssignPolicy::include_opposite)
-		{
-	        // Handle cases not yet handled above
-			if ((dir_info.arrival[1] == -1 && dir_info.arrival[0] == 0)
-				|| (dir_info.arrival[0] == -1 && dir_info.arrival[1] == 0))
-			{
-				for (int i = 0; i < 2; i++)
-				{
-					tp.operations[i].operation = operation_opposite;
-				}
-				for (unsigned int i = 0; i < intersection_info.count; i++)
-				{
-					geometry::convert(intersection_info.intersections[i], tp.point);
-					AssignPolicy::apply(tp, pi, qi, intersection_info, dir_info);
-					*out++ = tp;
-				}
-			}
-		}
-
+        if (AssignPolicy::include_opposite)
+        {
+            // Handle cases not yet handled above
+            if ((dir_info.arrival[1] == -1 && dir_info.arrival[0] == 0) || (dir_info.arrival[0] == -1 && dir_info.arrival[1] == 0))
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    tp.operations[i].operation = operation_opposite;
+                }
+                for (unsigned int i = 0; i < intersection_info.count; i++)
+                {
+                    geometry::convert(intersection_info.intersections[i], tp.point);
+                    AssignPolicy::apply(tp, pi, qi, intersection_info, dir_info);
+                    *out++ = tp;
+                }
+            }
+        }
     }
 };
 
-
-template
-<
+template <
     typename TurnInfo,
-    typename SideStrategy
->
+    typename SideStrategy>
 struct crosses : public base_turn_handler
 {
-    template
-    <
+    template <
         typename Point1,
         typename Point2,
         typename IntersectionInfo,
-        typename DirInfo
-    >
+        typename DirInfo>
     static inline void apply(
-                Point1 const& , Point1 const& , Point1 const& ,
-                Point2 const& , Point2 const& , Point2 const& ,
-                TurnInfo& ti,
-                IntersectionInfo const& intersection_info,
-                DirInfo const& dir_info)
+        Point1 const &, Point1 const &, Point1 const &,
+        Point2 const &, Point2 const &, Point2 const &,
+        TurnInfo &ti,
+        IntersectionInfo const &intersection_info,
+        DirInfo const &dir_info)
     {
         ti.method = method_crosses;
         geometry::convert(intersection_info.intersections[0], ti.point);
@@ -820,11 +773,11 @@ struct crosses : public base_turn_handler
     }
 };
 
-template<typename TurnInfo>
+template <typename TurnInfo>
 struct only_convert
 {
-    template<typename IntersectionInfo>
-    static inline void apply(TurnInfo& ti, IntersectionInfo const& intersection_info)
+    template <typename IntersectionInfo>
+    static inline void apply(TurnInfo &ti, IntersectionInfo const &intersection_info)
     {
         ti.method = method_collinear;
         geometry::convert(intersection_info.intersections[0], ti.point);
@@ -845,19 +798,16 @@ struct assign_null_policy
     static bool const include_degenerate = false;
     static bool const include_opposite = false;
 
-    template 
-	<
-		typename Info,
-		typename Point1,
-		typename Point2,
-		typename IntersectionInfo,
-		typename DirInfo
-	>
-    static inline void apply(Info& , Point1 const& , Point2 const&, IntersectionInfo const&, DirInfo const&)
-    {}
-
+    template <
+        typename Info,
+        typename Point1,
+        typename Point2,
+        typename IntersectionInfo,
+        typename DirInfo>
+    static inline void apply(Info &, Point1 const &, Point2 const &, IntersectionInfo const &, DirInfo const &)
+    {
+    }
 };
-
 
 /*!
     \brief Turn information: intersection point, method, and turn information
@@ -873,22 +823,19 @@ struct assign_null_policy
         It also defines if a certain class of points
         (degenerate, non-turns) should be included.
  */
-template
-<
+template <
     typename Point1,
     typename Point2,
     typename TurnInfo,
-    typename AssignPolicy
->
+    typename AssignPolicy>
 struct get_turn_info
 {
-    typedef strategy_intersection
-        <
-            typename cs_tag<typename TurnInfo::point_type>::type,
-            Point1,
-            Point2,
-            typename TurnInfo::point_type
-        > si;
+    typedef strategy_intersection<
+        typename cs_tag<typename TurnInfo::point_type>::type,
+        Point1,
+        Point2,
+        typename TurnInfo::point_type>
+        si;
 
     typedef typename si::segment_intersection_strategy_type strategy;
 
@@ -897,10 +844,10 @@ struct get_turn_info
     // about the turn.
     template <typename OutputIterator>
     static inline OutputIterator apply(
-                Point1 const& pi, Point1 const& pj, Point1 const& pk,
-                Point2 const& qi, Point2 const& qj, Point2 const& qk,
-                TurnInfo const& tp_model,
-                OutputIterator out)
+        Point1 const &pi, Point1 const &pj, Point1 const &pk,
+        Point2 const &qi, Point2 const &qj, Point2 const &qk,
+        TurnInfo const &tp_model,
+        OutputIterator out)
     {
         typedef model::referring_segment<Point1 const> segment_type1;
         typedef model::referring_segment<Point1 const> segment_type2;
@@ -914,134 +861,122 @@ struct get_turn_info
         // Copy, to copy possibly extended fields
         TurnInfo tp = tp_model;
 
-
         // Select method and apply
-        switch(method)
+        switch (method)
         {
-            case 'a' : // collinear, "at"
-            case 'f' : // collinear, "from"
-            case 's' : // starts from the middle
-                if (AssignPolicy::include_no_turn
-                    && result.template get<0>().count > 0)
-                {
-                    only_convert<TurnInfo>::apply(tp,
-                                result.template get<0>());
-                    AssignPolicy::apply(tp, pi, qi, result.template get<0>(), result.template get<1>());
-                    *out++ = tp;
-                }
-                break;
-
-            case 'd' : // disjoint: never do anything
-                break;
-
-            case 'm' :
+        case 'a': // collinear, "at"
+        case 'f': // collinear, "from"
+        case 's': // starts from the middle
+            if (AssignPolicy::include_no_turn && result.template get<0>().count > 0)
             {
-                typedef touch_interior
-                    <
-                        TurnInfo,
-                        typename si::side_strategy_type
-                    > policy;
+                only_convert<TurnInfo>::apply(tp,
+                                              result.template get<0>());
+                AssignPolicy::apply(tp, pi, qi, result.template get<0>(), result.template get<1>());
+                *out++ = tp;
+            }
+            break;
+
+        case 'd': // disjoint: never do anything
+            break;
+
+        case 'm':
+            {
+                typedef touch_interior<
+                    TurnInfo,
+                    typename si::side_strategy_type>
+                    policy;
 
                 // If Q (1) arrives (1)
                 if (result.template get<1>().arrival[1] == 1)
                 {
                     policy::template apply<0>(pi, pj, pk, qi, qj, qk,
-                                tp, result.template get<0>(), result.template get<1>());
+                                              tp, result.template get<0>(), result.template get<1>());
                 }
                 else
                 {
                     // Swap p/q
                     policy::template apply<1>(qi, qj, qk, pi, pj, pk,
-                                tp, result.template get<0>(), result.template get<1>());
+                                              tp, result.template get<0>(), result.template get<1>());
                 }
                 AssignPolicy::apply(tp, pi, qi, result.template get<0>(), result.template get<1>());
                 *out++ = tp;
             }
             break;
-            case 'i' :
+        case 'i':
             {
-                typedef crosses
-                    <
-                        TurnInfo,
-                        typename si::side_strategy_type
-                    > policy;
+                typedef crosses<
+                    TurnInfo,
+                    typename si::side_strategy_type>
+                    policy;
 
                 policy::apply(pi, pj, pk, qi, qj, qk,
-                    tp, result.template get<0>(), result.template get<1>());
+                              tp, result.template get<0>(), result.template get<1>());
                 AssignPolicy::apply(tp, pi, qi, result.template get<0>(), result.template get<1>());
                 *out++ = tp;
             }
             break;
-            case 't' :
+        case 't':
             {
                 // Both touch (both arrive there)
-                typedef touch
-                    <
-                        TurnInfo,
-                        typename si::side_strategy_type
-                    > policy;
+                typedef touch<
+                    TurnInfo,
+                    typename si::side_strategy_type>
+                    policy;
 
                 policy::apply(pi, pj, pk, qi, qj, qk,
-                    tp, result.template get<0>(), result.template get<1>());
+                              tp, result.template get<0>(), result.template get<1>());
                 AssignPolicy::apply(tp, pi, qi, result.template get<0>(), result.template get<1>());
                 *out++ = tp;
             }
             break;
-            case 'e':
+        case 'e':
             {
-                if (! result.template get<1>().opposite)
+                if (!result.template get<1>().opposite)
                 {
                     // Both equal
                     // or collinear-and-ending at intersection point
-                    typedef equal
-                        <
-                            TurnInfo,
-                            typename si::side_strategy_type
-                        > policy;
+                    typedef equal<
+                        TurnInfo,
+                        typename si::side_strategy_type>
+                        policy;
 
                     policy::apply(pi, pj, pk, qi, qj, qk,
-                        tp, result.template get<0>(), result.template get<1>());
+                                  tp, result.template get<0>(), result.template get<1>());
                     AssignPolicy::apply(tp, pi, qi, result.template get<0>(), result.template get<1>());
                     *out++ = tp;
                 }
-				else
-				{
-                    equal_opposite
-                        <
-                            TurnInfo,
-                            AssignPolicy
-                        >::apply(pi, qi,
-                            tp, out, result.template get<0>(), result.template get<1>());
-				}
+                else
+                {
+                    equal_opposite<
+                        TurnInfo,
+                        AssignPolicy>::apply(pi, qi,
+                                             tp, out, result.template get<0>(), result.template get<1>());
+                }
             }
             break;
-            case 'c' :
+        case 'c':
             {
                 // Collinear
-                if (! result.template get<1>().opposite)
+                if (!result.template get<1>().opposite)
                 {
 
                     if (result.template get<1>().arrival[0] == 0)
                     {
                         // Collinear, but similar thus handled as equal
-                        equal
-                            <
-                                TurnInfo,
-                                typename si::side_strategy_type
-                            >::apply(pi, pj, pk, qi, qj, qk,
-                                tp, result.template get<0>(), result.template get<1>());
+                        equal<
+                            TurnInfo,
+                            typename si::side_strategy_type>::apply(pi, pj, pk, qi, qj, qk,
+                                                                    tp, result.template get<0>(), result.template get<1>());
 
                         // override assigned method
                         tp.method = method_collinear;
                     }
                     else
                     {
-                        collinear
-                            <
-                                TurnInfo,
-                                typename si::side_strategy_type
-                            >::apply(pi, pj, pk, qi, qj, qk,
-                                tp, result.template get<0>(), result.template get<1>());
+                        collinear<
+                            TurnInfo,
+                            typename si::side_strategy_type>::apply(pi, pj, pk, qi, qj, qk,
+                                                                    tp, result.template get<0>(), result.template get<1>());
                     }
 
                     AssignPolicy::apply(tp, pi, qi, result.template get<0>(), result.template get<1>());
@@ -1049,17 +984,15 @@ struct get_turn_info
                 }
                 else
                 {
-                    collinear_opposite
-                        <
-                            TurnInfo,
-                            typename si::side_strategy_type,
-                            AssignPolicy
-                        >::apply(pi, pj, pk, qi, qj, qk,
-                            tp, out, result.template get<0>(), result.template get<1>());
+                    collinear_opposite<
+                        TurnInfo,
+                        typename si::side_strategy_type,
+                        AssignPolicy>::apply(pi, pj, pk, qi, qj, qk,
+                                             tp, out, result.template get<0>(), result.template get<1>());
                 }
             }
             break;
-            case '0' :
+        case '0':
             {
                 // degenerate points
                 if (AssignPolicy::include_degenerate)
@@ -1070,9 +1003,9 @@ struct get_turn_info
                 }
             }
             break;
-            default :
+        default:
             {
-#if ! defined(BOOST_GEOMETRY_OVERLAY_NO_THROW)
+#if !defined(BOOST_GEOMETRY_OVERLAY_NO_THROW)
                 throw turn_info_exception(method);
 #endif
             }
@@ -1083,12 +1016,11 @@ struct get_turn_info
     }
 };
 
+} // namespace overlay
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
 
-}} // namespace detail::overlay
-#endif //DOXYGEN_NO_DETAIL
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_TURN_INFO_HPP

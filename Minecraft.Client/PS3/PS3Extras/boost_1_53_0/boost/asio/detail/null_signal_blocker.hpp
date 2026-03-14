@@ -12,48 +12,47 @@
 #define BOOST_ASIO_DETAIL_NULL_SIGNAL_BLOCKER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
-#if !defined(BOOST_HAS_THREADS) \
-  || defined(BOOST_ASIO_DISABLE_THREADS) \
-  || defined(BOOST_WINDOWS) \
-  || defined(__CYGWIN__) \
-  || defined(__SYMBIAN32__)
+#if !defined(BOOST_HAS_THREADS) || defined(BOOST_ASIO_DISABLE_THREADS) || defined(BOOST_WINDOWS) || defined(__CYGWIN__) || defined(__SYMBIAN32__)
 
 #include <boost/asio/detail/noncopyable.hpp>
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 class null_signal_blocker
-  : private noncopyable
+    : private noncopyable
 {
-public:
-  // Constructor blocks all signals for the calling thread.
-  null_signal_blocker()
-  {
-  }
+  public:
+    // Constructor blocks all signals for the calling thread.
+    null_signal_blocker()
+    {
+    }
 
-  // Destructor restores the previous signal mask.
-  ~null_signal_blocker()
-  {
-  }
+    // Destructor restores the previous signal mask.
+    ~null_signal_blocker()
+    {
+    }
 
-  // Block all signals for the calling thread.
-  void block()
-  {
-  }
+    // Block all signals for the calling thread.
+    void block()
+    {
+    }
 
-  // Restore the previous signal mask.
-  void unblock()
-  {
-  }
+    // Restore the previous signal mask.
+    void unblock()
+    {
+    }
 };
 
 } // namespace detail

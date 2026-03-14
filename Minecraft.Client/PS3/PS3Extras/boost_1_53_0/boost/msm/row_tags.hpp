@@ -11,28 +11,52 @@
 #ifndef BOOST_MSM_ROW_TAGS_H
 #define BOOST_MSM_ROW_TAGS_H
 
-
-
-namespace boost { namespace msm
+namespace boost
 {
-//tags
-struct a_row_tag {};
-struct g_row_tag {};
-struct _row_tag {};
-struct row_tag {};
+namespace msm
+{
+// tags
+struct a_row_tag
+{
+};
+struct g_row_tag
+{
+};
+struct _row_tag
+{
+};
+struct row_tag
+{
+};
 // tags for internal transitions
-struct a_irow_tag {};
-struct g_irow_tag {};
-struct _irow_tag {};
-struct irow_tag {};
+struct a_irow_tag
+{
+};
+struct g_irow_tag
+{
+};
+struct _irow_tag
+{
+};
+struct irow_tag
+{
+};
 // tags for transitions internal to state machines (not using any substate)
-struct sm_a_i_row_tag {};
-struct sm_g_i_row_tag {};
-struct sm__i_row_tag {};
-struct sm_i_row_tag {};
+struct sm_a_i_row_tag
+{
+};
+struct sm_g_i_row_tag
+{
+};
+struct sm__i_row_tag
+{
+};
+struct sm_i_row_tag
+{
+};
 
 // flags used internally to handle terminate / interrupt states
-struct TerminateFlag 
+struct TerminateFlag
 {
     typedef int non_forwarding_flag;
     typedef int event_blocking_flag;
@@ -48,6 +72,6 @@ struct EndInterruptFlag
     typedef int non_forwarding_flag;
 };
 
-} } // boost::msm
-#endif //BOOST_MSM_ROW_TAGS_H
-
+} // namespace msm
+} // namespace boost
+#endif // BOOST_MSM_ROW_TAGS_H

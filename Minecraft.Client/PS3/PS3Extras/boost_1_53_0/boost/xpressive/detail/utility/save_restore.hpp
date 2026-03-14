@@ -10,46 +10,50 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/noncopyable.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
-    template<typename T>
-    struct save_restore
-      : private noncopyable
+template <typename T>
+struct save_restore
+    : private noncopyable
+{
+    explicit save_restore(T &t)
+        : ref(t), val(t)
     {
-        explicit save_restore(T &t)
-          : ref(t)
-          , val(t)
-        {
-        }
+    }
 
-        save_restore(T &t, T const &n)
-          : ref(t)
-          , val(t)
-        {
-            this->ref = n;
-        }
+    save_restore(T &t, T const &n)
+        : ref(t), val(t)
+    {
+        this->ref = n;
+    }
 
-        ~save_restore()
-        {
-            this->ref = this->val;
-        }
+    ~save_restore()
+    {
+        this->ref = this->val;
+    }
 
-        void restore()
-        {
-            this->ref = this->val;
-        }
+    void restore()
+    {
+        this->ref = this->val;
+    }
 
-    private:
-        T &ref;
-        T const val;
-    };
+  private:
+    T &ref;
+    T const val;
+};
 
-}}}
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

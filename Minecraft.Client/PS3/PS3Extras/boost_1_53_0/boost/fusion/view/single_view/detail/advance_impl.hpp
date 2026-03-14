@@ -1,7 +1,7 @@
 /*=============================================================================
     Copyright (c) 2011 Eric Niebler
 
-    Distributed under the Boost Software License, Version 1.0. (See accompanying 
+    Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
 
@@ -10,38 +10,41 @@
 
 #include <boost/mpl/plus.hpp>
 
-namespace boost { namespace fusion 
+namespace boost
 {
-    struct single_view_iterator_tag;
+namespace fusion
+{
+struct single_view_iterator_tag;
 
-    template <typename SingleView, typename Pos>
-    struct single_view_iterator;
+template <typename SingleView, typename Pos>
+struct single_view_iterator;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct advance_impl;
+
+template <>
+struct advance_impl<single_view_iterator_tag>
+{
+    template <typename Iterator, typename Dist>
+    struct apply
     {
-        template<typename Tag>
-        struct advance_impl;
+        typedef single_view_iterator<
+            typename Iterator::single_view_type,
+            typename mpl::plus<typename Iterator::position, Dist>::type>
+            type;
 
-        template<>
-        struct advance_impl<single_view_iterator_tag>
+        static type
+        call(Iterator const &i)
         {
-            template<typename Iterator, typename Dist>
-            struct apply
-            {
-                typedef single_view_iterator<
-                    typename Iterator::single_view_type,
-                    typename mpl::plus<typename Iterator::position, Dist>::type>
-                type;
+            return type(i.view);
+        }
+    };
+};
+} // namespace extension
 
-                static type
-                call(Iterator const& i)
-                {
-                    return type(i.view);
-                }
-            };
-        };
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif

@@ -17,21 +17,33 @@
 #ifndef BOOST_NUMERIC_UBLAS_TAG_HPP
 #define BOOST_NUMERIC_UBLAS_TAG_HPP
 
-
-namespace boost { namespace numeric { namespace ublas { namespace tag {
+namespace boost
+{
+namespace numeric
+{
+namespace ublas
+{
+namespace tag
+{
 
 /// \brief Tag for the major dimension.
-struct major {};
-
+struct major
+{
+};
 
 /// \brief Tag for the minor dimension.
-struct minor {};
-
+struct minor
+{
+};
 
 /// \brief Tag for the leading dimension.
-struct leading {};
+struct leading
+{
+};
 
-}}}} // Namespace boost::numeric::ublas::tag
-
+} // namespace tag
+} // namespace ublas
+} // namespace numeric
+} // namespace boost
 
 #endif // BOOST_NUMERIC_UBLAS_TAG_HPP

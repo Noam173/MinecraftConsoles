@@ -44,41 +44,51 @@ namespace boost
 //----------------------------------------------------------------------------//
 
 // ratio
-template <boost::intmax_t N, boost::intmax_t D = 1> class ratio;
+template <boost::intmax_t N, boost::intmax_t D = 1>
+class ratio;
 
 // ratio arithmetic
-template <class R1, class R2> struct ratio_add;
-template <class R1, class R2> struct ratio_subtract;
-template <class R1, class R2> struct ratio_multiply;
-template <class R1, class R2> struct ratio_divide;
+template <class R1, class R2>
+struct ratio_add;
+template <class R1, class R2>
+struct ratio_subtract;
+template <class R1, class R2>
+struct ratio_multiply;
+template <class R1, class R2>
+struct ratio_divide;
 
 // ratio comparison
-template <class R1, class R2> struct ratio_equal;
-template <class R1, class R2> struct ratio_not_equal;
-template <class R1, class R2> struct ratio_less;
-template <class R1, class R2> struct ratio_less_equal;
-template <class R1, class R2> struct ratio_greater;
-template <class R1, class R2> struct ratio_greater_equal;
+template <class R1, class R2>
+struct ratio_equal;
+template <class R1, class R2>
+struct ratio_not_equal;
+template <class R1, class R2>
+struct ratio_less;
+template <class R1, class R2>
+struct ratio_less_equal;
+template <class R1, class R2>
+struct ratio_greater;
+template <class R1, class R2>
+struct ratio_greater_equal;
 
 // convenience SI typedefs
 typedef ratio<BOOST_RATIO_INTMAX_C(1), BOOST_RATIO_INTMAX_C(1000000000000000000)> atto;
-typedef ratio<BOOST_RATIO_INTMAX_C(1),    BOOST_RATIO_INTMAX_C(1000000000000000)> femto;
-typedef ratio<BOOST_RATIO_INTMAX_C(1),       BOOST_RATIO_INTMAX_C(1000000000000)> pico;
-typedef ratio<BOOST_RATIO_INTMAX_C(1),          BOOST_RATIO_INTMAX_C(1000000000)> nano;
-typedef ratio<BOOST_RATIO_INTMAX_C(1),             BOOST_RATIO_INTMAX_C(1000000)> micro;
-typedef ratio<BOOST_RATIO_INTMAX_C(1),                BOOST_RATIO_INTMAX_C(1000)> milli;
-typedef ratio<BOOST_RATIO_INTMAX_C(1),                 BOOST_RATIO_INTMAX_C(100)> centi;
-typedef ratio<BOOST_RATIO_INTMAX_C(1),                  BOOST_RATIO_INTMAX_C(10)> deci;
-typedef ratio<                 BOOST_RATIO_INTMAX_C(10), BOOST_RATIO_INTMAX_C(1)> deca;
-typedef ratio<                BOOST_RATIO_INTMAX_C(100), BOOST_RATIO_INTMAX_C(1)> hecto;
-typedef ratio<               BOOST_RATIO_INTMAX_C(1000), BOOST_RATIO_INTMAX_C(1)> kilo;
-typedef ratio<            BOOST_RATIO_INTMAX_C(1000000), BOOST_RATIO_INTMAX_C(1)> mega;
-typedef ratio<         BOOST_RATIO_INTMAX_C(1000000000), BOOST_RATIO_INTMAX_C(1)> giga;
-typedef ratio<      BOOST_RATIO_INTMAX_C(1000000000000), BOOST_RATIO_INTMAX_C(1)> tera;
-typedef ratio<   BOOST_RATIO_INTMAX_C(1000000000000000), BOOST_RATIO_INTMAX_C(1)> peta;
+typedef ratio<BOOST_RATIO_INTMAX_C(1), BOOST_RATIO_INTMAX_C(1000000000000000)> femto;
+typedef ratio<BOOST_RATIO_INTMAX_C(1), BOOST_RATIO_INTMAX_C(1000000000000)> pico;
+typedef ratio<BOOST_RATIO_INTMAX_C(1), BOOST_RATIO_INTMAX_C(1000000000)> nano;
+typedef ratio<BOOST_RATIO_INTMAX_C(1), BOOST_RATIO_INTMAX_C(1000000)> micro;
+typedef ratio<BOOST_RATIO_INTMAX_C(1), BOOST_RATIO_INTMAX_C(1000)> milli;
+typedef ratio<BOOST_RATIO_INTMAX_C(1), BOOST_RATIO_INTMAX_C(100)> centi;
+typedef ratio<BOOST_RATIO_INTMAX_C(1), BOOST_RATIO_INTMAX_C(10)> deci;
+typedef ratio<BOOST_RATIO_INTMAX_C(10), BOOST_RATIO_INTMAX_C(1)> deca;
+typedef ratio<BOOST_RATIO_INTMAX_C(100), BOOST_RATIO_INTMAX_C(1)> hecto;
+typedef ratio<BOOST_RATIO_INTMAX_C(1000), BOOST_RATIO_INTMAX_C(1)> kilo;
+typedef ratio<BOOST_RATIO_INTMAX_C(1000000), BOOST_RATIO_INTMAX_C(1)> mega;
+typedef ratio<BOOST_RATIO_INTMAX_C(1000000000), BOOST_RATIO_INTMAX_C(1)> giga;
+typedef ratio<BOOST_RATIO_INTMAX_C(1000000000000), BOOST_RATIO_INTMAX_C(1)> tera;
+typedef ratio<BOOST_RATIO_INTMAX_C(1000000000000000), BOOST_RATIO_INTMAX_C(1)> peta;
 typedef ratio<BOOST_RATIO_INTMAX_C(1000000000000000000), BOOST_RATIO_INTMAX_C(1)> exa;
 
-}  // namespace boost
+} // namespace boost
 
-
-#endif  // BOOST_RATIO_HPP
+#endif // BOOST_RATIO_HPP

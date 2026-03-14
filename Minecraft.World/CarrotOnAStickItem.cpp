@@ -1,47 +1,47 @@
-#include "stdafx.h"
+#include "CarrotOnAStickItem.h"
+#include "net.minecraft.world.entity.ai.goal.h"
 #include "net.minecraft.world.entity.animal.h"
 #include "net.minecraft.world.entity.player.h"
-#include "net.minecraft.world.entity.ai.goal.h"
 #include "net.minecraft.world.item.h"
-#include "CarrotOnAStickItem.h"
+#include "stdafx.h"
 
 CarrotOnAStickItem::CarrotOnAStickItem(int id) : Item(id)
 {
-	setMaxStackSize(1);
-	setMaxDamage(25);
+    setMaxStackSize(1);
+    setMaxDamage(25);
 }
 
 bool CarrotOnAStickItem::isHandEquipped()
 {
-	return true;
+    return true;
 }
 
 bool CarrotOnAStickItem::isMirroredArt()
 {
-	return true;
+    return true;
 }
 
 shared_ptr<ItemInstance> CarrotOnAStickItem::use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
-	if (player->isRiding())
-	{
-		shared_ptr<Pig> pig = dynamic_pointer_cast<Pig>(player->riding);
-		if(pig)
-		{
-			if (pig->getControlGoal()->canBoost() && itemInstance->getMaxDamage() - itemInstance->getAuxValue() >= 7)
-			{
-				pig->getControlGoal()->boost();
-				itemInstance->hurtAndBreak(7, player);
+    if (player->isRiding())
+    {
+        shared_ptr<Pig> pig = dynamic_pointer_cast<Pig>(player->riding);
+        if (pig)
+        {
+            if (pig->getControlGoal()->canBoost() && itemInstance->getMaxDamage() - itemInstance->getAuxValue() >= 7)
+            {
+                pig->getControlGoal()->boost();
+                itemInstance->hurtAndBreak(7, player);
 
-				if (itemInstance->count == 0)
-				{
-					shared_ptr<ItemInstance> replacement = std::make_shared<ItemInstance>(Item::fishingRod);
-					replacement->setTag(itemInstance->tag);
-					return replacement;
-				}
-			}
-		}
-	}
+                if (itemInstance->count == 0)
+                {
+                    shared_ptr<ItemInstance> replacement = std::make_shared<ItemInstance>(Item::fishingRod);
+                    replacement->setTag(itemInstance->tag);
+                    return replacement;
+                }
+            }
+        }
+    }
 
-	return itemInstance;
+    return itemInstance;
 }

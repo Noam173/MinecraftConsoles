@@ -14,58 +14,58 @@ namespace lexer
 {
 namespace detail
 {
-template<typename Type>
+template <typename Type>
 class ptr_list
 {
-public:
+  public:
     typedef std::list<Type *> list;
 
-    ptr_list ()
+    ptr_list()
     {
     }
 
-    ~ptr_list ()
+    ~ptr_list()
     {
-        clear ();
+        clear();
     }
 
-    list *operator -> ()
+    list *operator->()
     {
         return &_list;
     }
 
-    const list *operator -> () const
+    const list *operator->() const
     {
         return &_list;
     }
 
-    list &operator * ()
+    list &operator*()
     {
         return _list;
     }
 
-    const list &operator * () const
+    const list &operator*() const
     {
         return _list;
     }
 
-    void clear ()
+    void clear()
     {
-        while (!_list.empty ())
+        while (!_list.empty())
         {
-            delete _list.front ();
-            _list.pop_front ();
+            delete _list.front();
+            _list.pop_front();
         }
     }
 
-private:
+  private:
     list _list;
 
-    ptr_list (const ptr_list &); // No copy construction.
-    ptr_list &operator = (const ptr_list &); // No assignment.
+    ptr_list(const ptr_list &);            // No copy construction.
+    ptr_list &operator=(const ptr_list &); // No assignment.
 };
-}
-}
-}
+} // namespace detail
+} // namespace lexer
+} // namespace boost
 
 #endif

@@ -14,72 +14,77 @@
 #define BOOST_INTERPROCESS_DETAIL_TYPE_TRAITS_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 #include <boost/interprocess/detail/config_begin.hpp>
 
-namespace boost {
-namespace interprocess {
-namespace ipcdetail {
+namespace boost
+{
+namespace interprocess
+{
+namespace ipcdetail
+{
 
-struct nat{};
+struct nat
+{
+};
 
-template<class T>
+template <class T>
 struct remove_reference
 {
-   typedef T type;
+    typedef T type;
 };
 
-template<class T>
-struct remove_reference<T&>
+template <class T>
+struct remove_reference<T &>
 {
-   typedef T type;
+    typedef T type;
 };
 
-template<class T>
+template <class T>
 struct is_reference
 {
-   static const bool value = false;
+    static const bool value = false;
 };
 
-template<class T>
-struct is_reference<T&>
+template <class T>
+struct is_reference<T &>
 {
-   static const bool value = true;
+    static const bool value = true;
 };
 
-template<class T>
+template <class T>
 struct is_pointer
 {
-   static const bool value = false;
+    static const bool value = false;
 };
 
-template<class T>
-struct is_pointer<T*>
+template <class T>
+struct is_pointer<T *>
 {
-   static const bool value = true;
+    static const bool value = true;
 };
 
 template <typename T>
 struct add_reference
 {
-    typedef T& type;
+    typedef T &type;
 };
 
-template<class T>
-struct add_reference<T&>
+template <class T>
+struct add_reference<T &>
 {
-    typedef T& type;
+    typedef T &type;
 };
 
-template<>
+template <>
 struct add_reference<void>
 {
     typedef nat &type;
 };
 
-template<>
+template <>
 struct add_reference<const void>
 {
     typedef const nat &type;
@@ -87,72 +92,75 @@ struct add_reference<const void>
 
 template <class T>
 struct add_const_reference
-{  typedef const T &type;   };
+{
+    typedef const T &type;
+};
 
 template <class T>
-struct add_const_reference<T&>
-{  typedef T& type;   };
+struct add_const_reference<T &>
+{
+    typedef T &type;
+};
 
-template<class T>
+template <class T>
 struct remove_const
 {
-   typedef T type;
+    typedef T type;
 };
 
-template<class T>
+template <class T>
 struct remove_const<const T>
 {
-   typedef T type;
+    typedef T type;
 };
 
-template<class T>
+template <class T>
 struct remove_volatile
 {
-   typedef T type;
+    typedef T type;
 };
 
-template<class T>
+template <class T>
 struct remove_volatile<volatile T>
 {
-   typedef T type;
+    typedef T type;
 };
 
-template<class T>
+template <class T>
 struct remove_const_volatile
 {
-   typedef typename remove_const<typename remove_volatile<T>::type>::type type;
+    typedef typename remove_const<typename remove_volatile<T>::type>::type type;
 };
 
 template <typename T, typename U>
 struct is_same
 {
-   typedef char yes_type;
-   struct no_type
-   {
-      char padding[8];
-   };
+    typedef char yes_type;
+    struct no_type
+    {
+        char padding[8];
+    };
 
-   template <typename V>
-   static yes_type is_same_tester(V*, V*);
-   static no_type is_same_tester(...);
+    template <typename V>
+    static yes_type is_same_tester(V *, V *);
+    static no_type is_same_tester(...);
 
-   static T *t;
-   static U *u;
+    static T *t;
+    static U *u;
 
-   static const bool value = sizeof(yes_type) == sizeof(is_same_tester(t,u));
+    static const bool value = sizeof(yes_type) == sizeof(is_same_tester(t, u));
 };
 
-template<class T, class U>
+template <class T, class U>
 struct is_cv_same
 {
-   static const bool value = is_same< typename remove_const_volatile<T>::type
-                                    , typename remove_const_volatile<U>::type >::value;
+    static const bool value = is_same<typename remove_const_volatile<T>::type, typename remove_const_volatile<U>::type>::value;
 };
 
 } // namespace ipcdetail
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif   //#ifndef BOOST_INTERPROCESS_DETAIL_TYPE_TRAITS_HPP
+#endif // #ifndef BOOST_INTERPROCESS_DETAIL_TYPE_TRAITS_HPP

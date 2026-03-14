@@ -9,15 +9,17 @@
 #ifndef BOOST_FLYWEIGHT_INTERMODULE_HOLDER_FWD_HPP
 #define BOOST_FLYWEIGHT_INTERMODULE_HOLDER_FWD_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
-namespace boost{
+namespace boost
+{
 
-namespace flyweights{
+namespace flyweights
+{
 
-template<typename C>
+template <typename C>
 struct intermodule_holder_class;
 
 struct intermodule_holder;

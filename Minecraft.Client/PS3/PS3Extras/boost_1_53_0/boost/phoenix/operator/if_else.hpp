@@ -8,43 +8,46 @@
 #ifndef BOOST_PHOENIX_OPERATOR_IF_ELSE_HPP
 #define BOOST_PHOENIX_OPERATOR_IF_ELSE_HPP
 
+#include <boost/phoenix/core/expression.hpp>
 #include <boost/phoenix/core/limits.hpp>
 #include <boost/phoenix/core/meta_grammar.hpp>
-#include <boost/phoenix/core/expression.hpp>
 #include <boost/proto/operators.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
 {
-    namespace tag
-    {
-        typedef proto::tag::if_else_ if_else_operator;
-    }
+namespace phoenix
+{
+namespace tag
+{
+typedef proto::tag::if_else_ if_else_operator;
+}
 
-    namespace expression
-    {
-        template <typename A0, typename A1, typename A2>
-        struct if_else_operator
-            : expr<tag::if_else_operator, A0, A1, A2>
-        {};
-    }
+namespace expression
+{
+template <typename A0, typename A1, typename A2>
+struct if_else_operator
+    : expr<tag::if_else_operator, A0, A1, A2>
+{
+};
+} // namespace expression
 
-    namespace rule
-    {
-        struct if_else_operator
-            : expression::if_else_operator<
-                meta_grammar
-              , meta_grammar
-              , meta_grammar
-            >
-        {};
-    }
+namespace rule
+{
+struct if_else_operator
+    : expression::if_else_operator<
+          meta_grammar, meta_grammar, meta_grammar>
+{
+};
+} // namespace rule
 
-    template <typename Dummy>
-    struct meta_grammar::case_<tag::if_else_operator, Dummy>
-        : enable_rule<rule::if_else_operator, Dummy>
-    {};
+template <typename Dummy>
+struct meta_grammar::case_<tag::if_else_operator, Dummy>
+    : enable_rule<rule::if_else_operator, Dummy>
+{
+};
 
-    using proto::if_else;
-}}
+using proto::if_else;
+} // namespace phoenix
+} // namespace boost
 
 #endif

@@ -9,7 +9,7 @@
 #ifndef BOOST_FLYWEIGHT_INTERMODULE_HOLDER_HPP
 #define BOOST_FLYWEIGHT_INTERMODULE_HOLDER_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -23,28 +23,29 @@
  * modules of a program.
  */
 
-namespace boost{
-
-namespace flyweights{
-
-template<typename C>
-struct intermodule_holder_class:
-  interprocess::ipcdetail::intermodule_singleton<C,true>,
-  holder_marker
+namespace boost
 {
-  typedef intermodule_holder_class type;
-  BOOST_MPL_AUX_LAMBDA_SUPPORT(1,intermodule_holder_class,(C))
+
+namespace flyweights
+{
+
+template <typename C>
+struct intermodule_holder_class : interprocess::ipcdetail::intermodule_singleton<C, true>,
+                                  holder_marker
+{
+    typedef intermodule_holder_class type;
+    BOOST_MPL_AUX_LAMBDA_SUPPORT(1, intermodule_holder_class, (C))
 };
 
 /* intermodule_holder_class specifier */
 
-struct intermodule_holder:holder_marker
+struct intermodule_holder : holder_marker
 {
-  template<typename C>
-  struct apply
-  {
-    typedef intermodule_holder_class<C> type;
-  };
+    template <typename C>
+    struct apply
+    {
+        typedef intermodule_holder_class<C> type;
+    };
 };
 
 } /* namespace flyweights */

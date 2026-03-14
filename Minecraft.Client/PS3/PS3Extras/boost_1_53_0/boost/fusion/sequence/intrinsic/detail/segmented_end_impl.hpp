@@ -7,53 +7,59 @@
 #if !defined(BOOST_FUSION_SEGMENTED_END_IMPL_HPP_INCLUDED)
 #define BOOST_FUSION_SEGMENTED_END_IMPL_HPP_INCLUDED
 
+#include <boost/fusion/container/list/cons_fwd.hpp>
+#include <boost/fusion/sequence/intrinsic_fwd.hpp>
+#include <boost/fusion/support/is_segmented.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
-#include <boost/fusion/sequence/intrinsic_fwd.hpp>
-#include <boost/fusion/container/list/cons_fwd.hpp>
-#include <boost/fusion/support/is_segmented.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    template <typename First, typename Last>
-    struct iterator_range;
-}}
-
-namespace boost { namespace fusion { namespace detail
+namespace fusion
 {
-    //auto segmented_end_impl( seq, stack )
-    //{
-    //    assert(is_segmented(seq));
-    //    auto it = end(segments(seq));
-    //    return cons(iterator_range(it, it), stack);
-    //}
+template <typename First, typename Last>
+struct iterator_range;
+}
+} // namespace boost
 
-    template <typename Sequence, typename Stack>
-    struct segmented_end_impl
+namespace boost
+{
+namespace fusion
+{
+namespace detail
+{
+// auto segmented_end_impl( seq, stack )
+//{
+//     assert(is_segmented(seq));
+//     auto it = end(segments(seq));
+//     return cons(iterator_range(it, it), stack);
+// }
+
+template <typename Sequence, typename Stack>
+struct segmented_end_impl
+{
+    BOOST_MPL_ASSERT((traits::is_segmented<Sequence>));
+
+    typedef
+        typename result_of::end<
+            typename remove_reference<
+                typename add_const<
+                    typename result_of::segments<Sequence>::type>::type>::type>::type
+            end_type;
+
+    typedef iterator_range<end_type, end_type> pair_type;
+    typedef cons<pair_type, Stack> type;
+
+    static type call(Sequence &seq, Stack stack)
     {
-        BOOST_MPL_ASSERT((traits::is_segmented<Sequence>));
+        end_type end = fusion::end(fusion::segments(seq));
+        return type(pair_type(end, end), stack);
+    }
+};
 
-        typedef
-            typename result_of::end<
-                typename remove_reference<
-                    typename add_const<
-                        typename result_of::segments<Sequence>::type
-                    >::type
-                >::type
-            >::type
-        end_type;
-
-        typedef iterator_range<end_type, end_type>  pair_type;
-        typedef cons<pair_type, Stack>              type;
-
-        static type call(Sequence & seq, Stack stack)
-        {
-            end_type end = fusion::end(fusion::segments(seq));
-            return type(pair_type(end, end), stack);
-        }
-    };
-
-}}}
+} // namespace detail
+} // namespace fusion
+} // namespace boost
 
 #endif

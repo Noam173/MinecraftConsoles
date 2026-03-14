@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,17 +11,20 @@
 #ifndef BOOST_UNITS_SI_MAGNETIC_FIELD_INTENSITY_HPP
 #define BOOST_UNITS_SI_MAGNETIC_FIELD_INTENSITY_HPP
 
-#include <boost/units/systems/si/base.hpp>
 #include <boost/units/physical_dimensions/magnetic_field_intensity.hpp>
+#include <boost/units/systems/si/base.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units { 
+namespace units
+{
 
-namespace si {
+namespace si
+{
 
-typedef unit<magnetic_field_intensity_dimension,si::system>    magnetic_field_intensity;
-                                                                                       
+typedef unit<magnetic_field_intensity_dimension, si::system> magnetic_field_intensity;
+
 } // namespace si
 
 } // namespace units

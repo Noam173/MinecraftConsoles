@@ -14,7 +14,7 @@
 #include <boost/detail/workaround.hpp>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/config.hpp>
@@ -24,20 +24,20 @@
 #endif
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-# define BOOST_RANGE_DEDUCED_TYPENAME typename
+#define BOOST_RANGE_DEDUCED_TYPENAME typename
 #else
-# if BOOST_WORKAROUND(BOOST_MSVC, == 1300) && !defined(_MSC_EXTENSIONS)
-#  define BOOST_RANGE_DEDUCED_TYPENAME typename
-# else
-#  define BOOST_RANGE_DEDUCED_TYPENAME BOOST_DEDUCED_TYPENAME
-# endif
+#if BOOST_WORKAROUND(BOOST_MSVC, == 1300) && !defined(_MSC_EXTENSIONS)
+#define BOOST_RANGE_DEDUCED_TYPENAME typename
+#else
+#define BOOST_RANGE_DEDUCED_TYPENAME BOOST_DEDUCED_TYPENAME
+#endif
 #endif
 
 #ifdef BOOST_RANGE_NO_ARRAY_SUPPORT
 #error "macro already defined!"
 #endif
 
-#if BOOST_WORKAROUND( BOOST_MSVC, < 1300 ) || BOOST_WORKAROUND( __MWERKS__, <= 0x3003 )
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300) || BOOST_WORKAROUND(__MWERKS__, <= 0x3003)
 #define BOOST_RANGE_NO_ARRAY_SUPPORT 1
 #endif
 
@@ -48,7 +48,4 @@
 #define BOOST_RANGE_ARRAY_REF() (&boost_range_array)
 #endif
 
-
-
 #endif
-

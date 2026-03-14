@@ -16,16 +16,20 @@
 
 #include <boost/range.hpp>
 
-#include <boost/geometry/core/mutable_range.hpp>
 #include <boost/geometry/algorithms/transform.hpp>
+#include <boost/geometry/core/mutable_range.hpp>
 
 #include <boost/geometry/multi/core/tags.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace transform
+namespace detail
+{
+namespace transform
 {
 
 /*!
@@ -35,18 +39,16 @@ template <typename Policy>
 struct transform_multi
 {
     template <typename Multi1, typename Multi2, typename S>
-    static inline bool apply(Multi1 const& multi1, Multi2& multi2, S const& strategy)
+    static inline bool apply(Multi1 const &multi1, Multi2 &multi2, S const &strategy)
     {
         traits::resize<Multi2>::apply(multi2, boost::size(multi1));
 
-        typename boost::range_iterator<Multi1 const>::type it1
-                = boost::begin(multi1);
-        typename boost::range_iterator<Multi2>::type it2
-                = boost::begin(multi2);
+        typename boost::range_iterator<Multi1 const>::type it1 = boost::begin(multi1);
+        typename boost::range_iterator<Multi2>::type it2 = boost::begin(multi2);
 
         for (; it1 != boost::end(multi1); ++it1, ++it2)
         {
-            if (! Policy::apply(*it1, *it2, strategy))
+            if (!Policy::apply(*it1, *it2, strategy))
             {
                 return false;
             }
@@ -56,35 +58,29 @@ struct transform_multi
     }
 };
 
-
-}} // namespace detail::transform
+} // namespace transform
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
 template <typename Multi1, typename Multi2>
-struct transform
-    <
-        Multi1, Multi2,
-        multi_tag, multi_tag
-    >
-    : detail::transform::transform_multi
-        <
-            transform
-                <
-                    typename boost::range_value<Multi1>::type,
-                    typename boost::range_value<Multi2>::type
-                >
-        >
-{};
+struct transform<
+    Multi1, Multi2,
+    multi_tag, multi_tag>
+    : detail::transform::transform_multi<
+          transform<
+              typename boost::range_value<Multi1>::type,
+              typename boost::range_value<Multi2>::type>>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_TRANSFORM_HPP

@@ -1,8 +1,8 @@
 //  Copyright (c) 2001-2011 Hartmut Kaiser
 //  Copyright (c) 2001-2011 Joel de Guzman
 //  Copyright (c) 2009 Carl Barron
-// 
-//  Distributed under the Boost Software License, Version 1.0. (See accompanying 
+//
+//  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #if !defined(BOOST_PP_IS_ITERATING)
@@ -16,8 +16,8 @@
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/iterate.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
-#include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/preprocessor/repetition/enum_params.hpp>
 
 #define BOOST_PP_FILENAME_1 <boost/spirit/home/lex/tokenize_and_parse_attr.hpp>
 #define BOOST_PP_ITERATION_LIMITS (2, SPIRIT_ARGUMENTS_LIMIT)
@@ -33,82 +33,81 @@
 #else // defined(BOOST_PP_IS_ITERATING)
 
 #define N BOOST_PP_ITERATION()
-#define BOOST_SPIRIT_QI_ATTRIBUTE_REFERENCE(z, n, A) BOOST_PP_CAT(A, n)&
+#define BOOST_SPIRIT_QI_ATTRIBUTE_REFERENCE(z, n, A) BOOST_PP_CAT(A, n) &
 
-namespace boost { namespace spirit { namespace lex
+namespace boost
 {
-    template <typename Iterator, typename Lexer, typename ParserExpr
-      , BOOST_PP_ENUM_PARAMS(N, typename A)>
-    inline bool
-    tokenize_and_parse(Iterator& first, Iterator last, Lexer const& lex
-      , ParserExpr const& expr, BOOST_PP_ENUM_BINARY_PARAMS(N, A, & attr))
+namespace spirit
+{
+namespace lex
+{
+template <typename Iterator, typename Lexer, typename ParserExpr, BOOST_PP_ENUM_PARAMS(N, typename A)>
+inline bool
+tokenize_and_parse(Iterator &first, Iterator last, Lexer const &lex, ParserExpr const &expr, BOOST_PP_ENUM_BINARY_PARAMS(N, A, &attr))
+{
+    // Report invalid expression error as early as possible.
+    // If you got an error_invalid_expression error message here,
+    // then the expression (expr) is not a valid spirit qi expression.
+    BOOST_SPIRIT_ASSERT_MATCH(qi::domain, ParserExpr);
+
+    typedef fusion::vector<
+        BOOST_PP_ENUM(N, BOOST_SPIRIT_QI_ATTRIBUTE_REFERENCE, A)>
+        vector_type;
+
+    vector_type attr(BOOST_PP_ENUM_PARAMS(N, attr));
+    typename Lexer::iterator_type iter = lex.begin(first, last);
+    return compile<qi::domain>(expr).parse(
+        iter, lex.end(), unused, unused, attr);
+}
+
+///////////////////////////////////////////////////////////////////////////
+template <typename Iterator, typename Lexer, typename ParserExpr, typename Skipper, BOOST_PP_ENUM_PARAMS(N, typename A)>
+inline bool
+tokenize_and_phrase_parse(Iterator &first, Iterator last, Lexer const &lex, ParserExpr const &expr, Skipper const &skipper, BOOST_SCOPED_ENUM(skip_flag) post_skip, BOOST_PP_ENUM_BINARY_PARAMS(N, A, &attr))
+{
+    // Report invalid expression error as early as possible.
+    // If you got an error_invalid_expression error message here,
+    // then either the expression (expr) or skipper is not a valid
+    // spirit qi expression.
+    BOOST_SPIRIT_ASSERT_MATCH(qi::domain, ParserExpr);
+    BOOST_SPIRIT_ASSERT_MATCH(qi::domain, Skipper);
+
+    typedef
+        typename spirit::result_of::compile<qi::domain, Skipper>::type
+            skipper_type;
+    skipper_type const skipper_ = compile<qi::domain>(skipper);
+
+    typedef fusion::vector<
+        BOOST_PP_ENUM(N, BOOST_SPIRIT_QI_ATTRIBUTE_REFERENCE, A)>
+        vector_type;
+
+    vector_type attr(BOOST_PP_ENUM_PARAMS(N, attr));
+    typename Lexer::iterator_type iter = lex.begin(first, last);
+    if (!compile<qi::domain>(expr).parse(
+            iter, lex.end(), unused, skipper_, attr))
     {
-        // Report invalid expression error as early as possible.
-        // If you got an error_invalid_expression error message here,
-        // then the expression (expr) is not a valid spirit qi expression.
-        BOOST_SPIRIT_ASSERT_MATCH(qi::domain, ParserExpr);
-
-        typedef fusion::vector<
-            BOOST_PP_ENUM(N, BOOST_SPIRIT_QI_ATTRIBUTE_REFERENCE, A)
-        > vector_type;
-
-        vector_type attr (BOOST_PP_ENUM_PARAMS(N, attr));
-        typename Lexer::iterator_type iter = lex.begin(first, last);
-        return compile<qi::domain>(expr).parse(
-            iter, lex.end(), unused, unused, attr);
+        return false;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename Iterator, typename Lexer, typename ParserExpr
-      , typename Skipper, BOOST_PP_ENUM_PARAMS(N, typename A)>
-    inline bool
-    tokenize_and_phrase_parse(Iterator& first, Iterator last, Lexer const& lex
-      , ParserExpr const& expr, Skipper const& skipper
-      , BOOST_SCOPED_ENUM(skip_flag) post_skip
-      , BOOST_PP_ENUM_BINARY_PARAMS(N, A, & attr))
+    if (post_skip == skip_flag::postskip)
     {
-        // Report invalid expression error as early as possible.
-        // If you got an error_invalid_expression error message here,
-        // then either the expression (expr) or skipper is not a valid
-        // spirit qi expression.
-        BOOST_SPIRIT_ASSERT_MATCH(qi::domain, ParserExpr);
-        BOOST_SPIRIT_ASSERT_MATCH(qi::domain, Skipper);
-
-        typedef
-            typename spirit::result_of::compile<qi::domain, Skipper>::type
-        skipper_type;
-        skipper_type const skipper_ = compile<qi::domain>(skipper);
-
-        typedef fusion::vector<
-            BOOST_PP_ENUM(N, BOOST_SPIRIT_QI_ATTRIBUTE_REFERENCE, A)
-        > vector_type;
-
-        vector_type attr (BOOST_PP_ENUM_PARAMS(N, attr));
-        typename Lexer::iterator_type iter = lex.begin(first, last);
-        if (!compile<qi::domain>(expr).parse(
-                iter, lex.end(), unused, skipper_, attr))
-            return false;
-
-        if (post_skip == skip_flag::postskip)
-            qi::skip_over(first, last, skipper_);
-        return true;
+        qi::skip_over(first, last, skipper_);
     }
+    return true;
+}
 
-    template <typename Iterator, typename Lexer, typename ParserExpr
-      , typename Skipper, BOOST_PP_ENUM_PARAMS(N, typename A)>
-    inline bool
-    tokenize_and_phrase_parse(Iterator& first, Iterator last, Lexer const& lex
-      , ParserExpr const& expr, Skipper const& skipper
-      , BOOST_PP_ENUM_BINARY_PARAMS(N, A, & attr))
-    {
-        return tokenize_and_phrase_parse(first, last, expr, skipper
-          , skip_flag::postskip, BOOST_PP_ENUM_PARAMS(N, attr));
-    }
+template <typename Iterator, typename Lexer, typename ParserExpr, typename Skipper, BOOST_PP_ENUM_PARAMS(N, typename A)>
+inline bool
+tokenize_and_phrase_parse(Iterator &first, Iterator last, Lexer const &lex, ParserExpr const &expr, Skipper const &skipper, BOOST_PP_ENUM_BINARY_PARAMS(N, A, &attr))
+{
+    return tokenize_and_phrase_parse(first, last, expr, skipper, skip_flag::postskip, BOOST_PP_ENUM_PARAMS(N, attr));
+}
 
-}}}
+} // namespace lex
+} // namespace spirit
+} // namespace boost
 
 #undef BOOST_SPIRIT_QI_ATTRIBUTE_REFERENCE
 #undef N
 
 #endif
-

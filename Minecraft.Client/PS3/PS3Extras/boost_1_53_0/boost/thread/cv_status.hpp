@@ -14,13 +14,10 @@
 namespace boost
 {
 
-  // enum class cv_status;
-  BOOST_SCOPED_ENUM_DECLARE_BEGIN(cv_status)
-  {
+// enum class cv_status;
+BOOST_SCOPED_ENUM_DECLARE_BEGIN(cv_status){
     no_timeout,
-    timeout
-  }
-  BOOST_SCOPED_ENUM_DECLARE_END(cv_status)
-}
+    timeout} BOOST_SCOPED_ENUM_DECLARE_END(cv_status)
+} // namespace boost
 
 #endif // header

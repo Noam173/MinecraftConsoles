@@ -16,26 +16,33 @@
 #include "boost/detail/workaround.hpp"
 
 // support for pre 3.0 libstdc++ - thanks Phil Edwards!
-#if defined (__STL_CONFIG_H) && !defined (__STL_USE_NEW_IOSTREAMS)
-# define BOOST_OLD_IOSTREAMS
+#if defined(__STL_CONFIG_H) && !defined(__STL_USE_NEW_IOSTREAMS)
+#define BOOST_OLD_IOSTREAMS
 #endif
 
 // no-op function to workaround gcc bug c++/8419
 //
-namespace boost { namespace detail {
-    template <typename T> T make_non_const(T t) { return t; }
-}}
+namespace boost
+{
+namespace detail
+{
+template <typename T>
+T make_non_const(T t)
+{
+    return t;
+}
+} // namespace detail
+} // namespace boost
 
 #if defined(__GNUC__)
-# define BOOST_DYNAMIC_BITSET_WRAP_CONSTANT(expr) \
-         (boost::detail::make_non_const(expr))
+#define BOOST_DYNAMIC_BITSET_WRAP_CONSTANT(expr) \
+    (boost::detail::make_non_const(expr))
 #else
-# define BOOST_DYNAMIC_BITSET_WRAP_CONSTANT(expr) (expr)
+#define BOOST_DYNAMIC_BITSET_WRAP_CONSTANT(expr) (expr)
 #endif
 
 //
-#if (defined __BORLANDC__ && BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)))  \
-                             || (defined BOOST_NO_MEMBER_TEMPLATE_FRIENDS)
+#if (defined __BORLANDC__ && BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))) || (defined BOOST_NO_MEMBER_TEMPLATE_FRIENDS)
 #define BOOST_DYNAMIC_BITSET_DONT_USE_FRIENDS
 #endif
 
@@ -54,18 +61,18 @@ namespace boost { namespace detail {
 // the first macro is a no-op and the second one just expands
 // to its parameter c.
 //
-#if defined (BOOST_USE_FACET)
+#if defined(BOOST_USE_FACET)
 
-#define BOOST_DYNAMIC_BITSET_CTYPE_FACET(ch, name, loc)     \
-            const std::ctype<ch> & name =                   \
-            BOOST_USE_FACET(std::ctype<ch>, loc)         /**/
+#define BOOST_DYNAMIC_BITSET_CTYPE_FACET(ch, name, loc) \
+    const std::ctype<ch> &name =                        \
+        BOOST_USE_FACET(std::ctype<ch>, loc) /**/
 
-#define BOOST_DYNAMIC_BITSET_WIDEN_CHAR(fac, c)             \
-           (fac.widen(c))
+#define BOOST_DYNAMIC_BITSET_WIDEN_CHAR(fac, c) \
+    (fac.widen(c))
 #else
 
 #define BOOST_DYNAMIC_BITSET_CTYPE_FACET(ch, name, loc) /**/
-#define BOOST_DYNAMIC_BITSET_WIDEN_CHAR(fac, c)          c
+#define BOOST_DYNAMIC_BITSET_WIDEN_CHAR(fac, c) c
 
 #endif
 

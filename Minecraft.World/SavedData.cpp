@@ -1,24 +1,22 @@
-#include "stdafx.h"
 #include "SavedData.h"
+#include "stdafx.h"
 
-
-
-SavedData::SavedData(const wstring& id) : id( id )
+SavedData::SavedData(const wstring &id) : id(id)
 {
-	dirty = false;
+    dirty = false;
 }
 
 void SavedData::setDirty()
 {
-	setDirty(true);
+    setDirty(true);
 }
 
 void SavedData::setDirty(bool dirty)
 {
-	this->dirty = dirty;
+    this->dirty = dirty;
 }
 
 bool SavedData::isDirty()
 {
-	return dirty;
+    return dirty;
 }

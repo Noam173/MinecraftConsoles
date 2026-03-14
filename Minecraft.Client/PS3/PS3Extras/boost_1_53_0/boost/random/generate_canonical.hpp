@@ -18,18 +18,21 @@
 #include <boost/assert.hpp>
 #include <boost/config/no_tr1/cmath.hpp>
 #include <boost/limits.hpp>
-#include <boost/type_traits/is_integral.hpp>
 #include <boost/math/special_functions.hpp>
-#include <boost/random/detail/signed_unsigned_tools.hpp>
 #include <boost/random/detail/generator_bits.hpp>
+#include <boost/random/detail/signed_unsigned_tools.hpp>
+#include <boost/type_traits/is_integral.hpp>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
-namespace detail {
+namespace detail
+{
 
-template<class RealType, std::size_t bits, class URNG>
-RealType generate_canonical_impl(URNG& g, boost::mpl::true_ /*is_integral*/)
+template <class RealType, std::size_t bits, class URNG>
+RealType generate_canonical_impl(URNG &g, boost::mpl::true_ /*is_integral*/)
 {
     using std::pow;
     typedef typename URNG::result_type base_result;
@@ -40,7 +43,8 @@ RealType generate_canonical_impl(URNG& g, boost::mpl::true_ /*is_integral*/)
         pow(RealType(2),
             RealType((std::min)(static_cast<std::size_t>(bits), digits)));
     RealType S = RealType(detail::subtract<base_result>()(g(), (g.min)()));
-    while(mult < limit) {
+    while (mult < limit)
+    {
         RealType inc = RealType(detail::subtract<base_result>()(g(), (g.min)()));
         S += inc * mult;
         mult *= R;
@@ -48,11 +52,11 @@ RealType generate_canonical_impl(URNG& g, boost::mpl::true_ /*is_integral*/)
     return S / mult;
 }
 
-template<class RealType, std::size_t bits, class URNG>
-RealType generate_canonical_impl(URNG& g, boost::mpl::false_ /*is_integral*/)
+template <class RealType, std::size_t bits, class URNG>
+RealType generate_canonical_impl(URNG &g, boost::mpl::false_ /*is_integral*/)
 {
-    using std::pow;
     using std::floor;
+    using std::pow;
     BOOST_ASSERT((g.min)() == 0);
     BOOST_ASSERT((g.max)() == 1);
     typedef typename URNG::result_type base_result;
@@ -63,7 +67,8 @@ RealType generate_canonical_impl(URNG& g, boost::mpl::false_ /*is_integral*/)
     RealType mult = R;
     RealType limit = pow(RealType(2), RealType(b));
     RealType S = RealType(g() - (g.min)());
-    while(mult < limit) {
+    while (mult < limit)
+    {
         RealType inc(floor((RealType(g()) - RealType((g.min)())) * R));
         S += inc * mult;
         mult *= R;
@@ -71,20 +76,21 @@ RealType generate_canonical_impl(URNG& g, boost::mpl::false_ /*is_integral*/)
     return S / mult;
 }
 
-}
+} // namespace detail
 
 /**
  * Returns a value uniformly distributed in the range [0, 1)
  * with at least @c bits random bits.
  */
-template<class RealType, std::size_t bits, class URNG>
-RealType generate_canonical(URNG& g)
+template <class RealType, std::size_t bits, class URNG>
+RealType generate_canonical(URNG &g)
 {
     RealType result = detail::generate_canonical_impl<RealType, bits>(
         g, boost::is_integral<typename URNG::result_type>());
     BOOST_ASSERT(result >= 0);
     BOOST_ASSERT(result <= 1);
-    if(result == 1) {
+    if (result == 1)
+    {
         result -= std::numeric_limits<RealType>::epsilon() / 2;
         BOOST_ASSERT(result != 1);
     }

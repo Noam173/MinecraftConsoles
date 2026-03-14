@@ -15,5 +15,4 @@
 #include <boost/msm/front/euml/querying.hpp>
 #include <boost/msm/front/euml/transformation.hpp>
 
-
-#endif //BOOST_MSM_FRONT_EUML_ALGORITHM_H
+#endif // BOOST_MSM_FRONT_EUML_ALGORITHM_H

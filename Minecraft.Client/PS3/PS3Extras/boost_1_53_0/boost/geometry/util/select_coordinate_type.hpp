@@ -14,14 +14,13 @@
 #ifndef BOOST_GEOMETRY_UTIL_SELECT_COORDINATE_TYPE_HPP
 #define BOOST_GEOMETRY_UTIL_SELECT_COORDINATE_TYPE_HPP
 
-
 #include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/util/select_most_precise.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 /*!
     \brief Meta-function selecting the most precise coordinate type
@@ -31,15 +30,12 @@ namespace boost { namespace geometry
 template <typename T1, typename T2>
 struct select_coordinate_type
 {
-    typedef typename select_most_precise
-        <
-            typename coordinate_type<T1>::type,
-            typename coordinate_type<T2>::type
-        >::type type;
+    typedef typename select_most_precise<
+        typename coordinate_type<T1>::type,
+        typename coordinate_type<T2>::type>::type type;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_SELECT_COORDINATE_TYPE_HPP

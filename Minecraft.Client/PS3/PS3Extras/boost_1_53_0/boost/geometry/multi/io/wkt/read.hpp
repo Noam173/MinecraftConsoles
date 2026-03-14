@@ -17,21 +17,25 @@
 #include <string>
 
 #include <boost/geometry/core/mutable_range.hpp>
-#include <boost/geometry/multi/core/tags.hpp>
-#include <boost/geometry/multi/core/point_type.hpp>
-#include <boost/geometry/multi/io/wkt/detail/prefix.hpp>
 #include <boost/geometry/io/wkt/read.hpp>
+#include <boost/geometry/multi/core/point_type.hpp>
+#include <boost/geometry/multi/core/tags.hpp>
+#include <boost/geometry/multi/io/wkt/detail/prefix.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace detail { namespace wkt
+namespace detail
+{
+namespace wkt
 {
 
-template <typename MultiGeometry, template<typename> class Parser, typename PrefixPolicy>
+template <typename MultiGeometry, template <typename> class Parser, typename PrefixPolicy>
 struct multi_parser
 {
-    static inline void apply(std::string const& wkt, MultiGeometry& geometry)
+    static inline void apply(std::string const &wkt, MultiGeometry &geometry)
     {
         traits::clear<MultiGeometry>::apply(geometry);
 
@@ -42,13 +46,11 @@ struct multi_parser
             handle_open_parenthesis(it, tokens.end(), wkt);
 
             // Parse sub-geometries
-            while(it != tokens.end() && *it != ")")
+            while (it != tokens.end() && *it != ")")
             {
                 traits::resize<MultiGeometry>::apply(geometry, boost::size(geometry) + 1);
-                Parser
-                    <
-                        typename boost::range_value<MultiGeometry>::type
-                    >::apply(it, tokens.end(), wkt, geometry.back());
+                Parser<
+                    typename boost::range_value<MultiGeometry>::type>::apply(it, tokens.end(), wkt, geometry.back());
                 if (it != tokens.end() && *it == ",")
                 {
                     // Skip "," after multi-element is parsed
@@ -58,7 +60,7 @@ struct multi_parser
 
             handle_close_parenthesis(it, tokens.end(), wkt);
         }
-        
+
         check_end(it, tokens.end(), wkt);
     }
 };
@@ -66,8 +68,8 @@ struct multi_parser
 template <typename P>
 struct noparenthesis_point_parser
 {
-    static inline void apply(tokenizer::iterator& it, tokenizer::iterator end,
-        std::string const& wkt, P& point)
+    static inline void apply(tokenizer::iterator &it, tokenizer::iterator end,
+                             std::string const &wkt, P &point)
     {
         parsing_assigner<P, 0, dimension<P>::value>::apply(it, end, point, wkt);
     }
@@ -76,7 +78,7 @@ struct noparenthesis_point_parser
 template <typename MultiGeometry, typename PrefixPolicy>
 struct multi_point_parser
 {
-    static inline void apply(std::string const& wkt, MultiGeometry& geometry)
+    static inline void apply(std::string const &wkt, MultiGeometry &geometry)
     {
         traits::clear<MultiGeometry>::apply(geometry);
 
@@ -90,41 +92,38 @@ struct multi_point_parser
             // If first point definition starts with "(" then parse points as (x y)
             // otherwise as "x y"
             bool using_brackets = (it != tokens.end() && *it == "(");
-            
-            while(it != tokens.end() && *it != ")")
+
+            while (it != tokens.end() && *it != ")")
             {
                 traits::resize<MultiGeometry>::apply(geometry, boost::size(geometry) + 1);
-                
+
                 if (using_brackets)
                 {
-                    point_parser
-                        <
-                            typename boost::range_value<MultiGeometry>::type
-                        >::apply(it, tokens.end(), wkt, geometry.back());
+                    point_parser<
+                        typename boost::range_value<MultiGeometry>::type>::apply(it, tokens.end(), wkt, geometry.back());
                 }
                 else
                 {
-                    noparenthesis_point_parser
-                        <
-                            typename boost::range_value<MultiGeometry>::type
-                        >::apply(it, tokens.end(), wkt, geometry.back());
+                    noparenthesis_point_parser<
+                        typename boost::range_value<MultiGeometry>::type>::apply(it, tokens.end(), wkt, geometry.back());
                 }
-                    
+
                 if (it != tokens.end() && *it == ",")
                 {
                     // Skip "," after point is parsed
                     ++it;
                 }
             }
-            
+
             handle_close_parenthesis(it, tokens.end(), wkt);
         }
-        
+
         check_end(it, tokens.end(), wkt);
     }
 };
 
-}} // namespace detail::wkt
+} // namespace wkt
+} // namespace detail
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -132,36 +131,34 @@ namespace dispatch
 
 template <typename MultiGeometry>
 struct read_wkt<multi_point_tag, MultiGeometry>
-    : detail::wkt::multi_point_parser
-            <
-                MultiGeometry,
-                detail::wkt::prefix_multipoint
-            >
-{};
+    : detail::wkt::multi_point_parser<
+          MultiGeometry,
+          detail::wkt::prefix_multipoint>
+{
+};
 
 template <typename MultiGeometry>
 struct read_wkt<multi_linestring_tag, MultiGeometry>
-    : detail::wkt::multi_parser
-            <
-                MultiGeometry,
-                detail::wkt::linestring_parser,
-                detail::wkt::prefix_multilinestring
-            >
-{};
+    : detail::wkt::multi_parser<
+          MultiGeometry,
+          detail::wkt::linestring_parser,
+          detail::wkt::prefix_multilinestring>
+{
+};
 
 template <typename MultiGeometry>
 struct read_wkt<multi_polygon_tag, MultiGeometry>
-    : detail::wkt::multi_parser
-            <
-                MultiGeometry,
-                detail::wkt::polygon_parser,
-                detail::wkt::prefix_multipolygon
-            >
-{};
+    : detail::wkt::multi_parser<
+          MultiGeometry,
+          detail::wkt::polygon_parser,
+          detail::wkt::prefix_multipolygon>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_IO_WKT_READ_MULTI_HPP

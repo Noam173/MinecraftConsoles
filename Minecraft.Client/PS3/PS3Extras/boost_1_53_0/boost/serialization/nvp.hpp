@@ -3,13 +3,13 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // nvp.hpp: interface for serialization system.
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -22,45 +22,49 @@
 #include <boost/detail/workaround.hpp>
 // supress noise
 #if BOOST_WORKAROUND(BOOST_MSVC, <= 1200)
-# pragma warning (disable : 4786) // too long name, harmless warning
+#pragma warning(disable : 4786) // too long name, harmless warning
 #endif
 
 #include <boost/mpl/integral_c.hpp>
 #include <boost/mpl/integral_c_tag.hpp>
 
-#include <boost/serialization/level.hpp>
-#include <boost/serialization/tracking.hpp>
-#include <boost/serialization/split_member.hpp>
 #include <boost/serialization/base_object.hpp>
+#include <boost/serialization/level.hpp>
+#include <boost/serialization/split_member.hpp>
+#include <boost/serialization/tracking.hpp>
 #include <boost/serialization/traits.hpp>
 #include <boost/serialization/wrapper.hpp>
 
-namespace boost {
-namespace serialization {
-
-template<class T>
-struct nvp : 
-    public std::pair<const char *, T *>,
-    public wrapper_traits<const nvp< T > >
+namespace boost
 {
-    explicit nvp(const char * name_, T & t) :
-        // note: redundant cast works around borland issue
-        // note: added _ to suppress useless gcc warning
-        std::pair<const char *, T *>(name_, (T*)(& t))
-    {}
-    nvp(const nvp & rhs) : 
-        // note: redundant cast works around borland issue
-        std::pair<const char *, T *>(rhs.first, (T*)rhs.second)
-    {}
+namespace serialization
+{
 
-    const char * name() const {
+template <class T>
+struct nvp : public std::pair<const char *, T *>,
+             public wrapper_traits<const nvp<T>>
+{
+    explicit nvp(const char *name_, T &t) : // note: redundant cast works around borland issue
+                                            // note: added _ to suppress useless gcc warning
+                                            std::pair<const char *, T *>(name_, (T *)(&t))
+    {
+    }
+    nvp(const nvp &rhs) : // note: redundant cast works around borland issue
+                          std::pair<const char *, T *>(rhs.first, (T *)rhs.second)
+    {
+    }
+
+    const char *name() const
+    {
         return this->first;
     }
-    T & value() const {
+    T &value() const
+    {
         return *(this->second);
     }
 
-    const T & const_value() const {
+    const T &const_value() const
+    {
         return *(this->second);
     }
 
@@ -69,33 +73,36 @@ struct nvp :
     // is an error but I want to accomodated as it generates a long warning
     // listing and might be related to a lot of test failures.
     // default treatment for name-value pairs. The name is
-    // just discarded and only the value is serialized. 
-    template<class Archivex>
+    // just discarded and only the value is serialized.
+    template <class Archivex>
     void save(
-        Archivex & ar, 
+        Archivex &ar,
         const unsigned int /* file_version */
-    ) const {
+    ) const
+    {
         // CodeWarrior 8.x can't seem to resolve the << op for a rhs of "const T *"
         ar.operator<<(const_value());
     }
-    template<class Archivex>
+    template <class Archivex>
     void load(
-        Archivex & ar, 
+        Archivex &ar,
         const unsigned int /* file_version */
-    ){
+    )
+    {
         // CodeWarrior 8.x can't seem to resolve the >> op for a rhs of "const T *"
         ar.operator>>(value());
     }
     BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-template<class T>
+template <class T>
 inline
 #ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
-const
+    const
 #endif
-nvp< T > make_nvp(const char * name, T & t){
-    return nvp< T >(name, t);
+    nvp<T> make_nvp(const char *name, T &t)
+{
+    return nvp<T>(name, t);
 }
 
 // to maintain efficiency and portability, we want to assign
@@ -125,20 +132,19 @@ struct tracking_level<nvp< T > >
 
 #endif
 
-} // seralization
-} // boost
+} // namespace serialization
+} // namespace boost
 
 #include <boost/preprocessor/stringize.hpp>
 
-#define BOOST_SERIALIZATION_NVP(name)                              \
+#define BOOST_SERIALIZATION_NVP(name) \
     boost::serialization::make_nvp(BOOST_PP_STRINGIZE(name), name)
 /**/
 
-#define BOOST_SERIALIZATION_BASE_OBJECT_NVP(name)                  \
-    boost::serialization::make_nvp(                                \
-        BOOST_PP_STRINGIZE(name),                                  \
-        boost::serialization::base_object<name >(*this)            \
-    )
+#define BOOST_SERIALIZATION_BASE_OBJECT_NVP(name) \
+    boost::serialization::make_nvp(               \
+        BOOST_PP_STRINGIZE(name),                 \
+                           boost::serialization::base_object<name>(*this))
 /**/
 
 #endif // BOOST_SERIALIZATION_NVP_HPP

@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,26 +11,36 @@
 #ifndef BOOST_UNIT_SYSTEMS_METRIC_MICRON_HPP_INCLUDED
 #define BOOST_UNIT_SYSTEMS_METRIC_MICRON_HPP_INCLUDED
 
+#include <boost/units/base_units/si/meter.hpp>
+#include <boost/units/scale.hpp>
 #include <boost/units/scaled_base_unit.hpp>
 #include <boost/units/static_rational.hpp>
-#include <boost/units/scale.hpp>
-#include <boost/units/base_units/si/meter.hpp>
 
-namespace boost {
-namespace units {
-namespace metric {
+namespace boost
+{
+namespace units
+{
+namespace metric
+{
 
-typedef scaled_base_unit<boost::units::si::meter_base_unit, scale<10, static_rational<-6> > >  micron_base_unit;
+typedef scaled_base_unit<boost::units::si::meter_base_unit, scale<10, static_rational<-6>>> micron_base_unit;
 
 }
 
-template<>
-struct base_unit_info<metric::micron_base_unit> {
-    static const char* name()   { return("micron"); }
-    static const char* symbol() { return("u"); }
+template <>
+struct base_unit_info<metric::micron_base_unit>
+{
+    static const char *name()
+    {
+        return ("micron");
+    }
+    static const char *symbol()
+    {
+        return ("u");
+    }
 };
 
-}
-}
+} // namespace units
+} // namespace boost
 
 #endif // BOOST_UNIT_SYSTEMS_METRIC_MICRON_HPP_INCLUDED

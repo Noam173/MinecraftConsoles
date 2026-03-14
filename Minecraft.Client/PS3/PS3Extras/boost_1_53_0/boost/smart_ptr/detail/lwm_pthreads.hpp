@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -28,30 +28,28 @@ namespace detail
 
 class lightweight_mutex
 {
-private:
-
+  private:
     pthread_mutex_t m_;
 
     lightweight_mutex(lightweight_mutex const &);
-    lightweight_mutex & operator=(lightweight_mutex const &);
+    lightweight_mutex &operator=(lightweight_mutex const &);
 
-public:
-
+  public:
     lightweight_mutex()
     {
 
-// HPUX 10.20 / DCE has a nonstandard pthread_mutex_init
+        // HPUX 10.20 / DCE has a nonstandard pthread_mutex_init
 
 #if defined(__hpux) && defined(_DECTHREADS_)
-        BOOST_VERIFY( pthread_mutex_init( &m_, pthread_mutexattr_default ) == 0 );
+        BOOST_VERIFY(pthread_mutex_init(&m_, pthread_mutexattr_default) == 0);
 #else
-        BOOST_VERIFY( pthread_mutex_init( &m_, 0 ) == 0 );
+        BOOST_VERIFY(pthread_mutex_init(&m_, 0) == 0);
 #endif
     }
 
     ~lightweight_mutex()
     {
-        BOOST_VERIFY( pthread_mutex_destroy( &m_ ) == 0 );
+        BOOST_VERIFY(pthread_mutex_destroy(&m_) == 0);
     }
 
     class scoped_lock;
@@ -59,23 +57,21 @@ public:
 
     class scoped_lock
     {
-    private:
-
-        pthread_mutex_t & m_;
+      private:
+        pthread_mutex_t &m_;
 
         scoped_lock(scoped_lock const &);
-        scoped_lock & operator=(scoped_lock const &);
+        scoped_lock &operator=(scoped_lock const &);
 
-    public:
-
-        scoped_lock(lightweight_mutex & m): m_(m.m_)
+      public:
+        scoped_lock(lightweight_mutex &m) : m_(m.m_)
         {
-            BOOST_VERIFY( pthread_mutex_lock( &m_ ) == 0 );
+            BOOST_VERIFY(pthread_mutex_lock(&m_) == 0);
         }
 
         ~scoped_lock()
         {
-            BOOST_VERIFY( pthread_mutex_unlock( &m_ ) == 0 );
+            BOOST_VERIFY(pthread_mutex_unlock(&m_) == 0);
         }
     };
 };

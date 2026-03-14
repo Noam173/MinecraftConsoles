@@ -19,24 +19,23 @@
 #include <boost/type_traits/is_arithmetic.hpp>
 
 #include <boost/geometry/core/access.hpp>
-#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
 #include <boost/geometry/core/coordinate_type.hpp>
+#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/tags.hpp>
 
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 namespace traits
 {
 
-
 #ifndef DOXYGEN_NO_DETAIL
 namespace detail
 {
-
 
 // Create class and specialization to indicate the tag
 // for normal cases and the case that the type of the c-array is arithmetic
@@ -46,23 +45,21 @@ struct c_array_tag
     typedef geometry_not_recognized_tag type;
 };
 
-
 template <>
 struct c_array_tag<true>
 {
     typedef point_tag type;
 };
 
-
 } // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 // Assign the point-tag, preventing arrays of points getting a point-tag
 template <typename CoordinateType, std::size_t DimensionCount>
 struct tag<CoordinateType[DimensionCount]>
-    : detail::c_array_tag<boost::is_arithmetic<CoordinateType>::value> {};
-
+    : detail::c_array_tag<boost::is_arithmetic<CoordinateType>::value>
+{
+};
 
 template <typename CoordinateType, std::size_t DimensionCount>
 struct coordinate_type<CoordinateType[DimensionCount]>
@@ -70,10 +67,10 @@ struct coordinate_type<CoordinateType[DimensionCount]>
     typedef CoordinateType type;
 };
 
-
 template <typename CoordinateType, std::size_t DimensionCount>
-struct dimension<CoordinateType[DimensionCount]>: boost::mpl::int_<DimensionCount> {};
-
+struct dimension<CoordinateType[DimensionCount]> : boost::mpl::int_<DimensionCount>
+{
+};
 
 template <typename CoordinateType, std::size_t DimensionCount, std::size_t Dimension>
 struct access<CoordinateType[DimensionCount], Dimension>
@@ -84,28 +81,32 @@ struct access<CoordinateType[DimensionCount], Dimension>
     }
 
     static inline void set(CoordinateType p[DimensionCount],
-        CoordinateType const& value)
+                           CoordinateType const &value)
     {
         p[Dimension] = value;
     }
 };
 
-
 } // namespace traits
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #define BOOST_GEOMETRY_REGISTER_C_ARRAY_CS(CoordinateSystem) \
-    namespace boost { namespace geometry { namespace traits { \
-    template <typename T, std::size_t N> \
-    struct coordinate_system<T[N]> \
-    { \
-        typedef CoordinateSystem type; \
-    }; \
-    }}}
-
+    namespace boost                                          \
+    {                                                        \
+    namespace geometry                                       \
+    {                                                        \
+    namespace traits                                         \
+    {                                                        \
+    template <typename T, std::size_t N>                     \
+    struct coordinate_system<T[N]>                           \
+    {                                                        \
+        typedef CoordinateSystem type;                       \
+    };                                                       \
+    }                                                        \
+    }                                                        \
+    }
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_ADAPTED_C_ARRAY_HPP

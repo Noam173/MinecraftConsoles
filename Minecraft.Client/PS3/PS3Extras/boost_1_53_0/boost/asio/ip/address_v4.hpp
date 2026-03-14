@@ -12,25 +12,28 @@
 #define BOOST_ASIO_IP_ADDRESS_V4_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include <boost/asio/detail/config.hpp>
-#include <string>
 #include <boost/asio/detail/array.hpp>
+#include <boost/asio/detail/config.hpp>
 #include <boost/asio/detail/socket_types.hpp>
 #include <boost/asio/detail/winsock_init.hpp>
 #include <boost/system/error_code.hpp>
+#include <string>
 
 #if !defined(BOOST_NO_IOSTREAM)
-# include <iosfwd>
+#include <iosfwd>
 #endif // !defined(BOOST_NO_IOSTREAM)
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace ip {
+namespace boost
+{
+namespace asio
+{
+namespace ip
+{
 
 /// Implements IP version 4 style addresses.
 /**
@@ -43,170 +46,170 @@ namespace ip {
  */
 class address_v4
 {
-public:
-  /// The type used to represent an address as an array of bytes.
-  /**
-   * @note This type is defined in terms of the C++0x template @c std::array
-   * when it is available. Otherwise, it uses @c boost:array.
-   */
+  public:
+    /// The type used to represent an address as an array of bytes.
+    /**
+     * @note This type is defined in terms of the C++0x template @c std::array
+     * when it is available. Otherwise, it uses @c boost:array.
+     */
 #if defined(GENERATING_DOCUMENTATION)
-  typedef array<unsigned char, 4> bytes_type;
+    typedef array<unsigned char, 4> bytes_type;
 #else
-  typedef boost::asio::detail::array<unsigned char, 4> bytes_type;
+    typedef boost::asio::detail::array<unsigned char, 4> bytes_type;
 #endif
 
-  /// Default constructor.
-  address_v4()
-  {
-    addr_.s_addr = 0;
-  }
+    /// Default constructor.
+    address_v4()
+    {
+        addr_.s_addr = 0;
+    }
 
-  /// Construct an address from raw bytes.
-  BOOST_ASIO_DECL explicit address_v4(const bytes_type& bytes);
+    /// Construct an address from raw bytes.
+    BOOST_ASIO_DECL explicit address_v4(const bytes_type &bytes);
 
-  /// Construct an address from a unsigned long in host byte order.
-  BOOST_ASIO_DECL explicit address_v4(unsigned long addr);
+    /// Construct an address from a unsigned long in host byte order.
+    BOOST_ASIO_DECL explicit address_v4(unsigned long addr);
 
-  /// Copy constructor.
-  address_v4(const address_v4& other)
-    : addr_(other.addr_)
-  {
-  }
-
-#if defined(BOOST_ASIO_HAS_MOVE)
-  /// Move constructor.
-  address_v4(address_v4&& other)
-    : addr_(other.addr_)
-  {
-  }
-#endif // defined(BOOST_ASIO_HAS_MOVE)
-
-  /// Assign from another address.
-  address_v4& operator=(const address_v4& other)
-  {
-    addr_ = other.addr_;
-    return *this;
-  }
+    /// Copy constructor.
+    address_v4(const address_v4 &other)
+        : addr_(other.addr_)
+    {
+    }
 
 #if defined(BOOST_ASIO_HAS_MOVE)
-  /// Move-assign from another address.
-  address_v4& operator=(address_v4&& other)
-  {
-    addr_ = other.addr_;
-    return *this;
-  }
+    /// Move constructor.
+    address_v4(address_v4 &&other)
+        : addr_(other.addr_)
+    {
+    }
 #endif // defined(BOOST_ASIO_HAS_MOVE)
 
-  /// Get the address in bytes, in network byte order.
-  BOOST_ASIO_DECL bytes_type to_bytes() const;
+    /// Assign from another address.
+    address_v4 &operator=(const address_v4 &other)
+    {
+        addr_ = other.addr_;
+        return *this;
+    }
 
-  /// Get the address as an unsigned long in host byte order
-  BOOST_ASIO_DECL unsigned long to_ulong() const;
+#if defined(BOOST_ASIO_HAS_MOVE)
+    /// Move-assign from another address.
+    address_v4 &operator=(address_v4 &&other)
+    {
+        addr_ = other.addr_;
+        return *this;
+    }
+#endif // defined(BOOST_ASIO_HAS_MOVE)
 
-  /// Get the address as a string in dotted decimal format.
-  BOOST_ASIO_DECL std::string to_string() const;
+    /// Get the address in bytes, in network byte order.
+    BOOST_ASIO_DECL bytes_type to_bytes() const;
 
-  /// Get the address as a string in dotted decimal format.
-  BOOST_ASIO_DECL std::string to_string(boost::system::error_code& ec) const;
+    /// Get the address as an unsigned long in host byte order
+    BOOST_ASIO_DECL unsigned long to_ulong() const;
 
-  /// Create an address from an IP address string in dotted decimal form.
-  BOOST_ASIO_DECL static address_v4 from_string(const char* str);
+    /// Get the address as a string in dotted decimal format.
+    BOOST_ASIO_DECL std::string to_string() const;
 
-  /// Create an address from an IP address string in dotted decimal form.
-  BOOST_ASIO_DECL static address_v4 from_string(
-      const char* str, boost::system::error_code& ec);
+    /// Get the address as a string in dotted decimal format.
+    BOOST_ASIO_DECL std::string to_string(boost::system::error_code &ec) const;
 
-  /// Create an address from an IP address string in dotted decimal form.
-  BOOST_ASIO_DECL static address_v4 from_string(const std::string& str);
+    /// Create an address from an IP address string in dotted decimal form.
+    BOOST_ASIO_DECL static address_v4 from_string(const char *str);
 
-  /// Create an address from an IP address string in dotted decimal form.
-  BOOST_ASIO_DECL static address_v4 from_string(
-      const std::string& str, boost::system::error_code& ec);
+    /// Create an address from an IP address string in dotted decimal form.
+    BOOST_ASIO_DECL static address_v4 from_string(
+        const char *str, boost::system::error_code &ec);
 
-  /// Determine whether the address is a loopback address.
-  BOOST_ASIO_DECL bool is_loopback() const;
+    /// Create an address from an IP address string in dotted decimal form.
+    BOOST_ASIO_DECL static address_v4 from_string(const std::string &str);
 
-  /// Determine whether the address is unspecified.
-  BOOST_ASIO_DECL bool is_unspecified() const;
+    /// Create an address from an IP address string in dotted decimal form.
+    BOOST_ASIO_DECL static address_v4 from_string(
+        const std::string &str, boost::system::error_code &ec);
 
-  /// Determine whether the address is a class A address.
-  BOOST_ASIO_DECL bool is_class_a() const;
+    /// Determine whether the address is a loopback address.
+    BOOST_ASIO_DECL bool is_loopback() const;
 
-  /// Determine whether the address is a class B address.
-  BOOST_ASIO_DECL bool is_class_b() const;
+    /// Determine whether the address is unspecified.
+    BOOST_ASIO_DECL bool is_unspecified() const;
 
-  /// Determine whether the address is a class C address.
-  BOOST_ASIO_DECL bool is_class_c() const;
+    /// Determine whether the address is a class A address.
+    BOOST_ASIO_DECL bool is_class_a() const;
 
-  /// Determine whether the address is a multicast address.
-  BOOST_ASIO_DECL bool is_multicast() const;
+    /// Determine whether the address is a class B address.
+    BOOST_ASIO_DECL bool is_class_b() const;
 
-  /// Compare two addresses for equality.
-  friend bool operator==(const address_v4& a1, const address_v4& a2)
-  {
-    return a1.addr_.s_addr == a2.addr_.s_addr;
-  }
+    /// Determine whether the address is a class C address.
+    BOOST_ASIO_DECL bool is_class_c() const;
 
-  /// Compare two addresses for inequality.
-  friend bool operator!=(const address_v4& a1, const address_v4& a2)
-  {
-    return a1.addr_.s_addr != a2.addr_.s_addr;
-  }
+    /// Determine whether the address is a multicast address.
+    BOOST_ASIO_DECL bool is_multicast() const;
 
-  /// Compare addresses for ordering.
-  friend bool operator<(const address_v4& a1, const address_v4& a2)
-  {
-    return a1.to_ulong() < a2.to_ulong();
-  }
+    /// Compare two addresses for equality.
+    friend bool operator==(const address_v4 &a1, const address_v4 &a2)
+    {
+        return a1.addr_.s_addr == a2.addr_.s_addr;
+    }
 
-  /// Compare addresses for ordering.
-  friend bool operator>(const address_v4& a1, const address_v4& a2)
-  {
-    return a1.to_ulong() > a2.to_ulong();
-  }
+    /// Compare two addresses for inequality.
+    friend bool operator!=(const address_v4 &a1, const address_v4 &a2)
+    {
+        return a1.addr_.s_addr != a2.addr_.s_addr;
+    }
 
-  /// Compare addresses for ordering.
-  friend bool operator<=(const address_v4& a1, const address_v4& a2)
-  {
-    return a1.to_ulong() <= a2.to_ulong();
-  }
+    /// Compare addresses for ordering.
+    friend bool operator<(const address_v4 &a1, const address_v4 &a2)
+    {
+        return a1.to_ulong() < a2.to_ulong();
+    }
 
-  /// Compare addresses for ordering.
-  friend bool operator>=(const address_v4& a1, const address_v4& a2)
-  {
-    return a1.to_ulong() >= a2.to_ulong();
-  }
+    /// Compare addresses for ordering.
+    friend bool operator>(const address_v4 &a1, const address_v4 &a2)
+    {
+        return a1.to_ulong() > a2.to_ulong();
+    }
 
-  /// Obtain an address object that represents any address.
-  static address_v4 any()
-  {
-    return address_v4();
-  }
+    /// Compare addresses for ordering.
+    friend bool operator<=(const address_v4 &a1, const address_v4 &a2)
+    {
+        return a1.to_ulong() <= a2.to_ulong();
+    }
 
-  /// Obtain an address object that represents the loopback address.
-  static address_v4 loopback()
-  {
-    return address_v4(0x7F000001);
-  }
+    /// Compare addresses for ordering.
+    friend bool operator>=(const address_v4 &a1, const address_v4 &a2)
+    {
+        return a1.to_ulong() >= a2.to_ulong();
+    }
 
-  /// Obtain an address object that represents the broadcast address.
-  static address_v4 broadcast()
-  {
-    return address_v4(0xFFFFFFFF);
-  }
+    /// Obtain an address object that represents any address.
+    static address_v4 any()
+    {
+        return address_v4();
+    }
 
-  /// Obtain an address object that represents the broadcast address that
-  /// corresponds to the specified address and netmask.
-  BOOST_ASIO_DECL static address_v4 broadcast(
-      const address_v4& addr, const address_v4& mask);
+    /// Obtain an address object that represents the loopback address.
+    static address_v4 loopback()
+    {
+        return address_v4(0x7F000001);
+    }
 
-  /// Obtain the netmask that corresponds to the address, based on its address
-  /// class.
-  BOOST_ASIO_DECL static address_v4 netmask(const address_v4& addr);
+    /// Obtain an address object that represents the broadcast address.
+    static address_v4 broadcast()
+    {
+        return address_v4(0xFFFFFFFF);
+    }
 
-private:
-  // The underlying IPv4 address.
-  boost::asio::detail::in4_addr_type addr_;
+    /// Obtain an address object that represents the broadcast address that
+    /// corresponds to the specified address and netmask.
+    BOOST_ASIO_DECL static address_v4 broadcast(
+        const address_v4 &addr, const address_v4 &mask);
+
+    /// Obtain the netmask that corresponds to the address, based on its address
+    /// class.
+    BOOST_ASIO_DECL static address_v4 netmask(const address_v4 &addr);
+
+  private:
+    // The underlying IPv4 address.
+    boost::asio::detail::in4_addr_type addr_;
 };
 
 #if !defined(BOOST_NO_IOSTREAM)
@@ -224,8 +227,8 @@ private:
  * @relates boost::asio::ip::address_v4
  */
 template <typename Elem, typename Traits>
-std::basic_ostream<Elem, Traits>& operator<<(
-    std::basic_ostream<Elem, Traits>& os, const address_v4& addr);
+std::basic_ostream<Elem, Traits> &operator<<(
+    std::basic_ostream<Elem, Traits> &os, const address_v4 &addr);
 
 #endif // !defined(BOOST_NO_IOSTREAM)
 
@@ -237,7 +240,7 @@ std::basic_ostream<Elem, Traits>& operator<<(
 
 #include <boost/asio/ip/impl/address_v4.hpp>
 #if defined(BOOST_ASIO_HEADER_ONLY)
-# include <boost/asio/ip/impl/address_v4.ipp>
+#include <boost/asio/ip/impl/address_v4.ipp>
 #endif // defined(BOOST_ASIO_HEADER_ONLY)
 
 #endif // BOOST_ASIO_IP_ADDRESS_V4_HPP

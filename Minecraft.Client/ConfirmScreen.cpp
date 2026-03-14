@@ -1,9 +1,9 @@
-#include "stdafx.h"
 #include "ConfirmScreen.h"
-#include "SmallButton.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
+#include "SmallButton.h"
+#include "stdafx.h"
 
-ConfirmScreen::ConfirmScreen(Screen *parent, const wstring& title1, const wstring& title2, int id)
+ConfirmScreen::ConfirmScreen(Screen *parent, const wstring &title1, const wstring &title2, int id)
 {
     this->parent = parent;
     this->title1 = title1;
@@ -15,7 +15,7 @@ ConfirmScreen::ConfirmScreen(Screen *parent, const wstring& title1, const wstrin
     noButton = language->getElement(L"gui.no");
 }
 
-ConfirmScreen::ConfirmScreen(Screen *parent, const wstring& title1, const wstring& title2, const wstring& yesButton, const wstring& noButton, int id)
+ConfirmScreen::ConfirmScreen(Screen *parent, const wstring &title1, const wstring &title2, const wstring &yesButton, const wstring &noButton, int id)
 {
     this->parent = parent;
     this->title1 = title1;
@@ -33,7 +33,7 @@ void ConfirmScreen::init()
 
 void ConfirmScreen::buttonClicked(Button *button)
 {
-	parent->confirmResult(button->id == 0, id);
+    parent->confirmResult(button->id == 0, id);
 }
 
 void ConfirmScreen::render(int xm, int ym, float a)
@@ -45,11 +45,11 @@ void ConfirmScreen::render(int xm, int ym, float a)
 
     Screen::render(xm, ym, a);
 
-	// 4J - debug code - remove
-	static int count = 0;
-	if( count++ == 100 )
-	{
-		count = 0;
-		buttonClicked(buttons[0]);
-	}
+    // 4J - debug code - remove
+    static int count = 0;
+    if (count++ == 100)
+    {
+        count = 0;
+        buttonClicked(buttons[0]);
+    }
 }

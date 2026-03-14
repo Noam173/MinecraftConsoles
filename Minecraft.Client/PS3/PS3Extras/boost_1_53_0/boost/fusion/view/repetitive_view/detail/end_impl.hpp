@@ -11,39 +11,42 @@
 #include <boost/fusion/sequence/intrinsic/end.hpp>
 #include <boost/fusion/view/repetitive_view/repetitive_view_fwd.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct repetitive_view_tag;
+namespace fusion
+{
+struct repetitive_view_tag;
 
-    template <typename Sequence, typename Pos>
-    struct repetitive_view_iterator;
+template <typename Sequence, typename Pos>
+struct repetitive_view_iterator;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct end_impl;
+
+template <>
+struct end_impl<repetitive_view_tag>
+{
+    template <typename View>
+    struct apply
     {
-        template<typename Tag>
-        struct end_impl;
+        typedef typename View::sequence_type sequence_type;
 
-        template<>
-        struct end_impl<repetitive_view_tag>
+        typedef repetitive_view_iterator<sequence_type,
+                                         typename result_of::end<sequence_type>::type>
+            type;
+
+        static type call(View const &v)
         {
-            template<typename View>
-            struct apply
-            {
-                typedef typename View::sequence_type sequence_type;
+            return type(v.seq, end(v.seq));
+        }
+    };
+};
 
-                typedef repetitive_view_iterator<sequence_type,
-                    typename result_of::end<sequence_type>::type > type;
+} // namespace extension
 
-                static type call(View const& v)
-                {
-                    return type(v.seq,end(v.seq));
-                }
-            };
-        };
-
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif
-

@@ -10,42 +10,42 @@
 
 #include <boost/fusion/container/list/cons.hpp>
 #include <boost/fusion/container/list/detail/build_cons.hpp>
-#include <boost/fusion/sequence/intrinsic/empty.hpp>
 #include <boost/fusion/sequence/intrinsic/begin.hpp>
+#include <boost/fusion/sequence/intrinsic/empty.hpp>
 #include <boost/fusion/sequence/intrinsic/end.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct cons_tag;
+namespace fusion
+{
+struct cons_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct convert_impl;
+
+template <>
+struct convert_impl<cons_tag>
+{
+    template <typename Sequence>
+    struct apply
     {
-        template <typename T>
-        struct convert_impl;
+        typedef typename detail::build_cons<
+            typename result_of::begin<Sequence>::type, typename result_of::end<Sequence>::type>
+            build_cons;
 
-        template <>
-        struct convert_impl<cons_tag>
+        typedef typename build_cons::type type;
+
+        static type
+        call(Sequence &seq)
         {
-            template <typename Sequence>
-            struct apply
-            {
-                typedef typename
-                    detail::build_cons<
-                        typename result_of::begin<Sequence>::type
-                      , typename result_of::end<Sequence>::type
-                    >
-                build_cons;
-
-                typedef typename build_cons::type type;
-
-                static type
-                call(Sequence& seq)
-                {
-                    return build_cons::call(fusion::begin(seq), fusion::end(seq));
-                }
-            };
-        };
-    }
-}}
+            return build_cons::call(fusion::begin(seq), fusion::end(seq));
+        }
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

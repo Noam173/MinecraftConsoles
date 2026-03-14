@@ -10,7 +10,7 @@
 // Provides an arbitrary number of types (case_<0>, case_<1>, ...) for
 // determining the results of overload resultion using 'sizeof', plus a uniform
 // means of using the result. yes_type and no_type are typedefs for case_<1>
-// and case_<0>. A single case with negative argument, case_<-1>, is also 
+// and case_<0>. A single case with negative argument, case_<-1>, is also
 // provided, for convenience.
 //
 // This header may be included any number of times, with
@@ -18,7 +18,7 @@
 // is needed for a particular application. It defaults to 20.
 //
 // This header depends only on Boost.Config and Boost.Preprocessor. Dependence
-// on Type Traits or MPL was intentionally avoided, to leave open the 
+// on Type Traits or MPL was intentionally avoided, to leave open the
 // possibility that select_by_size could be used by these libraries.
 //
 // Example usage:
@@ -65,11 +65,11 @@
 // specialized.
 #define SELECT_BY_SIZE_MAX_SPECIALIZED 20
 
-#include <boost/config.hpp>    // BOOST_STATIC_CONSTANT.
+#include <boost/config.hpp> // BOOST_STATIC_CONSTANT.
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
 
-/* Alternative implementation using max_align. 
+/* Alternative implementation using max_align.
 
 #include <boost/type_traits/alignment_of.hpp>
 #include <boost/type_traits/type_with_alignment.hpp>
@@ -81,42 +81,71 @@ struct case_ { char c[(N + 1) * alignment_of<detail::max_align>::value]; };
 
 template<unsigned Size>
 struct select_by_size {
-    BOOST_STATIC_CONSTANT(int, value = 
+    BOOST_STATIC_CONSTANT(int, value =
         (Size / alignment_of<detail::max_align>::value - 1));
 };
 
 } } // End namespaces utility, boost.
 
-*/              // End alternate implementation.
+*/
+// End alternate implementation.
 
-namespace boost { namespace iostreams { namespace detail {
+namespace boost
+{
+namespace iostreams
+{
+namespace detail
+{
 
 //--------------Definition of case_-------------------------------------------//
 
-template<int N> struct case_ { char c1; case_<N - 1> c2; };
-template<> struct case_<-1> { char c; };
+template <int N>
+struct case_
+{
+    char c1;
+    case_<N - 1> c2;
+};
+template <>
+struct case_<-1>
+{
+    char c;
+};
 typedef case_<true> yes_type;
 typedef case_<false> no_type;
 
 //--------------Declaration of select_by_size---------------------------------//
 
-template<unsigned Size> struct select_by_size;
+template <unsigned Size>
+struct select_by_size;
 
-} } } // End namespaces detail, iostreams, boost.
+} // namespace detail
+} // namespace iostreams
+} // namespace boost
 
 //--------------Definition of SELECT_BY_SIZE_SPEC-----------------------------//
 
 // Sepecializes select_by_size for sizeof(case<n-1>). The decrement is used
 // here because the preprocessor library doesn't handle negative integers.
-#define SELECT_BY_SIZE_SPEC(n) \
-    namespace boost { namespace iostreams { namespace detail { \
-      static const int BOOST_PP_CAT(sizeof_case_, n) = sizeof(case_<n - 1>); \
-      template<> \
-      struct select_by_size< BOOST_PP_CAT(sizeof_case_, n) > { \
-          struct type { BOOST_STATIC_CONSTANT(int, value = n - 1); }; \
-          BOOST_STATIC_CONSTANT(int, value = type::value); \
-      }; \
-    } } } \
+#define SELECT_BY_SIZE_SPEC(n)                                             \
+    namespace boost                                                        \
+    {                                                                      \
+    namespace iostreams                                                    \
+    {                                                                      \
+    namespace detail                                                       \
+    {                                                                      \
+    static const int BOOST_PP_CAT(sizeof_case_, n) = sizeof(case_<n - 1>); \
+    template <>                                                            \
+    struct select_by_size<BOOST_PP_CAT(sizeof_case_, n)>                   \
+    {                                                                      \
+        struct type                                                        \
+        {                                                                  \
+            BOOST_STATIC_CONSTANT(int, value = n - 1);                     \
+        };                                                                 \
+        BOOST_STATIC_CONSTANT(int, value = type::value);                   \
+    };                                                                     \
+    }                                                                      \
+    }                                                                      \
+    }                                                                      \
     /**/
 
 //--------------Default specializations of select_by_size---------------------//
@@ -128,18 +157,15 @@ template<unsigned Size> struct select_by_size;
 
 //--------------Definition of SELECT_BY_SIZE----------------------------------//
 
-#define BOOST_SELECT_BY_SIZE(type_, name, expr) \
-    BOOST_STATIC_CONSTANT( \
-        unsigned, \
-        BOOST_PP_CAT(boost_select_by_size_temp_, name) = sizeof(expr) \
-    ); \
-    BOOST_STATIC_CONSTANT( \
-        type_, \
-        name = \
-            ( ::boost::iostreams::detail::select_by_size< \
-                BOOST_PP_CAT(boost_select_by_size_temp_, name) \
-              >::value ) \
-    ) \
+#define BOOST_SELECT_BY_SIZE(type_, name, expr)                          \
+    BOOST_STATIC_CONSTANT(                                               \
+        unsigned,                                                        \
+        BOOST_PP_CAT(boost_select_by_size_temp_, name) = sizeof(expr));  \
+    BOOST_STATIC_CONSTANT(                                               \
+        type_,                                                           \
+        name =                                                           \
+            (::boost::iostreams::detail::select_by_size<                 \
+                BOOST_PP_CAT(boost_select_by_size_temp_, name)>::value)) \
     /**/
 
 #endif // #ifndef BOOST_IOSTREAMS_DETAIL_SELECT_BY_SIZE_HPP_INCLUDED
@@ -150,8 +176,7 @@ template<unsigned Size> struct select_by_size;
 
 #define BOOST_PP_LOCAL_MACRO(n) SELECT_BY_SIZE_SPEC(n)
 #define BOOST_PP_LOCAL_LIMITS \
-    (SELECT_BY_SIZE_MAX_SPECIALIZED, BOOST_SELECT_BY_SIZE_MAX_CASE) \
-    /**/
+    (SELECT_BY_SIZE_MAX_SPECIALIZED, BOOST_SELECT_BY_SIZE_MAX_CASE) /**/
 #include BOOST_PP_LOCAL_ITERATE()
 #undef BOOST_PP_LOCAL_MACRO
 #undef SELECT_BY_SIZE_MAX_SPECIALIZED

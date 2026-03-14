@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -31,26 +31,26 @@
 #include <boost/config.hpp>
 #include <boost/smart_ptr/detail/sp_has_sync.hpp>
 
-#if defined( BOOST_SP_USE_PTHREADS )
-#  include <boost/smart_ptr/detail/spinlock_pt.hpp>
+#if defined(BOOST_SP_USE_PTHREADS)
+#include <boost/smart_ptr/detail/spinlock_pt.hpp>
 
-#elif defined(__GNUC__) && defined( __arm__ ) && !defined( __thumb__ )
-#  include <boost/smart_ptr/detail/spinlock_gcc_arm.hpp>
+#elif defined(__GNUC__) && defined(__arm__) && !defined(__thumb__)
+#include <boost/smart_ptr/detail/spinlock_gcc_arm.hpp>
 
-#elif defined( BOOST_SP_HAS_SYNC )
-#  include <boost/smart_ptr/detail/spinlock_sync.hpp>
+#elif defined(BOOST_SP_HAS_SYNC)
+#include <boost/smart_ptr/detail/spinlock_sync.hpp>
 
 #elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
-#  include <boost/smart_ptr/detail/spinlock_w32.hpp>
+#include <boost/smart_ptr/detail/spinlock_w32.hpp>
 
 #elif defined(BOOST_HAS_PTHREADS)
-#  include <boost/smart_ptr/detail/spinlock_pt.hpp>
+#include <boost/smart_ptr/detail/spinlock_pt.hpp>
 
 #elif !defined(BOOST_HAS_THREADS)
-#  include <boost/smart_ptr/detail/spinlock_nt.hpp>
+#include <boost/smart_ptr/detail/spinlock_nt.hpp>
 
 #else
-#  error Unrecognized threading platform
+#error Unrecognized threading platform
 #endif
 
 #endif // #ifndef BOOST_SMART_PTR_DETAIL_SPINLOCK_HPP_INCLUDED

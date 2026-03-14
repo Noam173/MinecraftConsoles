@@ -4,8 +4,8 @@
 
 // Copyright Aleksey Gurtovoy 2002-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -14,18 +14,15 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
-#include <boost/mpl/aux_/config/ttp.hpp>
 #include <boost/mpl/aux_/config/ctps.hpp>
+#include <boost/mpl/aux_/config/ttp.hpp>
 
-// agurt, 15/jan/02: full-fledged implementation requires both 
+// agurt, 15/jan/02: full-fledged implementation requires both
 // template template parameters _and_ partial specialization
 
-#if    !defined(BOOST_MPL_CFG_NO_FULL_LAMBDA_SUPPORT) \
-    && (   defined(BOOST_MPL_CFG_NO_TEMPLATE_TEMPLATE_PARAMETERS) \
-        || defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
-        )
+#if !defined(BOOST_MPL_CFG_NO_FULL_LAMBDA_SUPPORT) && (defined(BOOST_MPL_CFG_NO_TEMPLATE_TEMPLATE_PARAMETERS) || defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION))
 
-#   define BOOST_MPL_CFG_NO_FULL_LAMBDA_SUPPORT
+#define BOOST_MPL_CFG_NO_FULL_LAMBDA_SUPPORT
 
 #endif
 

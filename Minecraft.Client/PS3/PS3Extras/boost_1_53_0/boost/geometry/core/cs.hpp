@@ -21,29 +21,32 @@
 #include <boost/geometry/core/coordinate_system.hpp>
 #include <boost/geometry/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
 \brief Unit of plane angle: Degrees
 \details Tag defining the unit of plane angle for spherical coordinate systems.
-    This tag specifies that coordinates are defined in degrees (-180 .. 180). 
+    This tag specifies that coordinates are defined in degrees (-180 .. 180).
     It has to be specified for some coordinate systems.
 \qbk{[include reference/core/degree_radian.qbk]}
 */
-struct degree {};
-
+struct degree
+{
+};
 
 /*!
 \brief Unit of plane angle: Radians
 \details Tag defining the unit of plane angle for spherical coordinate systems.
-    This tag specifies that coordinates are defined in radians (-PI .. PI). 
+    This tag specifies that coordinates are defined in radians (-PI .. PI).
     It has to be specified for some coordinate systems.
 \qbk{[include reference/core/degree_radian.qbk]}
 */
-struct radian {};
-
+struct radian
+{
+};
 
 namespace cs
 {
@@ -56,10 +59,9 @@ dimensions and usually (but not always) known as x,y,z
 \see http://en.wikipedia.org/wiki/Cartesian_coordinate_system
 \ingroup cs
 */
-struct cartesian {};
-
-
-
+struct cartesian
+{
+};
 
 /*!
 \brief Geographic coordinate system, in degree or in radian
@@ -70,13 +72,11 @@ known as lat,long or lo,la or phi,lambda
 \ingroup cs
 \note might be moved to extensions/gis/geographic
 */
-template<typename DegreeOrRadian>
+template <typename DegreeOrRadian>
 struct geographic
 {
     typedef DegreeOrRadian units;
 };
-
-
 
 /*!
 \brief Spherical (polar) coordinate system, in degree or in radian
@@ -96,30 +96,27 @@ struct geographic
 \see http://en.wikipedia.org/wiki/Spherical_coordinates
 \ingroup cs
 */
-template<typename DegreeOrRadian>
+template <typename DegreeOrRadian>
 struct spherical
 {
     typedef DegreeOrRadian units;
 };
 
-
 /*!
 \brief Spherical equatorial coordinate system, in degree or in radian
 \details This one resembles the geographic coordinate system, and has latitude
-    up from zero at the equator, to 90 at the pole 
+    up from zero at the equator, to 90 at the pole
     (opposite to the spherical(polar) coordinate system).
     Used in astronomy and in GIS (but there is also the geographic)
 
 \see http://en.wikipedia.org/wiki/Spherical_coordinates
 \ingroup cs
 */
-template<typename DegreeOrRadian>
+template <typename DegreeOrRadian>
 struct spherical_equatorial
 {
     typedef DegreeOrRadian units;
 };
-
-
 
 /*!
 \brief Polar coordinate system
@@ -128,15 +125,13 @@ struct spherical_equatorial
 \see http://en.wikipedia.org/wiki/Polar_coordinates
 \ingroup cs
 */
-template<typename DegreeOrRadian>
+template <typename DegreeOrRadian>
 struct polar
 {
     typedef DegreeOrRadian units;
 };
 
-
 } // namespace cs
-
 
 namespace traits
 {
@@ -151,34 +146,31 @@ struct cs_tag
 {
 };
 
-
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-template<typename DegreeOrRadian>
-struct cs_tag<cs::geographic<DegreeOrRadian> >
+template <typename DegreeOrRadian>
+struct cs_tag<cs::geographic<DegreeOrRadian>>
 {
     typedef geographic_tag type;
 };
 
-template<typename DegreeOrRadian>
-struct cs_tag<cs::spherical<DegreeOrRadian> >
+template <typename DegreeOrRadian>
+struct cs_tag<cs::spherical<DegreeOrRadian>>
 {
     typedef spherical_polar_tag type;
 };
 
-template<typename DegreeOrRadian>
-struct cs_tag<cs::spherical_equatorial<DegreeOrRadian> >
+template <typename DegreeOrRadian>
+struct cs_tag<cs::spherical_equatorial<DegreeOrRadian>>
 {
     typedef spherical_equatorial_tag type;
 };
 
-
-template<>
+template <>
 struct cs_tag<cs::cartesian>
 {
     typedef cartesian_tag type;
 };
-
 
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 } // namespace traits
@@ -190,31 +182,30 @@ struct cs_tag<cs::cartesian>
 template <typename G>
 struct cs_tag
 {
-    typedef typename traits::cs_tag
-        <
-            typename geometry::coordinate_system<G>::type
-        >::type type;
+    typedef typename traits::cs_tag<
+        typename geometry::coordinate_system<G>::type>::type type;
 };
-
 
 /*!
 \brief Meta-function to verify if a coordinate system is radian
 \ingroup core
 */
 template <typename CoordinateSystem>
-struct is_radian : boost::true_type {};
-
+struct is_radian : boost::true_type
+{
+};
 
 #ifndef DOXYGEN_NO_SPECIALIZATIONS
 
 // Specialization for any degree coordinate systems
-template <template<typename> class CoordinateSystem>
-struct is_radian< CoordinateSystem<degree> > : boost::false_type
+template <template <typename> class CoordinateSystem>
+struct is_radian<CoordinateSystem<degree>> : boost::false_type
 {
 };
 
 #endif // DOXYGEN_NO_SPECIALIZATIONS
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_CORE_CS_HPP

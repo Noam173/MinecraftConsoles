@@ -7,13 +7,13 @@
 #define BOOST_THREAD_LOCK_TRAITS_HPP
 
 #include <boost/thread/detail/config.hpp>
-//#include <boost/thread/detail/move.hpp>
-//#include <boost/thread/exceptions.hpp>
+// #include <boost/thread/detail/move.hpp>
+// #include <boost/thread/exceptions.hpp>
 //
-//#ifdef BOOST_THREAD_USES_CHRONO
-//#include <boost/chrono/time_point.hpp>
-//#include <boost/chrono/duration.hpp>
-//#endif
+// #ifdef BOOST_THREAD_USES_CHRONO
+// #include <boost/chrono/time_point.hpp>
+// #include <boost/chrono/duration.hpp>
+// #endif
 
 #include <boost/type_traits/integral_constant.hpp>
 
@@ -30,13 +30,16 @@ namespace boost
  */
 
 template <typename Lock>
-struct is_strict_lock_sur_parolle : false_type {};
-
+struct is_strict_lock_sur_parolle : false_type
+{
+};
 
 template <typename Lock>
-struct is_strict_lock : is_strict_lock_sur_parolle<Lock> {};
+struct is_strict_lock : is_strict_lock_sur_parolle<Lock>
+{
+};
 
-}
+} // namespace boost
 #include <boost/config/abi_suffix.hpp>
 
 #endif

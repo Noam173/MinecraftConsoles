@@ -12,7 +12,7 @@
 #define BOOST_ASIO_PLACEHOLDERS_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -21,9 +21,12 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace placeholders {
+namespace boost
+{
+namespace asio
+{
+namespace placeholders
+{
 
 #if defined(GENERATING_DOCUMENTATION)
 
@@ -51,62 +54,54 @@ unspecified signal_number;
 
 inline boost::arg<1> error()
 {
-  return boost::arg<1>();
+    return boost::arg<1>();
 }
 
 inline boost::arg<2> bytes_transferred()
 {
-  return boost::arg<2>();
+    return boost::arg<2>();
 }
 
 inline boost::arg<2> iterator()
 {
-  return boost::arg<2>();
+    return boost::arg<2>();
 }
 
 inline boost::arg<2> signal_number()
 {
-  return boost::arg<2>();
+    return boost::arg<2>();
 }
 
 #else
 
 namespace detail
 {
-  template <int Number>
-  struct placeholder
-  {
-    static boost::arg<Number>& get()
+template <int Number>
+struct placeholder
+{
+    static boost::arg<Number> &get()
     {
-      static boost::arg<Number> result;
-      return result;
+        static boost::arg<Number> result;
+        return result;
     }
-  };
-}
+};
+} // namespace detail
 
 #if BOOST_WORKAROUND(BOOST_MSVC, < 1400)
 
-static boost::arg<1>& error
-  = boost::asio::placeholders::detail::placeholder<1>::get();
-static boost::arg<2>& bytes_transferred
-  = boost::asio::placeholders::detail::placeholder<2>::get();
-static boost::arg<2>& iterator
-  = boost::asio::placeholders::detail::placeholder<2>::get();
-static boost::arg<2>& signal_number
-  = boost::asio::placeholders::detail::placeholder<2>::get();
+static boost::arg<1> &error = boost::asio::placeholders::detail::placeholder<1>::get();
+static boost::arg<2> &bytes_transferred = boost::asio::placeholders::detail::placeholder<2>::get();
+static boost::arg<2> &iterator = boost::asio::placeholders::detail::placeholder<2>::get();
+static boost::arg<2> &signal_number = boost::asio::placeholders::detail::placeholder<2>::get();
 
 #else
 
 namespace
 {
-  boost::arg<1>& error
-    = boost::asio::placeholders::detail::placeholder<1>::get();
-  boost::arg<2>& bytes_transferred
-    = boost::asio::placeholders::detail::placeholder<2>::get();
-  boost::arg<2>& iterator
-    = boost::asio::placeholders::detail::placeholder<2>::get();
-  boost::arg<2>& signal_number
-    = boost::asio::placeholders::detail::placeholder<2>::get();
+boost::arg<1> &error = boost::asio::placeholders::detail::placeholder<1>::get();
+boost::arg<2> &bytes_transferred = boost::asio::placeholders::detail::placeholder<2>::get();
+boost::arg<2> &iterator = boost::asio::placeholders::detail::placeholder<2>::get();
+boost::arg<2> &signal_number = boost::asio::placeholders::detail::placeholder<2>::get();
 } // namespace
 
 #endif

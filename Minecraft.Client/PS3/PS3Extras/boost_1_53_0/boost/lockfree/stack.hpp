@@ -22,13 +22,16 @@
 #include <boost/lockfree/detail/parameter.hpp>
 #include <boost/lockfree/detail/tagged_ptr.hpp>
 
-namespace boost    {
-namespace lockfree {
-namespace detail   {
+namespace boost
+{
+namespace lockfree
+{
+namespace detail
+{
 
 typedef parameter::parameters<boost::parameter::optional<tag::allocator>,
-                              boost::parameter::optional<tag::capacity>
-                             > stack_signature;
+                              boost::parameter::optional<tag::capacity>>
+    stack_signature;
 
 }
 
@@ -61,12 +64,11 @@ template <typename T,
           class A1 = boost::parameter::void_,
           class A2 = boost::parameter::void_>
 #else
-template <typename T, ...Options>
+template <typename T, ... Options>
 #endif
-class stack:
-    boost::noncopyable
+class stack : boost::noncopyable
 {
-private:
+  private:
 #ifndef BOOST_DOXYGEN_INVOKED
     BOOST_STATIC_ASSERT(boost::has_trivial_assign<T>::value);
     BOOST_STATIC_ASSERT(boost::has_trivial_destructor<T>::value);
@@ -81,9 +83,9 @@ private:
 
     struct node
     {
-        node(T const & val):
-            v(val)
-        {}
+        node(T const &val) : v(val)
+        {
+        }
 
         typedef typename detail::select_tagged_handle<node, node_based>::handle_type handle_t;
         handle_t next;
@@ -97,8 +99,7 @@ private:
     // check compile-time capacity
     BOOST_STATIC_ASSERT((mpl::if_c<has_capacity,
                                    mpl::bool_<capacity - 1 < boost::integer_traits<boost::uint16_t>::const_max>,
-                                   mpl::true_
-                                  >::type::value));
+                                   mpl::true_>::type::value));
 
     struct implementation_defined
     {
@@ -108,7 +109,7 @@ private:
 
 #endif
 
-public:
+  public:
     typedef T value_type;
     typedef typename implementation_defined::allocator allocator;
     typedef typename implementation_defined::size_type size_type;
@@ -122,30 +123,27 @@ public:
      *          every internal node, which is impossible if further nodes will be allocated from the operating system.
      *
      * */
-    bool is_lock_free (void) const
+    bool is_lock_free(void) const
     {
         return tos.is_lock_free() && pool.is_lock_free();
     }
 
     //! Construct stack
     // @{
-    stack(void):
-        pool(node_allocator(), capacity)
+    stack(void) : pool(node_allocator(), capacity)
     {
         BOOST_ASSERT(has_capacity);
         initialize();
     }
 
     template <typename U>
-    explicit stack(typename node_allocator::template rebind<U>::other const & alloc):
-        pool(alloc, capacity)
+    explicit stack(typename node_allocator::template rebind<U>::other const &alloc) : pool(alloc, capacity)
     {
         BOOST_STATIC_ASSERT(has_capacity);
         initialize();
     }
 
-    explicit stack(allocator const & alloc):
-        pool(alloc, capacity)
+    explicit stack(allocator const &alloc) : pool(alloc, capacity)
     {
         BOOST_ASSERT(has_capacity);
         initialize();
@@ -154,16 +152,14 @@ public:
 
     //! Construct stack, allocate n nodes for the freelist.
     // @{
-    explicit stack(size_type n):
-        pool(node_allocator(), n)
+    explicit stack(size_type n) : pool(node_allocator(), n)
     {
         BOOST_ASSERT(!has_capacity);
         initialize();
     }
 
     template <typename U>
-    stack(size_type n, typename node_allocator::template rebind<U>::other const & alloc):
-        pool(alloc, n)
+    stack(size_type n, typename node_allocator::template rebind<U>::other const &alloc) : pool(alloc, n)
     {
         BOOST_STATIC_ASSERT(!has_capacity);
         initialize();
@@ -202,64 +198,76 @@ public:
     ~stack(void)
     {
         T dummy;
-        while(unsynchronized_pop(dummy))
-        {}
+        while (unsynchronized_pop(dummy))
+        {
+        }
     }
 
-private:
+  private:
 #ifndef BOOST_DOXYGEN_INVOKED
     void initialize(void)
     {
         tos.store(tagged_node_handle(pool.null_handle(), 0));
     }
 
-    void link_nodes_atomic(node * new_top_node, node * end_node)
+    void link_nodes_atomic(node *new_top_node, node *end_node)
     {
         tagged_node_handle old_tos = tos.load(detail::memory_order_relaxed);
-        for (;;) {
-            tagged_node_handle new_tos (pool.get_handle(new_top_node), old_tos.get_tag());
+        for (;;)
+        {
+            tagged_node_handle new_tos(pool.get_handle(new_top_node), old_tos.get_tag());
             end_node->next = pool.get_handle(old_tos);
 
             if (tos.compare_exchange_weak(old_tos, new_tos))
+            {
                 break;
+            }
         }
     }
 
-    void link_nodes_unsafe(node * new_top_node, node * end_node)
+    void link_nodes_unsafe(node *new_top_node, node *end_node)
     {
         tagged_node_handle old_tos = tos.load(detail::memory_order_relaxed);
 
-        tagged_node_handle new_tos (pool.get_handle(new_top_node), old_tos.get_tag());
+        tagged_node_handle new_tos(pool.get_handle(new_top_node), old_tos.get_tag());
         end_node->next = pool.get_pointer(old_tos);
 
         tos.store(new_tos, memory_order_relaxed);
     }
 
     template <bool Threadsafe, bool Bounded, typename ConstIterator>
-    tuple<node*, node*> prepare_node_list(ConstIterator begin, ConstIterator end, ConstIterator & ret)
+    tuple<node *, node *> prepare_node_list(ConstIterator begin, ConstIterator end, ConstIterator &ret)
     {
         ConstIterator it = begin;
-        node * end_node = pool.template construct<Threadsafe, Bounded>(*it++);
-        if (end_node == NULL) {
+        node *end_node = pool.template construct<Threadsafe, Bounded>(*it++);
+        if (end_node == NULL)
+        {
             ret = begin;
-            return make_tuple<node*, node*>(NULL, NULL);
+            return make_tuple<node *, node *>(NULL, NULL);
         }
 
-        node * new_top_node = end_node;
+        node *new_top_node = end_node;
         end_node->next = NULL;
 
-        try {
+        try
+        {
             /* link nodes */
-            for (; it != end; ++it) {
-                node * newnode = pool.template construct<Threadsafe, Bounded>(*it);
+            for (; it != end; ++it)
+            {
+                node *newnode = pool.template construct<Threadsafe, Bounded>(*it);
                 if (newnode == NULL)
+                {
                     break;
+                }
                 newnode->next = new_top_node;
                 new_top_node = newnode;
             }
-        } catch (...) {
-            for (node * current_node = new_top_node; current_node != NULL;) {
-                node * next = current_node->next;
+        }
+        catch (...)
+        {
+            for (node *current_node = new_top_node; current_node != NULL;)
+            {
+                node *next = current_node->next;
                 pool.template destruct<Threadsafe>(current_node);
                 current_node = next;
             }
@@ -270,7 +278,7 @@ private:
     }
 #endif
 
-public:
+  public:
     /** Pushes object t to the stack.
      *
      * \post object will be pushed to the stack, if internal node can be allocated
@@ -280,7 +288,7 @@ public:
      *                    from the OS. This may not be lock-free.
      * \throws if memory allocator throws
      * */
-    bool push(T const & v)
+    bool push(T const &v)
     {
         return do_push<false>(v);
     }
@@ -292,19 +300,21 @@ public:
      *
      * \note Thread-safe and non-blocking. If internal memory pool is exhausted, the push operation will fail
      * */
-    bool bounded_push(T const & v)
+    bool bounded_push(T const &v)
     {
         return do_push<true>(v);
     }
 
 #ifndef BOOST_DOXYGEN_INVOKED
-private:
+  private:
     template <bool Bounded>
-    bool do_push(T const & v)
+    bool do_push(T const &v)
     {
-        node * newnode = pool.template construct<true, Bounded>(v);
+        node *newnode = pool.template construct<true, Bounded>(v);
         if (newnode == 0)
+        {
             return false;
+        }
 
         link_nodes_atomic(newnode, newnode);
         return true;
@@ -313,18 +323,20 @@ private:
     template <bool Bounded, typename ConstIterator>
     ConstIterator do_push(ConstIterator begin, ConstIterator end)
     {
-        node * new_top_node;
-        node * end_node;
+        node *new_top_node;
+        node *end_node;
         ConstIterator ret;
 
         tie(new_top_node, end_node) = prepare_node_list<true, Bounded>(begin, end, ret);
         if (new_top_node)
+        {
             link_nodes_atomic(new_top_node, end_node);
+        }
 
         return ret;
     }
 
-public:
+  public:
 #endif
 
     /** Pushes as many objects from the range [begin, end) as freelist node can be allocated.
@@ -356,7 +368,6 @@ public:
         return do_push<true, ConstIterator>(begin, end);
     }
 
-
     /** Pushes object t to the stack.
      *
      * \post object will be pushed to the stack, if internal node can be allocated
@@ -366,11 +377,13 @@ public:
      *       from the OS. This may not be lock-free.
      * \throws if memory allocator throws
      * */
-    bool unsynchronized_push(T const & v)
+    bool unsynchronized_push(T const &v)
     {
-        node * newnode = pool.template construct<false, false>(v);
+        node *newnode = pool.template construct<false, false>(v);
         if (newnode == 0)
+        {
             return false;
+        }
 
         link_nodes_unsafe(newnode, newnode);
         return true;
@@ -387,17 +400,18 @@ public:
     template <typename ConstIterator>
     ConstIterator unsynchronized_push(ConstIterator begin, ConstIterator end)
     {
-        node * new_top_node;
-        node * end_node;
+        node *new_top_node;
+        node *end_node;
         ConstIterator ret;
 
         tie(new_top_node, end_node) = prepare_node_list<false, false>(begin, end, ret);
         if (new_top_node)
+        {
             link_nodes_unsafe(new_top_node, end_node);
+        }
 
         return ret;
     }
-
 
     /** Pops object from stack.
      *
@@ -407,7 +421,7 @@ public:
      * \note Thread-safe and non-blocking
      *
      * */
-    bool pop(T & ret)
+    bool pop(T &ret)
     {
         return pop<T>(ret);
     }
@@ -422,26 +436,29 @@ public:
      *
      * */
     template <typename U>
-    bool pop(U & ret)
+    bool pop(U &ret)
     {
         BOOST_STATIC_ASSERT((boost::is_convertible<T, U>::value));
         tagged_node_handle old_tos = tos.load(detail::memory_order_consume);
 
-        for (;;) {
-            node * old_tos_pointer = pool.get_pointer(old_tos);
+        for (;;)
+        {
+            node *old_tos_pointer = pool.get_pointer(old_tos);
             if (!old_tos_pointer)
+            {
                 return false;
+            }
 
             tagged_node_handle new_tos(old_tos_pointer->next, old_tos.get_tag() + 1);
 
-            if (tos.compare_exchange_weak(old_tos, new_tos)) {
+            if (tos.compare_exchange_weak(old_tos, new_tos))
+            {
                 detail::copy_payload(old_tos_pointer->v, ret);
                 pool.template destruct<true>(old_tos);
                 return true;
             }
         }
     }
-
 
     /** Pops object from stack.
      *
@@ -451,7 +468,7 @@ public:
      * \note Not thread-safe, but non-blocking
      *
      * */
-    bool unsynchronized_pop(T & ret)
+    bool unsynchronized_pop(T &ret)
     {
         return unsynchronized_pop<T>(ret);
     }
@@ -466,16 +483,18 @@ public:
      *
      * */
     template <typename U>
-    bool unsynchronized_pop(U & ret)
+    bool unsynchronized_pop(U &ret)
     {
         BOOST_STATIC_ASSERT((boost::is_convertible<T, U>::value));
         tagged_node_handle old_tos = tos.load(detail::memory_order_relaxed);
-        node * old_tos_pointer = pool.get_pointer(old_tos);
+        node *old_tos_pointer = pool.get_pointer(old_tos);
 
         if (!pool.get_pointer(old_tos))
+        {
             return false;
+        }
 
-        node * new_tos_ptr = pool.get_pointer(old_tos_pointer->next);
+        node *new_tos_ptr = pool.get_pointer(old_tos_pointer->next);
         tagged_node_handle new_tos(pool.get_handle(new_tos_ptr), old_tos.get_tag() + 1);
 
         tos.store(new_tos, memory_order_relaxed);
@@ -495,7 +514,7 @@ public:
         return pool.get_pointer(tos.load()) == NULL;
     }
 
-private:
+  private:
 #ifndef BOOST_DOXYGEN_INVOKED
     detail::atomic<tagged_node_handle> tos;
 

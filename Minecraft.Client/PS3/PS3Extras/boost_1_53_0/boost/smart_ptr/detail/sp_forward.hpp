@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //  detail/sp_forward.hpp
@@ -23,11 +23,12 @@ namespace boost
 namespace detail
 {
 
-#if !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
+#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
 
-template< class T > T&& sp_forward( T & t ) BOOST_NOEXCEPT
+template <class T>
+T &&sp_forward(T &t) BOOST_NOEXCEPT
 {
-    return static_cast< T&& >( t );
+    return static_cast<T &&>(t);
 }
 
 #endif
@@ -36,4 +37,4 @@ template< class T > T&& sp_forward( T & t ) BOOST_NOEXCEPT
 
 } // namespace boost
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_FORWARD_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_SP_FORWARD_HPP_INCLUDED

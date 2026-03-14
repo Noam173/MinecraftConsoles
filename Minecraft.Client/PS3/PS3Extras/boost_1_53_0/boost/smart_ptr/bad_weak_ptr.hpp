@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -20,7 +20,7 @@
 #include <exception>
 
 #ifdef __BORLANDC__
-# pragma warn -8026     // Functions with excep. spec. are not expanded inline
+#pragma warn - 8026 // Functions with excep. spec. are not expanded inline
 #endif
 
 namespace boost
@@ -33,27 +33,26 @@ namespace boost
 // Hence, the temporary #pragma option -pc below.
 
 #if defined(__BORLANDC__) && __BORLANDC__ <= 0x564
-# pragma option push -pc
+#pragma option push -pc
 #endif
 
-class bad_weak_ptr: public std::exception
+class bad_weak_ptr : public std::exception
 {
-public:
-
-    virtual char const * what() const throw()
+  public:
+    virtual char const *what() const throw()
     {
         return "tr1::bad_weak_ptr";
     }
 };
 
 #if defined(__BORLANDC__) && __BORLANDC__ <= 0x564
-# pragma option pop
+#pragma option pop
 #endif
 
 } // namespace boost
 
 #ifdef __BORLANDC__
-# pragma warn .8026     // Functions with excep. spec. are not expanded inline
+#pragma warn.8026 // Functions with excep. spec. are not expanded inline
 #endif
 
-#endif  // #ifndef BOOST_SMART_PTR_BAD_WEAK_PTR_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_BAD_WEAK_PTR_HPP_INCLUDED

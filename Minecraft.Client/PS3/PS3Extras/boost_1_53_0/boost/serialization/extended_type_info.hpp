@@ -3,13 +3,13 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // extended_type_info.hpp: interface for portable version of type_info
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -18,33 +18,35 @@
 
 // for now, extended type info is part of the serialization libraries
 // this could change in the future.
-#include <cstdarg>
 #include <boost/assert.hpp>
-#include <cstddef> // NULL
 #include <boost/config.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/mpl/bool.hpp>
+#include <boost/noncopyable.hpp>
+#include <cstdarg>
+#include <cstddef> // NULL
 
-#include <boost/serialization/config.hpp>
 #include <boost/config/abi_prefix.hpp> // must be the last header
+#include <boost/serialization/config.hpp>
 #ifdef BOOST_MSVC
-#  pragma warning(push)
-#  pragma warning(disable : 4251 4231 4660 4275)
+#pragma warning(push)
+#pragma warning(disable : 4251 4231 4660 4275)
 #endif
 
 #define BOOST_SERIALIZATION_MAX_KEY_SIZE 128
 
-namespace boost { 
-namespace serialization {
+namespace boost
+{
+namespace serialization
+{
 
-namespace void_cast_detail{
-    class void_caster;
+namespace void_cast_detail
+{
+class void_caster;
 }
 
-class BOOST_SERIALIZATION_DECL(BOOST_PP_EMPTY()) extended_type_info :
-    private boost::noncopyable
+class BOOST_SERIALIZATION_DECL(BOOST_PP_EMPTY()) extended_type_info : private boost::noncopyable
 {
-private:
+  private:
     friend class boost::serialization::void_cast_detail::void_caster;
 
     // used to uniquely identify the type of class derived from this one
@@ -53,31 +55,32 @@ private:
     const unsigned int m_type_info_key;
     virtual bool is_less_than(const extended_type_info & /*rhs*/) const = 0;
     virtual bool is_equal(const extended_type_info & /*rhs*/) const = 0;
-    const char * m_key;
+    const char *m_key;
 
-protected:
+  protected:
     void key_unregister() const;
     void key_register() const;
-    // this class can't be used as is. It's just the 
+    // this class can't be used as is. It's just the
     // common functionality for all type_info replacement
     // systems.  Hence, make these protected
     extended_type_info(
         const unsigned int type_info_key,
-        const char * key
-    );
-    // account for bogus gcc warning
-    #if defined(__GNUC__)
+        const char *key);
+// account for bogus gcc warning
+#if defined(__GNUC__)
     virtual
-    #endif
-    ~extended_type_info();
-public:
-    const char * get_key() const {
+#endif
+        ~extended_type_info();
+  public:
+    const char *get_key() const
+    {
         return m_key;
     }
-    virtual const char * get_debug_info() const = 0;
+    virtual const char *get_debug_info() const = 0;
     bool operator<(const extended_type_info &rhs) const;
     bool operator==(const extended_type_info &rhs) const;
-    bool operator!=(const extended_type_info &rhs) const {
+    bool operator!=(const extended_type_info &rhs) const
+    {
         return !(operator==(rhs));
     }
     // note explicit "export" of static function to work around
@@ -85,30 +88,34 @@ public:
     static const extended_type_info *
     find(const char *key);
     // for plugins
-    virtual void * construct(unsigned int /*count*/ = 0, ...) const = 0;
-    virtual void destroy(void const * const /*p*/) const = 0;
+    virtual void *construct(unsigned int /*count*/ = 0, ...) const = 0;
+    virtual void destroy(void const *const /*p*/) const = 0;
 };
 
-template<class T>
-struct guid_defined : boost::mpl::false_ {};
+template <class T>
+struct guid_defined : boost::mpl::false_
+{
+};
 
-namespace ext {
-    template <typename T>
-    struct guid_impl
+namespace ext
+{
+template <typename T>
+struct guid_impl
+{
+    static inline const char *call()
     {
-        static inline const char * call()
-        {
-            return NULL;
-        }
-    };
-}
+        return NULL;
+    }
+};
+} // namespace ext
 
-template<class T>
-inline const char * guid(){
+template <class T>
+inline const char *guid()
+{
     return ext::guid_impl<T>::call();
 }
 
-} // namespace serialization 
+} // namespace serialization
 } // namespace boost
 
 #ifdef BOOST_MSVC

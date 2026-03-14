@@ -11,21 +11,25 @@
 
 #include <boost/numeric/conversion/converter_policies.hpp>
 
-namespace boost { namespace numeric {
+namespace boost
+{
+namespace numeric
+{
 
-    template <typename Target, typename Source, typename EnableIf = void>
-    struct numeric_cast_traits
-    {
-        typedef def_overflow_handler    overflow_policy;
-        typedef UseInternalRangeChecker range_checking_policy;
-        typedef Trunc<Source>           rounding_policy;
-    };
+template <typename Target, typename Source, typename EnableIf = void>
+struct numeric_cast_traits
+{
+    typedef def_overflow_handler overflow_policy;
+    typedef UseInternalRangeChecker range_checking_policy;
+    typedef Trunc<Source> rounding_policy;
+};
 
-}}//namespace boost::numeric;
+} // namespace numeric
+} // namespace boost
 
-#if !defined( BOOST_NUMERIC_CONVERSION_RELAX_BUILT_IN_CAST_TRAITS )
+#if !defined(BOOST_NUMERIC_CONVERSION_RELAX_BUILT_IN_CAST_TRAITS)
 #include <boost/cstdint.hpp>
 #include <boost/numeric/conversion/detail/numeric_cast_traits.hpp>
-#endif//!defined BOOST_NUMERIC_CONVERSION_RELAX_BUILT_IN_CAST_TRAITS
+#endif //! defined BOOST_NUMERIC_CONVERSION_RELAX_BUILT_IN_CAST_TRAITS
 
-#endif//BOOST_NUMERIC_CAST_TRAITS_HPP
+#endif // BOOST_NUMERIC_CAST_TRAITS_HPP

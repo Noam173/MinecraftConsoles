@@ -1,6 +1,6 @@
-#include "stdafx.h"
-#include "net.minecraft.world.level.redstone.h"
 #include "PoweredMetalTile.h"
+#include "net.minecraft.world.level.redstone.h"
+#include "stdafx.h"
 
 PoweredMetalTile::PoweredMetalTile(int id) : MetalTile(id)
 {
@@ -8,10 +8,10 @@ PoweredMetalTile::PoweredMetalTile(int id) : MetalTile(id)
 
 bool PoweredMetalTile::isSignalSource()
 {
-	return true;
+    return true;
 }
 
 int PoweredMetalTile::getSignal(LevelSource *level, int x, int y, int z, int dir)
 {
-	return Redstone::SIGNAL_MAX;
+    return Redstone::SIGNAL_MAX;
 }

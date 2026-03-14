@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_LIST_OF_HPP
 #define BOOST_BIMAP_LIST_OF_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -29,17 +29,18 @@
 #include <boost/bimap/tags/support/value_type_of.hpp>
 
 #include <boost/bimap/detail/generate_index_binder.hpp>
-#include <boost/bimap/detail/generate_view_binder.hpp>
 #include <boost/bimap/detail/generate_relation_binder.hpp>
+#include <boost/bimap/detail/generate_view_binder.hpp>
 
 #include <boost/multi_index/sequenced_index.hpp>
 
 #include <boost/bimap/views/list_map_view.hpp>
 #include <boost/bimap/views/list_set_view.hpp>
 
-namespace boost {
-namespace bimaps {
-
+namespace boost
+{
+namespace bimaps
+{
 
 /// \brief Set Type Specification
 /**
@@ -100,7 +101,7 @@ BOOST_STATIC_ASSERT
 See also list_of_relation.
                                                                         **/
 
-template< class Type >
+template <class Type>
 struct list_of : public ::boost::bimaps::detail::set_type_of_tag
 {
     /// User type, can be tagged
@@ -110,11 +111,10 @@ struct list_of : public ::boost::bimaps::detail::set_type_of_tag
     typedef BOOST_DEDUCED_TYPENAME ::boost::bimaps::tags::support::
         value_type_of<user_type>::type value_type;
 
-
     struct lazy_concept_checked
     {
-        BOOST_CLASS_REQUIRE ( value_type,
-                              boost, AssignableConcept );
+        BOOST_CLASS_REQUIRE(value_type,
+                            boost, AssignableConcept);
 
         typedef list_of type;
     };
@@ -122,24 +122,20 @@ struct list_of : public ::boost::bimaps::detail::set_type_of_tag
     BOOST_BIMAP_GENERATE_INDEX_BINDER_0CP_NO_EXTRACTOR(
 
         // binds to
-        multi_index::sequenced
-    )
+        multi_index::sequenced)
 
     BOOST_BIMAP_GENERATE_MAP_VIEW_BINDER(
 
         // binds to
-        views::list_map_view
-    )
+        views::list_map_view)
 
     BOOST_BIMAP_GENERATE_SET_VIEW_BINDER(
 
         // binds to
-        views::list_set_view
-    )
+        views::list_set_view)
 
     typedef mpl::bool_<true> mutable_key;
 };
-
 
 /// \brief List Of Relation Specification
 /**
@@ -165,17 +161,13 @@ struct list_of_relation : public ::boost::bimaps::detail::set_type_of_relation_t
     BOOST_BIMAP_GENERATE_RELATION_BINDER_0CP(
 
         // binds to
-        list_of
-    )
+        list_of)
 
-    typedef mpl::bool_<true>  left_mutable_key;
+    typedef mpl::bool_<true> left_mutable_key;
     typedef mpl::bool_<true> right_mutable_key;
 };
-
 
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_LIST_OF_HPP
-

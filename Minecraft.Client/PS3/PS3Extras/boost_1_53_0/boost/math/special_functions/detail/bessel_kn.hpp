@@ -10,37 +10,42 @@
 #pragma once
 #endif
 
+#include <boost/math/policies/error_handling.hpp>
 #include <boost/math/special_functions/detail/bessel_k0.hpp>
 #include <boost/math/special_functions/detail/bessel_k1.hpp>
-#include <boost/math/policies/error_handling.hpp>
 
 // Modified Bessel function of the second kind of integer order
 // K_n(z) is the dominant solution, forward recurrence always OK (though unstable)
 
-namespace boost { namespace math { namespace detail{
+namespace boost
+{
+namespace math
+{
+namespace detail
+{
 
 template <typename T, typename Policy>
-T bessel_kn(int n, T x, const Policy& pol)
+T bessel_kn(int n, T x, const Policy &pol)
 {
     T value, current, prev;
 
     using namespace boost::math::tools;
 
-    static const char* function = "boost::math::bessel_kn<%1%>(%1%,%1%)";
+    static const char *function = "boost::math::bessel_kn<%1%>(%1%,%1%)";
 
     if (x < 0)
     {
-       return policies::raise_domain_error<T>(function,
-            "Got x = %1%, but argument x must be non-negative, complex number result not supported.", x, pol);
+        return policies::raise_domain_error<T>(function,
+                                               "Got x = %1%, but argument x must be non-negative, complex number result not supported.", x, pol);
     }
     if (x == 0)
     {
-       return policies::raise_overflow_error<T>(function, 0, pol);
+        return policies::raise_overflow_error<T>(function, 0, pol);
     }
 
     if (n < 0)
     {
-        n = -n;                             // K_{-n}(z) = K_n(z)
+        n = -n; // K_{-n}(z) = K_n(z)
     }
     if (n == 0)
     {
@@ -52,34 +57,36 @@ T bessel_kn(int n, T x, const Policy& pol)
     }
     else
     {
-       prev = bessel_k0(x, pol);
-       current = bessel_k1(x, pol);
-       int k = 1;
-       BOOST_ASSERT(k < n);
-       T scale = 1;
-       do
-       {
-           T fact = 2 * k / x;
-           if((tools::max_value<T>() - fabs(prev)) / fact < fabs(current))
-           {
-              scale /= current;
-              prev /= current;
-              current = 1;
-           }
-           value = fact * current + prev;
-           prev = current;
-           current = value;
-           ++k;
-       }
-       while(k < n);
-       if(tools::max_value<T>() * scale < fabs(value))
-          return sign(scale) * sign(value) * policies::raise_overflow_error<T>(function, 0, pol);
-       value /= scale;
+        prev = bessel_k0(x, pol);
+        current = bessel_k1(x, pol);
+        int k = 1;
+        BOOST_ASSERT(k < n);
+        T scale = 1;
+        do
+        {
+            T fact = 2 * k / x;
+            if ((tools::max_value<T>() - fabs(prev)) / fact < fabs(current))
+            {
+                scale /= current;
+                prev /= current;
+                current = 1;
+            }
+            value = fact * current + prev;
+            prev = current;
+            current = value;
+            ++k;
+        } while (k < n);
+        if (tools::max_value<T>() * scale < fabs(value))
+        {
+            return sign(scale) * sign(value) * policies::raise_overflow_error<T>(function, 0, pol);
+        }
+        value /= scale;
     }
     return value;
 }
 
-}}} // namespaces
+} // namespace detail
+} // namespace math
+} // namespace boost
 
 #endif // BOOST_MATH_BESSEL_KN_HPP
-

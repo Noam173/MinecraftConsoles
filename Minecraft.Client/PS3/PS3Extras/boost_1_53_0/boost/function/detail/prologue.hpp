@@ -10,17 +10,17 @@
 #ifndef BOOST_FUNCTION_PROLOGUE_HPP
 #define BOOST_FUNCTION_PROLOGUE_HPP
 // #  include <cassert>			// MGH - removed this so we can define our own assert
-#  include <algorithm>
-#  include <boost/config/no_tr1/functional.hpp> // unary_function, binary_function
-#  include <boost/throw_exception.hpp>
-#  include <boost/config.hpp>
-#  include <boost/function/function_base.hpp>
-#  include <boost/mem_fn.hpp>
-#  include <boost/type_traits/is_integral.hpp>
-#  include <boost/preprocessor/enum.hpp>
-#  include <boost/preprocessor/enum_params.hpp>
-#  include <boost/preprocessor/cat.hpp>
-#  include <boost/preprocessor/repeat.hpp>
-#  include <boost/preprocessor/inc.hpp>
-#  include <boost/type_traits/is_void.hpp>
+#include <algorithm>
+#include <boost/config.hpp>
+#include <boost/config/no_tr1/functional.hpp> // unary_function, binary_function
+#include <boost/function/function_base.hpp>
+#include <boost/mem_fn.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/enum.hpp>
+#include <boost/preprocessor/enum_params.hpp>
+#include <boost/preprocessor/inc.hpp>
+#include <boost/preprocessor/repeat.hpp>
+#include <boost/throw_exception.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/is_void.hpp>
 #endif // BOOST_FUNCTION_PROLOGUE_HPP

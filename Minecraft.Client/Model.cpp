@@ -1,23 +1,22 @@
-#include "stdafx.h"
-#include "TexOffs.h"
 #include "Model.h"
+#include "TexOffs.h"
+#include "stdafx.h"
 
-
-Model::Model() 
-{ 
-	riding = false; 
-	young=true; 
-	texWidth=64; 
-	texHeight=32;
-}	
-
-void Model::setMapTex(wstring id, int x, int y) 
+Model::Model()
 {
-	mappedTexOffs[id]=new TexOffs(x, y);
+    riding = false;
+    young = true;
+    texWidth = 64;
+    texHeight = 32;
 }
 
-TexOffs *Model::getMapTex(wstring id) 
+void Model::setMapTex(wstring id, int x, int y)
 {
-	// 4J-PB - assuming there will always be this one
-	return mappedTexOffs[id];
+    mappedTexOffs[id] = new TexOffs(x, y);
+}
+
+TexOffs *Model::getMapTex(wstring id)
+{
+    // 4J-PB - assuming there will always be this one
+    return mappedTexOffs[id];
 }

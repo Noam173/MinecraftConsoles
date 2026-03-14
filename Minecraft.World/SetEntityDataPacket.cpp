@@ -1,59 +1,57 @@
+#include "SetEntityDataPacket.h"
+#include "InputOutputStream.h"
+#include "PacketListener.h"
+#include "net.minecraft.world.entity.h"
 #include "stdafx.h"
 #include <iostream>
-#include "InputOutputStream.h"
-#include "net.minecraft.world.entity.h"
-#include "PacketListener.h"
-#include "SetEntityDataPacket.h"
 
-
-
-SetEntityDataPacket::SetEntityDataPacket() 
+SetEntityDataPacket::SetEntityDataPacket()
 {
-	id = -1;
-	packedItems = nullptr;
+    id = -1;
+    packedItems = nullptr;
 }
 
 SetEntityDataPacket::~SetEntityDataPacket()
 {
-	delete packedItems;
+    delete packedItems;
 }
 
-SetEntityDataPacket::SetEntityDataPacket(int id, shared_ptr<SynchedEntityData> entityData, bool notJustDirty) 
+SetEntityDataPacket::SetEntityDataPacket(int id, shared_ptr<SynchedEntityData> entityData, bool notJustDirty)
 {
-	this->id = id;
-	if(notJustDirty)
-	{
-		this->packedItems = entityData->getAll();
-	}
-	else
-	{
-		this->packedItems = entityData->packDirty();
-	}
+    this->id = id;
+    if (notJustDirty)
+    {
+        this->packedItems = entityData->getAll();
+    }
+    else
+    {
+        this->packedItems = entityData->packDirty();
+    }
 }
 
-void SetEntityDataPacket::read(DataInputStream *dis) //throws IOException
+void SetEntityDataPacket::read(DataInputStream *dis) // throws IOException
 {
-	id = dis->readInt();
-	packedItems = SynchedEntityData::unpack(dis);
+    id = dis->readInt();
+    packedItems = SynchedEntityData::unpack(dis);
 }
 
-void SetEntityDataPacket::write(DataOutputStream *dos) //throws IOException 
+void SetEntityDataPacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeInt(id);
-	SynchedEntityData::pack(packedItems, dos);
+    dos->writeInt(id);
+    SynchedEntityData::pack(packedItems, dos);
 }
 
 void SetEntityDataPacket::handle(PacketListener *listener)
 {
-	listener->handleSetEntityData(shared_from_this());
+    listener->handleSetEntityData(shared_from_this());
 }
 
-int SetEntityDataPacket::getEstimatedSize() 
+int SetEntityDataPacket::getEstimatedSize()
 {
-	return 5;
+    return 5;
 }
 
-vector<shared_ptr<SynchedEntityData::DataItem> > *SetEntityDataPacket::getUnpackedData()
+vector<shared_ptr<SynchedEntityData::DataItem>> *SetEntityDataPacket::getUnpackedData()
 {
-	return packedItems;
+    return packedItems;
 }

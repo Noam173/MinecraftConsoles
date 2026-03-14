@@ -13,16 +13,16 @@
 #ifndef BOOST_RANDOM_PIECEWISE_LINEAR_DISTRIBUTION_HPP_INCLUDED
 #define BOOST_RANDOM_PIECEWISE_LINEAR_DISTRIBUTION_HPP_INCLUDED
 
-#include <vector>
 #include <algorithm>
-#include <cmath>
-#include <cstdlib>
 #include <boost/assert.hpp>
-#include <boost/random/uniform_real.hpp>
-#include <boost/random/discrete_distribution.hpp>
 #include <boost/random/detail/config.hpp>
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/detail/vector_io.hpp>
+#include <boost/random/discrete_distribution.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <cmath>
+#include <cstdlib>
+#include <vector>
 
 #ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
 #include <initializer_list>
@@ -31,21 +31,24 @@
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
 /**
  * The class @c piecewise_linear_distribution models a \random_distribution.
  */
-template<class RealType = double>
-class piecewise_linear_distribution {
-public:
+template <class RealType = double>
+class piecewise_linear_distribution
+{
+  public:
     typedef std::size_t input_type;
     typedef RealType result_type;
 
-    class param_type {
-    public:
-
+    class param_type
+    {
+      public:
         typedef piecewise_linear_distribution distribution_type;
 
         /**
@@ -71,20 +74,24 @@ public:
          * the number of interval boundaries.  If there are extra
          * weights, they are ignored.
          */
-        template<class IntervalIter, class WeightIter>
+        template <class IntervalIter, class WeightIter>
         param_type(IntervalIter intervals_first, IntervalIter intervals_last,
                    WeightIter weight_first)
-          : _intervals(intervals_first, intervals_last)
+            : _intervals(intervals_first, intervals_last)
         {
-            if(_intervals.size() < 2) {
+            if (_intervals.size() < 2)
+            {
                 _intervals.clear();
                 _weights.push_back(RealType(1));
                 _weights.push_back(RealType(1));
                 _intervals.push_back(RealType(0));
                 _intervals.push_back(RealType(1));
-            } else {
+            }
+            else
+            {
                 _weights.reserve(_intervals.size());
-                for(std::size_t i = 0; i < _intervals.size(); ++i) {
+                for (std::size_t i = 0; i < _intervals.size(); ++i)
+                {
                     _weights.push_back(*weight_first++);
                 }
             }
@@ -101,21 +108,25 @@ public:
          * distribution will produce values uniformly distributed
          * in the range [0, 1).
          */
-        template<class T, class F>
-        param_type(const std::initializer_list<T>& il, F f)
-          : _intervals(il.begin(), il.end())
+        template <class T, class F>
+        param_type(const std::initializer_list<T> &il, F f)
+            : _intervals(il.begin(), il.end())
         {
-            if(_intervals.size() < 2) {
+            if (_intervals.size() < 2)
+            {
                 _intervals.clear();
                 _weights.push_back(RealType(1));
                 _weights.push_back(RealType(1));
                 _intervals.push_back(RealType(0));
                 _intervals.push_back(RealType(1));
-            } else {
+            }
+            else
+            {
                 _weights.reserve(_intervals.size());
-                for(typename std::vector<RealType>::const_iterator
-                    iter = _intervals.begin(), end = _intervals.end();
-                    iter != end; ++iter)
+                for (typename std::vector<RealType>::const_iterator
+                         iter = _intervals.begin(),
+                         end = _intervals.end();
+                     iter != end; ++iter)
                 {
                     _weights.push_back(f(*iter));
                 }
@@ -131,13 +142,14 @@ public:
          * number of weights must be equal to the number of
          * interval boundaries.
          */
-        template<class IntervalRange, class WeightRange>
-        param_type(const IntervalRange& intervals_arg,
-                   const WeightRange& weights_arg)
-          : _intervals(boost::begin(intervals_arg), boost::end(intervals_arg)),
-            _weights(boost::begin(weights_arg), boost::end(weights_arg))
+        template <class IntervalRange, class WeightRange>
+        param_type(const IntervalRange &intervals_arg,
+                   const WeightRange &weights_arg)
+            : _intervals(boost::begin(intervals_arg), boost::end(intervals_arg)),
+              _weights(boost::begin(weights_arg), boost::end(weights_arg))
         {
-            if(_intervals.size() < 2) {
+            if (_intervals.size() < 2)
+            {
                 _weights.clear();
                 _weights.push_back(RealType(1));
                 _weights.push_back(RealType(1));
@@ -154,22 +166,26 @@ public:
          * are found by calling the unary function f on the boundaries of the
          * intervals.
          */
-        template<class F>
+        template <class F>
         param_type(std::size_t nw, RealType xmin, RealType xmax, F f)
         {
             std::size_t n = (nw == 0) ? 1 : nw;
             double delta = (xmax - xmin) / n;
             BOOST_ASSERT(delta > 0);
-            for(std::size_t k = 0; k < n; ++k) {
-                _weights.push_back(f(xmin + k*delta));
-                _intervals.push_back(xmin + k*delta);
+            for (std::size_t k = 0; k < n; ++k)
+            {
+                _weights.push_back(f(xmin + k * delta));
+                _intervals.push_back(xmin + k * delta);
             }
             _weights.push_back(f(xmax));
             _intervals.push_back(xmax);
         }
 
         /**  Returns a vector containing the interval boundaries. */
-        std::vector<RealType> intervals() const { return _intervals; }
+        std::vector<RealType> intervals() const
+        {
+            return _intervals;
+        }
 
         /**
          * Returns a vector containing the probability densities
@@ -178,15 +194,17 @@ public:
         std::vector<RealType> densities() const
         {
             RealType sum = static_cast<RealType>(0);
-            for(std::size_t i = 0; i < _intervals.size() - 1; ++i) {
+            for (std::size_t i = 0; i < _intervals.size() - 1; ++i)
+            {
                 RealType width = _intervals[i + 1] - _intervals[i];
                 sum += (_weights[i] + _weights[i + 1]) * width / 2;
             }
             std::vector<RealType> result;
             result.reserve(_weights.size());
-            for(typename std::vector<RealType>::const_iterator
-                iter = _weights.begin(), end = _weights.end();
-                iter != end; ++iter)
+            for (typename std::vector<RealType>::const_iterator
+                     iter = _weights.begin(),
+                     end = _weights.end();
+                 iter != end; ++iter)
             {
                 result.push_back(*iter / sum);
             }
@@ -200,7 +218,7 @@ public:
             detail::print_vector(os, parm._weights);
             return os;
         }
-        
+
         /** Reads the parameters from a @c std::istream. */
         BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, param_type, parm)
         {
@@ -208,7 +226,8 @@ public:
             std::vector<RealType> new_weights;
             detail::read_vector(is, new_intervals);
             detail::read_vector(is, new_weights);
-            if(is) {
+            if (is)
+            {
                 parm._intervals.swap(new_intervals);
                 parm._weights.swap(new_weights);
             }
@@ -218,13 +237,12 @@ public:
         /** Returns true if the two sets of parameters are the same. */
         BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(param_type, lhs, rhs)
         {
-            return lhs._intervals == rhs._intervals
-                && lhs._weights == rhs._weights;
+            return lhs._intervals == rhs._intervals && lhs._weights == rhs._weights;
         }
         /** Returns true if the two sets of parameters are different. */
         BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(param_type)
 
-    private:
+      private:
         friend class piecewise_linear_distribution;
 
         std::vector<RealType> _intervals;
@@ -262,17 +280,21 @@ public:
      *
      * produces a triangle distribution.
      */
-    template<class IntervalIter, class WeightIter>
+    template <class IntervalIter, class WeightIter>
     piecewise_linear_distribution(IntervalIter first_interval,
                                   IntervalIter last_interval,
                                   WeightIter first_weight)
-      : _intervals(first_interval, last_interval)
+        : _intervals(first_interval, last_interval)
     {
-        if(_intervals.size() < 2) {
+        if (_intervals.size() < 2)
+        {
             default_init();
-        } else {
+        }
+        else
+        {
             _weights.reserve(_intervals.size());
-            for(std::size_t i = 0; i < _intervals.size(); ++i) {
+            for (std::size_t i = 0; i < _intervals.size(); ++i)
+            {
                 _weights.push_back(*first_weight++);
             }
             init();
@@ -291,17 +313,21 @@ public:
      * distribution will produce values uniformly distributed
      * in the range [0, 1).
      */
-    template<class T, class F>
+    template <class T, class F>
     piecewise_linear_distribution(std::initializer_list<T> il, F f)
-      : _intervals(il.begin(), il.end())
+        : _intervals(il.begin(), il.end())
     {
-        if(_intervals.size() < 2) {
+        if (_intervals.size() < 2)
+        {
             default_init();
-        } else {
+        }
+        else
+        {
             _weights.reserve(_intervals.size());
-            for(typename std::vector<RealType>::const_iterator
-                iter = _intervals.begin(), end = _intervals.end();
-                iter != end; ++iter)
+            for (typename std::vector<RealType>::const_iterator
+                     iter = _intervals.begin(),
+                     end = _intervals.end();
+                 iter != end; ++iter)
             {
                 _weights.push_back(f(*iter));
             }
@@ -318,15 +344,18 @@ public:
      * number of weights must be equal to the number of
      * interval boundaries.
      */
-    template<class IntervalsRange, class WeightsRange>
-    piecewise_linear_distribution(const IntervalsRange& intervals_arg,
-                                  const WeightsRange& weights_arg)
-      : _intervals(boost::begin(intervals_arg), boost::end(intervals_arg)),
-        _weights(boost::begin(weights_arg), boost::end(weights_arg))
+    template <class IntervalsRange, class WeightsRange>
+    piecewise_linear_distribution(const IntervalsRange &intervals_arg,
+                                  const WeightsRange &weights_arg)
+        : _intervals(boost::begin(intervals_arg), boost::end(intervals_arg)),
+          _weights(boost::begin(weights_arg), boost::end(weights_arg))
     {
-        if(_intervals.size() < 2) {
+        if (_intervals.size() < 2)
+        {
             default_init();
-        } else {
+        }
+        else
+        {
             init();
         }
     }
@@ -336,16 +365,20 @@ public:
      * range is divided into nw equally sized intervals and the weights
      * are found by calling the unary function f on the interval boundaries.
      */
-    template<class F>
+    template <class F>
     piecewise_linear_distribution(std::size_t nw,
                                   RealType xmin,
                                   RealType xmax,
                                   F f)
     {
-        if(nw == 0) { nw = 1; }
+        if (nw == 0)
+        {
+            nw = 1;
+        }
         RealType delta = (xmax - xmin) / nw;
         _intervals.reserve(nw + 1);
-        for(std::size_t i = 0; i < nw; ++i) {
+        for (std::size_t i = 0; i < nw; ++i)
+        {
             RealType x = xmin + i * delta;
             _intervals.push_back(x);
             _weights.push_back(f(x));
@@ -357,9 +390,9 @@ public:
     /**
      * Constructs a piecewise_linear_distribution from its parameters.
      */
-    explicit piecewise_linear_distribution(const param_type& parm)
-      : _intervals(parm._intervals),
-        _weights(parm._weights)
+    explicit piecewise_linear_distribution(const param_type &parm)
+        : _intervals(parm._intervals),
+          _weights(parm._weights)
     {
         init();
     }
@@ -368,38 +401,47 @@ public:
      * Returns a value distributed according to the parameters of the
      * piecewise_linear_distribution.
      */
-    template<class URNG>
-    RealType operator()(URNG& urng) const
+    template <class URNG>
+    RealType operator()(URNG &urng) const
     {
         std::size_t i = _bins(urng);
         bool is_in_rectangle = (i % 2 == 0);
         i = i / 2;
-        uniform_real<RealType> dist(_intervals[i], _intervals[i+1]);
-        if(is_in_rectangle) {
+        uniform_real<RealType> dist(_intervals[i], _intervals[i + 1]);
+        if (is_in_rectangle)
+        {
             return dist(urng);
-        } else if(_weights[i] < _weights[i+1]) {
+        }
+        else if (_weights[i] < _weights[i + 1])
+        {
             return (std::max)(dist(urng), dist(urng));
-        } else {
+        }
+        else
+        {
             return (std::min)(dist(urng), dist(urng));
         }
     }
-    
+
     /**
      * Returns a value distributed according to the parameters
      * specified by param.
      */
-    template<class URNG>
-    RealType operator()(URNG& urng, const param_type& parm) const
+    template <class URNG>
+    RealType operator()(URNG &urng, const param_type &parm) const
     {
         return piecewise_linear_distribution(parm)(urng);
     }
-    
+
     /** Returns the smallest value that the distribution can produce. */
-    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION () const
-    { return _intervals.front(); }
+    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return _intervals.front();
+    }
     /** Returns the largest value that the distribution can produce. */
-    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION () const
-    { return _intervals.back(); }
+    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return _intervals.back();
+    }
 
     /**
      * Returns a vector containing the probability densities
@@ -408,22 +450,27 @@ public:
     std::vector<RealType> densities() const
     {
         RealType sum = static_cast<RealType>(0);
-        for(std::size_t i = 0; i < _intervals.size() - 1; ++i) {
+        for (std::size_t i = 0; i < _intervals.size() - 1; ++i)
+        {
             RealType width = _intervals[i + 1] - _intervals[i];
             sum += (_weights[i] + _weights[i + 1]) * width / 2;
         }
         std::vector<RealType> result;
         result.reserve(_weights.size());
-        for(typename std::vector<RealType>::const_iterator
-            iter = _weights.begin(), end = _weights.end();
-            iter != end; ++iter)
+        for (typename std::vector<RealType>::const_iterator
+                 iter = _weights.begin(),
+                 end = _weights.end();
+             iter != end; ++iter)
         {
             result.push_back(*iter / sum);
         }
         return result;
     }
     /**  Returns a vector containing the interval boundaries. */
-    std::vector<RealType> intervals() const { return _intervals; }
+    std::vector<RealType> intervals() const
+    {
+        return _intervals;
+    }
 
     /** Returns the parameters of the distribution. */
     param_type param() const
@@ -431,7 +478,7 @@ public:
         return param_type(_intervals, _weights);
     }
     /** Sets the parameters of the distribution. */
-    void param(const param_type& parm)
+    void param(const param_type &parm)
     {
         std::vector<RealType> new_intervals(parm._intervals);
         std::vector<RealType> new_weights(parm._weights);
@@ -439,12 +486,15 @@ public:
         _intervals.swap(new_intervals);
         _weights.swap(new_weights);
     }
-    
+
     /**
      * Effects: Subsequent uses of the distribution do not depend
      * on values produced by any engine prior to invoking reset.
      */
-    void reset() { _bins.reset(); }
+    void reset()
+    {
+        _bins.reset();
+    }
 
     /** Writes a distribution to a @c std::ostream. */
     BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(
@@ -459,7 +509,8 @@ public:
         is, piecewise_linear_distribution, pld)
     {
         param_type parm;
-        if(is >> parm) {
+        if (is >> parm)
+        {
             pld.param(parm);
         }
         return is;
@@ -470,7 +521,7 @@ public:
      * same sequence of values, when passed equal generators.
      */
     BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(
-        piecewise_linear_distribution, lhs,  rhs)
+        piecewise_linear_distribution, lhs, rhs)
     {
         return lhs._intervals == rhs._intervals && lhs._weights == rhs._weights;
     }
@@ -480,16 +531,16 @@ public:
      */
     BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(piecewise_linear_distribution)
 
-private:
-
+  private:
     /// @cond \show_private
 
-    void init(const std::vector<RealType>& intervals_arg,
-              const std::vector<RealType>& weights_arg)
+    void init(const std::vector<RealType> &intervals_arg,
+              const std::vector<RealType> &weights_arg)
     {
         std::vector<RealType> bin_weights;
         bin_weights.reserve((intervals_arg.size() - 1) * 2);
-        for(std::size_t i = 0; i < intervals_arg.size() - 1; ++i) {
+        for (std::size_t i = 0; i < intervals_arg.size() - 1; ++i)
+        {
             RealType width = intervals_arg[i + 1] - intervals_arg[i];
             RealType w1 = weights_arg[i];
             RealType w2 = weights_arg[i + 1];
@@ -524,7 +575,7 @@ private:
     /// @endcond
 };
 
-}
-}
+} // namespace random
+} // namespace boost
 
 #endif

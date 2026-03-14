@@ -9,11 +9,11 @@
 #ifndef BOOST_CHRONO_DETAIL_INLINED_CHRONO_HPP
 #define BOOST_CHRONO_DETAIL_INLINED_CHRONO_HPP
 
-#include <boost/version.hpp>
 #include <boost/chrono/chrono.hpp>
+#include <boost/chrono/detail/system.hpp>
 #include <boost/system/system_error.hpp>
 #include <boost/throw_exception.hpp>
-#include <boost/chrono/detail/system.hpp>
+#include <boost/version.hpp>
 
 //----------------------------------------------------------------------------//
 //                                                                            //
@@ -39,6 +39,6 @@
 #elif defined(BOOST_CHRONO_POSIX_API)
 #include <boost/chrono/detail/inlined/posix/chrono.hpp>
 
-#endif  // POSIX
+#endif // POSIX
 
 #endif

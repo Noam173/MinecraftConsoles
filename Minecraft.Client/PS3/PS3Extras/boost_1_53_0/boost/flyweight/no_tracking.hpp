@@ -9,7 +9,7 @@
 #ifndef BOOST_FLYWEIGHT_NO_TRACKING_HPP
 #define BOOST_FLYWEIGHT_NO_TRACKING_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -20,23 +20,31 @@
 /* Null tracking policy: elements are never erased from the factory.
  */
 
-namespace boost{
-
-namespace flyweights{
-
-struct no_tracking:tracking_marker
+namespace boost
 {
-  struct entry_type
-  {
-    template<typename Value,typename Key>
-    struct apply{typedef Value type;};
-  };
 
-  struct handle_type
-  {
-    template<typename Handle,typename TrackingHelper>
-    struct apply{typedef Handle type;};
-  };
+namespace flyweights
+{
+
+struct no_tracking : tracking_marker
+{
+    struct entry_type
+    {
+        template <typename Value, typename Key>
+        struct apply
+        {
+            typedef Value type;
+        };
+    };
+
+    struct handle_type
+    {
+        template <typename Handle, typename TrackingHelper>
+        struct apply
+        {
+            typedef Handle type;
+        };
+    };
 };
 
 } /* namespace flyweights */

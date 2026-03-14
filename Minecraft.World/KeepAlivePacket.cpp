@@ -1,52 +1,50 @@
-#include "stdafx.h"
-#include <iostream>
+#include "KeepAlivePacket.h"
 #include "InputOutputStream.h"
 #include "PacketListener.h"
-#include "KeepAlivePacket.h"
-
-
+#include "stdafx.h"
+#include <iostream>
 
 KeepAlivePacket::KeepAlivePacket()
 {
-	id = 0;
+    id = 0;
 }
 
 KeepAlivePacket::KeepAlivePacket(int id)
 {
-	this->id = id;
+    this->id = id;
 }
 
 void KeepAlivePacket::handle(PacketListener *listener)
 {
-	listener->handleKeepAlive(shared_from_this());
+    listener->handleKeepAlive(shared_from_this());
 }
 
-void KeepAlivePacket::read(DataInputStream *dis) //throws IOException 
+void KeepAlivePacket::read(DataInputStream *dis) // throws IOException
 {
-	id = dis->readInt();
+    id = dis->readInt();
 }
 
-void KeepAlivePacket::write(DataOutputStream *dos) //throws IOException
+void KeepAlivePacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeInt(id);
+    dos->writeInt(id);
 }
 
-int KeepAlivePacket::getEstimatedSize() 
+int KeepAlivePacket::getEstimatedSize()
 {
-	return 4;
+    return 4;
 }
 
 bool KeepAlivePacket::canBeInvalidated()
 {
-	return true;
+    return true;
 }
 
 bool KeepAlivePacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	return true;
+    return true;
 }
 
 bool KeepAlivePacket::isAync()
 {
-	return true;
+    return true;
 }

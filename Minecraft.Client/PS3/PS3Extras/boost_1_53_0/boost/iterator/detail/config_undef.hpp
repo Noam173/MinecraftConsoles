@@ -19,7 +19,7 @@
 #undef BOOST_NO_ONE_WAY_ITERATOR_INTEROP
 
 #ifdef BOOST_ITERATOR_CONFIG_DEF
-# undef BOOST_ITERATOR_CONFIG_DEF
+#undef BOOST_ITERATOR_CONFIG_DEF
 #else
-# error missing or nested #include config_def
-#endif 
+#error missing or nested #include config_def
+#endif

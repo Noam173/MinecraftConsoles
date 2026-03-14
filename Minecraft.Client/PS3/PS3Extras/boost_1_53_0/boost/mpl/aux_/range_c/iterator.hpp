@@ -4,8 +4,8 @@
 
 // Copyright Aleksey Gurtovoy 2000-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -14,62 +14,64 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
-#include <boost/mpl/iterator_tags.hpp>
 #include <boost/mpl/advance_fwd.hpp>
-#include <boost/mpl/distance_fwd.hpp>
-#include <boost/mpl/next_prior.hpp>
-#include <boost/mpl/deref.hpp>
-#include <boost/mpl/plus.hpp>
-#include <boost/mpl/minus.hpp>
-#include <boost/mpl/aux_/value_wknd.hpp>
 #include <boost/mpl/aux_/config/ctps.hpp>
+#include <boost/mpl/aux_/value_wknd.hpp>
+#include <boost/mpl/deref.hpp>
+#include <boost/mpl/distance_fwd.hpp>
+#include <boost/mpl/iterator_tags.hpp>
+#include <boost/mpl/minus.hpp>
+#include <boost/mpl/next_prior.hpp>
+#include <boost/mpl/plus.hpp>
 
-namespace boost { namespace mpl {
+namespace boost
+{
+namespace mpl
+{
 
 // theoretically will work on any discrete numeric type
-template< typename N > struct r_iter
+template <typename N>
+struct r_iter
 {
     typedef aux::r_iter_tag tag;
     typedef random_access_iterator_tag category;
     typedef N type;
 
 #if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
-    typedef r_iter< typename mpl::next<N>::type > next;
-    typedef r_iter< typename mpl::prior<N>::type > prior;
+    typedef r_iter<typename mpl::next<N>::type> next;
+    typedef r_iter<typename mpl::prior<N>::type> prior;
 #endif
 };
 
 #if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
-template<
-      typename N
-    >
-struct next< r_iter<N> >
+template <
+    typename N>
+struct next<r_iter<N>>
 {
-    typedef r_iter< typename mpl::next<N>::type > type;
+    typedef r_iter<typename mpl::next<N>::type> type;
 };
 
-template<
-      typename N
-    >
-struct prior< r_iter<N> >
+template <
+    typename N>
+struct prior<r_iter<N>>
 {
-    typedef r_iter< typename mpl::prior<N>::type > type;
+    typedef r_iter<typename mpl::prior<N>::type> type;
 };
 
 #endif
 
-
-template<> struct advance_impl<aux::r_iter_tag>
+template <>
+struct advance_impl<aux::r_iter_tag>
 {
-    template< typename Iter, typename Dist > struct apply
+    template <typename Iter, typename Dist>
+    struct apply
     {
         typedef typename deref<Iter>::type n_;
 #if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-        typedef typename plus_impl<integral_c_tag,integral_c_tag>
-            ::template apply<n_,Dist>::type m_;
+        typedef typename plus_impl<integral_c_tag, integral_c_tag>::template apply<n_, Dist>::type m_;
 #else
-        typedef typename plus<n_,Dist>::type m_;
+        typedef typename plus<n_, Dist>::type m_;
 #endif
         // agurt, 10/nov/04: to be generic, the code have to do something along
         // the lines below...
@@ -80,27 +82,27 @@ template<> struct advance_impl<aux::r_iter_tag>
         //     >::type result_;
         //
         // ... meanwhile:
-        
-        typedef integral_c< 
-              typename aux::value_type_wknd<n_>::type
-            , BOOST_MPL_AUX_VALUE_WKND(m_)::value 
-            > result_;
-        
+
+        typedef integral_c<
+            typename aux::value_type_wknd<n_>::type, BOOST_MPL_AUX_VALUE_WKND(m_)::value>
+            result_;
+
         typedef r_iter<result_> type;
     };
 };
 
-template<> struct distance_impl<aux::r_iter_tag>
+template <>
+struct distance_impl<aux::r_iter_tag>
 {
-    template< typename Iter1, typename Iter2 > struct apply
+    template <typename Iter1, typename Iter2>
+    struct apply
         : minus<
-              typename Iter2::type
-            , typename Iter1::type
-            >
+              typename Iter2::type, typename Iter1::type>
     {
     };
 };
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_AUX_RANGE_C_ITERATOR_HPP_INCLUDED

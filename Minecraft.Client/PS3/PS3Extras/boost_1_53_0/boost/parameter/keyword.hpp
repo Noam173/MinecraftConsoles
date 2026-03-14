@@ -6,11 +6,14 @@
 #ifndef KEYWORD_050328_HPP
 #define KEYWORD_050328_HPP
 
-#include <boost/parameter/aux_/unwrap_cv_reference.hpp>
-#include <boost/parameter/aux_/tag.hpp>
 #include <boost/parameter/aux_/default.hpp>
+#include <boost/parameter/aux_/tag.hpp>
+#include <boost/parameter/aux_/unwrap_cv_reference.hpp>
 
-namespace boost { namespace parameter {
+namespace boost
+{
+namespace parameter
+{
 
 // Instances of unique specializations of keyword<...> serve to
 // associate arguments with parameter names.  For example:
@@ -32,7 +35,7 @@ struct keyword
 {
     template <class T>
     typename aux::tag<Tag, T>::type const
-    operator=(T& x) const
+    operator=(T &x) const
     {
         typedef typename aux::tag<Tag, T>::type result;
         return result(x);
@@ -40,52 +43,51 @@ struct keyword
 
     template <class Default>
     aux::default_<Tag, Default>
-    operator|(Default& default_) const
+    operator|(Default &default_) const
     {
         return aux::default_<Tag, Default>(default_);
     }
 
     template <class Default>
     aux::lazy_default<Tag, Default>
-    operator||(Default& default_) const
+    operator||(Default &default_) const
     {
         return aux::lazy_default<Tag, Default>(default_);
     }
 
-#if !BOOST_WORKAROUND(BOOST_MSVC, < 1300)  // avoid partial ordering bugs
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1300) // avoid partial ordering bugs
     template <class T>
     typename aux::tag<Tag, T const>::type const
-    operator=(T const& x) const
+    operator=(T const &x) const
     {
         typedef typename aux::tag<Tag, T const>::type result;
         return result(x);
     }
-#endif 
+#endif
 
-#if !BOOST_WORKAROUND(BOOST_MSVC, < 1300)  // avoid partial ordering bugs
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1300) // avoid partial ordering bugs
     template <class Default>
     aux::default_<Tag, const Default>
-    operator|(const Default& default_) const
+    operator|(const Default &default_) const
 #if BOOST_WORKAROUND(BOOST_MSVC, == 1300)
         volatile
-#endif 
+#endif
     {
         return aux::default_<Tag, const Default>(default_);
     }
 
     template <class Default>
     aux::lazy_default<Tag, Default>
-    operator||(Default const& default_) const
+    operator||(Default const &default_) const
 #if BOOST_WORKAROUND(BOOST_MSVC, == 1300)
         volatile
-#endif 
+#endif
     {
         return aux::lazy_default<Tag, Default>(default_);
     }
 #endif
 
- public: // Insurance against ODR violations
-    
+  public: // Insurance against ODR violations
     // People will need to define these keywords in header files.  To
     // prevent ODR violations, it's important that the keyword used in
     // every instantiation of a function template is the same object.
@@ -94,9 +96,9 @@ struct keyword
     static keyword<Tag> const instance;
 
     // This interface is deprecated
-    static keyword<Tag>& get()
+    static keyword<Tag> &get()
     {
-        return const_cast<keyword<Tag>&>(instance);
+        return const_cast<keyword<Tag> &>(instance);
     }
 };
 
@@ -111,42 +113,40 @@ keyword<Tag> const keyword<Tag>::instance = {};
 
 #if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
 
-# define BOOST_PARAMETER_KEYWORD(tag_namespace,name)                    \
-    namespace tag_namespace                                             \
-    {                                                                   \
-      struct name                                                       \
-      {                                                                 \
-          static char const* keyword_name()                             \
-          {                                                             \
-              return #name;                                             \
-          }                                                             \
-      };                                                                \
-    }                                                                   \
-    static ::boost::parameter::keyword<tag_namespace::name> const& name \
-       = ::boost::parameter::keyword<tag_namespace::name>::instance;
+#define BOOST_PARAMETER_KEYWORD(tag_namespace, name) \
+    namespace tag_namespace                          \
+    {                                                \
+    struct name                                      \
+    {                                                \
+        static char const *keyword_name()            \
+        {                                            \
+            return #name;                            \
+        }                                            \
+    };                                               \
+    }                                                \
+    static ::boost::parameter::keyword<tag_namespace::name> const &name = ::boost::parameter::keyword<tag_namespace::name>::instance;
 
 #else
 
-#define BOOST_PARAMETER_KEYWORD(tag_namespace,name)                 \
-    namespace tag_namespace                                         \
-    {                                                               \
-      struct name                                                   \
-      {                                                             \
-          static char const* keyword_name()                         \
-          {                                                         \
-              return #name;                                         \
-          }                                                         \
-      };                                                            \
-    }                                                               \
-    namespace                                                       \
-    {                                                               \
-       ::boost::parameter::keyword<tag_namespace::name> const& name \
-       = ::boost::parameter::keyword<tag_namespace::name>::instance;\
+#define BOOST_PARAMETER_KEYWORD(tag_namespace, name)                                                                           \
+    namespace tag_namespace                                                                                                    \
+    {                                                                                                                          \
+    struct name                                                                                                                \
+    {                                                                                                                          \
+        static char const *keyword_name()                                                                                      \
+        {                                                                                                                      \
+            return #name;                                                                                                      \
+        }                                                                                                                      \
+    };                                                                                                                         \
+    }                                                                                                                          \
+    namespace                                                                                                                  \
+    {                                                                                                                          \
+    ::boost::parameter::keyword<tag_namespace::name> const &name = ::boost::parameter::keyword<tag_namespace::name>::instance; \
     }
 
 #endif
 
-}} // namespace boost::parameter
+} // namespace parameter
+} // namespace boost
 
 #endif // KEYWORD_050328_HPP
-

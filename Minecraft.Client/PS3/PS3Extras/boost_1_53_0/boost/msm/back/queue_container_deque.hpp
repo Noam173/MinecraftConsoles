@@ -13,20 +13,25 @@
 
 #include <deque>
 
-namespace boost { namespace msm { namespace back
+namespace boost
 {
-    struct queue_container_deque
+namespace msm
+{
+namespace back
+{
+struct queue_container_deque
+{
+    typedef int queue_container_policy;
+
+    template <class Element>
+    struct In
     {
-        typedef int queue_container_policy;
-
-        template <class Element>
-        struct In 
-        {
-            typedef typename std::deque<Element> type;
-        };
+        typedef typename std::deque<Element> type;
     };
+};
 
-} } }//boost::msm::back
+} // namespace back
+} // namespace msm
+} // namespace boost
 
-
-#endif //BOOST_MSM_BACK_QUEUE_CONTAINER_DEQUE_H
+#endif // BOOST_MSM_BACK_QUEUE_CONTAINER_DEQUE_H

@@ -15,40 +15,47 @@
 #include <boost/coroutine/detail/param.hpp>
 
 #ifdef BOOST_HAS_ABI_HEADERS
-#  include BOOST_ABI_PREFIX
+#include BOOST_ABI_PREFIX
 #endif
 
-namespace boost {
-namespace coroutines {
-namespace detail {
+namespace boost
+{
+namespace coroutines
+{
+namespace detail
+{
 
-template<
+template <
     typename D,
-    typename Result, int arity
->
+    typename Result, int arity>
 struct coroutine_get;
 
-template< typename D, int arity >
-struct coroutine_get< D, void, arity >
-{};
+template <typename D, int arity>
+struct coroutine_get<D, void, arity>
+{
+};
 
-template< typename D, typename Result, int arity >
+template <typename D, typename Result, int arity>
 struct coroutine_get
 {
     bool has_result() const
-    { return static_cast< D const* >( this)->impl_->result_; }
-
-    typename param< Result >::type get() const
     {
-        BOOST_ASSERT( static_cast< D const* >( this)->impl_->result_);
-        return static_cast< D const* >( this)->impl_->result_.get();
+        return static_cast<D const *>(this)->impl_->result_;
+    }
+
+    typename param<Result>::type get() const
+    {
+        BOOST_ASSERT(static_cast<D const *>(this)->impl_->result_);
+        return static_cast<D const *>(this)->impl_->result_.get();
     }
 };
 
-}}}
+} // namespace detail
+} // namespace coroutines
+} // namespace boost
 
 #ifdef BOOST_HAS_ABI_HEADERS
-#  include BOOST_ABI_SUFFIX
+#include BOOST_ABI_SUFFIX
 #endif
 
 #endif // BOOST_COROUTINES_DETAIL_COROUTINE_GET_H

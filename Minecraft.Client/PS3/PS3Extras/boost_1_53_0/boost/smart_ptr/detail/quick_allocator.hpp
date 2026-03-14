@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -21,11 +21,11 @@
 #include <boost/config.hpp>
 
 #include <boost/smart_ptr/detail/lightweight_mutex.hpp>
-#include <boost/type_traits/type_with_alignment.hpp>
 #include <boost/type_traits/alignment_of.hpp>
+#include <boost/type_traits/type_with_alignment.hpp>
 
-#include <new>              // ::operator new, ::operator delete
-#include <cstddef>          // std::size_t
+#include <cstddef> // std::size_t
+#include <new>     // ::operator new, ::operator delete
 
 namespace boost
 {
@@ -33,15 +33,16 @@ namespace boost
 namespace detail
 {
 
-template<unsigned size, unsigned align_> union freeblock
-{
+template <unsigned size, unsigned align_>
+union freeblock {
     typedef typename boost::type_with_alignment<align_>::type aligner_type;
     aligner_type aligner;
     char bytes[size];
-    freeblock * next;
+    freeblock *next;
 };
 
-template<unsigned size, unsigned align_> struct allocator_impl
+template <unsigned size, unsigned align_>
+struct allocator_impl
 {
     typedef freeblock<size, align_> block;
 
@@ -62,44 +63,50 @@ template<unsigned size, unsigned align_> struct allocator_impl
 
 #if defined(BOOST_QA_PAGE_SIZE)
 
-    enum { items_per_page = BOOST_QA_PAGE_SIZE / size };
+    enum
+    {
+        items_per_page = BOOST_QA_PAGE_SIZE / size
+    };
 
 #else
 
-    enum { items_per_page = 512 / size }; // 1048560 / size
+    enum
+    {
+        items_per_page = 512 / size
+    }; // 1048560 / size
 
 #endif
 
 #ifdef BOOST_HAS_THREADS
 
-    static lightweight_mutex & mutex()
+    static lightweight_mutex &mutex()
     {
-        static freeblock< sizeof( lightweight_mutex ), boost::alignment_of< lightweight_mutex >::value > fbm;
-        static lightweight_mutex * pm = new( &fbm ) lightweight_mutex;
+        static freeblock<sizeof(lightweight_mutex), boost::alignment_of<lightweight_mutex>::value> fbm;
+        static lightweight_mutex *pm = new (&fbm) lightweight_mutex;
         return *pm;
     }
 
-    static lightweight_mutex * mutex_init;
+    static lightweight_mutex *mutex_init;
 
 #endif
 
-    static block * free;
-    static block * page;
+    static block *free;
+    static block *page;
     static unsigned last;
 
-    static inline void * alloc()
+    static inline void *alloc()
     {
 #ifdef BOOST_HAS_THREADS
-        lightweight_mutex::scoped_lock lock( mutex() );
+        lightweight_mutex::scoped_lock lock(mutex());
 #endif
-        if(block * x = free)
+        if (block *x = free)
         {
             free = x->next;
             return x;
         }
         else
         {
-            if(last == items_per_page)
+            if (last == items_per_page)
             {
                 // "Listen to me carefully: there is no memory leak"
                 // -- Scott Meyers, Eff C++ 2nd Ed Item 10
@@ -111,25 +118,25 @@ template<unsigned size, unsigned align_> struct allocator_impl
         }
     }
 
-    static inline void * alloc(std::size_t n)
+    static inline void *alloc(std::size_t n)
     {
-        if(n != size) // class-specific new called for a derived object
+        if (n != size) // class-specific new called for a derived object
         {
             return ::operator new(n);
         }
         else
         {
 #ifdef BOOST_HAS_THREADS
-            lightweight_mutex::scoped_lock lock( mutex() );
+            lightweight_mutex::scoped_lock lock(mutex());
 #endif
-            if(block * x = free)
+            if (block *x = free)
             {
                 free = x->next;
                 return x;
             }
             else
             {
-                if(last == items_per_page)
+                if (last == items_per_page)
                 {
                     page = ::new block[items_per_page];
                     last = 0;
@@ -140,31 +147,31 @@ template<unsigned size, unsigned align_> struct allocator_impl
         }
     }
 
-    static inline void dealloc(void * pv)
+    static inline void dealloc(void *pv)
     {
-        if(pv != 0) // 18.4.1.1/13
+        if (pv != 0) // 18.4.1.1/13
         {
 #ifdef BOOST_HAS_THREADS
-            lightweight_mutex::scoped_lock lock( mutex() );
+            lightweight_mutex::scoped_lock lock(mutex());
 #endif
-            block * pb = static_cast<block *>(pv);
+            block *pb = static_cast<block *>(pv);
             pb->next = free;
             free = pb;
         }
     }
 
-    static inline void dealloc(void * pv, std::size_t n)
+    static inline void dealloc(void *pv, std::size_t n)
     {
-        if(n != size) // class-specific delete called for a derived object
+        if (n != size) // class-specific delete called for a derived object
         {
             ::operator delete(pv);
         }
-        else if(pv != 0) // 18.4.1.1/13
+        else if (pv != 0) // 18.4.1.1/13
         {
 #ifdef BOOST_HAS_THREADS
-            lightweight_mutex::scoped_lock lock( mutex() );
+            lightweight_mutex::scoped_lock lock(mutex());
 #endif
-            block * pb = static_cast<block *>(pv);
+            block *pb = static_cast<block *>(pv);
             pb->next = free;
             free = pb;
         }
@@ -173,22 +180,22 @@ template<unsigned size, unsigned align_> struct allocator_impl
 
 #ifdef BOOST_HAS_THREADS
 
-template<unsigned size, unsigned align_>
-  lightweight_mutex * allocator_impl<size, align_>::mutex_init = &allocator_impl<size, align_>::mutex();
+template <unsigned size, unsigned align_>
+lightweight_mutex *allocator_impl<size, align_>::mutex_init = &allocator_impl<size, align_>::mutex();
 
 #endif
 
-template<unsigned size, unsigned align_>
-  freeblock<size, align_> * allocator_impl<size, align_>::free = 0;
+template <unsigned size, unsigned align_>
+freeblock<size, align_> *allocator_impl<size, align_>::free = 0;
 
-template<unsigned size, unsigned align_>
-  freeblock<size, align_> * allocator_impl<size, align_>::page = 0;
+template <unsigned size, unsigned align_>
+freeblock<size, align_> *allocator_impl<size, align_>::page = 0;
 
-template<unsigned size, unsigned align_>
-  unsigned allocator_impl<size, align_>::last = allocator_impl<size, align_>::items_per_page;
+template <unsigned size, unsigned align_>
+unsigned allocator_impl<size, align_>::last = allocator_impl<size, align_>::items_per_page;
 
-template<class T>
-struct quick_allocator: public allocator_impl< sizeof(T), boost::alignment_of<T>::value >
+template <class T>
+struct quick_allocator : public allocator_impl<sizeof(T), boost::alignment_of<T>::value>
 {
 };
 
@@ -196,4 +203,4 @@ struct quick_allocator: public allocator_impl< sizeof(T), boost::alignment_of<T>
 
 } // namespace boost
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_QUICK_ALLOCATOR_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_QUICK_ALLOCATOR_HPP_INCLUDED

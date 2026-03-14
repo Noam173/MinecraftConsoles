@@ -14,10 +14,10 @@
 #include <vector>
 
 #include <boost/assert.hpp>
-#include <boost/wave/wave_config.hpp>
-#include <boost/wave/token_ids.hpp>
 #include <boost/wave/cpplexer/validate_universal_char.hpp>
+#include <boost/wave/token_ids.hpp>
 #include <boost/wave/util/unput_queue_iterator.hpp>
+#include <boost/wave/wave_config.hpp>
 
 // this must occur after all of the includes and before any code appears
 #ifdef BOOST_HAS_ABI_HEADERS
@@ -25,275 +25,300 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost {
-namespace wave {
-namespace util {
+namespace boost
+{
+namespace wave
+{
+namespace util
+{
 
-namespace impl {
+namespace impl
+{
 
-    // escape a string literal (insert '\\' before every '\"', '?' and '\\')
-    template <typename StringT>
-    inline StringT
-    escape_lit(StringT const &value)
+// escape a string literal (insert '\\' before every '\"', '?' and '\\')
+template <typename StringT>
+inline StringT
+escape_lit(StringT const &value)
+{
+    StringT result;
+    typename StringT::size_type pos = 0;
+    typename StringT::size_type pos1 = value.find_first_of("\"\\?", 0);
+    if (StringT::npos != pos1)
     {
-        StringT result;
-        typename StringT::size_type pos = 0;
-        typename StringT::size_type pos1 = value.find_first_of ("\"\\?", 0);
-        if (StringT::npos != pos1) {
-            do {
-                result += value.substr(pos, pos1-pos) 
-                            + StringT("\\") 
-                            + StringT(1, value[pos1]);
-                pos1 = value.find_first_of ("\"\\?", pos = pos1+1);
-            } while (StringT::npos != pos1);
-            result += value.substr(pos);
-        }
-        else {
-            result = value;
-        }
-        return result;
+        do
+        {
+            result += value.substr(pos, pos1 - pos) + StringT("\\") + StringT(1, value[pos1]);
+            pos1 = value.find_first_of("\"\\?", pos = pos1 + 1);
+        } while (StringT::npos != pos1);
+        result += value.substr(pos);
     }
-
-    // un-escape a string literal (remove '\\' just before '\\', '\"' or '?')
-    template <typename StringT>
-    inline StringT
-    unescape_lit(StringT const &value)
+    else
     {
-        StringT result;
-        typename StringT::size_type pos = 0;
-        typename StringT::size_type pos1 = value.find_first_of ("\\", 0);
-        if (StringT::npos != pos1) {
-            do {
-                switch (value[pos1+1]) {
-                case '\\':
-                case '\"':
-                case '?':
-                    result = result + value.substr(pos, pos1-pos);
-                    pos1 = value.find_first_of ("\\", (pos = pos1+1)+1);
-                    break;
+        result = value;
+    }
+    return result;
+}
 
-                case 'n':
-                    result = result + value.substr(pos, pos1-pos) + "\n";
-                    pos1 = value.find_first_of ("\\", pos = pos1+1);
-                    ++pos;
-                    break;
+// un-escape a string literal (remove '\\' just before '\\', '\"' or '?')
+template <typename StringT>
+inline StringT
+unescape_lit(StringT const &value)
+{
+    StringT result;
+    typename StringT::size_type pos = 0;
+    typename StringT::size_type pos1 = value.find_first_of("\\", 0);
+    if (StringT::npos != pos1)
+    {
+        do
+        {
+            switch (value[pos1 + 1])
+            {
+            case '\\':
+            case '\"':
+            case '?':
+                result = result + value.substr(pos, pos1 - pos);
+                pos1 = value.find_first_of("\\", (pos = pos1 + 1) + 1);
+                break;
 
-                default:
-                    result = result + value.substr(pos, pos1-pos+1);
-                    pos1 = value.find_first_of ("\\", pos = pos1+1);
-                }
+            case 'n':
+                result = result + value.substr(pos, pos1 - pos) + "\n";
+                pos1 = value.find_first_of("\\", pos = pos1 + 1);
+                ++pos;
+                break;
 
-            } while (pos1 != StringT::npos);
-            result = result + value.substr(pos);
-        }
-        else {
+            default:
+                result = result + value.substr(pos, pos1 - pos + 1);
+                pos1 = value.find_first_of("\\", pos = pos1 + 1);
+            }
+
+        } while (pos1 != StringT::npos);
+        result = result + value.substr(pos);
+    }
+    else
+    {
         // the string doesn't contain any escaped character sequences
-            result = value;
-        }
-        return result;
+        result = value;
     }
+    return result;
+}
 
-    // return the string representation of a token sequence
-    template <typename ContainerT, typename PositionT>
-    inline typename ContainerT::value_type::string_type
-    as_stringlit (ContainerT const &token_sequence, PositionT const &pos)
+// return the string representation of a token sequence
+template <typename ContainerT, typename PositionT>
+inline typename ContainerT::value_type::string_type
+as_stringlit(ContainerT const &token_sequence, PositionT const &pos)
+{
+    using namespace boost::wave;
+    typedef typename ContainerT::value_type::string_type string_type;
+
+    string_type result("\"");
+    bool was_whitespace = false;
+    typename ContainerT::const_iterator end = token_sequence.end();
+    for (typename ContainerT::const_iterator it = token_sequence.begin();
+         it != end; ++it)
     {
-        using namespace boost::wave;
-        typedef typename ContainerT::value_type::string_type string_type;
+        token_id id = token_id(*it);
 
-        string_type result("\"");
-        bool was_whitespace = false;
-        typename ContainerT::const_iterator end = token_sequence.end();
-        for (typename ContainerT::const_iterator it = token_sequence.begin(); 
-             it != end; ++it) 
+        if (IS_CATEGORY(*it, WhiteSpaceTokenType) || T_NEWLINE == id)
+        {
+            if (!was_whitespace)
+            {
+                // C++ standard 16.3.2.2 [cpp.stringize]
+                // Each occurrence of white space between the argument's
+                // preprocessing tokens becomes a single space character in the
+                // character string literal.
+                result += " ";
+                was_whitespace = true;
+            }
+        }
+        else if (T_STRINGLIT == id || T_CHARLIT == id)
+        {
+            // string literals and character literals have to be escaped
+            result += impl::escape_lit((*it).get_value());
+            was_whitespace = false;
+        }
+        else
+#if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
+            if (T_PLACEMARKER != id)
+#endif
+        {
+            // now append this token to the string
+            result += (*it).get_value();
+            was_whitespace = false;
+        }
+    }
+    result += "\"";
+
+    // validate the resulting literal to contain no invalid universal character
+    // value (throws if invalid chars found)
+    boost::wave::cpplexer::impl::validate_literal(result, pos.get_line(),
+                                                  pos.get_column(), pos.get_file());
+    return result;
+}
+
+#if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
+// return the string representation of a token sequence
+template <typename ContainerT, typename PositionT>
+inline typename ContainerT::value_type::string_type
+as_stringlit(std::vector<ContainerT> const &arguments,
+             typename std::vector<ContainerT>::size_type i, PositionT const &pos)
+{
+    using namespace boost::wave;
+    typedef typename ContainerT::value_type::string_type string_type;
+
+    BOOST_ASSERT(i < arguments.size());
+
+    string_type result("\"");
+    bool was_whitespace = false;
+
+    for (/**/; i < arguments.size(); ++i)
+    {
+        // stringize all remaining arguments
+        typename ContainerT::const_iterator end = arguments[i].end();
+        for (typename ContainerT::const_iterator it = arguments[i].begin();
+             it != end; ++it)
         {
             token_id id = token_id(*it);
 
-            if (IS_CATEGORY(*it, WhiteSpaceTokenType) || T_NEWLINE == id) {
-                if (!was_whitespace) {
-                // C++ standard 16.3.2.2 [cpp.stringize]
-                // Each occurrence of white space between the argument's 
-                // preprocessing tokens becomes a single space character in the 
-                // character string literal.
+            if (IS_CATEGORY(*it, WhiteSpaceTokenType) || T_NEWLINE == id)
+            {
+                if (!was_whitespace)
+                {
+                    // C++ standard 16.3.2.2 [cpp.stringize]
+                    // Each occurrence of white space between the argument's
+                    // preprocessing tokens becomes a single space character in the
+                    // character string literal.
                     result += " ";
                     was_whitespace = true;
                 }
             }
-            else if (T_STRINGLIT == id || T_CHARLIT == id) {
-            // string literals and character literals have to be escaped
+            else if (T_STRINGLIT == id || T_CHARLIT == id)
+            {
+                // string literals and character literals have to be escaped
                 result += impl::escape_lit((*it).get_value());
                 was_whitespace = false;
             }
-            else 
-#if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
-            if (T_PLACEMARKER != id) 
-#endif 
+            else if (T_PLACEMARKER != id)
             {
-            // now append this token to the string
+                // now append this token to the string
                 result += (*it).get_value();
                 was_whitespace = false;
             }
         }
-        result += "\"";
-
-    // validate the resulting literal to contain no invalid universal character
-    // value (throws if invalid chars found)
-        boost::wave::cpplexer::impl::validate_literal(result, pos.get_line(), 
-            pos.get_column(), pos.get_file()); 
-        return result;
-    }
-
-#if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
-    // return the string representation of a token sequence
-    template <typename ContainerT, typename PositionT>
-    inline typename ContainerT::value_type::string_type
-    as_stringlit (std::vector<ContainerT> const &arguments, 
-        typename std::vector<ContainerT>::size_type i, PositionT const &pos)
-    {
-        using namespace boost::wave;
-        typedef typename ContainerT::value_type::string_type string_type;
-
-        BOOST_ASSERT(i < arguments.size());
-
-        string_type result("\"");
-        bool was_whitespace = false;
-
-        for (/**/; i < arguments.size(); ++i) {
-        // stringize all remaining arguments
-            typename ContainerT::const_iterator end = arguments[i].end();
-            for (typename ContainerT::const_iterator it = arguments[i].begin(); 
-                 it != end; ++it) 
-            {
-                token_id id = token_id(*it);
-                
-                if (IS_CATEGORY(*it, WhiteSpaceTokenType) || T_NEWLINE == id) {
-                    if (!was_whitespace) {
-                    // C++ standard 16.3.2.2 [cpp.stringize]
-                    // Each occurrence of white space between the argument's 
-                    // preprocessing tokens becomes a single space character in the 
-                    // character string literal.
-                        result += " ";
-                        was_whitespace = true;
-                    }
-                }
-                else if (T_STRINGLIT == id || T_CHARLIT == id) {
-                // string literals and character literals have to be escaped
-                    result += impl::escape_lit((*it).get_value());
-                    was_whitespace = false;
-                }
-                else if (T_PLACEMARKER != id) {
-                // now append this token to the string
-                    result += (*it).get_value();
-                    was_whitespace = false;
-                }
-            }
 
         // append comma, if not last argument
-            if (i < arguments.size()-1) {
-                result += ",";
-                was_whitespace = false;
-            }
+        if (i < arguments.size() - 1)
+        {
+            result += ",";
+            was_whitespace = false;
         }
-        result += "\"";
+    }
+    result += "\"";
 
     // validate the resulting literal to contain no invalid universal character
     // value (throws if invalid chars found)
-        boost::wave::cpplexer::impl::validate_literal(result, pos.get_line(), 
-            pos.get_column(), pos.get_file()); 
-        return result;
-    }
+    boost::wave::cpplexer::impl::validate_literal(result, pos.get_line(),
+                                                  pos.get_column(), pos.get_file());
+    return result;
+}
 #endif // BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
 
-    // return the string representation of a token sequence
-    template <typename StringT, typename IteratorT>
-    inline StringT
-    as_string(IteratorT it, IteratorT const& end)
+// return the string representation of a token sequence
+template <typename StringT, typename IteratorT>
+inline StringT
+as_string(IteratorT it, IteratorT const &end)
+{
+    StringT result;
+    for (/**/; it != end; ++it)
     {
-        StringT result;
-        for (/**/; it != end; ++it) 
-        {
-            result += (*it).get_value();
-        }
-        return result;
+        result += (*it).get_value();
     }
+    return result;
+}
 
-    // return the string representation of a token sequence
-    template <typename ContainerT>
-    inline typename ContainerT::value_type::string_type
-    as_string (ContainerT const &token_sequence)
-    {
-        typedef typename ContainerT::value_type::string_type string_type;
-        return as_string<string_type>(token_sequence.begin(), 
-            token_sequence.end());
-    }
+// return the string representation of a token sequence
+template <typename ContainerT>
+inline typename ContainerT::value_type::string_type
+as_string(ContainerT const &token_sequence)
+{
+    typedef typename ContainerT::value_type::string_type string_type;
+    return as_string<string_type>(token_sequence.begin(),
+                                  token_sequence.end());
+}
 
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
-    ///////////////////////////////////////////////////////////////////////////
-    //
-    //  Copies all arguments beginning with the given index to the output 
-    //  sequence. The arguments are separated by commas.
-    //
-    template <typename ContainerT, typename PositionT>
-    void replace_ellipsis (std::vector<ContainerT> const &arguments,
-        typename ContainerT::size_type index, 
-        ContainerT &expanded, PositionT const &pos)
+///////////////////////////////////////////////////////////////////////////
+//
+//  Copies all arguments beginning with the given index to the output
+//  sequence. The arguments are separated by commas.
+//
+template <typename ContainerT, typename PositionT>
+void replace_ellipsis(std::vector<ContainerT> const &arguments,
+                      typename ContainerT::size_type index,
+                      ContainerT &expanded, PositionT const &pos)
+{
+    using namespace cpplexer;
+    typedef typename ContainerT::value_type token_type;
+
+    token_type comma(T_COMMA, ",", pos);
+    for (/**/; index < arguments.size(); ++index)
     {
-        using namespace cpplexer;
-        typedef typename ContainerT::value_type token_type;
-        
-        token_type comma(T_COMMA, ",", pos);
-        for (/**/; index < arguments.size(); ++index) {
         ContainerT const &arg = arguments[index];
 
-            std::copy(arg.begin(), arg.end(), 
-                std::inserter(expanded, expanded.end()));
-                
-            if (index < arguments.size()-1) 
-                expanded.push_back(comma);
+        std::copy(arg.begin(), arg.end(),
+                  std::inserter(expanded, expanded.end()));
+
+        if (index < arguments.size() - 1)
+        {
+            expanded.push_back(comma);
         }
     }
+}
 #endif
 
-    // Skip all whitespace characters and queue the skipped characters into the
-    // given container
-    template <typename IteratorT>
-    inline boost::wave::token_id 
-    skip_whitespace(IteratorT &first, IteratorT const &last)
+// Skip all whitespace characters and queue the skipped characters into the
+// given container
+template <typename IteratorT>
+inline boost::wave::token_id
+skip_whitespace(IteratorT &first, IteratorT const &last)
+{
+    token_id id = util::impl::next_token<IteratorT>::peek(first, last, false);
+    if (IS_CATEGORY(id, WhiteSpaceTokenType))
     {
-        token_id id = util::impl::next_token<IteratorT>::peek(first, last, false);
-        if (IS_CATEGORY(id, WhiteSpaceTokenType)) {
-            do {
-                ++first;
-                id = util::impl::next_token<IteratorT>::peek(first, last, false);
-            } while (IS_CATEGORY(id, WhiteSpaceTokenType));
-        }
-        ++first;
-        return id;
+        do
+        {
+            ++first;
+            id = util::impl::next_token<IteratorT>::peek(first, last, false);
+        } while (IS_CATEGORY(id, WhiteSpaceTokenType));
     }
+    ++first;
+    return id;
+}
 
-    template <typename IteratorT, typename ContainerT>
-    inline boost::wave::token_id 
-    skip_whitespace(IteratorT &first, IteratorT const &last, ContainerT &queue)
+template <typename IteratorT, typename ContainerT>
+inline boost::wave::token_id
+skip_whitespace(IteratorT &first, IteratorT const &last, ContainerT &queue)
+{
+    queue.push_back(*first); // queue up the current token
+
+    token_id id = util::impl::next_token<IteratorT>::peek(first, last, false);
+    if (IS_CATEGORY(id, WhiteSpaceTokenType))
     {
-        queue.push_back (*first);       // queue up the current token
-
-        token_id id = util::impl::next_token<IteratorT>::peek(first, last, false);
-        if (IS_CATEGORY(id, WhiteSpaceTokenType)) {
-            do {
-                queue.push_back(*++first);  // queue up the next whitespace 
-                id = util::impl::next_token<IteratorT>::peek(first, last, false);
-            } while (IS_CATEGORY(id, WhiteSpaceTokenType));
-        }
-        ++first;
-        return id;
+        do
+        {
+            queue.push_back(*++first); // queue up the next whitespace
+            id = util::impl::next_token<IteratorT>::peek(first, last, false);
+        } while (IS_CATEGORY(id, WhiteSpaceTokenType));
     }
+    ++first;
+    return id;
+}
 
-}   // namespace impl
+} // namespace impl
 
 ///////////////////////////////////////////////////////////////////////////////
-}   // namespace util
-}   // namespace wave
-}   // namespace boost
+} // namespace util
+} // namespace wave
+} // namespace boost
 
 // the suffix header occurs after all of the code
 #ifdef BOOST_HAS_ABI_HEADERS

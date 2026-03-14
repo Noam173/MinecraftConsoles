@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "CoralTile.h"
+#include "stdafx.h"
 
 CoralTile::CoralTile(int id) : HalfTransparentTile(id, L"coral", Material::coral, true)
 {
@@ -9,10 +9,10 @@ CoralTile::CoralTile(int id) : HalfTransparentTile(id, L"coral", Material::coral
 
 int CoralTile::getColor(LevelSource *level, int x, int y, int z)
 {
-	return (x * x * 3187961 + x * 987243 + y * y * 43297126 + y * 987121 + z * z * 927469861 + z * 1861) & 0xffffff;
+    return (x * x * 3187961 + x * 987243 + y * y * 43297126 + y * 987121 + z * z * 927469861 + z * 1861) & 0xffffff;
 }
 
 int CoralTile::getColor(LevelSource *level, int x, int y, int z, int data)
 {
-	return (x * x * 3187961 + x * 987243 + y * y * 43297126 + y * 987121 + z * z * 927469861 + z * 1861) & 0xffffff;
+    return (x * x * 3187961 + x * 987243 + y * y * 43297126 + y * 987121 + z * z * 927469861 + z * 1861) & 0xffffff;
 }

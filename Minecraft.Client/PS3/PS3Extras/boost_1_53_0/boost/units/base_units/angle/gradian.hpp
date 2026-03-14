@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -11,10 +11,10 @@
 #ifndef BOOST_UNITS_ANGLE_GRADIAN_BASE_UNIT_HPP
 #define BOOST_UNITS_ANGLE_GRADIAN_BASE_UNIT_HPP
 
-#include <boost/units/conversion.hpp>
 #include <boost/units/base_units/angle/radian.hpp>
+#include <boost/units/conversion.hpp>
 
-BOOST_UNITS_DEFINE_BASE_UNIT_WITH_CONVERSIONS(angle,gradian,"gradian","grad",6.28318530718/400.,boost::units::angle::radian_base_unit,-102);
+BOOST_UNITS_DEFINE_BASE_UNIT_WITH_CONVERSIONS(angle, gradian, "gradian", "grad", 6.28318530718 / 400., boost::units::angle::radian_base_unit, -102);
 
 #if BOOST_UNITS_HAS_BOOST_TYPEOF
 

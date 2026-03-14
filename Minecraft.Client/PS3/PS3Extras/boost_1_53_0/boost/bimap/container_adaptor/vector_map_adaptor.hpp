@@ -12,27 +12,29 @@
 #ifndef BOOST_BIMAP_CONTAINER_ADAPTOR_VECTOR_MAP_ADAPTOR_HPP
 #define BOOST_BIMAP_CONTAINER_ADAPTOR_VECTOR_MAP_ADAPTOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
+#include <boost/bimap/container_adaptor/detail/identity_converters.hpp>
+#include <boost/bimap/container_adaptor/vector_adaptor.hpp>
+#include <boost/mpl/aux_/na.hpp>
 #include <boost/mpl/list.hpp>
 #include <boost/mpl/push_front.hpp>
-#include <boost/mpl/aux_/na.hpp>
-#include <boost/bimap/container_adaptor/vector_adaptor.hpp>
-#include <boost/bimap/container_adaptor/detail/identity_converters.hpp>
 #include <boost/mpl/vector.hpp>
 
-namespace boost {
-namespace bimaps {
-namespace container_adaptor {
+namespace boost
+{
+namespace bimaps
+{
+namespace container_adaptor
+{
 
 /// \brief Container adaptor.
 
-template
-<
+template <
     class Base,
 
     class Iterator,
@@ -40,28 +42,24 @@ template
     class ReverseIterator,
     class ConstReverseIterator,
 
-    class IteratorToBaseConverter          = ::boost::mpl::na,
-    class IteratorFromBaseConverter        = ::boost::mpl::na,
+    class IteratorToBaseConverter = ::boost::mpl::na,
+    class IteratorFromBaseConverter = ::boost::mpl::na,
     class ReverseIteratorFromBaseConverter = ::boost::mpl::na,
-    class ValueToBaseConverter             = ::boost::mpl::na,
-    class ValueFromBaseConverter           = ::boost::mpl::na,
+    class ValueToBaseConverter = ::boost::mpl::na,
+    class ValueFromBaseConverter = ::boost::mpl::na,
 
-    class FunctorsFromDerivedClasses = mpl::vector<>
->
+    class FunctorsFromDerivedClasses = mpl::vector<>>
 class vector_map_adaptor :
 
-    public vector_adaptor
-    <
+    public vector_adaptor<
         Base,
         Iterator, ConstIterator, ReverseIterator, ConstReverseIterator,
         IteratorToBaseConverter, IteratorFromBaseConverter,
         ReverseIteratorFromBaseConverter,
         ValueToBaseConverter, ValueFromBaseConverter,
-        FunctorsFromDerivedClasses
-    >
+        FunctorsFromDerivedClasses>
 {
-    typedef vector_adaptor
-    <
+    typedef vector_adaptor<
         Base,
         Iterator, ConstIterator, ReverseIterator, ConstReverseIterator,
         IteratorToBaseConverter, IteratorFromBaseConverter,
@@ -69,36 +67,33 @@ class vector_map_adaptor :
         ValueToBaseConverter, ValueFromBaseConverter,
         FunctorsFromDerivedClasses
 
-    > base_;
+        >
+        base_;
 
     // MetaData -------------------------------------------------------------
 
-    public:
-
-    typedef BOOST_DEDUCED_TYPENAME Iterator::value_type::first_type  key_type;
+  public:
+    typedef BOOST_DEDUCED_TYPENAME Iterator::value_type::first_type key_type;
     typedef BOOST_DEDUCED_TYPENAME Iterator::value_type::second_type data_type;
     typedef data_type mapped_type;
 
     // Access -----------------------------------------------------------------
 
-    public:
+  public:
+    vector_map_adaptor()
+    {
+    }
 
-    vector_map_adaptor() {}
+    explicit vector_map_adaptor(Base &c) : base_(c)
+    {
+    }
 
-    explicit vector_map_adaptor(Base & c) :
-        base_(c) {}
-
-    protected:
-
+  protected:
     typedef vector_map_adaptor vector_map_adaptor_;
-
 };
-
 
 } // namespace container_adaptor
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_CONTAINER_ADAPTOR_VECTOR_MAP_ADAPTOR_HPP
-

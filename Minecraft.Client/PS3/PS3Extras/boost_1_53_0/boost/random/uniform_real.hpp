@@ -22,7 +22,8 @@
 #include <boost/limits.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
 
-namespace boost {
+namespace boost
+{
 
 /**
  * The distribution function uniform_real models a random distribution.
@@ -32,15 +33,15 @@ namespace boost {
  * This class is deprecated.  Please use @c uniform_real_distribution in
  * new code.
  */
-template<class RealType = double>
+template <class RealType = double>
 class uniform_real : public random::uniform_real_distribution<RealType>
 {
     typedef random::uniform_real_distribution<RealType> base_type;
-public:
 
+  public:
     class param_type : public base_type::param_type
     {
-    public:
+      public:
         typedef uniform_real distribution_type;
         /**
          * Constructs the parameters of a uniform_real distribution.
@@ -49,8 +50,9 @@ public:
          */
         explicit param_type(RealType min_arg = RealType(0.0),
                             RealType max_arg = RealType(1.0))
-          : base_type::param_type(min_arg, max_arg)
-        {}
+            : base_type::param_type(min_arg, max_arg)
+        {
+        }
     };
 
     /**
@@ -61,20 +63,27 @@ public:
      */
     explicit uniform_real(RealType min_arg = RealType(0.0),
                           RealType max_arg = RealType(1.0))
-      : base_type(min_arg, max_arg)
+        : base_type(min_arg, max_arg)
     {
         BOOST_ASSERT(min_arg <= max_arg);
     }
 
     /** Constructs a uniform_real distribution from its parameters. */
-    explicit uniform_real(const param_type& parm)
-      : base_type(parm)
-    {}
+    explicit uniform_real(const param_type &parm)
+        : base_type(parm)
+    {
+    }
 
     /** Returns the parameters of the distribution */
-    param_type param() const { return param_type(this->a(), this->b()); }
+    param_type param() const
+    {
+        return param_type(this->a(), this->b());
+    }
     /** Sets the parameters of the distribution. */
-    void param(const param_type& parm) { this->base_type::param(parm); }
+    void param(const param_type &parm)
+    {
+        this->base_type::param(parm);
+    }
 };
 
 } // namespace boost

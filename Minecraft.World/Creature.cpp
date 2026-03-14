@@ -1,3 +1,2 @@
-#include "stdafx.h"
 #include "Creature.h"
-
+#include "stdafx.h"

@@ -6,7 +6,7 @@
 
 /** @file config.hpp
  *
- *  This header provides auto-linking and configuration support for the 
+ *  This header provides auto-linking and configuration support for the
  *  Boost.MPI python bindings.
  */
 #ifndef BOOST_MPI_PYTHON_CONFIG_HPP
@@ -16,32 +16,32 @@
 
 /*****************************************************************************
  *                                                                           *
- *  DLL import/export options                                                *  
+ *  DLL import/export options                                                *
  *                                                                           *
  *****************************************************************************/
 
 #if defined(BOOST_HAS_DECLSPEC) && (defined(BOOST_MPI_PYTHON_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)) && !defined(BOOST_MPI_PYTHON_STATIC_LINK)
-#  if defined(BOOST_MPI_PYTHON_SOURCE)
-#     define BOOST_MPI_PYTHON_DECL __declspec(dllexport)
-#     define BOOST_MPI_PYTHON_BUILD_DLL
-#  else
-#     define BOOST_MPI_PYTHON_DECL __declspec(dllimport)
-#  endif
+#if defined(BOOST_MPI_PYTHON_SOURCE)
+#define BOOST_MPI_PYTHON_DECL __declspec(dllexport)
+#define BOOST_MPI_PYTHON_BUILD_DLL
+#else
+#define BOOST_MPI_PYTHON_DECL __declspec(dllimport)
+#endif
 #endif
 
 #ifndef BOOST_MPI_PYTHON_DECL
-#  define BOOST_MPI_PYTHON_DECL
+#define BOOST_MPI_PYTHON_DECL
 #endif
 
 #if !defined(BOOST_MPI_PYTHON_NO_LIB) && !defined(BOOST_MPI_PYTHON_SOURCE) && !defined(BOOST_ALL_NO_LIB)
-#  define BOOST_LIB_NAME boost_mpi_python
-#  if defined(BOOST_MPI_PYTHON_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)
-#     define BOOST_DYN_LINK
-#  endif
-#  ifdef BOOST_MPI_PYTHON_DIAG
-#     define BOOST_LIB_DIAGNOSTIC
-#  endif
-#  include <boost/config/auto_link.hpp>
+#define BOOST_LIB_NAME boost_mpi_python
+#if defined(BOOST_MPI_PYTHON_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)
+#define BOOST_DYN_LINK
+#endif
+#ifdef BOOST_MPI_PYTHON_DIAG
+#define BOOST_LIB_DIAGNOSTIC
+#endif
+#include <boost/config/auto_link.hpp>
 #endif
 
 #endif // BOOST_MPI_PYTHON_CONFIG_HPP

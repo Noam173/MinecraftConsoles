@@ -13,11 +13,12 @@
 #ifndef BOOST_VARIANT_RECURSIVE_WRAPPER_HPP
 #define BOOST_VARIANT_RECURSIVE_WRAPPER_HPP
 
-#include "boost/variant/recursive_wrapper_fwd.hpp"
-#include "boost/variant/detail/move.hpp"
 #include "boost/checked_delete.hpp"
+#include "boost/variant/detail/move.hpp"
+#include "boost/variant/recursive_wrapper_fwd.hpp"
 
-namespace boost {
+namespace boost
+{
 
 //////////////////////////////////////////////////////////////////////////
 // class template recursive_wrapper
@@ -28,75 +29,79 @@ namespace boost {
 template <typename T>
 class recursive_wrapper
 {
-public: // typedefs
-
+  public: // typedefs
     typedef T type;
 
-private: // representation
+  private: // representation
+    T *p_;
 
-    T* p_;
-
-public: // structors
-
+  public: // structors
     ~recursive_wrapper();
     recursive_wrapper();
 
-    recursive_wrapper(const recursive_wrapper& operand);
-    recursive_wrapper(const T& operand);
+    recursive_wrapper(const recursive_wrapper &operand);
+    recursive_wrapper(const T &operand);
 
-#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES 
-    recursive_wrapper(recursive_wrapper&& operand);
-    recursive_wrapper(T&& operand);
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
+    recursive_wrapper(recursive_wrapper &&operand);
+    recursive_wrapper(T &&operand);
 #endif
 
-private: // helpers, for modifiers (below)
+  private: // helpers, for modifiers (below)
+    void assign(const T &rhs);
 
-    void assign(const T& rhs);
-
-public: // modifiers
-
-    recursive_wrapper& operator=(const recursive_wrapper& rhs)
+  public: // modifiers
+    recursive_wrapper &operator=(const recursive_wrapper &rhs)
     {
-        assign( rhs.get() );
+        assign(rhs.get());
         return *this;
     }
 
-    recursive_wrapper& operator=(const T& rhs)
+    recursive_wrapper &operator=(const T &rhs)
     {
-        assign( rhs );
+        assign(rhs);
         return *this;
     }
 
-    void swap(recursive_wrapper& operand) BOOST_NOEXCEPT
+    void swap(recursive_wrapper &operand) BOOST_NOEXCEPT
     {
-        T* temp = operand.p_;
+        T *temp = operand.p_;
         operand.p_ = p_;
         p_ = temp;
     }
 
-    
-#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES 
-    recursive_wrapper& operator=(recursive_wrapper&& rhs) BOOST_NOEXCEPT
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
+    recursive_wrapper &operator=(recursive_wrapper &&rhs) BOOST_NOEXCEPT
     {
         swap(rhs);
         return *this;
     }
 
-    recursive_wrapper& operator=(T&& rhs)
+    recursive_wrapper &operator=(T &&rhs)
     {
         get() = detail::variant::move(rhs);
         return *this;
     }
 #endif
 
-public: // queries
+  public: // queries
+    T &get()
+    {
+        return *get_pointer();
+    }
+    const T &get() const
+    {
+        return *get_pointer();
+    }
 
-    T& get() { return *get_pointer(); }
-    const T& get() const { return *get_pointer(); }
-
-    T* get_pointer() { return p_; }
-    const T* get_pointer() const { return p_; }
-
+    T *get_pointer()
+    {
+        return p_;
+    }
+    const T *get_pointer() const
+    {
+        return p_;
+    }
 };
 
 template <typename T>
@@ -112,33 +117,33 @@ recursive_wrapper<T>::recursive_wrapper()
 }
 
 template <typename T>
-recursive_wrapper<T>::recursive_wrapper(const recursive_wrapper& operand)
-    : p_(new T( operand.get() ))
+recursive_wrapper<T>::recursive_wrapper(const recursive_wrapper &operand)
+    : p_(new T(operand.get()))
 {
 }
 
 template <typename T>
-recursive_wrapper<T>::recursive_wrapper(const T& operand)
+recursive_wrapper<T>::recursive_wrapper(const T &operand)
     : p_(new T(operand))
 {
 }
 
-#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES 
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
 template <typename T>
-recursive_wrapper<T>::recursive_wrapper(recursive_wrapper&& operand)
-    : p_(new T( detail::variant::move(operand.get()) ))
+recursive_wrapper<T>::recursive_wrapper(recursive_wrapper &&operand)
+    : p_(new T(detail::variant::move(operand.get())))
 {
 }
 
 template <typename T>
-recursive_wrapper<T>::recursive_wrapper(T&& operand)
-    : p_(new T( detail::variant::move(operand) ))
+recursive_wrapper<T>::recursive_wrapper(T &&operand)
+    : p_(new T(detail::variant::move(operand)))
 {
 }
 #endif
 
 template <typename T>
-void recursive_wrapper<T>::assign(const T& rhs)
+void recursive_wrapper<T>::assign(const T &rhs)
 {
     this->get() = rhs;
 }
@@ -148,7 +153,7 @@ void recursive_wrapper<T>::assign(const T& rhs)
 // Swaps two recursive_wrapper<T> objects of the same type T.
 //
 template <typename T>
-inline void swap(recursive_wrapper<T>& lhs, recursive_wrapper<T>& rhs) BOOST_NOEXCEPT
+inline void swap(recursive_wrapper<T> &lhs, recursive_wrapper<T> &rhs) BOOST_NOEXCEPT
 {
     lhs.swap(rhs);
 }

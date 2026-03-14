@@ -13,75 +13,63 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(_MSC_VER) && _MSC_VER >= 1000
-# pragma once
+#pragma once
 #endif
 
 #ifndef IS_STD_HASH_MAP_EN_16_12_2004
 #define IS_STD_HASH_MAP_EN_16_12_2004
 
-#include <boost/mpl/bool.hpp>
 #include "./std_hash_map_fwd.hpp"
+#include <boost/mpl/bool.hpp>
 
 namespace boost
 {
-    template<class T>
-    struct is_std_hash_map
-        : boost::mpl::false_
-    {};
+template <class T>
+struct is_std_hash_map
+    : boost::mpl::false_
+{
+};
 
-    template<class T>
-    struct is_std_hash_multimap
-        : boost::mpl::false_
-    {};
+template <class T>
+struct is_std_hash_multimap
+    : boost::mpl::false_
+{
+};
 
 #ifdef BOOST_HAS_HASH
 
-    template<
-        class Kty
-      , class Ty
-      , class Hash
-      , class Cmp
-      , class Alloc
-    >
-    struct is_std_hash_map< ::BOOST_STD_EXTENSION_NAMESPACE::hash_map<Kty,Ty,Hash,Cmp,Alloc> >
-        : boost::mpl::true_
-    {};
+template <
+    class Kty, class Ty, class Hash, class Cmp, class Alloc>
+struct is_std_hash_map<::BOOST_STD_EXTENSION_NAMESPACE::hash_map<Kty, Ty, Hash, Cmp, Alloc>>
+    : boost::mpl::true_
+{
+};
 
-    template<
-        class Kty
-      , class Ty
-      , class Hash
-      , class Cmp
-      , class Alloc
-    >
-    struct is_std_hash_multimap< ::BOOST_STD_EXTENSION_NAMESPACE::hash_multimap<Kty,Ty,Hash,Cmp,Alloc> >
-        : boost::mpl::true_
-    {};
+template <
+    class Kty, class Ty, class Hash, class Cmp, class Alloc>
+struct is_std_hash_multimap<::BOOST_STD_EXTENSION_NAMESPACE::hash_multimap<Kty, Ty, Hash, Cmp, Alloc>>
+    : boost::mpl::true_
+{
+};
 
 #elif defined(BOOST_DINKUMWARE_STDLIB)
 
-    template<
-        class Kty
-      , class Ty
-      , class Tr
-      , class Alloc
-    >
-    struct is_std_hash_map< ::BOOST_STD_EXTENSION_NAMESPACE::hash_map<Kty,Ty,Tr,Alloc> >
-        : boost::mpl::true_
-    {};
+template <
+    class Kty, class Ty, class Tr, class Alloc>
+struct is_std_hash_map<::BOOST_STD_EXTENSION_NAMESPACE::hash_map<Kty, Ty, Tr, Alloc>>
+    : boost::mpl::true_
+{
+};
 
-    template<
-        class Kty
-      , class Ty
-      , class Tr
-      , class Alloc
-    >
-    struct is_std_hash_multimap< ::BOOST_STD_EXTENSION_NAMESPACE::hash_multimap<Kty,Ty,Tr,Alloc> >
-        : boost::mpl::true_
-    {};
+template <
+    class Kty, class Ty, class Tr, class Alloc>
+struct is_std_hash_multimap<::BOOST_STD_EXTENSION_NAMESPACE::hash_multimap<Kty, Ty, Tr, Alloc>>
+    : boost::mpl::true_
+{
+};
 
 #endif
 
-}
+} // namespace boost
 
 #endif

@@ -17,9 +17,9 @@
 
 #include <boost/heap/detail/heap_comparison.hpp>
 #include <boost/heap/detail/heap_node.hpp>
-#include <boost/heap/policies.hpp>
 #include <boost/heap/detail/stable_heap.hpp>
 #include <boost/heap/detail/tree_iterator.hpp>
+#include <boost/heap/policies.hpp>
 
 #ifndef BOOST_DOXYGEN_INVOKED
 #ifdef BOOST_HEAP_SANITYCHECKS
@@ -29,24 +29,26 @@
 #endif
 #endif
 
-namespace boost  {
-namespace heap   {
-namespace detail {
+namespace boost
+{
+namespace heap
+{
+namespace detail
+{
 
 typedef parameter::parameters<boost::parameter::optional<tag::allocator>,
                               boost::parameter::optional<tag::compare>,
                               boost::parameter::optional<tag::stable>,
                               boost::parameter::optional<tag::constant_time_size>,
-                              boost::parameter::optional<tag::stability_counter_type>
-                             > pairing_heap_signature;
+                              boost::parameter::optional<tag::stability_counter_type>>
+    pairing_heap_signature;
 
 template <typename T, typename Parspec>
 struct make_pairing_heap_base
 {
     static const bool constant_time_size = parameter::binding<Parspec,
                                                               tag::constant_time_size,
-                                                              boost::mpl::true_
-                                                             >::type::value;
+                                                              boost::mpl::true_>::type::value;
     typedef typename detail::make_heap_base<T, Parspec, constant_time_size>::type base_type;
     typedef typename detail::make_heap_base<T, Parspec, constant_time_size>::allocator_argument allocator_argument;
     typedef typename detail::make_heap_base<T, Parspec, constant_time_size>::compare_argument compare_argument;
@@ -55,42 +57,41 @@ struct make_pairing_heap_base
 
     typedef typename allocator_argument::template rebind<node_type>::other allocator_type;
 
-    struct type:
-        base_type,
-        allocator_type
+    struct type : base_type,
+                  allocator_type
     {
-        type(compare_argument const & arg):
-            base_type(arg)
-        {}
+        type(compare_argument const &arg) : base_type(arg)
+        {
+        }
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
-        type(type const & rhs):
-            base_type(rhs), allocator_type(rhs)
-        {}
-
-        type(type && rhs):
-            base_type(std::move(static_cast<base_type&>(rhs))),
-            allocator_type(std::move(static_cast<allocator_type&>(rhs)))
-        {}
-
-        type & operator=(type && rhs)
+        type(type const &rhs) : base_type(rhs), allocator_type(rhs)
         {
-            base_type::operator=(std::move(static_cast<base_type&>(rhs)));
-            allocator_type::operator=(std::move(static_cast<allocator_type&>(rhs)));
+        }
+
+        type(type &&rhs) : base_type(std::move(static_cast<base_type &>(rhs))),
+                           allocator_type(std::move(static_cast<allocator_type &>(rhs)))
+        {
+        }
+
+        type &operator=(type &&rhs)
+        {
+            base_type::operator=(std::move(static_cast<base_type &>(rhs)));
+            allocator_type::operator=(std::move(static_cast<allocator_type &>(rhs)));
             return *this;
         }
 
-        type & operator=(type const & rhs)
+        type &operator=(type const &rhs)
         {
             base_type::operator=(static_cast<base_type const &>(rhs));
-            allocator_type::operator=(static_cast<const allocator_type&>(rhs));
+            allocator_type::operator=(static_cast<const allocator_type &>(rhs));
             return *this;
         }
 #endif
     };
 };
 
-}
+} // namespace detail
 
 /**
  * \class pairing_heap
@@ -115,20 +116,17 @@ struct make_pairing_heap_base
  *
  */
 #ifdef BOOST_DOXYGEN_INVOKED
-template<class T, class ...Options>
+template <class T, class... Options>
 #else
 template <typename T,
           class A0 = boost::parameter::void_,
           class A1 = boost::parameter::void_,
           class A2 = boost::parameter::void_,
           class A3 = boost::parameter::void_,
-          class A4 = boost::parameter::void_
-         >
+          class A4 = boost::parameter::void_>
 #endif
-class pairing_heap:
-    private detail::make_pairing_heap_base<T,
-                                           typename detail::pairing_heap_signature::bind<A0, A1, A2, A3, A4>::type
-                                          >::type
+class pairing_heap : private detail::make_pairing_heap_base<T,
+                                                            typename detail::pairing_heap_signature::bind<A0, A1, A2, A3, A4>::type>::type
 {
     typedef typename detail::pairing_heap_signature::bind<A0, A1, A2, A3, A4>::type bound_args;
     typedef detail::make_pairing_heap_base<T, bound_args> base_maker;
@@ -138,13 +136,12 @@ class pairing_heap:
     typedef typename super_t::size_holder_type size_holder;
     typedef typename base_maker::allocator_argument allocator_argument;
 
-private:
+  private:
     template <typename Heap1, typename Heap2>
     friend struct heap_merge_emulate;
 
 #ifndef BOOST_DOXYGEN_INVOKED
-    struct implementation_defined:
-        detail::extract_allocator_types<typename base_maker::allocator_argument>
+    struct implementation_defined : detail::extract_allocator_types<typename base_maker::allocator_argument>
     {
         typedef T value_type;
         typedef typename detail::extract_allocator_types<typename base_maker::allocator_argument>::size_type size_type;
@@ -173,8 +170,8 @@ private:
                                       detail::pointer_to_reference<node>,
                                       false,
                                       false,
-                                      value_compare
-                                     > iterator;
+                                      value_compare>
+            iterator;
 
         typedef iterator const_iterator;
 
@@ -185,8 +182,8 @@ private:
                                       detail::pointer_to_reference<node>,
                                       false,
                                       true,
-                                      value_compare
-                                     > ordered_iterator;
+                                      value_compare>
+            ordered_iterator;
     };
 
     typedef typename implementation_defined::node node;
@@ -197,11 +194,11 @@ private:
     typedef typename implementation_defined::internal_compare internal_compare;
 
     typedef boost::intrusive::list<detail::heap_node_base<true>,
-                                   boost::intrusive::constant_time_size<false>
-                                  > node_child_list;
+                                   boost::intrusive::constant_time_size<false>>
+        node_child_list;
 #endif
 
-public:
+  public:
     typedef T value_type;
 
     typedef typename implementation_defined::size_type size_type;
@@ -226,16 +223,17 @@ public:
     static const bool has_reserve = false;
 
     /// \copydoc boost::heap::priority_queue::priority_queue(value_compare const &)
-    explicit pairing_heap(value_compare const & cmp = value_compare()):
-        super_t(cmp), root(NULL)
-    {}
+    explicit pairing_heap(value_compare const &cmp = value_compare()) : super_t(cmp), root(NULL)
+    {
+    }
 
     /// \copydoc boost::heap::priority_queue::priority_queue(priority_queue const &)
-    pairing_heap(pairing_heap const & rhs):
-        super_t(rhs), root(NULL)
+    pairing_heap(pairing_heap const &rhs) : super_t(rhs), root(NULL)
     {
         if (rhs.empty())
+        {
             return;
+        }
 
         clone_tree(rhs);
         size_holder::set_size(rhs.get_size());
@@ -243,14 +241,13 @@ public:
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
     /// \copydoc boost::heap::priority_queue::priority_queue(priority_queue &&)
-    pairing_heap(pairing_heap && rhs):
-        super_t(std::move(rhs)), root(rhs.root)
+    pairing_heap(pairing_heap &&rhs) : super_t(std::move(rhs)), root(rhs.root)
     {
         rhs.root = NULL;
     }
 
     /// \copydoc boost::heap::priority_queue::operator=(priority_queue &&)
-    pairing_heap & operator=(pairing_heap && rhs)
+    pairing_heap &operator=(pairing_heap &&rhs)
     {
         super_t::operator=(std::move(rhs));
         root = rhs.root;
@@ -260,11 +257,11 @@ public:
 #endif
 
     /// \copydoc boost::heap::priority_queue::operator=(priority_queue const & rhs)
-    pairing_heap & operator=(pairing_heap const & rhs)
+    pairing_heap &operator=(pairing_heap const &rhs)
     {
         clear();
         size_holder::set_size(rhs.get_size());
-        static_cast<super_t&>(*this) = rhs;
+        static_cast<super_t &>(*this) = rhs;
 
         clone_tree(rhs);
         return *this;
@@ -273,7 +270,9 @@ public:
     ~pairing_heap(void)
     {
         while (!empty())
+        {
             pop();
+        }
     }
 
     /// \copydoc boost::heap::priority_queue::empty
@@ -286,12 +285,18 @@ public:
     size_type size(void) const
     {
         if (constant_time_size)
+        {
             return size_holder::get_size();
+        }
 
         if (root == NULL)
+        {
             return 0;
+        }
         else
+        {
             return detail::count_nodes(root);
+        }
     }
 
     /// \copydoc boost::heap::priority_queue::max_size
@@ -304,7 +309,9 @@ public:
     void clear(void)
     {
         if (empty())
+        {
             return;
+        }
 
         root->template clear_subtree<allocator_type>(*this);
         root->~node();
@@ -320,12 +327,11 @@ public:
     }
 
     /// \copydoc boost::heap::priority_queue::swap
-    void swap(pairing_heap & rhs)
+    void swap(pairing_heap &rhs)
     {
         super_t::swap(rhs);
         std::swap(root, rhs.root);
     }
-
 
     /// \copydoc boost::heap::priority_queue::top
     const_reference top(void) const
@@ -345,13 +351,13 @@ public:
      * \b Complexity: 2**2*log(log(N)) (amortized).
      *
      * */
-    handle_type push(value_type const & v)
+    handle_type push(value_type const &v)
     {
         size_holder::increment();
 
         node_pointer n = allocator_type::allocate(1);
 
-        new(n) node(super_t::make_node(v));
+        new (n) node(super_t::make_node(v));
 
         merge_node(n);
         return handle_type(n);
@@ -369,13 +375,13 @@ public:
      *
      * */
     template <class... Args>
-    handle_type emplace(Args&&... args)
+    handle_type emplace(Args &&...args)
     {
         size_holder::increment();
 
         node_pointer n = allocator_type::allocate(1);
 
-        new(n) node(super_t::make_node(std::forward<T>(args)...));
+        new (n) node(super_t::make_node(std::forward<T>(args)...));
 
         merge_node(n);
         return handle_type(n);
@@ -405,7 +411,7 @@ public:
      * \b Complexity: 2**2*log(log(N)) (amortized).
      *
      * */
-    void update (handle_type handle, const_reference v)
+    void update(handle_type handle, const_reference v)
     {
         handle.node_->value = super_t::make_node(v);
         update(handle);
@@ -422,19 +428,23 @@ public:
      *
      * \b Note: If this is not called, after a handle has been updated, the behavior of the data structure is undefined!
      * */
-    void update (handle_type handle)
+    void update(handle_type handle)
     {
         node_pointer n = handle.node_;
 
         n->unlink();
         if (!n->children.empty())
+        {
             n = merge_nodes(n, merge_node_list(n->children));
+        }
 
         if (n != root)
+        {
             merge_node(n);
+        }
     }
 
-     /**
+    /**
      * \b Effects: Assigns \c v to the element handled by \c handle & updates the priority queue.
      *
      * \cond
@@ -445,7 +455,7 @@ public:
      *
      * \b Note: The new value is expected to be greater than the current one
      * */
-    void increase (handle_type handle, const_reference v)
+    void increase(handle_type handle, const_reference v)
     {
         update(handle, v);
     }
@@ -461,7 +471,7 @@ public:
      *
      * \b Note: If this is not called, after a handle has been updated, the behavior of the data structure is undefined!
      * */
-    void increase (handle_type handle)
+    void increase(handle_type handle)
     {
         update(handle);
     }
@@ -477,7 +487,7 @@ public:
      *
      * \b Note: The new value is expected to be less than the current one
      * */
-    void decrease (handle_type handle, const_reference v)
+    void decrease(handle_type handle, const_reference v)
     {
         update(handle, v);
     }
@@ -493,7 +503,7 @@ public:
      *
      * \b Note: The new value is expected to be less than the current one. If this is not called, after a handle has been updated, the behavior of the data structure is undefined!
      * */
-    void decrease (handle_type handle)
+    void decrease(handle_type handle)
     {
         update(handle);
     }
@@ -510,15 +520,24 @@ public:
     void erase(handle_type handle)
     {
         node_pointer n = handle.node_;
-        if (n != root) {
+        if (n != root)
+        {
             n->unlink();
             if (!n->children.empty())
+            {
                 merge_node(merge_node_list(n->children));
-        } else {
+            }
+        }
+        else
+        {
             if (!n->children.empty())
+            {
                 root = merge_node_list(n->children);
+            }
             else
+            {
                 root = NULL;
+            }
         }
 
         size_holder::decrement();
@@ -550,11 +569,10 @@ public:
         return ordered_iterator(NULL, super_t::value_comp());
     }
 
-
     /// \copydoc boost::heap::d_ary_heap_mutable::s_handle_from_iterator
-    static handle_type s_handle_from_iterator(iterator const & it)
+    static handle_type s_handle_from_iterator(iterator const &it)
     {
-        node * ptr = const_cast<node *>(it.get_node());
+        node *ptr = const_cast<node *>(it.get_node());
         return handle_type(ptr);
     }
 
@@ -568,10 +586,12 @@ public:
      * \b Complexity: 2**2*log(log(N)) (amortized).
      *
      * */
-    void merge(pairing_heap & rhs)
+    void merge(pairing_heap &rhs)
     {
         if (rhs.empty())
+        {
             return;
+        }
 
         merge_node(rhs.root);
 
@@ -580,91 +600,100 @@ public:
         rhs.root = NULL;
 
         super_t::set_stability_count((std::max)(super_t::get_stability_count(),
-                                     rhs.get_stability_count()));
+                                                rhs.get_stability_count()));
         rhs.set_stability_count(0);
     }
 
     /// \copydoc boost::heap::priority_queue::value_comp
-    value_compare const & value_comp(void) const
+    value_compare const &value_comp(void) const
     {
         return super_t::value_comp();
     }
 
     /// \copydoc boost::heap::priority_queue::operator<(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator<(HeapType const & rhs) const
+    bool operator<(HeapType const &rhs) const
     {
         return detail::heap_compare(*this, rhs);
     }
 
     /// \copydoc boost::heap::priority_queue::operator>(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator>(HeapType const & rhs) const
+    bool operator>(HeapType const &rhs) const
     {
         return detail::heap_compare(rhs, *this);
     }
 
     /// \copydoc boost::heap::priority_queue::operator>=(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator>=(HeapType const & rhs) const
+    bool operator>=(HeapType const &rhs) const
     {
         return !operator<(rhs);
     }
 
     /// \copydoc boost::heap::priority_queue::operator<=(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator<=(HeapType const & rhs) const
+    bool operator<=(HeapType const &rhs) const
     {
         return !operator>(rhs);
     }
 
     /// \copydoc boost::heap::priority_queue::operator==(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator==(HeapType const & rhs) const
+    bool operator==(HeapType const &rhs) const
     {
         return detail::heap_equality(*this, rhs);
     }
 
     /// \copydoc boost::heap::priority_queue::operator!=(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator!=(HeapType const & rhs) const
+    bool operator!=(HeapType const &rhs) const
     {
         return !(*this == rhs);
     }
 
-private:
+  private:
 #if !defined(BOOST_DOXYGEN_INVOKED)
-    void clone_tree(pairing_heap const & rhs)
+    void clone_tree(pairing_heap const &rhs)
     {
         BOOST_HEAP_ASSERT(root == NULL);
         if (rhs.empty())
+        {
             return;
+        }
 
         root = allocator_type::allocate(1);
 
-        new(root) node(static_cast<node const &>(*rhs.root), static_cast<allocator_type&>(*this));
+        new (root) node(static_cast<node const &>(*rhs.root), static_cast<allocator_type &>(*this));
     }
 
     void merge_node(node_pointer other)
     {
         BOOST_HEAP_ASSERT(other);
         if (root != NULL)
+        {
             root = merge_nodes(root, other);
+        }
         else
+        {
             root = other;
+        }
     }
 
-    node_pointer merge_node_list(node_child_list & children)
+    node_pointer merge_node_list(node_child_list &children)
     {
         BOOST_HEAP_ASSERT(!children.empty());
         node_pointer merged = merge_first_pair(children);
         if (children.empty())
+        {
             return merged;
+        }
 
         node_child_list node_list;
         node_list.push_back(*merged);
 
-        do {
+        do
+        {
             node_pointer next_merged = merge_first_pair(children);
             node_list.push_back(*next_merged);
         } while (!children.empty());
@@ -672,13 +701,15 @@ private:
         return merge_node_list(node_list);
     }
 
-    node_pointer merge_first_pair(node_child_list & children)
+    node_pointer merge_first_pair(node_child_list &children)
     {
         BOOST_HEAP_ASSERT(!children.empty());
         node_pointer first_child = static_cast<node_pointer>(&children.front());
         children.pop_front();
         if (children.empty())
+        {
             return first_child;
+        }
 
         node_pointer second_child = static_cast<node_pointer>(&children.front());
         children.pop_front();
@@ -689,7 +720,9 @@ private:
     node_pointer merge_nodes(node_pointer node1, node_pointer node2)
     {
         if (super_t::operator()(node1->value, node2->value))
+        {
             std::swap(node1, node2);
+        }
 
         node2->unlink();
         node1->children.push_front(*node2);
@@ -699,7 +732,6 @@ private:
     node_pointer root;
 #endif
 };
-
 
 } /* namespace heap */
 } /* namespace boost */

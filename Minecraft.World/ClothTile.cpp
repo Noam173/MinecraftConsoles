@@ -1,10 +1,10 @@
-#include "stdafx.h"
-#include "net.minecraft.world.h"
 #include "ClothTile.h"
+#include "net.minecraft.world.h"
+#include "stdafx.h"
 
-ClothTile::ClothTile() :  Tile(35, Material::cloth)
+ClothTile::ClothTile() : Tile(35, Material::cloth)
 {
-	icons = NULL;
+    icons = NULL;
 }
 
 Icon *ClothTile::getTexture(int face, int data)
@@ -14,25 +14,25 @@ Icon *ClothTile::getTexture(int face, int data)
 
 int ClothTile::getSpawnResourcesAuxValue(int data)
 {
-	return data;
+    return data;
 }
 
 int ClothTile::getTileDataForItemAuxValue(int auxValue)
 {
-	return (~auxValue & 0xf);
+    return (~auxValue & 0xf);
 }
 
 int ClothTile::getItemAuxValueForTileData(int data)
 {
-	return (~data & 0xf);
+    return (~data & 0xf);
 }
 
 void ClothTile::registerIcons(IconRegister *iconRegister)
 {
-	icons = new Icon*[16];
+    icons = new Icon *[16];
 
-	for (int i = 0; i < 16; i++)
-	{
-		icons[i] = iconRegister->registerIcon(L"cloth_" + std::to_wstring(i) );
-	}
+    for (int i = 0; i < 16; i++)
+    {
+        icons[i] = iconRegister->registerIcon(L"cloth_" + std::to_wstring(i));
+    }
 }

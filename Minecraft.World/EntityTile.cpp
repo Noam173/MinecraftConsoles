@@ -1,12 +1,12 @@
-#include "stdafx.h"
-#include "net.minecraft.world.level.h"
-#include "net.minecraft.world.entity.h"
-#include "TileEntity.h"
 #include "EntityTile.h"
+#include "TileEntity.h"
+#include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.level.h"
+#include "stdafx.h"
 
 EntityTile::EntityTile(int id, Material *material, bool isSolidRender /*= true*/) : Tile(id, material, isSolidRender)
 {
-	_isEntityTile = true;
+    _isEntityTile = true;
 }
 
 void EntityTile::onPlace(Level *level, int x, int y, int z)
@@ -23,10 +23,10 @@ void EntityTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 
 void EntityTile::triggerEvent(Level *level, int x, int y, int z, int b0, int b1)
 {
-	Tile::triggerEvent(level, x, y, z, b0, b1);
-	shared_ptr<TileEntity> te = level->getTileEntity(x, y, z);
-	if (te != NULL)
-	{
-		te->triggerEvent(b0, b1);
-	}
+    Tile::triggerEvent(level, x, y, z, b0, b1);
+    shared_ptr<TileEntity> te = level->getTileEntity(x, y, z);
+    if (te != NULL)
+    {
+        te->triggerEvent(b0, b1);
+    }
 }

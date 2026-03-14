@@ -12,7 +12,7 @@
 #define BOOST_RANGE_DETAIL_AS_LITERAL_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/range/detail/detail_str.hpp>
@@ -20,14 +20,14 @@
 
 namespace boost
 {
-    template< class Range >
-    inline iterator_range<BOOST_DEDUCED_TYPENAME range_iterator<Range>::type> 
-    as_literal( Range& r )
-    {
-        return ::boost::make_iterator_range( ::boost::range_detail::str_begin(r),
-                                             ::boost::range_detail::str_end(r) );
-    }
-
+template <class Range>
+inline iterator_range<BOOST_DEDUCED_TYPENAME range_iterator<Range>::type>
+as_literal(Range &r)
+{
+    return ::boost::make_iterator_range(::boost::range_detail::str_begin(r),
+                                        ::boost::range_detail::str_end(r));
 }
+
+} // namespace boost
 
 #endif

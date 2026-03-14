@@ -12,7 +12,7 @@
 #define BOOST_CONTAINER_CONTAINER_FWD_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
@@ -21,22 +21,32 @@
 
 /// @cond
 
-namespace boost{
-namespace intrusive{
-   //Create namespace to avoid compilation errors
-}}
+namespace boost
+{
+namespace intrusive
+{
+// Create namespace to avoid compilation errors
+}
+} // namespace boost
 
-namespace boost{ namespace container{ namespace container_detail{
+namespace boost
+{
+namespace container
+{
+namespace container_detail
+{
 
 namespace bi = boost::intrusive;
 
-}}}
+}
+} // namespace container
+} // namespace boost
 
-#include <utility>
-#include <memory>
 #include <functional>
 #include <iosfwd>
+#include <memory>
 #include <string>
+#include <utility>
 
 /// @endcond
 
@@ -44,102 +54,79 @@ namespace bi = boost::intrusive;
 //                             Containers
 //////////////////////////////////////////////////////////////////////////////
 
-namespace boost {
-namespace container {
+namespace boost
+{
+namespace container
+{
 
-//vector class
-template <class T
-         ,class Allocator = std::allocator<T> >
+// vector class
+template <class T, class Allocator = std::allocator<T>>
 class vector;
 
-//vector class
-template <class T
-         ,class Allocator = std::allocator<T> >
+// vector class
+template <class T, class Allocator = std::allocator<T>>
 class stable_vector;
 
-//vector class
-template <class T
-         ,class Allocator = std::allocator<T> >
+// vector class
+template <class T, class Allocator = std::allocator<T>>
 class deque;
 
-//list class
-template <class T
-         ,class Allocator = std::allocator<T> >
+// list class
+template <class T, class Allocator = std::allocator<T>>
 class list;
 
-//slist class
-template <class T
-         ,class Allocator = std::allocator<T> >
+// slist class
+template <class T, class Allocator = std::allocator<T>>
 class slist;
 
-//set class
-template <class Key
-         ,class Compare  = std::less<Key>
-         ,class Allocator = std::allocator<Key> >
+// set class
+template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<Key>>
 class set;
 
-//multiset class
-template <class Key
-         ,class Compare  = std::less<Key>
-         ,class Allocator = std::allocator<Key> >
+// multiset class
+template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<Key>>
 class multiset;
 
-//map class
-template <class Key
-         ,class T
-         ,class Compare  = std::less<Key>
-         ,class Allocator = std::allocator<std::pair<const Key, T> > >
+// map class
+template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<std::pair<const Key, T>>>
 class map;
 
-//multimap class
-template <class Key
-         ,class T
-         ,class Compare  = std::less<Key>
-         ,class Allocator = std::allocator<std::pair<const Key, T> > >
+// multimap class
+template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<std::pair<const Key, T>>>
 class multimap;
 
-//flat_set class
-template <class Key
-         ,class Compare  = std::less<Key>
-         ,class Allocator = std::allocator<Key> >
+// flat_set class
+template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<Key>>
 class flat_set;
 
-//flat_multiset class
-template <class Key
-         ,class Compare  = std::less<Key>
-         ,class Allocator = std::allocator<Key> >
+// flat_multiset class
+template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<Key>>
 class flat_multiset;
 
-//flat_map class
-template <class Key
-         ,class T
-         ,class Compare  = std::less<Key>
-         ,class Allocator = std::allocator<std::pair<Key, T> > >
+// flat_map class
+template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<std::pair<Key, T>>>
 class flat_map;
 
-//flat_multimap class
-template <class Key
-         ,class T
-         ,class Compare  = std::less<Key>
-         ,class Allocator = std::allocator<std::pair<Key, T> > >
+// flat_multimap class
+template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<std::pair<Key, T>>>
 class flat_multimap;
 
-//basic_string class
-template <class CharT
-         ,class Traits = std::char_traits<CharT>
-         ,class Allocator  = std::allocator<CharT> >
+// basic_string class
+template <class CharT, class Traits = std::char_traits<CharT>, class Allocator = std::allocator<CharT>>
 class basic_string;
 
 //! Type used to tag that the input range is
 //! guaranteed to be ordered
 struct ordered_range_t
-{};
+{
+};
 
 //! Type used to tag that the input range is
 //! guaranteed to be ordered and unique
 struct ordered_unique_range_t
-   : public ordered_range_t
-{};
+    : public ordered_range_t
+{
+};
 
 //! Value used to tag that the input range is
 //! guaranteed to be ordered
@@ -151,23 +138,25 @@ static const ordered_unique_range_t ordered_unique_range = ordered_unique_range_
 
 /// @cond
 
-namespace detail_really_deep_namespace {
+namespace detail_really_deep_namespace
+{
 
-//Otherwise, gcc issues a warning of previously defined
-//anonymous_instance and unique_instance
+// Otherwise, gcc issues a warning of previously defined
+// anonymous_instance and unique_instance
 struct dummy
 {
-   dummy()
-   {
-      (void)ordered_range;
-      (void)ordered_unique_range;
-   }
+    dummy()
+    {
+        (void)ordered_range;
+        (void)ordered_unique_range;
+    }
 };
 
-}  //detail_really_deep_namespace {
+} // namespace detail_really_deep_namespace
 
 /// @endcond
 
-}}  //namespace boost { namespace container {
+} // namespace container
+} // namespace boost
 
-#endif //#ifndef BOOST_CONTAINER_CONTAINER_FWD_HPP
+#endif // #ifndef BOOST_CONTAINER_CONTAINER_FWD_HPP

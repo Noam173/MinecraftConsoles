@@ -11,7 +11,6 @@
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_GEOMETRY_MULTI_GEOMETRIES_REGISTER_MULTI_POLYGON_HPP
 #define BOOST_GEOMETRY_MULTI_GEOMETRIES_REGISTER_MULTI_POLYGON_HPP
 
@@ -21,7 +20,7 @@
 /*!
 \brief \brief_macro{multi_polygon}
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_MULTI_POLYGON, multi_polygon} The 
+\details \details_macro{BOOST_GEOMETRY_REGISTER_MULTI_POLYGON, multi_polygon} The
     multi_polygon may contain template parameters, which must be specified then.
 \param MultiPolygon \param_macro_type{multi_polygon}
 
@@ -32,15 +31,25 @@
 }
 */
 #define BOOST_GEOMETRY_REGISTER_MULTI_POLYGON(MultiPolygon) \
-namespace boost { namespace geometry { namespace traits {  \
-    template<> struct tag<MultiPolygon> { typedef multi_polygon_tag type; }; \
-}}}
-
+    namespace boost                                         \
+    {                                                       \
+    namespace geometry                                      \
+    {                                                       \
+    namespace traits                                        \
+    {                                                       \
+    template <>                                             \
+    struct tag<MultiPolygon>                                \
+    {                                                       \
+        typedef multi_polygon_tag type;                     \
+    };                                                      \
+    }                                                       \
+    }                                                       \
+    }
 
 /*!
 \brief \brief_macro{templated multi_polygon}
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_MULTI_POLYGON_TEMPLATED, templated multi_polygon} 
+\details \details_macro{BOOST_GEOMETRY_REGISTER_MULTI_POLYGON_TEMPLATED, templated multi_polygon}
     \details_macro_templated{multi_polygon, polygon}
 \param MultiPolygon \param_macro_type{multi_polygon (without template parameters)}
 
@@ -51,9 +60,19 @@ namespace boost { namespace geometry { namespace traits {  \
 }
 */
 #define BOOST_GEOMETRY_REGISTER_MULTI_POLYGON_TEMPLATED(MultiPolygon) \
-namespace boost { namespace geometry { namespace traits {  \
-    template<typename Polygon> struct tag< MultiPolygon<Polygon> > { typedef multi_polygon_tag type; }; \
-}}}
-
+    namespace boost                                                   \
+    {                                                                 \
+    namespace geometry                                                \
+    {                                                                 \
+    namespace traits                                                  \
+    {                                                                 \
+    template <typename Polygon>                                       \
+    struct tag<MultiPolygon<Polygon>>                                 \
+    {                                                                 \
+        typedef multi_polygon_tag type;                               \
+    };                                                                \
+    }                                                                 \
+    }                                                                 \
+    }
 
 #endif // BOOST_GEOMETRY_MULTI_GEOMETRIES_REGISTER_MULTI_POLYGON_HPP

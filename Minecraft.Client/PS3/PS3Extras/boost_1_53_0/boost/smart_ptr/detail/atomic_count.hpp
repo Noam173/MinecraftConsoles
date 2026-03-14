@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -61,13 +61,13 @@
 //    Given:
 //
 //    - a mutable shared object OBJ;
-//    - two threads THREAD1 and THREAD2 each holding 
+//    - two threads THREAD1 and THREAD2 each holding
 //      a private smart_ptr object pointing to that OBJ.
 //
 //    t1: THREAD1 updates OBJ (thread-safe via some synchronization)
 //      and a few cycles later (after "unlock") destroys smart_ptr;
 //
-//    t2: THREAD2 destroys smart_ptr WITHOUT doing any synchronization 
+//    t2: THREAD2 destroys smart_ptr WITHOUT doing any synchronization
 //      with respect to shared mutable object OBJ; OBJ destructors
 //      are called driven by smart_ptr interface...
 //
@@ -87,27 +87,27 @@ typedef long atomic_count;
 
 }
 
-}
+} // namespace boost
 
 #elif defined(BOOST_AC_USE_PTHREADS)
-#  include <boost/smart_ptr/detail/atomic_count_pthreads.hpp>
+#include <boost/smart_ptr/detail/atomic_count_pthreads.hpp>
 
-#elif defined( __GNUC__ ) && ( defined( __i386__ ) || defined( __x86_64__ ) )
-#  include <boost/smart_ptr/detail/atomic_count_gcc_x86.hpp>
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+#include <boost/smart_ptr/detail/atomic_count_gcc_x86.hpp>
 
 #elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
-#  include <boost/smart_ptr/detail/atomic_count_win32.hpp>
+#include <boost/smart_ptr/detail/atomic_count_win32.hpp>
 
-#elif defined( BOOST_SP_HAS_SYNC )
-#  include <boost/smart_ptr/detail/atomic_count_sync.hpp>
+#elif defined(BOOST_SP_HAS_SYNC)
+#include <boost/smart_ptr/detail/atomic_count_sync.hpp>
 
 #elif defined(__GLIBCPP__) || defined(__GLIBCXX__)
-#  include <boost/smart_ptr/detail/atomic_count_gcc.hpp>
+#include <boost/smart_ptr/detail/atomic_count_gcc.hpp>
 
 #elif defined(BOOST_HAS_PTHREADS)
 
-#  define BOOST_AC_USE_PTHREADS
-#  include <boost/smart_ptr/detail/atomic_count_pthreads.hpp>
+#define BOOST_AC_USE_PTHREADS
+#include <boost/smart_ptr/detail/atomic_count_pthreads.hpp>
 
 #else
 

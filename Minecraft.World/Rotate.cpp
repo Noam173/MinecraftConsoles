@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "Rotate.h"
+#include "stdafx.h"
 
 Rotate::Rotate(Synth *synth, float angle)
 {
@@ -11,5 +11,5 @@ Rotate::Rotate(Synth *synth, float angle)
 
 double Rotate::getValue(double x, double y)
 {
-	return synth->getValue(x * _cos + y * _sin, y * _cos - x * _sin);
+    return synth->getValue(x * _cos + y * _sin, y * _cos - x * _sin);
 }

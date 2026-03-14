@@ -17,10 +17,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <boost/spirit/home/classic/meta/as_parser.hpp>
 #include <boost/spirit/home/classic/meta/fundamental.hpp>
 #include <boost/spirit/home/classic/meta/parser_traits.hpp>
-#include <boost/spirit/home/classic/meta/as_parser.hpp>
 #include <boost/spirit/home/classic/meta/traverse.hpp>
 
 #endif // BOOST_SPIRIT_CORE_MAIN_HPP
-

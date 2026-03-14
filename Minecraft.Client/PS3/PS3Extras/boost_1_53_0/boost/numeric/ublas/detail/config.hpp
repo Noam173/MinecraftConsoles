@@ -13,24 +13,23 @@
 #ifndef _BOOST_UBLAS_CONFIG_
 #define _BOOST_UBLAS_CONFIG_
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
-#include <algorithm>
 #include <limits>
 
 #include <boost/config.hpp>
-#include <boost/static_assert.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/mpl/if.hpp>
 #include <boost/mpl/and.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/is_convertible.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 
-
 // Microsoft Visual C++
-#if defined (BOOST_MSVC) && ! defined (BOOST_STRICT_CONFIG)
+#if defined(BOOST_MSVC) && !defined(BOOST_STRICT_CONFIG)
 
 // Version 6.0 and 7.0
 #if BOOST_MSVC <= 1300
@@ -49,9 +48,8 @@
 
 #endif
 
-
 // GNU Compiler Collection
-#if defined (__GNUC__) && ! defined (BOOST_STRICT_CONFIG)
+#if defined(__GNUC__) && !defined(BOOST_STRICT_CONFIG)
 
 #if __GNUC__ >= 4 || (__GNUC__ >= 3 && __GNUC_MINOR__ >= 4)
 // Specified by ABI definition see GCC bug id 9982
@@ -64,11 +62,10 @@
 
 #endif
 
-
 // Intel Compiler
-#if defined (BOOST_INTEL) && ! defined (BOOST_STRICT_CONFIG)
+#if defined(BOOST_INTEL) && !defined(BOOST_STRICT_CONFIG)
 
-#if defined (BOOST_INTEL_LINUX) && (BOOST_INTEL_LINUX >= 800)
+#if defined(BOOST_INTEL_LINUX) && (BOOST_INTEL_LINUX >= 800)
 // By inspection of compiler results
 #define BOOST_UBLAS_USEFUL_ARRAY_PLACEMENT_NEW
 #endif
@@ -79,42 +76,49 @@
 
 // Define swap for index_pair and triple.
 #if (BOOST_INTEL <= 800)
-namespace boost { namespace numeric { namespace ublas {
-    template<class C, class IC>
-    class indexed_iterator;
+namespace boost
+{
+namespace numeric
+{
+namespace ublas
+{
+template <class C, class IC>
+class indexed_iterator;
 
-    template<class V>
-    class index_pair;
-    template<class M>
-    class index_triple;
-}}}
+template <class V>
+class index_pair;
+template <class M>
+class index_triple;
+} // namespace ublas
+} // namespace numeric
+} // namespace boost
 
-namespace std {
-    template<class V>
-    inline
-    void swap (boost::numeric::ublas::index_pair<V> i1, boost::numeric::ublas::index_pair<V> i2) {
-        i1.swap (i2);
-    }
-    template<class M>
-    inline
-    void swap (boost::numeric::ublas::index_triple<M> i1, boost::numeric::ublas::index_triple<M> i2) {
-        i1.swap (i2);
-    }
-    // iter_swap also needed for ICC on Itanium?
-    template<class C, class IC>
-    inline
-    void iter_swap (boost::numeric::ublas::indexed_iterator<C, IC> it1,
-                    boost::numeric::ublas::indexed_iterator<C, IC> it2) {
-        swap (*it1, *it2);
-    }
+namespace std
+{
+template <class V>
+inline void swap(boost::numeric::ublas::index_pair<V> i1, boost::numeric::ublas::index_pair<V> i2)
+{
+    i1.swap(i2);
 }
+template <class M>
+inline void swap(boost::numeric::ublas::index_triple<M> i1, boost::numeric::ublas::index_triple<M> i2)
+{
+    i1.swap(i2);
+}
+// iter_swap also needed for ICC on Itanium?
+template <class C, class IC>
+inline void iter_swap(boost::numeric::ublas::indexed_iterator<C, IC> it1,
+                      boost::numeric::ublas::indexed_iterator<C, IC> it2)
+{
+    swap(*it1, *it2);
+}
+} // namespace std
 #endif
 
 #endif
-
 
 // Comeau compiler - thanks to Kresimir Fresl
-#if defined (__COMO__) && ! defined (BOOST_STRICT_CONFIG)
+#if defined(__COMO__) && !defined(BOOST_STRICT_CONFIG)
 
 // Missing std::abs overloads for float types in <cmath> are in <cstdlib>
 #if defined(__LIBCOMO__) && (__LIBCOMO_VERSION__ <= 31)
@@ -123,32 +127,29 @@ namespace std {
 
 #endif
 
-
 //  HP aCC C++ compiler
-#if defined (__HP_aCC) && ! defined (BOOST_STRICT_CONFIG)
-#  if (__HP_aCC >= 60000 )
-#    define BOOST_UBLAS_USEFUL_ARRAY_PLACEMENT_NEW
+#if defined(__HP_aCC) && !defined(BOOST_STRICT_CONFIG)
+#if (__HP_aCC >= 60000)
+#define BOOST_UBLAS_USEFUL_ARRAY_PLACEMENT_NEW
 #endif
 #endif
-
 
 //  SGI MIPSpro C++ compiler
-#if defined (__sgi) && ! defined (BOOST_STRICT_CONFIG)
+#if defined(__sgi) && !defined(BOOST_STRICT_CONFIG)
 
 // Missing std::abs overloads for float types in <cmath> are in <cstdlib>
 // This test should be library version specific.
 #include <cstdlib>
 
-#if __COMPILER_VERSION >=650
+#if __COMPILER_VERSION >= 650
 // By inspection of compiler results - thanks to Peter Schmitteckert
 #define BOOST_UBLAS_USEFUL_ARRAY_PLACEMENT_NEW
 #endif
 
 #endif
 
-
 // Metrowerks Codewarrior
-#if defined (__MWERKS__) && ! defined (BOOST_STRICT_CONFIG)
+#if defined(__MWERKS__) && !defined(BOOST_STRICT_CONFIG)
 
 // 8.x
 #if __MWERKS__ <= 0x3003
@@ -156,7 +157,6 @@ namespace std {
 #endif
 
 #endif
-
 
 // Detect other compilers with serious defects - override by defineing BOOST_UBLAS_UNSUPPORTED_COMPILER=0
 #ifndef BOOST_UBLAS_UNSUPPORTED_COMPILER
@@ -170,10 +170,8 @@ namespace std {
 #error Your compiler and/or configuration is unsupported by this verions of uBLAS. Define BOOST_UBLAS_UNSUPPORTED_COMPILER=0 to override this message. Boost 1.32.0 includes uBLAS with support for many older compilers.
 #endif
 
-
-
 // Enable performance options in RELEASE mode
-#if defined (NDEBUG) || defined (BOOST_UBLAS_NDEBUG)
+#if defined(NDEBUG) || defined(BOOST_UBLAS_NDEBUG)
 
 #ifndef BOOST_UBLAS_INLINE
 #define BOOST_UBLAS_INLINE inline
@@ -191,7 +189,6 @@ namespace std {
 #ifndef BOOST_UBLAS_TYPE_CHECK
 #define BOOST_UBLAS_TYPE_CHECK 0
 #endif
-
 
 // Disable performance options in DEBUG mode
 #else
@@ -212,7 +209,6 @@ namespace std {
 
 #endif
 
-
 /*
  * Type compatibility checks
  *  Control type compatibility numeric runtime checks for non dense matrices.
@@ -228,19 +224,18 @@ template <class Dummy>
 bool disable_type_check<Dummy>::value = false;
 #endif
 #ifndef BOOST_UBLAS_TYPE_CHECK_EPSILON
-#define BOOST_UBLAS_TYPE_CHECK_EPSILON (type_traits<real_type>::type_sqrt (std::numeric_limits<real_type>::epsilon ()))
+#define BOOST_UBLAS_TYPE_CHECK_EPSILON (type_traits<real_type>::type_sqrt(std::numeric_limits<real_type>::epsilon()))
 #endif
 #ifndef BOOST_UBLAS_TYPE_CHECK_MIN
-#define BOOST_UBLAS_TYPE_CHECK_MIN (type_traits<real_type>::type_sqrt ( (std::numeric_limits<real_type>::min) ()))
+#define BOOST_UBLAS_TYPE_CHECK_MIN (type_traits<real_type>::type_sqrt((std::numeric_limits<real_type>::min)()))
 #endif
-
 
 /*
  * General Configuration
  */
 
 // Proxy shortcuts overload the alreadly heavily over used operator ()
-//#define BOOST_UBLAS_ENABLE_PROXY_SHORTCUTS
+// #define BOOST_UBLAS_ENABLE_PROXY_SHORTCUTS
 
 // In order to simplify debugging is is possible to simplify expression template
 // so they are restricted to a single operation
@@ -281,10 +276,8 @@ bool disable_type_check<Dummy>::value = false;
 // #define BOOST_UBLAS_REFERENCE_CONST_MEMBER
 // #define BOOST_UBLAS_PROXY_CONST_MEMBER
 
-
 // Include type declerations and functions
-#include <boost/numeric/ublas/fwd.hpp>
 #include <boost/numeric/ublas/detail/definitions.hpp>
-
+#include <boost/numeric/ublas/fwd.hpp>
 
 #endif

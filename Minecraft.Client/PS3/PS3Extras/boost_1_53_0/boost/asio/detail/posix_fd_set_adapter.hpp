@@ -12,70 +12,75 @@
 #define BOOST_ASIO_DETAIL_POSIX_FD_SET_ADAPTER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if !defined(BOOST_WINDOWS) && !defined(__CYGWIN__)
 
-#include <cstring>
 #include <boost/asio/detail/noncopyable.hpp>
 #include <boost/asio/detail/socket_types.hpp>
+#include <cstring>
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 // Adapts the FD_SET type to meet the Descriptor_Set concept's requirements.
 class posix_fd_set_adapter : noncopyable
 {
-public:
-  posix_fd_set_adapter()
-    : max_descriptor_(invalid_socket)
-  {
-    using namespace std; // Needed for memset on Solaris.
-    FD_ZERO(&fd_set_);
-  }
-
-  void reset()
-  {
-    using namespace std; // Needed for memset on Solaris.
-    FD_ZERO(&fd_set_);
-  }
-
-  bool set(socket_type descriptor)
-  {
-    if (descriptor < (socket_type)FD_SETSIZE)
+  public:
+    posix_fd_set_adapter()
+        : max_descriptor_(invalid_socket)
     {
-      if (max_descriptor_ == invalid_socket || descriptor > max_descriptor_)
-        max_descriptor_ = descriptor;
-      FD_SET(descriptor, &fd_set_);
-      return true;
+        using namespace std; // Needed for memset on Solaris.
+        FD_ZERO(&fd_set_);
     }
-    return false;
-  }
 
-  bool is_set(socket_type descriptor) const
-  {
-    return FD_ISSET(descriptor, &fd_set_) != 0;
-  }
+    void reset()
+    {
+        using namespace std; // Needed for memset on Solaris.
+        FD_ZERO(&fd_set_);
+    }
 
-  operator fd_set*()
-  {
-    return &fd_set_;
-  }
+    bool set(socket_type descriptor)
+    {
+        if (descriptor < (socket_type)FD_SETSIZE)
+        {
+            if (max_descriptor_ == invalid_socket || descriptor > max_descriptor_)
+            {
+                max_descriptor_ = descriptor;
+            }
+            FD_SET(descriptor, &fd_set_);
+            return true;
+        }
+        return false;
+    }
 
-  socket_type max_descriptor() const
-  {
-    return max_descriptor_;
-  }
+    bool is_set(socket_type descriptor) const
+    {
+        return FD_ISSET(descriptor, &fd_set_) != 0;
+    }
 
-private:
-  mutable fd_set fd_set_;
-  socket_type max_descriptor_;
+    operator fd_set *()
+    {
+        return &fd_set_;
+    }
+
+    socket_type max_descriptor() const
+    {
+        return max_descriptor_;
+    }
+
+  private:
+    mutable fd_set fd_set_;
+    socket_type max_descriptor_;
 };
 
 } // namespace detail

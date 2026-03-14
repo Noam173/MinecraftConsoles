@@ -10,13 +10,13 @@
 
 /** \mainpage BOOST uBLAS: a Linear Algebra Library
  *
- * This is the API Reference Documentation. 
+ * This is the API Reference Documentation.
  *
  * For introduction, documentations and tutorial, please refer
  * to http://www.boost.org/doc/libs/1_44_0/libs/numeric/ublas/doc/index.htm
- * 
+ *
  * \section main_classes Main classes
- * 
+ *
  * \subsection listvector Vectors
  * - \link #boost::numeric::ublas::vector					vector \endlink
  * - \link #boost::numeric::ublas::bounded_vector			bounded_vector \endlink

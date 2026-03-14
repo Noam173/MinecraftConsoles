@@ -21,7 +21,7 @@
 #define BOOST_FLYWEIGHT_LIMIT_PERFECT_FWD_ARGS 5
 #endif
 
-#if BOOST_FLYWEIGHT_LIMIT_PERFECT_FWD_ARGS<=5
+#if BOOST_FLYWEIGHT_LIMIT_PERFECT_FWD_ARGS <= 5
 #include <boost/flyweight/detail/pp_perfect_fwd.hpp>
 #else
 #include <boost/flyweight/detail/dyn_perfect_fwd.hpp>

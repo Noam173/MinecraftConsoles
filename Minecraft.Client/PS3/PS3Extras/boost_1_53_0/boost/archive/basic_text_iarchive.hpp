@@ -3,13 +3,13 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // basic_text_iarchive.hpp
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -25,30 +25,31 @@
 // use two template parameters
 
 #include <boost/config.hpp>
-#include <boost/serialization/pfto.hpp>
 #include <boost/detail/workaround.hpp>
+#include <boost/serialization/pfto.hpp>
 
 #include <boost/archive/detail/common_iarchive.hpp>
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
 #ifdef BOOST_MSVC
-#  pragma warning(push)
-#  pragma warning(disable : 4511 4512)
+#pragma warning(push)
+#pragma warning(disable : 4511 4512)
 #endif
 
-namespace boost {
-namespace archive {
+namespace boost
+{
+namespace archive
+{
 
 /////////////////////////////////////////////////////////////////////////
 // class basic_text_iarchive - read serialized objects from a input text stream
-template<class Archive>
-class basic_text_iarchive : 
-    public detail::common_iarchive<Archive>
+template <class Archive>
+class basic_text_iarchive : public detail::common_iarchive<Archive>
 {
-protected:
+  protected:
 #if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-public:
+  public:
 #elif defined(BOOST_MSVC)
     // for some inexplicable reason insertion of "class" generates compile erro
     // on msvc 7.1
@@ -57,26 +58,31 @@ public:
     friend class detail::interface_iarchive<Archive>;
 #endif
     // intermediate level to support override of operators
-    // fot templates in the absence of partial function 
+    // fot templates in the absence of partial function
     // template ordering
     typedef detail::common_iarchive<Archive> detail_common_iarchive;
-    template<class T>
-    void load_override(T & t, BOOST_PFTO int){
+    template <class T>
+    void load_override(T &t, BOOST_PFTO int)
+    {
         this->detail_common_iarchive::load_override(t, 0);
     }
-    // text file don't include the optional information 
-    void load_override(class_id_optional_type & /*t*/, int){}
+    // text file don't include the optional information
+    void load_override(class_id_optional_type & /*t*/, int)
+    {
+    }
 
     BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
-    load_override(class_name_type & t, int);
+    load_override(class_name_type &t, int);
 
     BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
     init(void);
 
-    basic_text_iarchive(unsigned int flags) : 
-        detail::common_iarchive<Archive>(flags)
-    {}
-    ~basic_text_iarchive(){}
+    basic_text_iarchive(unsigned int flags) : detail::common_iarchive<Archive>(flags)
+    {
+    }
+    ~basic_text_iarchive()
+    {
+    }
 };
 
 } // namespace archive

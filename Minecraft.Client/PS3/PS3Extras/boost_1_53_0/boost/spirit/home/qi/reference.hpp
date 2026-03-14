@@ -11,59 +11,70 @@
 #pragma once
 #endif
 
+#include <boost/ref.hpp>
 #include <boost/spirit/home/qi/meta_compiler.hpp>
 #include <boost/spirit/home/qi/parser.hpp>
-#include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/home/support/handles_container.hpp>
+#include <boost/spirit/home/support/info.hpp>
 #include <boost/type_traits/remove_const.hpp>
-#include <boost/ref.hpp>
 
-namespace boost { namespace spirit { namespace qi
+namespace boost
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // reference is a parser that references another parser (its Subject)
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename Subject>
-    struct reference : parser<reference<Subject> >
+namespace spirit
+{
+namespace qi
+{
+///////////////////////////////////////////////////////////////////////////
+// reference is a parser that references another parser (its Subject)
+///////////////////////////////////////////////////////////////////////////
+template <typename Subject>
+struct reference : parser<reference<Subject>>
+{
+    typedef Subject subject_type;
+
+    reference(Subject &subject)
+        : ref(subject)
     {
-        typedef Subject subject_type;
+    }
 
-        reference(Subject& subject)
-          : ref(subject) {}
-
-        template <typename Context, typename Iterator>
-        struct attribute : Subject::template attribute<Context, Iterator> {};
-
-        template <typename Iterator, typename Context
-          , typename Skipper, typename Attribute>
-        bool parse(Iterator& first, Iterator const& last
-          , Context& context, Skipper const& skipper
-          , Attribute& attr) const
-        {
-            return ref.get().parse(first, last, context, skipper, attr);
-        }
-
-        template <typename Context>
-        info what(Context& context) const
-        {
-            // the reference is transparent (does not add any info)
-            return ref.get().what(context);
-        }
-
-        boost::reference_wrapper<Subject> ref;
+    template <typename Context, typename Iterator>
+    struct attribute : Subject::template attribute<Context, Iterator>
+    {
     };
-}}}
 
-namespace boost { namespace spirit { namespace traits
+    template <typename Iterator, typename Context, typename Skipper, typename Attribute>
+    bool parse(Iterator &first, Iterator const &last, Context &context, Skipper const &skipper, Attribute &attr) const
+    {
+        return ref.get().parse(first, last, context, skipper, attr);
+    }
+
+    template <typename Context>
+    info what(Context &context) const
+    {
+        // the reference is transparent (does not add any info)
+        return ref.get().what(context);
+    }
+
+    boost::reference_wrapper<Subject> ref;
+};
+} // namespace qi
+} // namespace spirit
+} // namespace boost
+
+namespace boost
 {
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename Subject, typename Attribute, typename Context
-      , typename Iterator>
-    struct handles_container<qi::reference<Subject>, Attribute, Context
-      , Iterator>
-      : handles_container<typename remove_const<Subject>::type
-        , Attribute, Context, Iterator> 
-    {};
-}}}
+namespace spirit
+{
+namespace traits
+{
+///////////////////////////////////////////////////////////////////////////
+template <typename Subject, typename Attribute, typename Context, typename Iterator>
+struct handles_container<qi::reference<Subject>, Attribute, Context, Iterator>
+    : handles_container<typename remove_const<Subject>::type, Attribute, Context, Iterator>
+{
+};
+} // namespace traits
+} // namespace spirit
+} // namespace boost
 
 #endif

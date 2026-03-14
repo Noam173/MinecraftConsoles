@@ -3,13 +3,13 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // basic_binary_oarchive.hpp
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -32,19 +32,21 @@
 #include <boost/integer_traits.hpp>
 
 #include <boost/archive/detail/common_oarchive.hpp>
-#include <boost/serialization/string.hpp>
 #include <boost/serialization/collection_size_type.hpp>
 #include <boost/serialization/item_version_type.hpp>
+#include <boost/serialization/string.hpp>
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
 #ifdef BOOST_MSVC
-#  pragma warning(push)
-#  pragma warning(disable : 4511 4512)
+#pragma warning(push)
+#pragma warning(disable : 4511 4512)
 #endif
 
-namespace boost {
-namespace archive {
+namespace boost
+{
+namespace archive
+{
 
 //////////////////////////////////////////////////////////////////////
 // class basic_binary_oarchive - write serialized objects to a binary output stream
@@ -54,13 +56,12 @@ namespace archive {
 // by a program built with the same tools for the same machne.  This class
 // does have the virtue of buiding the smalles archive in the minimum amount
 // of time.  So under some circumstances it may be he right choice.
-template<class Archive>
-class basic_binary_oarchive : 
-    public archive::detail::common_oarchive<Archive>
+template <class Archive>
+class basic_binary_oarchive : public archive::detail::common_oarchive<Archive>
 {
-protected:
+  protected:
 #if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-public:
+  public:
 #elif defined(BOOST_MSVC)
     // for some inexplicable reason insertion of "class" generates compile erro
     // on msvc 7.1
@@ -70,9 +71,10 @@ public:
 #endif
     // any datatype not specifed below will be handled by base class
     typedef detail::common_oarchive<Archive> detail_common_oarchive;
-    template<class T>
-    void save_override(const T & t, BOOST_PFTO int version){
-      this->detail_common_oarchive::save_override(t, static_cast<int>(version));
+    template <class T>
+    void save_override(const T &t, BOOST_PFTO int version)
+    {
+        this->detail_common_oarchive::save_override(t, static_cast<int>(version));
     }
 
     // include these to trap a change in binary format which
@@ -85,11 +87,13 @@ public:
     BOOST_STATIC_ASSERT(sizeof(object_id_type) == sizeof(uint_least32_t));
     BOOST_STATIC_ASSERT(sizeof(object_reference_type) == sizeof(uint_least32_t));
 
-    // binary files don't include the optional information 
-    void save_override(const class_id_optional_type & /* t */, int){}
+    // binary files don't include the optional information
+    void save_override(const class_id_optional_type & /* t */, int)
+    {
+    }
 
-    // enable this if we decide to support generation of previous versions
-    #if 0
+// enable this if we decide to support generation of previous versions
+#if 0
     void save_override(const boost::archive::version_type & t, int version){
         library_version_type lvt = this->get_library_version();
         if(boost::archive::library_version_type(7) < lvt){
@@ -140,15 +144,16 @@ public:
         save_override(static_cast<class_id_type &>(t), version);
     }
 
-    #endif
+#endif
 
     // explicitly convert to char * to avoid compile ambiguities
-    void save_override(const class_name_type & t, int){
+    void save_override(const class_name_type &t, int)
+    {
         const std::string s(t);
-        * this->This() << s;
+        *this->This() << s;
     }
 
-    #if 0
+#if 0
     void save_override(const serialization::collection_size_type & t, int){
         if (get_library_version() < boost::archive::library_version_type(6)){
             unsigned int x=0;
@@ -159,13 +164,13 @@ public:
             * this->This() >> t;
         }
     }
-    #endif
+#endif
     BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
     init();
 
-    basic_binary_oarchive(unsigned int flags) :
-        detail::common_oarchive<Archive>(flags)
-    {}
+    basic_binary_oarchive(unsigned int flags) : detail::common_oarchive<Archive>(flags)
+    {
+    }
 };
 
 } // namespace archive

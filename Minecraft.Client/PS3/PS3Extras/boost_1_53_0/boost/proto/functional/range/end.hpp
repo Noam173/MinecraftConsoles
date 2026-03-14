@@ -9,43 +9,51 @@
 #ifndef BOOST_PROTO_FUNCTIONAL_RANGE_END_HPP_EAN_27_08_2012
 #define BOOST_PROTO_FUNCTIONAL_RANGE_END_HPP_EAN_27_08_2012
 
-#include <boost/range/end.hpp>
 #include <boost/proto/proto_fwd.hpp>
+#include <boost/range/end.hpp>
 
-namespace boost { namespace proto { namespace functional
+namespace boost
+{
+namespace proto
+{
+namespace functional
 {
 
-    // A PolymorphicFunctionObject that wraps boost::end()
-    struct end
+// A PolymorphicFunctionObject that wraps boost::end()
+struct end
+{
+    BOOST_PROTO_CALLABLE()
+
+    template <typename Sig>
+    struct result;
+
+    template <typename This, typename Rng>
+    struct result<This(Rng)>
+        : boost::range_iterator<Rng const>
     {
-        BOOST_PROTO_CALLABLE()
-
-        template<typename Sig>
-        struct result;
-
-        template<typename This, typename Rng>
-        struct result<This(Rng)>
-          : boost::range_iterator<Rng const>
-        {};
-
-        template<typename This, typename Rng>
-        struct result<This(Rng &)>
-          : boost::range_iterator<Rng>
-        {};
-
-        template<typename Rng>
-        typename boost::range_iterator<Rng>::type operator()(Rng &rng) const
-        {
-            return boost::end(rng);
-        }
-
-        template<typename Rng>
-        typename boost::range_iterator<Rng const>::type operator()(Rng const &rng) const
-        {
-            return boost::end(rng);
-        }
     };
 
-}}}
+    template <typename This, typename Rng>
+    struct result<This(Rng &)>
+        : boost::range_iterator<Rng>
+    {
+    };
+
+    template <typename Rng>
+    typename boost::range_iterator<Rng>::type operator()(Rng &rng) const
+    {
+        return boost::end(rng);
+    }
+
+    template <typename Rng>
+    typename boost::range_iterator<Rng const>::type operator()(Rng const &rng) const
+    {
+        return boost::end(rng);
+    }
+};
+
+} // namespace functional
+} // namespace proto
+} // namespace boost
 
 #endif

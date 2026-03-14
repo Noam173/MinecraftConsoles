@@ -9,33 +9,38 @@
 #define BOOST_FUSION_VIEW_REVERSE_VIEW_DETAIL_AT_IMPL_HPP
 
 #include <boost/fusion/sequence/intrinsic/at.hpp>
-#include <boost/mpl/minus.hpp>
 #include <boost/mpl/int.hpp>
+#include <boost/mpl/minus.hpp>
 
-namespace boost { namespace fusion { namespace extension
+namespace boost
 {
-    template <typename>
-    struct at_impl;
+namespace fusion
+{
+namespace extension
+{
+template <typename>
+struct at_impl;
 
-    template <>
-    struct at_impl<reverse_view_tag>
+template <>
+struct at_impl<reverse_view_tag>
+{
+    template <typename Seq, typename N>
+    struct apply
     {
-        template <typename Seq, typename N>
-        struct apply
-        {
-            typedef mpl::minus<typename Seq::size, mpl::int_<1>, N> real_n;
+        typedef mpl::minus<typename Seq::size, mpl::int_<1>, N> real_n;
 
-            typedef typename
-                result_of::at<typename Seq::seq_type, real_n>::type
+        typedef typename result_of::at<typename Seq::seq_type, real_n>::type
             type;
 
-            static type
-            call(Seq& seq)
-            {
-                return fusion::at<real_n>(seq.seq);
-            }
-        };
+        static type
+        call(Seq &seq)
+        {
+            return fusion::at<real_n>(seq.seq);
+        }
     };
-}}}
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

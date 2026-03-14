@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------+    
+/*-----------------------------------------------------------------------------+
 Copyright (c) 2008-2009: Joachim Faulhaber
 +------------------------------------------------------------------------------+
    Distributed under the Boost Software License, Version 1.0.
@@ -8,21 +8,23 @@ Copyright (c) 2008-2009: Joachim Faulhaber
 #ifndef BOOST_ICL_TYPE_TRAITS_IS_CONTINUOUS_HPP_JOFA_080910
 #define BOOST_ICL_TYPE_TRAITS_IS_CONTINUOUS_HPP_JOFA_080910
 
-#include <string>
-#include <boost/mpl/not.hpp>
 #include <boost/icl/type_traits/is_discrete.hpp>
+#include <boost/mpl/not.hpp>
+#include <string>
 
-namespace boost{ namespace icl
+namespace boost
 {
-    template <class Type> struct is_continuous
-    {
-        typedef is_continuous type;
-        BOOST_STATIC_CONSTANT(bool, 
-            value = mpl::not_<is_discrete<Type> >::value);
-    };
+namespace icl
+{
+template <class Type>
+struct is_continuous
+{
+    typedef is_continuous type;
+    BOOST_STATIC_CONSTANT(bool,
+                          value = mpl::not_<is_discrete<Type>>::value);
+};
 
-}} // namespace boost icl
+} // namespace icl
+} // namespace boost
 
 #endif
-
-

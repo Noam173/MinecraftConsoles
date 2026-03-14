@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_CENTROID_HPP
 #define BOOST_GEOMETRY_STRATEGIES_CENTROID_HPP
 
-
 #include <cstddef>
 
 #include <boost/mpl/assert.hpp>
@@ -22,18 +21,19 @@
 #include <boost/geometry/core/tags.hpp>
 #include <boost/geometry/strategies/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
-namespace strategy { namespace centroid
+namespace strategy
+{
+namespace centroid
 {
 
 struct not_applicable_strategy
 {
 };
-
 
 namespace services
 {
@@ -47,26 +47,23 @@ namespace services
     \tparam Point point-type
     \tparam Geometry
 */
-template
-<
+template <
     typename CsTag,
     typename GeometryTag,
     std::size_t Dimension,
     typename Point,
-    typename Geometry
->
+    typename Geometry>
 struct default_strategy
 {
     typedef not_applicable_strategy type;
 };
 
-
 } // namespace services
 
+} // namespace centroid
+} // namespace strategy
 
-}} // namespace strategy::centroid
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_CENTROID_HPP

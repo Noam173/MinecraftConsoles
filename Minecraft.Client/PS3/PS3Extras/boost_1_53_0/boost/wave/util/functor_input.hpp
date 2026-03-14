@@ -21,71 +21,81 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost {
-namespace wave {
-namespace util {
+namespace boost
+{
+namespace wave
+{
+namespace util
+{
 
 ///////////////////////////////////////////////////////////////////////////////
-// 
+//
 //  class functor_input
-// 
-//      Implementation of the InputPolicy used by multi_pass 
+//
+//      Implementation of the InputPolicy used by multi_pass
 //      functor_input gets tokens from a functor
 //      Note: the functor must have a typedef for result_type
-//            It also must have a static variable of type result_type defined 
+//            It also must have a static variable of type result_type defined
 //            to represent eof that is called eof.
 //
-//      This functor input policy template is essentially the same as the 
-//      predefined multi_pass functor_input policy. The difference is, 
-//      that the first token is not read at initialization time, but only 
+//      This functor input policy template is essentially the same as the
+//      predefined multi_pass functor_input policy. The difference is,
+//      that the first token is not read at initialization time, but only
 //      just before returning the first token. Additionally it does not
 //      call operator new() twice but only once.
 //
 ///////////////////////////////////////////////////////////////////////////////
-struct functor_input {
+struct functor_input
+{
 
     template <typename FunctorT>
-    class inner {
-    private:
+    class inner
+    {
+      private:
         typedef typename FunctorT::result_type result_type;
 
-    public:
+      public:
         typedef result_type value_type;
 
-    private:
-        struct Data {
-            Data(FunctorT const &ftor_) 
-            :   ftor(ftor_), was_initialized(false)
-            {}
-            
+      private:
+        struct Data
+        {
+            Data(FunctorT const &ftor_)
+                : ftor(ftor_), was_initialized(false)
+            {
+            }
+
             FunctorT ftor;
             value_type curtok;
             bool was_initialized;
         };
 
-       // Needed by compilers not implementing the resolution to DR45. For
-       // reference, see
-       // http://www.open-std.org/JTC1/SC22/WG21/docs/cwg_defects.html#45.
+        // Needed by compilers not implementing the resolution to DR45. For
+        // reference, see
+        // http://www.open-std.org/JTC1/SC22/WG21/docs/cwg_defects.html#45.
 
-       friend struct Data;
+        friend struct Data;
 
-    public:
+      public:
         typedef std::ptrdiff_t difference_type;
         typedef result_type *pointer;
         typedef result_type &reference;
 
-    protected:
+      protected:
         inner()
-        :   data(0)
-        {}
+            : data(0)
+        {
+        }
 
         inner(FunctorT const &x)
-        :   data(new Data(x))
-        {}
+            : data(new Data(x))
+        {
+        }
 
         inner(inner const &x)
-        :   data(x.data)
-        {}
+            : data(x.data)
+        {
+        }
 
         void destroy()
         {
@@ -105,13 +115,14 @@ struct functor_input {
 
         void ensure_initialized() const
         {
-            if (data && !data->was_initialized) {
-                data->curtok = (data->ftor)();    // get the first token
+            if (data && !data->was_initialized)
+            {
+                data->curtok = (data->ftor)(); // get the first token
                 data->was_initialized = true;
             }
         }
 
-    public:
+      public:
         reference get_input() const
         {
             ensure_initialized();
@@ -131,21 +142,21 @@ struct functor_input {
             return !data || data->curtok == data->ftor.eof;
         }
 
-        FunctorT& get_functor() const
+        FunctorT &get_functor() const
         {
             BOOST_ASSERT(0 != data);
             return data->ftor;
         }
 
-    private:
+      private:
         mutable Data *data;
     };
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-}   // namespace util
-}   // namespace wave
-}   // namespace boost 
+} // namespace util
+} // namespace wave
+} // namespace boost
 
 // the suffix header occurs after all of the code
 #ifdef BOOST_HAS_ABI_HEADERS

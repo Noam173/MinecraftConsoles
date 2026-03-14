@@ -14,14 +14,14 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_DEFAULT_AREA_RESULT_HPP
 #define BOOST_GEOMETRY_STRATEGIES_DEFAULT_AREA_RESULT_HPP
 
-
-#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/coordinate_type.hpp>
+#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/strategies/area.hpp>
 #include <boost/geometry/util/select_most_precise.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 /*!
@@ -35,17 +35,14 @@ template <typename Geometry>
 struct default_area_result
 {
     typedef typename point_type<Geometry>::type point_type;
-    typedef typename strategy::area::services::default_strategy
-        <
-            typename cs_tag<point_type>::type,
-            point_type
-        >::type strategy_type;
+    typedef typename strategy::area::services::default_strategy<
+        typename cs_tag<point_type>::type,
+        point_type>::type strategy_type;
 
     typedef typename strategy_type::return_type type;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_DEFAULT_AREA_RESULT_HPP

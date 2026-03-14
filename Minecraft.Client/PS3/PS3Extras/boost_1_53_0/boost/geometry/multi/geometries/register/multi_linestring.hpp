@@ -11,7 +11,6 @@
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_GEOMETRY_MULTI_GEOMETRIES_REGISTER_MULTI_LINESTRING_HPP
 #define BOOST_GEOMETRY_MULTI_GEOMETRIES_REGISTER_MULTI_LINESTRING_HPP
 
@@ -21,7 +20,7 @@
 /*!
 \brief \brief_macro{multi_linestring}
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_MULTI_LINESTRING, multi_linestring} The 
+\details \details_macro{BOOST_GEOMETRY_REGISTER_MULTI_LINESTRING, multi_linestring} The
     multi_linestring may contain template parameters, which must be specified then.
 \param MultiLineString \param_macro_type{multi_linestring}
 
@@ -32,15 +31,25 @@
 }
 */
 #define BOOST_GEOMETRY_REGISTER_MULTI_LINESTRING(MultiLineString) \
-namespace boost { namespace geometry { namespace traits {  \
-    template<> struct tag<MultiLineString> { typedef multi_linestring_tag type; }; \
-}}}
-
+    namespace boost                                               \
+    {                                                             \
+    namespace geometry                                            \
+    {                                                             \
+    namespace traits                                              \
+    {                                                             \
+    template <>                                                   \
+    struct tag<MultiLineString>                                   \
+    {                                                             \
+        typedef multi_linestring_tag type;                        \
+    };                                                            \
+    }                                                             \
+    }                                                             \
+    }
 
 /*!
 \brief \brief_macro{templated multi_linestring}
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_MULTI_LINESTRING_TEMPLATED, templated multi_linestring} 
+\details \details_macro{BOOST_GEOMETRY_REGISTER_MULTI_LINESTRING_TEMPLATED, templated multi_linestring}
     \details_macro_templated{multi_linestring, linestring}
 \param MultiLineString \param_macro_type{multi_linestring (without template parameters)}
 
@@ -51,9 +60,19 @@ namespace boost { namespace geometry { namespace traits {  \
 }
 */
 #define BOOST_GEOMETRY_REGISTER_MULTI_LINESTRING_TEMPLATED(MultiLineString) \
-namespace boost { namespace geometry { namespace traits {  \
-    template<typename LineString> struct tag< MultiLineString<LineString> > { typedef multi_linestring_tag type; }; \
-}}}
-
+    namespace boost                                                         \
+    {                                                                       \
+    namespace geometry                                                      \
+    {                                                                       \
+    namespace traits                                                        \
+    {                                                                       \
+    template <typename LineString>                                          \
+    struct tag<MultiLineString<LineString>>                                 \
+    {                                                                       \
+        typedef multi_linestring_tag type;                                  \
+    };                                                                      \
+    }                                                                       \
+    }                                                                       \
+    }
 
 #endif // BOOST_GEOMETRY_MULTI_GEOMETRIES_REGISTER_MULTI_LINESTRING_HPP

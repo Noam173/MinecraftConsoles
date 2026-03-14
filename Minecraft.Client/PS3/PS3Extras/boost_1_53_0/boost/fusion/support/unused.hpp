@@ -11,75 +11,80 @@
 
 #include <boost/config.hpp>
 #if defined(BOOST_MSVC)
-# pragma warning(push)
-# pragma warning(disable: 4522) // multiple assignment operators specified warning
+#pragma warning(push)
+#pragma warning(disable : 4522) // multiple assignment operators specified warning
 #endif
 
 #define BOOST_FUSION_UNUSED_HAS_IO
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct unused_type
+namespace fusion
+{
+struct unused_type
+{
+    unused_type()
     {
-        unused_type()
-        {
-        }
-
-        template <typename T>
-        unused_type(T const&)
-        {
-        }
-
-        template <typename T>
-        unused_type const&
-        operator=(T const&) const
-        {
-            return *this;
-        }
-
-        template <typename T>
-        unused_type&
-        operator=(T const&)
-        {
-            return *this;
-        }
-
-        unused_type const&
-        operator=(unused_type const&) const
-        {
-            return *this;
-        }
-
-        unused_type&
-        operator=(unused_type const&)
-        {
-            return *this;
-        }
-    };
-
-    unused_type const unused = unused_type();
-
-    namespace detail
-    {
-        struct unused_only
-        {
-            unused_only(unused_type const&) {}
-        };
     }
 
-    inline std::ostream& operator<<(std::ostream& out, detail::unused_only const&)
+    template <typename T>
+    unused_type(T const &)
     {
-        return out;
     }
 
-    inline std::istream& operator>>(std::istream& in, unused_type&)
+    template <typename T>
+    unused_type const &
+    operator=(T const &) const
     {
-        return in;
+        return *this;
     }
-}}
+
+    template <typename T>
+    unused_type &
+    operator=(T const &)
+    {
+        return *this;
+    }
+
+    unused_type const &
+    operator=(unused_type const &) const
+    {
+        return *this;
+    }
+
+    unused_type &
+    operator=(unused_type const &)
+    {
+        return *this;
+    }
+};
+
+unused_type const unused = unused_type();
+
+namespace detail
+{
+struct unused_only
+{
+    unused_only(unused_type const &)
+    {
+    }
+};
+} // namespace detail
+
+inline std::ostream &operator<<(std::ostream &out, detail::unused_only const &)
+{
+    return out;
+}
+
+inline std::istream &operator>>(std::istream &in, unused_type &)
+{
+    return in;
+}
+} // namespace fusion
+} // namespace boost
 
 #if defined(BOOST_MSVC)
-# pragma warning(pop)
+#pragma warning(pop)
 #endif
 
 #endif

@@ -14,19 +14,18 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_ASSIGN_BOX_CORNERS_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_ASSIGN_BOX_CORNERS_HPP
 
-
 #include <cstddef>
 
-#include <boost/geometry/geometries/concepts/check.hpp>
 #include <boost/geometry/algorithms/detail/assign_values.hpp>
+#include <boost/geometry/geometries/concepts/check.hpp>
 
-
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail 
+namespace detail
 {
 // Note: this is moved to namespace detail because the names and parameter orders
 // are not yet 100% clear.
@@ -50,25 +49,21 @@ namespace detail
 }
 */
 template <typename Box, typename Point>
-inline void assign_box_corners(Box const& box,
-        Point& lower_left, Point& lower_right,
-        Point& upper_left, Point& upper_right)
+inline void assign_box_corners(Box const &box,
+                               Point &lower_left, Point &lower_right,
+                               Point &upper_left, Point &upper_right)
 {
-    concept::check<Box const>();
-    concept::check<Point>();
+    concept ::check<Box const>();
+    concept ::check<Point>();
 
-    detail::assign::assign_box_2d_corner
-            <min_corner, min_corner>(box, lower_left);
-    detail::assign::assign_box_2d_corner
-            <max_corner, min_corner>(box, lower_right);
-    detail::assign::assign_box_2d_corner
-            <min_corner, max_corner>(box, upper_left);
-    detail::assign::assign_box_2d_corner
-            <max_corner, max_corner>(box, upper_right);
+    detail::assign::assign_box_2d_corner<min_corner, min_corner>(box, lower_left);
+    detail::assign::assign_box_2d_corner<max_corner, min_corner>(box, lower_right);
+    detail::assign::assign_box_2d_corner<min_corner, max_corner>(box, upper_left);
+    detail::assign::assign_box_2d_corner<max_corner, max_corner>(box, upper_right);
 }
 
 template <bool Reverse, typename Box, typename Range>
-inline void assign_box_corners_oriented(Box const& box, Range& corners)
+inline void assign_box_corners_oriented(Box const &box, Range &corners)
 {
     if (Reverse)
     {
@@ -82,12 +77,10 @@ inline void assign_box_corners_oriented(Box const& box, Range& corners)
     }
 }
 
-
 } // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_ASSIGN_BOX_CORNERS_HPP

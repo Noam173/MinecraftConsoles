@@ -13,14 +13,13 @@
 #include <utility>
 #include <vector>
 
-#include <boost/assert.hpp>
 #include <boost/array.hpp>
+#include <boost/assert.hpp>
 
 #include <boost/heap/detail/heap_comparison.hpp>
 #include <boost/heap/detail/heap_node.hpp>
 #include <boost/heap/detail/stable_heap.hpp>
 #include <boost/heap/detail/tree_iterator.hpp>
-
 
 #ifndef BOOST_DOXYGEN_INVOKED
 #ifdef BOOST_HEAP_SANITYCHECKS
@@ -30,16 +29,19 @@
 #endif
 #endif
 
-namespace boost  {
-namespace heap   {
-namespace detail {
+namespace boost
+{
+namespace heap
+{
+namespace detail
+{
 
 template <typename node_pointer, bool store_parent_pointer>
 struct parent_holder
 {
-    parent_holder(void):
-        parent_(NULL)
-    {}
+    parent_holder(void) : parent_(NULL)
+    {
+    }
 
     void set_parent(node_pointer parent)
     {
@@ -59,7 +61,8 @@ template <typename node_pointer>
 struct parent_holder<node_pointer, false>
 {
     void set_parent(node_pointer parent)
-    {}
+    {
+    }
 
     node_pointer get_parent(void) const
     {
@@ -67,34 +70,29 @@ struct parent_holder<node_pointer, false>
     }
 };
 
-
 template <typename value_type, bool store_parent_pointer>
-struct skew_heap_node:
-    parent_holder<skew_heap_node<value_type, store_parent_pointer>*, store_parent_pointer>
+struct skew_heap_node : parent_holder<skew_heap_node<value_type, store_parent_pointer> *, store_parent_pointer>
 {
-    typedef parent_holder<skew_heap_node<value_type, store_parent_pointer>*, store_parent_pointer> super_t;
+    typedef parent_holder<skew_heap_node<value_type, store_parent_pointer> *, store_parent_pointer> super_t;
 
-    typedef boost::array<skew_heap_node*, 2> child_list_type;
+    typedef boost::array<skew_heap_node *, 2> child_list_type;
     typedef typename child_list_type::iterator child_iterator;
     typedef typename child_list_type::const_iterator const_child_iterator;
 
-    skew_heap_node(value_type const & v):
-        value(v)
+    skew_heap_node(value_type const &v) : value(v)
     {
         children.assign(0);
     }
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
-    skew_heap_node(value_type && v):
-        value(v)
+    skew_heap_node(value_type &&v) : value(v)
     {
         children.assign(0);
     }
 #endif
 
     template <typename Alloc>
-    skew_heap_node (skew_heap_node const & rhs, Alloc & allocator, skew_heap_node * parent):
-        value(rhs.value)
+    skew_heap_node(skew_heap_node const &rhs, Alloc &allocator, skew_heap_node *parent) : value(rhs.value)
     {
         super_t::set_parent(parent);
         node_cloner<skew_heap_node, skew_heap_node, Alloc> cloner(allocator);
@@ -103,16 +101,20 @@ struct skew_heap_node:
     }
 
     template <typename Cloner>
-    void clone_child(int index, skew_heap_node const & rhs, Cloner & cloner)
+    void clone_child(int index, skew_heap_node const &rhs, Cloner &cloner)
     {
         if (rhs.children[index])
+        {
             children[index] = cloner(*rhs.children[index], this);
+        }
         else
+        {
             children[index] = NULL;
+        }
     }
 
     template <typename Alloc>
-    void clear_subtree(Alloc & alloc)
+    void clear_subtree(Alloc &alloc)
     {
         node_disposer<skew_heap_node, skew_heap_node, Alloc> disposer(alloc);
         dispose_child(children[0], disposer);
@@ -120,46 +122,58 @@ struct skew_heap_node:
     }
 
     template <typename Disposer>
-    void dispose_child(skew_heap_node * node, Disposer & disposer)
+    void dispose_child(skew_heap_node *node, Disposer &disposer)
     {
         if (node)
+        {
             disposer(node);
+        }
     }
 
     std::size_t count_children(void) const
     {
         size_t ret = 1;
         if (children[0])
+        {
             ret += children[0]->count_children();
+        }
         if (children[1])
+        {
             ret += children[1]->count_children();
+        }
 
         return ret;
     }
 
     template <typename HeapBase>
-    bool is_heap(typename HeapBase::value_compare const & cmp) const
+    bool is_heap(typename HeapBase::value_compare const &cmp) const
     {
-        for (const_child_iterator it = children.begin(); it != children.end(); ++it) {
-            const skew_heap_node * child = *it;
+        for (const_child_iterator it = children.begin(); it != children.end(); ++it)
+        {
+            const skew_heap_node *child = *it;
 
             if (child == NULL)
+            {
                 continue;
+            }
 
             if (store_parent_pointer)
+            {
                 BOOST_HEAP_ASSERT(child->get_parent() == this);
+            }
 
             if (cmp(HeapBase::get_value(value), HeapBase::get_value(child->value)) ||
                 !child->is_heap<HeapBase>(cmp))
+            {
                 return false;
+            }
         }
         return true;
     }
 
     value_type value;
-    boost::array<skew_heap_node*, 2> children;
+    boost::array<skew_heap_node *, 2> children;
 };
-
 
 typedef parameter::parameters<boost::parameter::optional<tag::allocator>,
                               boost::parameter::optional<tag::compare>,
@@ -167,16 +181,15 @@ typedef parameter::parameters<boost::parameter::optional<tag::allocator>,
                               boost::parameter::optional<tag::store_parent_pointer>,
                               boost::parameter::optional<tag::stability_counter_type>,
                               boost::parameter::optional<tag::constant_time_size>,
-                              boost::parameter::optional<tag::mutable_>
-                             > skew_heap_signature;
+                              boost::parameter::optional<tag::mutable_>>
+    skew_heap_signature;
 
 template <typename T, typename BoundArgs>
 struct make_skew_heap_base
 {
     static const bool constant_time_size = parameter::binding<BoundArgs,
                                                               tag::constant_time_size,
-                                                              boost::mpl::true_
-                                                             >::type::value;
+                                                              boost::mpl::true_>::type::value;
 
     typedef typename make_heap_base<T, BoundArgs, constant_time_size>::type base_type;
     typedef typename make_heap_base<T, BoundArgs, constant_time_size>::allocator_argument allocator_argument;
@@ -184,40 +197,40 @@ struct make_skew_heap_base
 
     static const bool is_mutable = extract_mutable<BoundArgs>::value;
     static const bool store_parent_pointer = parameter::binding<BoundArgs,
-                                                              tag::store_parent_pointer,
-                                                              boost::mpl::false_>::type::value || is_mutable;
+                                                                tag::store_parent_pointer,
+                                                                boost::mpl::false_>::type::value ||
+                                             is_mutable;
 
     typedef skew_heap_node<typename base_type::internal_type, store_parent_pointer> node_type;
 
     typedef typename allocator_argument::template rebind<node_type>::other allocator_type;
 
-    struct type:
-        base_type,
-        allocator_type
+    struct type : base_type,
+                  allocator_type
     {
-        type(compare_argument const & arg):
-            base_type(arg)
-        {}
+        type(compare_argument const &arg) : base_type(arg)
+        {
+        }
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
-        type(type && rhs):
-            base_type(std::move(static_cast<base_type&>(rhs))),
-            allocator_type(std::move(static_cast<allocator_type&>(rhs)))
-        {}
-
-        type(type const & rhs):
-            base_type(rhs),
-            allocator_type(rhs)
-        {}
-
-        type & operator=(type && rhs)
+        type(type &&rhs) : base_type(std::move(static_cast<base_type &>(rhs))),
+                           allocator_type(std::move(static_cast<allocator_type &>(rhs)))
         {
-            base_type::operator=(std::move(static_cast<base_type&>(rhs)));
-            allocator_type::operator=(std::move(static_cast<allocator_type&>(rhs)));
+        }
+
+        type(type const &rhs) : base_type(rhs),
+                                allocator_type(rhs)
+        {
+        }
+
+        type &operator=(type &&rhs)
+        {
+            base_type::operator=(std::move(static_cast<base_type &>(rhs)));
+            allocator_type::operator=(std::move(static_cast<allocator_type &>(rhs)));
             return *this;
         }
 
-        type & operator=(type const & rhs)
+        type &operator=(type const &rhs)
         {
             base_type::operator=(static_cast<base_type const &>(rhs));
             allocator_type::operator=(static_cast<allocator_type const &>(rhs));
@@ -249,7 +262,7 @@ struct make_skew_heap_base
  *
  */
 #ifdef BOOST_DOXYGEN_INVOKED
-template<class T, class ...Options>
+template <class T, class... Options>
 #else
 template <typename T,
           class A0 = boost::parameter::void_,
@@ -258,13 +271,10 @@ template <typename T,
           class A3 = boost::parameter::void_,
           class A4 = boost::parameter::void_,
           class A5 = boost::parameter::void_,
-          class A6 = boost::parameter::void_
-         >
+          class A6 = boost::parameter::void_>
 #endif
-class skew_heap:
-    private detail::make_skew_heap_base<T,
-                                          typename detail::skew_heap_signature::bind<A0, A1, A2, A3, A4, A5, A6>::type
-                                         >::type
+class skew_heap : private detail::make_skew_heap_base<T,
+                                                      typename detail::skew_heap_signature::bind<A0, A1, A2, A3, A4, A5, A6>::type>::type
 {
     typedef typename detail::skew_heap_signature::bind<A0, A1, A2, A3, A4, A5, A6>::type bound_args;
     typedef detail::make_skew_heap_base<T, bound_args> base_maker;
@@ -278,8 +288,7 @@ class skew_heap:
     template <typename Heap1, typename Heap2>
     friend struct heap_merge_emulate;
 
-    struct implementation_defined:
-        detail::extract_allocator_types<typename base_maker::allocator_argument>
+    struct implementation_defined : detail::extract_allocator_types<typename base_maker::allocator_argument>
     {
         typedef T value_type;
 
@@ -296,24 +305,20 @@ class skew_heap:
         typedef typename child_list_type::iterator child_list_iterator;
 
         typedef typename boost::mpl::if_c<false,
-                                        detail::recursive_tree_iterator<node,
-                                                                        child_list_iterator,
-                                                                        const value_type,
-                                                                        value_extractor,
-                                                                        detail::list_iterator_converter<node,
-                                                                                                        child_list_type
-                                                                                                       >
-                                                                       >,
-                                        detail::tree_iterator<node,
-                                                              const value_type,
-                                                              allocator_type,
-                                                              value_extractor,
-                                                              detail::dereferencer<node>,
-                                                              true,
-                                                              false,
-                                                              value_compare
-                                                    >
-                                        >::type iterator;
+                                          detail::recursive_tree_iterator<node,
+                                                                          child_list_iterator,
+                                                                          const value_type,
+                                                                          value_extractor,
+                                                                          detail::list_iterator_converter<node,
+                                                                                                          child_list_type>>,
+                                          detail::tree_iterator<node,
+                                                                const value_type,
+                                                                allocator_type,
+                                                                value_extractor,
+                                                                detail::dereferencer<node>,
+                                                                true,
+                                                                false,
+                                                                value_compare>>::type iterator;
 
         typedef iterator const_iterator;
 
@@ -324,8 +329,8 @@ class skew_heap:
                                       detail::dereferencer<node>,
                                       true,
                                       true,
-                                      value_compare
-                                     > ordered_iterator;
+                                      value_compare>
+            ordered_iterator;
 
         typedef typename detail::extract_allocator_types<typename base_maker::allocator_argument>::reference reference;
         typedef detail::node_handle<node_pointer, super_t, reference> handle_type;
@@ -335,7 +340,7 @@ class skew_heap:
     typedef typename implementation_defined::node node;
     typedef typename implementation_defined::node_pointer node_pointer;
 
-public:
+  public:
     typedef T value_type;
 
     typedef typename implementation_defined::size_type size_type;
@@ -359,30 +364,31 @@ public:
     static const bool has_reserve = false;
     static const bool is_mutable = detail::extract_mutable<bound_args>::value;
 
-    typedef typename mpl::if_c<is_mutable, typename implementation_defined::handle_type, void*>::type handle_type;
+    typedef typename mpl::if_c<is_mutable, typename implementation_defined::handle_type, void *>::type handle_type;
 
     /// \copydoc boost::heap::priority_queue::priority_queue(value_compare const &)
-    explicit skew_heap(value_compare const & cmp = value_compare()):
-        super_t(cmp), root(NULL)
-    {}
+    explicit skew_heap(value_compare const &cmp = value_compare()) : super_t(cmp), root(NULL)
+    {
+    }
 
     /// \copydoc boost::heap::priority_queue::priority_queue(priority_queue const &)
-    skew_heap(skew_heap const & rhs):
-        super_t(rhs), root(0)
+    skew_heap(skew_heap const &rhs) : super_t(rhs), root(0)
     {
         if (rhs.empty())
+        {
             return;
+        }
 
         clone_tree(rhs);
         size_holder::set_size(rhs.get_size());
     }
 
     /// \copydoc boost::heap::priority_queue::operator=(priority_queue const & rhs)
-    skew_heap & operator=(skew_heap const & rhs)
+    skew_heap &operator=(skew_heap const &rhs)
     {
         clear();
         size_holder::set_size(rhs.get_size());
-        static_cast<super_t&>(*this) = rhs;
+        static_cast<super_t &>(*this) = rhs;
 
         clone_tree(rhs);
         return *this;
@@ -390,14 +396,13 @@ public:
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
     /// \copydoc boost::heap::priority_queue::priority_queue(priority_queue &&)
-    skew_heap(skew_heap && rhs):
-        super_t(std::move(rhs)), root(rhs.root)
+    skew_heap(skew_heap &&rhs) : super_t(std::move(rhs)), root(rhs.root)
     {
         rhs.root = NULL;
     }
 
     /// \copydoc boost::heap::priority_queue::operator=(priority_queue &&)
-    skew_heap & operator=(skew_heap && rhs)
+    skew_heap &operator=(skew_heap &&rhs)
     {
         super_t::operator=(std::move(rhs));
         root = rhs.root;
@@ -417,7 +422,7 @@ public:
      * \b Complexity: Logarithmic (amortized).
      *
      * */
-    typename mpl::if_c<is_mutable, handle_type, void>::type push(value_type const & v)
+    typename mpl::if_c<is_mutable, handle_type, void>::type push(value_type const &v)
     {
         typedef typename mpl::if_c<is_mutable, push_handle, push_void>::type push_helper;
         return push_helper::push(this, v);
@@ -431,7 +436,7 @@ public:
      *
      * */
     template <typename... Args>
-    typename mpl::if_c<is_mutable, handle_type, void>::type emplace(Args&&... args)
+    typename mpl::if_c<is_mutable, handle_type, void>::type emplace(Args &&...args)
     {
         typedef typename mpl::if_c<is_mutable, push_handle, push_void>::type push_helper;
         return push_helper::emplace(this, std::forward<Args>(args)...);
@@ -448,12 +453,18 @@ public:
     size_type size(void) const
     {
         if (constant_time_size)
+        {
             return size_holder::get_size();
+        }
 
         if (root == NULL)
+        {
             return 0;
+        }
         else
+        {
             return root->count_children();
+        }
     }
 
     /// \copydoc boost::heap::priority_queue::max_size
@@ -466,7 +477,9 @@ public:
     void clear(void)
     {
         if (empty())
+        {
             return;
+        }
 
         root->template clear_subtree<allocator_type>(*this);
         root->~node();
@@ -483,7 +496,7 @@ public:
     }
 
     /// \copydoc boost::heap::priority_queue::swap
-    void swap(skew_heap & rhs)
+    void swap(skew_heap &rhs)
     {
         super_t::swap(rhs);
         std::swap(root, rhs.root);
@@ -513,9 +526,13 @@ public:
         size_holder::decrement();
 
         if (root)
+        {
             BOOST_HEAP_ASSERT(root->get_parent() == NULL);
+        }
         else
+        {
             BOOST_HEAP_ASSERT(size_holder::get_size() == 0);
+        }
 
         top->~node();
         allocator_type::deallocate(top, 1);
@@ -552,10 +569,12 @@ public:
      * \b Complexity: Logarithmic (amortized).
      *
      * */
-    void merge(skew_heap & rhs)
+    void merge(skew_heap &rhs)
     {
         if (rhs.empty())
+        {
             return;
+        }
 
         merge_node(rhs.root);
 
@@ -565,63 +584,62 @@ public:
         sanity_check();
 
         super_t::set_stability_count((std::max)(super_t::get_stability_count(),
-                                     rhs.get_stability_count()));
+                                                rhs.get_stability_count()));
         rhs.set_stability_count(0);
     }
 
     /// \copydoc boost::heap::priority_queue::value_comp
-    value_compare const & value_comp(void) const
+    value_compare const &value_comp(void) const
     {
         return super_t::value_comp();
     }
 
     /// \copydoc boost::heap::priority_queue::operator<(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator<(HeapType const & rhs) const
+    bool operator<(HeapType const &rhs) const
     {
         return detail::heap_compare(*this, rhs);
     }
 
     /// \copydoc boost::heap::priority_queue::operator>(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator>(HeapType const & rhs) const
+    bool operator>(HeapType const &rhs) const
     {
         return detail::heap_compare(rhs, *this);
     }
 
     /// \copydoc boost::heap::priority_queue::operator>=(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator>=(HeapType const & rhs) const
+    bool operator>=(HeapType const &rhs) const
     {
         return !operator<(rhs);
     }
 
     /// \copydoc boost::heap::priority_queue::operator<=(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator<=(HeapType const & rhs) const
+    bool operator<=(HeapType const &rhs) const
     {
         return !operator>(rhs);
     }
 
     /// \copydoc boost::heap::priority_queue::operator==(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator==(HeapType const & rhs) const
+    bool operator==(HeapType const &rhs) const
     {
         return detail::heap_equality(*this, rhs);
     }
 
     /// \copydoc boost::heap::priority_queue::operator!=(HeapType const & rhs) const
     template <typename HeapType>
-    bool operator!=(HeapType const & rhs) const
+    bool operator!=(HeapType const &rhs) const
     {
         return !(*this == rhs);
     }
 
-
     /// \copydoc boost::heap::d_ary_heap::s_handle_from_iterator
-    static handle_type s_handle_from_iterator(iterator const & it)
+    static handle_type s_handle_from_iterator(iterator const &it)
     {
-        node * ptr = const_cast<node *>(it.get_node());
+        node *ptr = const_cast<node *>(it.get_node());
         return handle_type(ptr);
     }
 
@@ -630,7 +648,7 @@ public:
      *
      * \b Complexity: Logarithmic (amortized).
      * */
-    void erase (handle_type object)
+    void erase(handle_type object)
     {
         BOOST_STATIC_ASSERT(is_mutable);
         node_pointer this_node = object.node_;
@@ -649,13 +667,17 @@ public:
      * \b Complexity: Logarithmic (amortized).
      *
      * */
-    void update (handle_type handle, const_reference v)
+    void update(handle_type handle, const_reference v)
     {
         BOOST_STATIC_ASSERT(is_mutable);
         if (super_t::operator()(super_t::get_value(handle.node_->value), v))
+        {
             increase(handle, v);
+        }
         else
+        {
             decrease(handle, v);
+        }
     }
 
     /**
@@ -665,20 +687,27 @@ public:
      *
      * \b Note: If this is not called, after a handle has been updated, the behavior of the data structure is undefined!
      * */
-    void update (handle_type handle)
+    void update(handle_type handle)
     {
         BOOST_STATIC_ASSERT(is_mutable);
         node_pointer this_node = handle.node_;
 
-        if (this_node->get_parent()) {
+        if (this_node->get_parent())
+        {
             if (super_t::operator()(super_t::get_value(this_node->get_parent()->value),
                                     super_t::get_value(this_node->value)))
+            {
                 increase(handle);
+            }
             else
+            {
                 decrease(handle);
+            }
         }
         else
+        {
             decrease(handle);
+        }
     }
 
     /**
@@ -688,7 +717,7 @@ public:
      *
      * \b Note: The new value is expected to be greater than the current one
      * */
-    void increase (handle_type handle, const_reference v)
+    void increase(handle_type handle, const_reference v)
     {
         BOOST_STATIC_ASSERT(is_mutable);
         handle.node_->value = super_t::make_node(v);
@@ -702,20 +731,26 @@ public:
      *
      * \b Note: If this is not called, after a handle has been updated, the behavior of the data structure is undefined!
      * */
-    void increase (handle_type handle)
+    void increase(handle_type handle)
     {
         BOOST_STATIC_ASSERT(is_mutable);
         node_pointer this_node = handle.node_;
 
         if (this_node == root)
+        {
             return;
+        }
 
         node_pointer parent = this_node->get_parent();
 
         if (this_node == parent->children[0])
+        {
             parent->children[0] = NULL;
+        }
         else
+        {
             parent->children[1] = NULL;
+        }
 
         this_node->set_parent(NULL);
         merge_node(this_node);
@@ -728,7 +763,7 @@ public:
      *
      * \b Note: The new value is expected to be less than the current one
      * */
-    void decrease (handle_type handle, const_reference v)
+    void decrease(handle_type handle, const_reference v)
     {
         BOOST_STATIC_ASSERT(is_mutable);
         handle.node_->value = super_t::make_node(v);
@@ -742,7 +777,7 @@ public:
      *
      * \b Note: The new value is expected to be less than the current one. If this is not called, after a handle has been updated, the behavior of the data structure is undefined!
      * */
-    void decrease (handle_type handle)
+    void decrease(handle_type handle)
     {
         BOOST_STATIC_ASSERT(is_mutable);
         node_pointer this_node = handle.node_;
@@ -753,18 +788,18 @@ public:
         merge_node(this_node);
     }
 
-private:
+  private:
 #if !defined(BOOST_DOXYGEN_INVOKED)
     struct push_void
     {
-        static void push(skew_heap * self, const_reference v)
+        static void push(skew_heap *self, const_reference v)
         {
             self->push_internal(v);
         }
 
 #if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
         template <class... Args>
-        static void emplace(skew_heap * self, Args&&... args)
+        static void emplace(skew_heap *self, Args &&...args)
         {
             self->emplace_internal(std::forward<Args>(args)...);
         }
@@ -773,14 +808,14 @@ private:
 
     struct push_handle
     {
-        static handle_type push(skew_heap * self, const_reference v)
+        static handle_type push(skew_heap *self, const_reference v)
         {
             return handle_type(self->push_internal(v));
         }
 
 #if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
         template <class... Args>
-        static handle_type emplace(skew_heap * self, Args&&... args)
+        static handle_type emplace(skew_heap *self, Args &&...args)
         {
             return handle_type(self->emplace_internal(std::forward<Args>(args)...));
         }
@@ -792,7 +827,7 @@ private:
         size_holder::increment();
 
         node_pointer n = super_t::allocate(1);
-        new(n) node(super_t::make_node(v));
+        new (n) node(super_t::make_node(v));
 
         merge_node(n);
         return n;
@@ -800,12 +835,12 @@ private:
 
 #if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
     template <class... Args>
-    node_pointer emplace_internal(Args&&... args)
+    node_pointer emplace_internal(Args &&...args)
     {
         size_holder::increment();
 
         node_pointer n = super_t::allocate(1);
-        new(n) node(super_t::make_node(std::forward<Args>(args)...));
+        new (n) node(super_t::make_node(std::forward<Args>(args)...));
 
         merge_node(n);
         return n;
@@ -817,44 +852,61 @@ private:
         node_pointer parent = node->get_parent();
         node_pointer merged_children = merge_children(node);
 
-        if (parent) {
+        if (parent)
+        {
             if (node == parent->children[0])
+            {
                 parent->children[0] = merged_children;
+            }
             else
+            {
                 parent->children[1] = merged_children;
+            }
         }
         else
+        {
             root = merged_children;
+        }
     }
 
-    void clone_tree(skew_heap const & rhs)
+    void clone_tree(skew_heap const &rhs)
     {
         BOOST_HEAP_ASSERT(root == NULL);
         if (rhs.empty())
+        {
             return;
+        }
 
         root = allocator_type::allocate(1);
 
-        new(root) node(*rhs.root, static_cast<allocator_type&>(*this), NULL);
+        new (root) node(*rhs.root, static_cast<allocator_type &>(*this), NULL);
     }
 
     void merge_node(node_pointer other)
     {
         BOOST_HEAP_ASSERT(other);
         if (root != NULL)
+        {
             root = merge_nodes(root, other, NULL);
+        }
         else
+        {
             root = other;
+        }
     }
 
     node_pointer merge_nodes(node_pointer node1, node_pointer node2, node_pointer new_parent)
     {
-        if (node1 == NULL) {
+        if (node1 == NULL)
+        {
             if (node2)
+            {
                 node2->set_parent(new_parent);
+            }
             return node2;
         }
-        if (node2 == NULL) {
+        if (node2 == NULL)
+        {
             node1->set_parent(new_parent);
             return node1;
         }
@@ -874,20 +926,24 @@ private:
     node_pointer merge_nodes_recursive(node_pointer node1, node_pointer node2, node_pointer new_parent)
     {
         if (super_t::operator()(node1->value, node2->value))
+        {
             std::swap(node1, node2);
+        }
 
-        node * parent = node1;
-        node * child = node2;
+        node *parent = node1;
+        node *child = node2;
 
-        if (parent->children[1]) {
-            node * merged = merge_nodes(parent->children[1], child, parent);
+        if (parent->children[1])
+        {
+            node *merged = merge_nodes(parent->children[1], child, parent);
             parent->children[1] = merged;
             merged->set_parent(parent);
-        } else {
+        }
+        else
+        {
             parent->children[1] = child;
             child->set_parent(parent);
         }
-
 
         std::swap(parent->children[0], parent->children[1]);
         parent->set_parent(new_parent);
@@ -898,16 +954,23 @@ private:
     {
 #ifdef BOOST_HEAP_SANITYCHECKS
         if (root)
-            BOOST_HEAP_ASSERT( root->template is_heap<super_t>(super_t::value_comp()) );
+        {
+            BOOST_HEAP_ASSERT(root->template is_heap<super_t>(super_t::value_comp()));
+        }
 
-        if (constant_time_size) {
+        if (constant_time_size)
+        {
             size_type stored_size = size_holder::get_size();
 
             size_type counted_size;
             if (root == NULL)
+            {
                 counted_size = 0;
+            }
             else
+            {
                 counted_size = root->count_children();
+            }
 
             BOOST_HEAP_ASSERT(counted_size == stored_size);
         }

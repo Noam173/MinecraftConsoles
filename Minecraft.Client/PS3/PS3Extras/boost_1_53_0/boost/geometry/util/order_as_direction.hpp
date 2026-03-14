@@ -17,30 +17,29 @@
 #include <boost/geometry/core/point_order.hpp>
 #include <boost/geometry/views/reversible_view.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
-template<order_selector Order>
+template <order_selector Order>
 struct order_as_direction
-{};
+{
+};
 
-
-template<>
+template <>
 struct order_as_direction<clockwise>
 {
     static const iterate_direction value = iterate_forward;
 };
 
-
-template<>
+template <>
 struct order_as_direction<counterclockwise>
 {
     static const iterate_direction value = iterate_reverse;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_ORDER_AS_DIRECTION_HPP

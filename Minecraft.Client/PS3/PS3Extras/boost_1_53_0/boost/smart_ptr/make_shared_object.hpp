@@ -13,10 +13,10 @@
 //  for documentation.
 
 #include <boost/config.hpp>
-#include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/detail/sp_forward.hpp>
-#include <boost/type_traits/type_with_alignment.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/type_traits/alignment_of.hpp>
+#include <boost/type_traits/type_with_alignment.hpp>
 #include <cstddef>
 #include <new>
 
@@ -26,39 +26,38 @@ namespace boost
 namespace detail
 {
 
-template< std::size_t N, std::size_t A > struct sp_aligned_storage
+template <std::size_t N, std::size_t A>
+struct sp_aligned_storage
 {
-    union type
-    {
-        char data_[ N ];
-        typename boost::type_with_alignment< A >::type align_;
+    union type {
+        char data_[N];
+        typename boost::type_with_alignment<A>::type align_;
     };
 };
 
-template< class T > class sp_ms_deleter
+template <class T>
+class sp_ms_deleter
 {
-private:
-
-    typedef typename sp_aligned_storage< sizeof( T ), ::boost::alignment_of< T >::value >::type storage_type;
+  private:
+    typedef typename sp_aligned_storage<sizeof(T), ::boost::alignment_of<T>::value>::type storage_type;
 
     bool initialized_;
     storage_type storage_;
 
-private:
-
+  private:
     void destroy()
     {
-        if( initialized_ )
+        if (initialized_)
         {
-#if defined( __GNUC__ )
+#if defined(__GNUC__)
 
             // fixes incorrect aliasing warning
-            T * p = reinterpret_cast< T* >( storage_.data_ );
+            T *p = reinterpret_cast<T *>(storage_.data_);
             p->~T();
 
 #else
 
-            reinterpret_cast< T* >( storage_.data_ )->~T();
+            reinterpret_cast<T *>(storage_.data_)->~T();
 
 #endif
 
@@ -66,14 +65,13 @@ private:
         }
     }
 
-public:
-
-    sp_ms_deleter() BOOST_NOEXCEPT : initialized_( false )
+  public:
+    sp_ms_deleter() BOOST_NOEXCEPT : initialized_(false)
     {
     }
 
     // optimization: do not copy storage_
-    sp_ms_deleter( sp_ms_deleter const & ) BOOST_NOEXCEPT : initialized_( false )
+    sp_ms_deleter(sp_ms_deleter const &) BOOST_NOEXCEPT : initialized_(false)
     {
     }
 
@@ -82,12 +80,12 @@ public:
         destroy();
     }
 
-    void operator()( T * )
+    void operator()(T *)
     {
         destroy();
     }
 
-    void * address() BOOST_NOEXCEPT
+    void *address() BOOST_NOEXCEPT
     {
         return storage_.data_;
     }
@@ -98,20 +96,23 @@ public:
     }
 };
 
-template< class T > struct sp_if_not_array
+template <class T>
+struct sp_if_not_array
 {
-    typedef boost::shared_ptr< T > type;
+    typedef boost::shared_ptr<T> type;
 };
 
-#if !defined( BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION )
+#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
-template< class T > struct sp_if_not_array< T[] >
+template <class T>
+struct sp_if_not_array<T[]>
 {
 };
 
-#if !defined( __BORLANDC__ ) || !BOOST_WORKAROUND( __BORLANDC__, < 0x600 )
+#if !defined(__BORLANDC__) || !BOOST_WORKAROUND(__BORLANDC__, < 0x600)
 
-template< class T, std::size_t N > struct sp_if_not_array< T[N] >
+template <class T, std::size_t N>
+struct sp_if_not_array<T[N]>
 {
 };
 
@@ -121,902 +122,890 @@ template< class T, std::size_t N > struct sp_if_not_array< T[N] >
 
 } // namespace detail
 
-#if !defined( BOOST_NO_FUNCTION_TEMPLATE_ORDERING )
-# define BOOST_SP_MSD( T ) boost::detail::sp_inplace_tag< boost::detail::sp_ms_deleter< T > >()
+#if !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING)
+#define BOOST_SP_MSD(T) boost::detail::sp_inplace_tag<boost::detail::sp_ms_deleter<T>>()
 #else
-# define BOOST_SP_MSD( T ) boost::detail::sp_ms_deleter< T >()
+#define BOOST_SP_MSD(T) boost::detail::sp_ms_deleter<T>()
 #endif
 
 // Zero-argument versions
 //
 // Used even when variadic templates are available because of the new T() vs new T issue
 
-template< class T > typename boost::detail::sp_if_not_array< T >::type make_shared()
+template <class T>
+typename boost::detail::sp_if_not_array<T>::type make_shared()
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T();
+    ::new (pv) T();
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T > typename boost::detail::sp_if_not_array< T >::type make_shared_noinit()
+template <class T>
+typename boost::detail::sp_if_not_array<T>::type make_shared_noinit()
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T;
+    ::new (pv) T;
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A > typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a )
+template <class T, class A>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T();
+    ::new (pv) T();
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A > typename boost::detail::sp_if_not_array< T >::type allocate_shared_noinit( A const & a )
+template <class T, class A>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared_noinit(A const &a)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T;
+    ::new (pv) T;
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-#if !defined( BOOST_NO_CXX11_VARIADIC_TEMPLATES ) && !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
+#if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
 
 // Variadic templates, rvalue reference
 
-template< class T, class Arg1, class... Args > typename boost::detail::sp_if_not_array< T >::type make_shared( Arg1 && arg1, Args && ... args )
+template <class T, class Arg1, class... Args>
+typename boost::detail::sp_if_not_array<T>::type make_shared(Arg1 &&arg1, Args &&...args)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( boost::detail::sp_forward<Arg1>( arg1 ), boost::detail::sp_forward<Args>( args )... );
+    ::new (pv) T(boost::detail::sp_forward<Arg1>(arg1), boost::detail::sp_forward<Args>(args)...);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class Arg1, class... Args > typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, Arg1 && arg1, Args && ... args )
+template <class T, class A, class Arg1, class... Args>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, Arg1 &&arg1, Args &&...args)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( boost::detail::sp_forward<Arg1>( arg1 ), boost::detail::sp_forward<Args>( args )... );
+    ::new (pv) T(boost::detail::sp_forward<Arg1>(arg1), boost::detail::sp_forward<Args>(args)...);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-#elif !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
+#elif !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
 
 // For example MSVC 10.0
 
-template< class T, class A1 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1 )
+template <class T, class A1>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1 )
+template <class T, class A, class A1>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1, A2 && a2 )
+template <class T, class A1, class A2>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1, A2 &&a2)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1, A2 && a2 )
+template <class T, class A, class A1, class A2>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1, A2 &&a2)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1, A2 && a2, A3 && a3 )
+template <class T, class A1, class A2, class A3>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1, A2 &&a2, A3 &&a3)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1, A2 && a2, A3 && a3 )
+template <class T, class A, class A1, class A2, class A3>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1, A2 &&a2, A3 &&a3)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1, A2 && a2, A3 && a3, A4 && a4 )
+template <class T, class A1, class A2, class A3, class A4>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1, A2 && a2, A3 && a3, A4 && a4 )
+template <class T, class A, class A1, class A2, class A3, class A4>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5 )
+template <class T, class A1, class A2, class A3, class A4, class A5>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5, class A6 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5, A6 && a6 )
+template <class T, class A1, class A2, class A3, class A4, class A5, class A6>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5, A6 &&a6)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 ), 
-        boost::detail::sp_forward<A6>( a6 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5),
+        boost::detail::sp_forward<A6>(a6));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5, class A6 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5, A6 && a6 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5, class A6>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5, A6 &&a6)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 ), 
-        boost::detail::sp_forward<A6>( a6 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5),
+        boost::detail::sp_forward<A6>(a6));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5, A6 && a6, A7 && a7 )
+template <class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5, A6 &&a6, A7 &&a7)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 ), 
-        boost::detail::sp_forward<A6>( a6 ), 
-        boost::detail::sp_forward<A7>( a7 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5),
+        boost::detail::sp_forward<A6>(a6),
+        boost::detail::sp_forward<A7>(a7));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5, A6 && a6, A7 && a7 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5, A6 &&a6, A7 &&a7)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 ), 
-        boost::detail::sp_forward<A6>( a6 ), 
-        boost::detail::sp_forward<A7>( a7 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5),
+        boost::detail::sp_forward<A6>(a6),
+        boost::detail::sp_forward<A7>(a7));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5, A6 && a6, A7 && a7, A8 && a8 )
+template <class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5, A6 &&a6, A7 &&a7, A8 &&a8)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 ), 
-        boost::detail::sp_forward<A6>( a6 ), 
-        boost::detail::sp_forward<A7>( a7 ), 
-        boost::detail::sp_forward<A8>( a8 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5),
+        boost::detail::sp_forward<A6>(a6),
+        boost::detail::sp_forward<A7>(a7),
+        boost::detail::sp_forward<A8>(a8));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5, A6 && a6, A7 && a7, A8 && a8 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5, A6 &&a6, A7 &&a7, A8 &&a8)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 ), 
-        boost::detail::sp_forward<A6>( a6 ), 
-        boost::detail::sp_forward<A7>( a7 ), 
-        boost::detail::sp_forward<A8>( a8 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5),
+        boost::detail::sp_forward<A6>(a6),
+        boost::detail::sp_forward<A7>(a7),
+        boost::detail::sp_forward<A8>(a8));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5, A6 && a6, A7 && a7, A8 && a8, A9 && a9 )
+template <class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5, A6 &&a6, A7 &&a7, A8 &&a8, A9 &&a9)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T(
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 ), 
-        boost::detail::sp_forward<A6>( a6 ), 
-        boost::detail::sp_forward<A7>( a7 ), 
-        boost::detail::sp_forward<A8>( a8 ), 
-        boost::detail::sp_forward<A9>( a9 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5),
+        boost::detail::sp_forward<A6>(a6),
+        boost::detail::sp_forward<A7>(a7),
+        boost::detail::sp_forward<A8>(a8),
+        boost::detail::sp_forward<A9>(a9));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 && a1, A2 && a2, A3 && a3, A4 && a4, A5 && a5, A6 && a6, A7 && a7, A8 && a8, A9 && a9 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &&a5, A6 &&a6, A7 &&a7, A8 &&a8, A9 &&a9)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( 
-        boost::detail::sp_forward<A1>( a1 ), 
-        boost::detail::sp_forward<A2>( a2 ), 
-        boost::detail::sp_forward<A3>( a3 ), 
-        boost::detail::sp_forward<A4>( a4 ), 
-        boost::detail::sp_forward<A5>( a5 ), 
-        boost::detail::sp_forward<A6>( a6 ), 
-        boost::detail::sp_forward<A7>( a7 ), 
-        boost::detail::sp_forward<A8>( a8 ), 
-        boost::detail::sp_forward<A9>( a9 )
-        );
+    ::new (pv) T(
+        boost::detail::sp_forward<A1>(a1),
+        boost::detail::sp_forward<A2>(a2),
+        boost::detail::sp_forward<A3>(a3),
+        boost::detail::sp_forward<A4>(a4),
+        boost::detail::sp_forward<A5>(a5),
+        boost::detail::sp_forward<A6>(a6),
+        boost::detail::sp_forward<A7>(a7),
+        boost::detail::sp_forward<A8>(a8),
+        boost::detail::sp_forward<A9>(a9));
 
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
 #else
 
 // C++03 version
 
-template< class T, class A1 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1 )
+template <class T, class A1>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1 );
+    ::new (pv) T(a1);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1 )
+template <class T, class A, class A1>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1 );
+    ::new (pv) T(a1);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1, A2 const & a2 )
+template <class T, class A1, class A2>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1, A2 const &a2)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2 );
+    ::new (pv) T(a1, a2);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1, A2 const & a2 )
+template <class T, class A, class A1, class A2>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1, A2 const &a2)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2 );
+    ::new (pv) T(a1, a2);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1, A2 const & a2, A3 const & a3 )
+template <class T, class A1, class A2, class A3>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1, A2 const &a2, A3 const &a3)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3 );
+    ::new (pv) T(a1, a2, a3);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1, A2 const & a2, A3 const & a3 )
+template <class T, class A, class A1, class A2, class A3>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1, A2 const &a2, A3 const &a3)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3 );
+    ::new (pv) T(a1, a2, a3);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4 )
+template <class T, class A1, class A2, class A3, class A4>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4 );
+    ::new (pv) T(a1, a2, a3, a4);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4 )
+template <class T, class A, class A1, class A2, class A3, class A4>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4 );
+    ::new (pv) T(a1, a2, a3, a4);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5 )
+template <class T, class A1, class A2, class A3, class A4, class A5>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5 );
+    ::new (pv) T(a1, a2, a3, a4, a5);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5 );
+    ::new (pv) T(a1, a2, a3, a4, a5);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5, class A6 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6 )
+template <class T, class A1, class A2, class A3, class A4, class A5, class A6>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5, A6 const &a6)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5, a6 );
+    ::new (pv) T(a1, a2, a3, a4, a5, a6);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5, class A6 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5, class A6>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5, A6 const &a6)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5, a6 );
+    ::new (pv) T(a1, a2, a3, a4, a5, a6);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7 )
+template <class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5, A6 const &a6, A7 const &a7)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5, a6, a7 );
+    ::new (pv) T(a1, a2, a3, a4, a5, a6, a7);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5, A6 const &a6, A7 const &a7)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5, a6, a7 );
+    ::new (pv) T(a1, a2, a3, a4, a5, a6, a7);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7, A8 const & a8 )
+template <class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5, A6 const &a6, A7 const &a7, A8 const &a8)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5, a6, a7, a8 );
+    ::new (pv) T(a1, a2, a3, a4, a5, a6, a7, a8);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7, A8 const & a8 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5, A6 const &a6, A7 const &a7, A8 const &a8)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5, a6, a7, a8 );
+    ::new (pv) T(a1, a2, a3, a4, a5, a6, a7, a8);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9 >
-typename boost::detail::sp_if_not_array< T >::type make_shared( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7, A8 const & a8, A9 const & a9 )
+template <class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
+typename boost::detail::sp_if_not_array<T>::type make_shared(A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5, A6 const &a6, A7 const &a7, A8 const &a8, A9 const &a9)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ) );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5, a6, a7, a8, a9 );
+    ::new (pv) T(a1, a2, a3, a4, a5, a6, a7, a8, a9);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
-template< class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9 >
-typename boost::detail::sp_if_not_array< T >::type allocate_shared( A const & a, A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7, A8 const & a8, A9 const & a9 )
+template <class T, class A, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
+typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, A1 const &a1, A2 const &a2, A3 const &a3, A4 const &a4, A5 const &a5, A6 const &a6, A7 const &a7, A8 const &a8, A9 const &a9)
 {
-    boost::shared_ptr< T > pt( static_cast< T* >( 0 ), BOOST_SP_MSD( T ), a );
+    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter< T > * pd = static_cast<boost::detail::sp_ms_deleter< T > *>( pt._internal_get_untyped_deleter() );
+    boost::detail::sp_ms_deleter<T> *pd = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
-    void * pv = pd->address();
+    void *pv = pd->address();
 
-    ::new( pv ) T( a1, a2, a3, a4, a5, a6, a7, a8, a9 );
+    ::new (pv) T(a1, a2, a3, a4, a5, a6, a7, a8, a9);
     pd->set_initialized();
 
-    T * pt2 = static_cast< T* >( pv );
+    T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this( &pt, pt2, pt2 );
-    return boost::shared_ptr< T >( pt, pt2 );
+    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return boost::shared_ptr<T>(pt, pt2);
 }
 
 #endif

@@ -12,10 +12,10 @@
 #include <boost/config.hpp>
 
 #if defined(__SUNPRO_CC) && !defined(BOOST_COMMON_TYPE_DONT_USE_TYPEOF)
-#  define BOOST_COMMON_TYPE_DONT_USE_TYPEOF
+#define BOOST_COMMON_TYPE_DONT_USE_TYPEOF
 #endif
 #if defined(__IBMCPP__) && !defined(BOOST_COMMON_TYPE_DONT_USE_TYPEOF)
-#  define BOOST_COMMON_TYPE_DONT_USE_TYPEOF
+#define BOOST_COMMON_TYPE_DONT_USE_TYPEOF
 #endif
 
 //----------------------------------------------------------------------------//
@@ -26,17 +26,17 @@
 //----------------------------------------------------------------------------//
 #if defined(BOOST_NO_CXX11_DECLTYPE) && !defined(BOOST_COMMON_TYPE_DONT_USE_TYPEOF) && !defined(BOOST_TYPEOF_SILENT)
 #define BOOST_TYPEOF_SILENT
-#include <boost/typeof/typeof.hpp>   // boost wonders never cease!
+#include <boost/typeof/typeof.hpp> // boost wonders never cease!
 #endif
 
 //----------------------------------------------------------------------------//
 #ifndef BOOST_NO_CXX11_STATIC_ASSERT
-#define BOOST_COMMON_TYPE_STATIC_ASSERT(CND, MSG, TYPES) static_assert(CND,MSG)
+#define BOOST_COMMON_TYPE_STATIC_ASSERT(CND, MSG, TYPES) static_assert(CND, MSG)
 #elif defined(BOOST_COMMON_TYPE_USES_MPL_ASSERT)
 #include <boost/mpl/assert.hpp>
 #include <boost/mpl/bool.hpp>
-#define BOOST_COMMON_TYPE_STATIC_ASSERT(CND, MSG, TYPES)                                 \
-    BOOST_MPL_ASSERT_MSG(boost::mpl::bool_< (CND) >::type::value, MSG, TYPES)
+#define BOOST_COMMON_TYPE_STATIC_ASSERT(CND, MSG, TYPES) \
+    BOOST_MPL_ASSERT_MSG(boost::mpl::bool_<(CND)>::type::value, MSG, TYPES)
 #else
 #include <boost/static_assert.hpp>
 #define BOOST_COMMON_TYPE_STATIC_ASSERT(CND, MSG, TYPES) BOOST_STATIC_ASSERT(CND)
@@ -51,8 +51,8 @@
 #include <boost/type_traits/remove_cv.hpp>
 #endif
 #include <boost/mpl/if.hpp>
-#include <boost/utility/declval.hpp>
 #include <boost/type_traits/add_rvalue_reference.hpp>
+#include <boost/utility/declval.hpp>
 
 //----------------------------------------------------------------------------//
 //                                                                            //
@@ -63,96 +63,98 @@
 //                                                                            //
 //----------------------------------------------------------------------------//
 
-namespace boost {
+namespace boost
+{
 
 // prototype
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
-    template<typename... T>
-    struct common_type;
+template <typename... T>
+struct common_type;
 #else // or no specialization
-    template <class T, class U = void, class V = void>
-    struct common_type
-    {
-    public:
-        typedef typename common_type<typename common_type<T, U>::type, V>::type type;
-    };
+template <class T, class U = void, class V = void>
+struct common_type
+{
+  public:
+    typedef typename common_type<typename common_type<T, U>::type, V>::type type;
+};
 #endif
-
 
 // 1 arg
-    template<typename T>
+template <typename T>
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
-    struct common_type<T>
+struct common_type<T>
 #else
-    struct common_type<T, void, void>
+struct common_type<T, void, void>
 
 #endif
-    {
-        BOOST_COMMON_TYPE_STATIC_ASSERT(sizeof(T) > 0, BOOST_COMMON_TYPE_MUST_BE_A_COMPLE_TYPE, (T));
-    public:
-        typedef T type;
-    };
+{
+    BOOST_COMMON_TYPE_STATIC_ASSERT(sizeof(T) > 0, BOOST_COMMON_TYPE_MUST_BE_A_COMPLE_TYPE, (T));
+
+  public:
+    typedef T type;
+};
 
 // 2 args
-namespace type_traits_detail {
+namespace type_traits_detail
+{
 
-    template <class T, class U>
-    struct common_type_2
-    {
-    private:
-        BOOST_COMMON_TYPE_STATIC_ASSERT(sizeof(T) > 0, BOOST_COMMON_TYPE_MUST_BE_A_COMPLE_TYPE, (T));
-        BOOST_COMMON_TYPE_STATIC_ASSERT(sizeof(U) > 0, BOOST_COMMON_TYPE_MUST_BE_A_COMPLE_TYPE, (U));
-        static bool declval_bool();  // workaround gcc bug; not required by std
-        static typename add_rvalue_reference<T>::type declval_T();  // workaround gcc bug; not required by std
-        static typename add_rvalue_reference<U>::type declval_U();  // workaround gcc bug; not required by std
-        static typename add_rvalue_reference<bool>::type declval_b();  
+template <class T, class U>
+struct common_type_2
+{
+  private:
+    BOOST_COMMON_TYPE_STATIC_ASSERT(sizeof(T) > 0, BOOST_COMMON_TYPE_MUST_BE_A_COMPLE_TYPE, (T));
+    BOOST_COMMON_TYPE_STATIC_ASSERT(sizeof(U) > 0, BOOST_COMMON_TYPE_MUST_BE_A_COMPLE_TYPE, (U));
+    static bool declval_bool();                                // workaround gcc bug; not required by std
+    static typename add_rvalue_reference<T>::type declval_T(); // workaround gcc bug; not required by std
+    static typename add_rvalue_reference<U>::type declval_U(); // workaround gcc bug; not required by std
+    static typename add_rvalue_reference<bool>::type declval_b();
 
 #if !defined(BOOST_NO_CXX11_DECLTYPE)
-    public:
-        typedef decltype(declval<bool>() ? declval<T>() : declval<U>()) type;
+  public:
+    typedef decltype(declval<bool>() ? declval<T>() : declval<U>()) type;
 #elif defined(BOOST_COMMON_TYPE_DONT_USE_TYPEOF)
-    public:
+  public:
     typedef typename detail_type_traits_common_type::common_type_impl<
-          typename remove_cv<T>::type,
-          typename remove_cv<U>::type
-      >::type type;
+        typename remove_cv<T>::type,
+        typename remove_cv<U>::type>::type type;
 #else
-    public:
-        typedef BOOST_TYPEOF_TPL(declval_b() ? declval_T() : declval_U()) type;
+  public:
+    typedef BOOST_TYPEOF_TPL(declval_b() ? declval_T() : declval_U()) type;
 #endif
 
 #if defined(__GNUC__) && __GNUC__ == 3 && (__GNUC_MINOR__ == 2 || __GNUC_MINOR__ == 3)
-    public:
-        void public_dummy_function_just_to_silence_warning();
+  public:
+    void public_dummy_function_just_to_silence_warning();
 #endif
-    };
+};
 
-    template <class T>
-    struct common_type_2<T, T>
-    {
-        typedef T type;
-    };
-    }
+template <class T>
+struct common_type_2<T, T>
+{
+    typedef T type;
+};
+} // namespace type_traits_detail
 
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
-    template <class T, class U>
-    struct common_type<T, U>
+template <class T, class U>
+struct common_type<T, U>
 #else
-    template <class T, class U>
-    struct common_type<T, U, void>
+template <class T, class U>
+struct common_type<T, U, void>
 #endif
-    : public type_traits_detail::common_type_2<T,U>
-    { };
-
+    : public type_traits_detail::common_type_2<T, U>
+{
+};
 
 // 3 or more args
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
-    template<typename T, typename U, typename... V>
-    struct common_type<T, U, V...> {
-    public:
-        typedef typename common_type<typename common_type<T, U>::type, V...>::type type;
-    };
+template <typename T, typename U, typename... V>
+struct common_type<T, U, V...>
+{
+  public:
+    typedef typename common_type<typename common_type<T, U>::type, V...>::type type;
+};
 #endif
-}  // namespace boost
+} // namespace boost
 
-#endif  // BOOST_TYPE_TRAITS_COMMON_TYPE_HPP
+#endif // BOOST_TYPE_TRAITS_COMMON_TYPE_HPP

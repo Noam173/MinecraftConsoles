@@ -10,8 +10,10 @@
 
 #include <boost/config.hpp>
 
-namespace boost {
-namespace type_traits {
+namespace boost
+{
+namespace type_traits
+{
 
 template <int b1, int b2>
 struct ice_eq
@@ -26,8 +28,10 @@ struct ice_ne
 };
 
 #ifndef BOOST_NO_INCLASS_MEMBER_INITIALIZATION
-template <int b1, int b2> bool const ice_eq<b1,b2>::value;
-template <int b1, int b2> bool const ice_ne<b1,b2>::value;
+template <int b1, int b2>
+bool const ice_eq<b1, b2>::value;
+template <int b1, int b2>
+bool const ice_ne<b1, b2>::value;
 #endif
 
 } // namespace type_traits

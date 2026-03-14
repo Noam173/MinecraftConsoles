@@ -1,26 +1,26 @@
-#include "stdafx.h"
 #include "RenameWorldScreen.h"
-#include "EditBox.h"
-#include "Button.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\net.minecraft.world.level.storage.h"
+#include "Button.h"
+#include "EditBox.h"
+#include "stdafx.h"
 
-RenameWorldScreen::RenameWorldScreen(Screen *lastScreen, const wstring& levelId)
+RenameWorldScreen::RenameWorldScreen(Screen *lastScreen, const wstring &levelId)
 {
-	nameEdit = nullptr;
+    nameEdit = nullptr;
     this->lastScreen = lastScreen;
     this->levelId = levelId;
 }
 
 void RenameWorldScreen::tick()
 {
-	nameEdit->tick();
+    nameEdit->tick();
 }
 
-void RenameWorldScreen::init() 
+void RenameWorldScreen::init()
 {
-	// 4J Stu - Removed this as we don't need the screen. Changed to how we pass save data around stopped this compiling
+    // 4J Stu - Removed this as we don't need the screen. Changed to how we pass save data around stopped this compiling
 #if 0
     Language *language = Language::getInstance();
 
@@ -41,18 +41,21 @@ void RenameWorldScreen::init()
 
 void RenameWorldScreen::removed()
 {
-	Keyboard::enableRepeatEvents(false);
+    Keyboard::enableRepeatEvents(false);
 }
 
 void RenameWorldScreen::buttonClicked(Button *button)
 {
-    if (!button->active) return;
+    if (!button->active)
+    {
+        return;
+    }
     if (button->id == 1)
-	{
+    {
         minecraft->setScreen(lastScreen);
     }
-	else if (button->id == 0)
-	{
+    else if (button->id == 0)
+    {
 
         LevelStorageSource *levelSource = minecraft->getLevelSource();
         levelSource->renameLevel(levelId, trimString(nameEdit->getValue()));
@@ -67,7 +70,7 @@ void RenameWorldScreen::keyPressed(wchar_t ch, int eventKey)
     buttons[0]->active = trimString(nameEdit->getValue()).length() > 0;
 
     if (ch == 13)
-	{
+    {
         buttonClicked(buttons[0]);
     }
 }
@@ -92,5 +95,4 @@ void RenameWorldScreen::render(int xm, int ym, float a)
     nameEdit->render();
 
     Screen::render(xm, ym, a);
-
 }

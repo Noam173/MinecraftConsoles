@@ -10,14 +10,17 @@
 #ifndef BOOST_SPIRIT_POSITION_ITERATOR_HPP
 #define BOOST_SPIRIT_POSITION_ITERATOR_HPP
 
-#include <string>
-#include <boost/config.hpp>
 #include <boost/concept_check.hpp>
+#include <boost/config.hpp>
+#include <string>
 
-#include <boost/spirit/home/classic/namespace.hpp>
 #include <boost/spirit/home/classic/iterator/position_iterator_fwd.hpp>
+#include <boost/spirit/home/classic/namespace.hpp>
 
-namespace boost { namespace spirit {
+namespace boost
+{
+namespace spirit
+{
 
 BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
 
@@ -30,18 +33,21 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename String>
-struct file_position_without_column_base {
+struct file_position_without_column_base
+{
     String file;
     int line;
 
-    file_position_without_column_base(String const& file_ = String(),
-                  int line_ = 1):
-        file    (file_),
-        line    (line_)
-    {}
+    file_position_without_column_base(String const &file_ = String(),
+                                      int line_ = 1) : file(file_),
+                                                       line(line_)
+    {
+    }
 
-    bool operator==(const file_position_without_column_base& fp) const
-    { return line == fp.line && file == fp.file; }
+    bool operator==(const file_position_without_column_base &fp) const
+    {
+        return line == fp.line && file == fp.file;
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,17 +59,20 @@ struct file_position_without_column_base {
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename String>
-struct file_position_base : public file_position_without_column_base<String> {
+struct file_position_base : public file_position_without_column_base<String>
+{
     int column;
 
-    file_position_base(String const& file_ = String(),
-                       int line_ = 1, int column_ = 1):
-        file_position_without_column_base<String> (file_, line_),
-        column                       (column_)
-    {}
+    file_position_base(String const &file_ = String(),
+                       int line_ = 1, int column_ = 1) : file_position_without_column_base<String>(file_, line_),
+                                                         column(column_)
+    {
+    }
 
-    bool operator==(const file_position_base& fp) const
-    { return column == fp.column && this->line == fp.line && this->file == fp.file; }
+    bool operator==(const file_position_base &fp) const
+    {
+        return column == fp.column && this->line == fp.line && this->file == fp.file;
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -86,19 +95,23 @@ struct file_position_base : public file_position_without_column_base<String> {
 //      been reached.
 //
 ///////////////////////////////////////////////////////////////////////////////
-template <typename PositionT> class position_policy;
+template <typename PositionT>
+class position_policy;
 
 ///////////////////////////////////////////////////////////////////////////////
 BOOST_SPIRIT_CLASSIC_NAMESPACE_END
 
-}} /* namespace BOOST_SPIRIT_CLASSIC_NS */
-
+} // namespace spirit
+} // namespace boost
 
 // This must be included here for full compatibility with old MSVC
 #include "boost/spirit/home/classic/iterator/impl/position_iterator.ipp"
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace spirit {
+namespace boost
+{
+namespace spirit
+{
 
 BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
 
@@ -133,7 +146,7 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
 ///////////////////////////////////////////////////////////////////////////////
 
 #if !defined(BOOST_ITERATOR_ADAPTORS_VERSION) || \
-     BOOST_ITERATOR_ADAPTORS_VERSION < 0x0200
+    BOOST_ITERATOR_ADAPTORS_VERSION < 0x0200
 #error "Please use at least Boost V1.31.0 while compiling the position_iterator class!"
 #else // BOOST_ITERATOR_ADAPTORS_VERSION < 0x0200
 
@@ -146,84 +159,85 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
 template <
     typename ForwardIteratorT,
     typename PositionT,
-    typename SelfT
->
+    typename SelfT>
 class position_iterator
-:   public iterator_::impl::position_iterator_base_generator<
-        SelfT,
-        ForwardIteratorT,
-        PositionT
-    >::type,
-    public position_policy<PositionT>
+    : public iterator_::impl::position_iterator_base_generator<
+          SelfT,
+          ForwardIteratorT,
+          PositionT>::type,
+      public position_policy<PositionT>
 {
-private:
-
+  private:
     typedef position_policy<PositionT> position_policy_t;
     typedef typename iterator_::impl::position_iterator_base_generator<
-            SelfT,
-            ForwardIteratorT,
-            PositionT
-        >::type base_t;
+        SelfT,
+        ForwardIteratorT,
+        PositionT>::type base_t;
     typedef typename iterator_::impl::position_iterator_base_generator<
-            SelfT,
-            ForwardIteratorT,
-            PositionT
-        >::main_iter_t main_iter_t;
+        SelfT,
+        ForwardIteratorT,
+        PositionT>::main_iter_t main_iter_t;
 
-public:
-
+  public:
     typedef PositionT position_t;
 
     position_iterator()
-    :   _isend(true)
-    {}
+        : _isend(true)
+    {
+    }
 
     position_iterator(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end)
-    :   base_t(begin), _end(end), _pos(PositionT()), _isend(begin == end)
-    {}
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end)
+        : base_t(begin), _end(end), _pos(PositionT()), _isend(begin == end)
+    {
+    }
 
     template <typename FileNameT>
     position_iterator(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end,
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end,
         FileNameT fileName)
-    :   base_t(begin), _end(end), _pos(PositionT(fileName)),
-        _isend(begin == end)
-    {}
+        : base_t(begin), _end(end), _pos(PositionT(fileName)),
+          _isend(begin == end)
+    {
+    }
 
     template <typename FileNameT, typename LineT>
     position_iterator(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end,
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end,
         FileNameT fileName, LineT line)
-    :   base_t(begin), _end(end), _pos(PositionT(fileName, line)),
-        _isend(begin == end)
-    {}
+        : base_t(begin), _end(end), _pos(PositionT(fileName, line)),
+          _isend(begin == end)
+    {
+    }
 
     template <typename FileNameT, typename LineT, typename ColumnT>
     position_iterator(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end,
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end,
         FileNameT fileName, LineT line, ColumnT column)
-    :   base_t(begin), _end(end), _pos(PositionT(fileName, line, column)),
-        _isend(begin == end)
-    {}
+        : base_t(begin), _end(end), _pos(PositionT(fileName, line, column)),
+          _isend(begin == end)
+    {
+    }
 
     position_iterator(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end,
-        const PositionT& pos)
-    :   base_t(begin), _end(end), _pos(pos), _isend(begin == end)
-    {}
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end,
+        const PositionT &pos)
+        : base_t(begin), _end(end), _pos(pos), _isend(begin == end)
+    {
+    }
 
-    position_iterator(const position_iterator& iter)
-    :   base_t(iter.base()), position_policy_t(iter),
-        _end(iter._end), _pos(iter._pos), _isend(iter._isend)
-    {}
+    position_iterator(const position_iterator &iter)
+        : base_t(iter.base()), position_policy_t(iter),
+          _end(iter._end), _pos(iter._pos), _isend(iter._isend)
+    {
+    }
 
-    position_iterator& operator=(const position_iterator& iter)
+    position_iterator &operator=(const position_iterator &iter)
     {
         base_t::operator=(iter);
         position_policy_t::operator=(iter);
@@ -233,9 +247,18 @@ public:
         return *this;
     }
 
-    void set_position(PositionT const& newpos) { _pos = newpos; }
-    PositionT& get_position() { return _pos; }
-    PositionT const& get_position() const { return _pos; }
+    void set_position(PositionT const &newpos)
+    {
+        _pos = newpos;
+    }
+    PositionT &get_position()
+    {
+        return _pos;
+    }
+    PositionT const &get_position() const
+    {
+        return _pos;
+    }
 
     void set_tabchars(unsigned int chars)
     {
@@ -246,18 +269,20 @@ public:
         this->position_policy_t::set_tab_chars(chars);
     }
 
-private:
+  private:
     friend class boost::iterator_core_access;
 
     void increment()
     {
         typename base_t::reference val = *(this->base());
-        if (val == '\n') {
+        if (val == '\n')
+        {
             ++this->base_reference();
             this->next_line(_pos);
             static_cast<main_iter_t &>(*this).newline();
         }
-        else if ( val == '\r') {
+        else if (val == '\r')
+        {
             ++this->base_reference();
             if (this->base_reference() == _end || *(this->base()) != '\n')
             {
@@ -265,11 +290,13 @@ private:
                 static_cast<main_iter_t &>(*this).newline();
             }
         }
-        else if (val == '\t') {
+        else if (val == '\t')
+        {
             this->tabulation(_pos);
             ++this->base_reference();
         }
-        else {
+        else
+        {
             this->next_char(_pos);
             ++this->base_reference();
         }
@@ -281,10 +308,8 @@ private:
 
     template <
         typename OtherDerivedT, typename OtherIteratorT,
-        typename V, typename C, typename R, typename D
-    >
-    bool equal(iterator_adaptor<OtherDerivedT, OtherIteratorT, V, C, R, D>
-        const &x) const
+        typename V, typename C, typename R, typename D>
+    bool equal(iterator_adaptor<OtherDerivedT, OtherIteratorT, V, C, R, D> const &x) const
     {
         OtherDerivedT const &rhs = static_cast<OtherDerivedT const &>(x);
         bool x_is_end = rhs._isend;
@@ -292,10 +317,10 @@ private:
         return (_isend == x_is_end) && (_isend || this->base() == rhs.base());
     }
 
-protected:
-
+  protected:
     void newline(void)
-    {}
+    {
+    }
 
     ForwardIteratorT _end;
     PositionT _pos;
@@ -317,80 +342,78 @@ protected:
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-template
-<
+template <
     typename ForwardIteratorT,
-    typename PositionT
->
+    typename PositionT>
 class position_iterator2
-    : public position_iterator
-    <
-        ForwardIteratorT,
-        PositionT,
-        position_iterator2<ForwardIteratorT, PositionT>
-    >
+    : public position_iterator<
+          ForwardIteratorT,
+          PositionT,
+          position_iterator2<ForwardIteratorT, PositionT>>
 {
-    typedef position_iterator
-    <
+    typedef position_iterator<
         ForwardIteratorT,
         PositionT,
         position_iterator2<ForwardIteratorT, PositionT> // JDG 4-15-03
-    >  base_t;
+        >
+        base_t;
 
-public:
+  public:
     typedef typename base_t::value_type value_type;
     typedef PositionT position_t;
 
     position_iterator2()
-    {}
+    {
+    }
 
     position_iterator2(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end):
-        base_t(begin, end),
-        _startline(begin)
-    {}
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end) : base_t(begin, end),
+                                       _startline(begin)
+    {
+    }
 
     template <typename FileNameT>
     position_iterator2(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end,
-        FileNameT file):
-        base_t(begin, end, file),
-        _startline(begin)
-    {}
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end,
+        FileNameT file) : base_t(begin, end, file),
+                          _startline(begin)
+    {
+    }
 
     template <typename FileNameT, typename LineT>
     position_iterator2(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end,
-        FileNameT file, LineT line):
-        base_t(begin, end, file, line),
-        _startline(begin)
-    {}
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end,
+        FileNameT file, LineT line) : base_t(begin, end, file, line),
+                                      _startline(begin)
+    {
+    }
 
     template <typename FileNameT, typename LineT, typename ColumnT>
     position_iterator2(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end,
-        FileNameT file, LineT line, ColumnT column):
-        base_t(begin, end, file, line, column),
-        _startline(begin)
-    {}
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end,
+        FileNameT file, LineT line, ColumnT column) : base_t(begin, end, file, line, column),
+                                                      _startline(begin)
+    {
+    }
 
     position_iterator2(
-        const ForwardIteratorT& begin,
-        const ForwardIteratorT& end,
-        const PositionT& pos):
-        base_t(begin, end, pos),
-        _startline(begin)
-    {}
+        const ForwardIteratorT &begin,
+        const ForwardIteratorT &end,
+        const PositionT &pos) : base_t(begin, end, pos),
+                                _startline(begin)
+    {
+    }
 
-    position_iterator2(const position_iterator2& iter)
+    position_iterator2(const position_iterator2 &iter)
         : base_t(iter), _startline(iter._startline)
-    {}
+    {
+    }
 
-    position_iterator2& operator=(const position_iterator2& iter)
+    position_iterator2 &operator=(const position_iterator2 &iter)
     {
         base_t::operator=(iter);
         _startline = iter._startline;
@@ -398,22 +421,25 @@ public:
     }
 
     ForwardIteratorT get_currentline_begin(void) const
-    { return _startline; }
+    {
+        return _startline;
+    }
 
     ForwardIteratorT get_currentline_end(void) const
-    { return get_endline(); }
+    {
+        return get_endline();
+    }
 
     std::basic_string<value_type> get_currentline(void) const
     {
-        return std::basic_string<value_type>
-            (get_currentline_begin(), get_currentline_end());
+        return std::basic_string<value_type>(get_currentline_begin(), get_currentline_end());
     }
 
-protected:
+  protected:
     ForwardIteratorT _startline;
 
     friend class position_iterator<ForwardIteratorT, PositionT,
-        position_iterator2<ForwardIteratorT, PositionT> >;
+                                   position_iterator2<ForwardIteratorT, PositionT>>;
 
     ForwardIteratorT get_endline() const
     {
@@ -426,11 +452,14 @@ protected:
     }
 
     void newline(void)
-    { _startline = this->base(); }
+    {
+        _startline = this->base();
+    }
 };
 
 BOOST_SPIRIT_CLASSIC_NAMESPACE_END
 
-}} // namespace BOOST_SPIRIT_CLASSIC_NS
+} // namespace spirit
+} // namespace boost
 
 #endif

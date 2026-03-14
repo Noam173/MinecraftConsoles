@@ -14,7 +14,12 @@
 // local types cannot be passed as template parameters.
 #if !BOOST_LOCAL_FUNCTION_CONFIG_LOCALS_AS_TPARAMS
 
-namespace boost { namespace local_function { namespace aux {
+namespace boost
+{
+namespace local_function
+{
+namespace aux
+{
 
 typedef int nobind_t; // Tag no-bind type.
 
@@ -22,11 +27,12 @@ static nobind_t nobind; // Global variable so all no-binds can reference it.
 
 // NOTE: Used only to get rid of unused static variable `nobind` (this function
 // is never actually called so it does not need to be defined).
-void no_unused_nobind_warning_(nobind_t* ptr = &nobind);
+void no_unused_nobind_warning_(nobind_t *ptr = &nobind);
 
-} } } // namespace
+} // namespace aux
+} // namespace local_function
+} // namespace boost
 
 #endif // locals as tparams
 
 #endif // #include guard
-

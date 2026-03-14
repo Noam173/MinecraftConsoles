@@ -10,35 +10,39 @@
 #ifndef BOOST_PHOENIX_STATEMENT_SEQUENCE_HPP
 #define BOOST_PHOENIX_STATEMENT_SEQUENCE_HPP
 
-#include <boost/phoenix/core/limits.hpp>
 #include <boost/phoenix/core/expression.hpp>
+#include <boost/phoenix/core/limits.hpp>
 #include <boost/phoenix/core/meta_grammar.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
 {
-    namespace expression
-    {
-        template <typename A0, typename A1>
-        struct sequence
-            : expr<proto::tag::comma, A0, A1>
-        {};
-    }
+namespace phoenix
+{
+namespace expression
+{
+template <typename A0, typename A1>
+struct sequence
+    : expr<proto::tag::comma, A0, A1>
+{
+};
+} // namespace expression
 
-    namespace rule
-    {
-        struct sequence
-            : expression::sequence<
-                meta_grammar
-              , meta_grammar
-            >
-        {};
-    }
+namespace rule
+{
+struct sequence
+    : expression::sequence<
+          meta_grammar, meta_grammar>
+{
+};
+} // namespace rule
 
-    template <typename Dummy>
-    struct meta_grammar::case_<proto::tag::comma, Dummy>
-        : enable_rule<rule::sequence, Dummy>
-    {};
+template <typename Dummy>
+struct meta_grammar::case_<proto::tag::comma, Dummy>
+    : enable_rule<rule::sequence, Dummy>
+{
+};
 
-}}
+} // namespace phoenix
+} // namespace boost
 
 #endif

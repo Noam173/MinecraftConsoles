@@ -1,19 +1,19 @@
-#include "stdafx.h"
 #include "CreateWorldScreen.h"
-#include "EditBox.h"
-#include "Button.h"
-#include "SurvivalMode.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
+#include "..\Minecraft.World\Random.h"
+#include "..\Minecraft.World\SharedConstants.h"
 #include "..\Minecraft.World\StringHelpers.h"
+#include "..\Minecraft.World\net.minecraft.locale.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\net.minecraft.world.level.storage.h"
-#include "..\Minecraft.World\SharedConstants.h"
-#include "..\Minecraft.World\Random.h"
+#include "Button.h"
+#include "EditBox.h"
+#include "SurvivalMode.h"
+#include "stdafx.h"
 
 CreateWorldScreen::CreateWorldScreen(Screen *lastScreen)
 {
-	done = false;	// 4J added
-	this->lastScreen = lastScreen;
+    done = false; // 4J added
+    this->lastScreen = lastScreen;
 }
 
 void CreateWorldScreen::tick()
@@ -21,9 +21,12 @@ void CreateWorldScreen::tick()
     nameEdit->tick();
     seedEdit->tick();
 
-	// 4J - debug code - to be removed
-	static int count = 0;
-	if(count++ == 100 ) buttonClicked(buttons[0]);
+    // 4J - debug code - to be removed
+    static int count = 0;
+    if (count++ == 100)
+    {
+        buttonClicked(buttons[0]);
+    }
 }
 
 void CreateWorldScreen::init()
@@ -48,26 +51,25 @@ void CreateWorldScreen::updateResultFolder()
 {
     resultFolder = trimString(nameEdit->getValue());
 
-	for( int i = 0; i < SharedConstants::ILLEGAL_FILE_CHARACTERS_LENGTH; i++ )
-	{
-		size_t pos;
-		while( (pos = resultFolder.find(SharedConstants::ILLEGAL_FILE_CHARACTERS[i])) != wstring::npos)
-		{
-			resultFolder[pos] = L'_';
-		}
-	}
+    for (int i = 0; i < SharedConstants::ILLEGAL_FILE_CHARACTERS_LENGTH; i++)
+    {
+        size_t pos;
+        while ((pos = resultFolder.find(SharedConstants::ILLEGAL_FILE_CHARACTERS[i])) != wstring::npos)
+        {
+            resultFolder[pos] = L'_';
+        }
+    }
 
-	if (resultFolder.length()==0)
-	{
+    if (resultFolder.length() == 0)
+    {
         resultFolder = L"World";
     }
     resultFolder = CreateWorldScreen::findAvailableFolderName(minecraft->getLevelSource(), resultFolder);
-
 }
 
-wstring CreateWorldScreen::findAvailableFolderName(LevelStorageSource *levelSource, const wstring& folder)
+wstring CreateWorldScreen::findAvailableFolderName(LevelStorageSource *levelSource, const wstring &folder)
 {
-	wstring folder2 = folder;	// 4J - copy input as it is const
+    wstring folder2 = folder; // 4J - copy input as it is const
 
 #if 0
     while (levelSource->getDataTagFor(folder2) != nullptr)
@@ -80,39 +82,45 @@ wstring CreateWorldScreen::findAvailableFolderName(LevelStorageSource *levelSour
 
 void CreateWorldScreen::removed()
 {
-	Keyboard::enableRepeatEvents(false);
+    Keyboard::enableRepeatEvents(false);
 }
 
 void CreateWorldScreen::buttonClicked(Button *button)
 {
-    if (!button->active) return;
+    if (!button->active)
+    {
+        return;
+    }
     if (button->id == 1)
-	{
+    {
         minecraft->setScreen(lastScreen);
     }
-	else if (button->id == 0)
-	{
+    else if (button->id == 0)
+    {
         // note: code copied from SelectWorldScreen
         minecraft->setScreen(nullptr);
-        if (done) return;
+        if (done)
+        {
+            return;
+        }
         done = true;
 
         int64_t seedValue = (new Random())->nextLong();
         wstring seedString = seedEdit->getValue();
 
-		if (seedString.length() != 0)
-		{
+        if (seedString.length() != 0)
+        {
             // try to convert it to a long first
-//            try {	// 4J - removed try/catch
+            //            try {	// 4J - removed try/catch
             int64_t value = _fromString<int64_t>(seedString);
             if (value != 0)
-			{
+            {
                 seedValue = value;
             }
- //           } catch (NumberFormatException e) {
- //               // not a number, fetch hash value
- //               seedValue = seedString.hashCode();
- //           }
+            //           } catch (NumberFormatException e) {
+            //               // not a number, fetch hash value
+            //               seedValue = seedString.hashCode();
+            //           }
         }
 
 // 4J Stu - This screen is not used, so removing this to stop the build failing
@@ -122,16 +130,21 @@ void CreateWorldScreen::buttonClicked(Button *button)
         minecraft->setScreen(nullptr);
 #endif
     }
-
 }
 
 void CreateWorldScreen::keyPressed(wchar_t ch, int eventKey)
 {
-    if (nameEdit->inFocus) nameEdit->keyPressed(ch, eventKey);
-    else seedEdit->keyPressed(ch, eventKey);
+    if (nameEdit->inFocus)
+    {
+        nameEdit->keyPressed(ch, eventKey);
+    }
+    else
+    {
+        seedEdit->keyPressed(ch, eventKey);
+    }
 
     if (ch == 13)
-	{
+    {
         buttonClicked(buttons[0]);
     }
     buttons[0]->active = nameEdit->getValue().length() > 0;
@@ -149,34 +162,33 @@ void CreateWorldScreen::mouseClicked(int x, int y, int buttonNum)
 
 void CreateWorldScreen::render(int xm, int ym, float a)
 {
-	Language *language = Language::getInstance();
+    Language *language = Language::getInstance();
 
-	// fill(0, 0, width, height, 0x40000000);
-	renderBackground();
+    // fill(0, 0, width, height, 0x40000000);
+    renderBackground();
 
-	drawCenteredString(font, language->getElement(L"selectWorld.create"), width / 2, height / 4 - 60 + 20, 0xffffff);
-	drawString(font, language->getElement(L"selectWorld.enterName"), width / 2 - 100, 47, 0xa0a0a0);
-	drawString(font, language->getElement(L"selectWorld.resultFolder") + L" " + resultFolder, width / 2 - 100, 85, 0xa0a0a0);
+    drawCenteredString(font, language->getElement(L"selectWorld.create"), width / 2, height / 4 - 60 + 20, 0xffffff);
+    drawString(font, language->getElement(L"selectWorld.enterName"), width / 2 - 100, 47, 0xa0a0a0);
+    drawString(font, language->getElement(L"selectWorld.resultFolder") + L" " + resultFolder, width / 2 - 100, 85, 0xa0a0a0);
 
-	drawString(font, language->getElement(L"selectWorld.enterSeed"), width / 2 - 100, 104, 0xa0a0a0);
-	drawString(font, language->getElement(L"selectWorld.seedInfo"), width / 2 - 100, 140, 0xa0a0a0);
+    drawString(font, language->getElement(L"selectWorld.enterSeed"), width / 2 - 100, 104, 0xa0a0a0);
+    drawString(font, language->getElement(L"selectWorld.seedInfo"), width / 2 - 100, 140, 0xa0a0a0);
 
-	nameEdit->render();
-	seedEdit->render();
+    nameEdit->render();
+    seedEdit->render();
 
-	Screen::render(xm, ym, a);
-
+    Screen::render(xm, ym, a);
 }
 
 void CreateWorldScreen::tabPressed()
 {
     if (nameEdit->inFocus)
-	{
+    {
         nameEdit->focus(false);
         seedEdit->focus(true);
     }
-	else
-	{
+    else
+    {
         nameEdit->focus(true);
         seedEdit->focus(false);
     }

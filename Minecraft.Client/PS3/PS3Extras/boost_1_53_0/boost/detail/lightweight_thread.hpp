@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //  boost/detail/lightweight_thread.hpp
@@ -17,27 +17,27 @@
 //  http://www.boost.org/LICENSE_1_0.txt
 
 #include <boost/config.hpp>
-#include <memory>
 #include <cerrno>
+#include <memory>
 
 // pthread_create, pthread_join
 
-#if defined( BOOST_HAS_PTHREADS )
+#if defined(BOOST_HAS_PTHREADS)
 
 #include <pthread.h>
 
 #else
 
-#include <windows.h>
 #include <process.h>
+#include <windows.h>
 
 typedef HANDLE pthread_t;
 
-int pthread_create( pthread_t * thread, void const *, unsigned (__stdcall * start_routine) (void*), void* arg )
+int pthread_create(pthread_t *thread, void const *, unsigned(__stdcall *start_routine)(void *), void *arg)
 {
-    HANDLE h = (HANDLE)_beginthreadex( 0, 0, start_routine, arg, 0, 0 );
+    HANDLE h = (HANDLE)_beginthreadex(0, 0, start_routine, arg, 0, 0);
 
-    if( h != 0 )
+    if (h != 0)
     {
         *thread = h;
         return 0;
@@ -48,10 +48,10 @@ int pthread_create( pthread_t * thread, void const *, unsigned (__stdcall * star
     }
 }
 
-int pthread_join( pthread_t thread, void ** /*value_ptr*/ )
+int pthread_join(pthread_t thread, void ** /*value_ptr*/)
 {
-    ::WaitForSingleObject( thread, INFINITE );
-    ::CloseHandle( thread );
+    ::WaitForSingleObject(thread, INFINITE);
+    ::CloseHandle(thread);
     return 0;
 }
 
@@ -67,17 +67,18 @@ namespace detail
 
 class lw_abstract_thread
 {
-public:
-
-    virtual ~lw_abstract_thread() {}
+  public:
+    virtual ~lw_abstract_thread()
+    {
+    }
     virtual void run() = 0;
 };
 
-#if defined( BOOST_HAS_PTHREADS )
+#if defined(BOOST_HAS_PTHREADS)
 
-extern "C" void * lw_thread_routine( void * pv )
+extern "C" void *lw_thread_routine(void *pv)
 {
-    std::auto_ptr<lw_abstract_thread> pt( static_cast<lw_abstract_thread *>( pv ) );
+    std::auto_ptr<lw_abstract_thread> pt(static_cast<lw_abstract_thread *>(pv));
 
     pt->run();
 
@@ -86,9 +87,9 @@ extern "C" void * lw_thread_routine( void * pv )
 
 #else
 
-unsigned __stdcall lw_thread_routine( void * pv )
+unsigned __stdcall lw_thread_routine(void *pv)
 {
-    std::auto_ptr<lw_abstract_thread> pt( static_cast<lw_abstract_thread *>( pv ) );
+    std::auto_ptr<lw_abstract_thread> pt(static_cast<lw_abstract_thread *>(pv));
 
     pt->run();
 
@@ -97,11 +98,11 @@ unsigned __stdcall lw_thread_routine( void * pv )
 
 #endif
 
-template<class F> class lw_thread_impl: public lw_abstract_thread
+template <class F>
+class lw_thread_impl : public lw_abstract_thread
 {
-public:
-
-    explicit lw_thread_impl( F f ): f_( f )
+  public:
+    explicit lw_thread_impl(F f) : f_(f)
     {
     }
 
@@ -110,18 +111,18 @@ public:
         f_();
     }
 
-private:
-
+  private:
     F f_;
 };
 
-template<class F> int lw_thread_create( pthread_t & pt, F f )
+template <class F>
+int lw_thread_create(pthread_t &pt, F f)
 {
-    std::auto_ptr<lw_abstract_thread> p( new lw_thread_impl<F>( f ) );
+    std::auto_ptr<lw_abstract_thread> p(new lw_thread_impl<F>(f));
 
-    int r = pthread_create( &pt, 0, lw_thread_routine, p.get() );
+    int r = pthread_create(&pt, 0, lw_thread_routine, p.get());
 
-    if( r == 0 )
+    if (r == 0)
     {
         p.release();
     }

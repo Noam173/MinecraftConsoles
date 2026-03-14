@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "CustomPayloadPacket.h"
+#include "BasicTypeContainers.h"
 #include "InputOutputStream.h"
 #include "PacketListener.h"
-#include "BasicTypeContainers.h"
-#include "CustomPayloadPacket.h"
+#include "stdafx.h"
 
 // Mojang-defined custom packets
 const wstring CustomPayloadPacket::CUSTOM_BOOK_PACKET = L"MC|BEdit";
@@ -20,56 +20,56 @@ CustomPayloadPacket::CustomPayloadPacket()
 
 CustomPayloadPacket::CustomPayloadPacket(const wstring &identifier, byteArray data)
 {
-	this->identifier = identifier;
-	this->data = data;
+    this->identifier = identifier;
+    this->data = data;
 
-	if (data.data != nullptr)
-	{
-		length = data.length;
+    if (data.data != nullptr)
+    {
+        length = data.length;
 
-		if (length > Short::MAX_VALUE)
-		{
-			app.DebugPrintf("Payload may not be larger than 32K\n");
+        if (length > Short::MAX_VALUE)
+        {
+            app.DebugPrintf("Payload may not be larger than 32K\n");
 #ifndef _CONTENT_PACKAGE
-			__debugbreak();
+            __debugbreak();
 #endif
-			//throw new IllegalArgumentException("Payload may not be larger than 32k");
-		}
-	}
+            // throw new IllegalArgumentException("Payload may not be larger than 32k");
+        }
+    }
 }
 
 void CustomPayloadPacket::read(DataInputStream *dis)
 {
-	identifier = readUtf(dis, 20);
-	length = dis->readShort();
+    identifier = readUtf(dis, 20);
+    length = dis->readShort();
 
-	if (length > 0 && length <= Short::MAX_VALUE)
-	{
-		if(data.data != nullptr)
-		{
-			delete [] data.data;
-		}
-		data = byteArray(length);
-		dis->readFully(data);
-	}
+    if (length > 0 && length <= Short::MAX_VALUE)
+    {
+        if (data.data != nullptr)
+        {
+            delete[] data.data;
+        }
+        data = byteArray(length);
+        dis->readFully(data);
+    }
 }
 
 void CustomPayloadPacket::write(DataOutputStream *dos)
 {
-	writeUtf(identifier, dos);
-	dos->writeShort(static_cast<short>(length));
-	if (data.data != nullptr)
-	{
-		dos->write(data);
-	}
+    writeUtf(identifier, dos);
+    dos->writeShort(static_cast<short>(length));
+    if (data.data != nullptr)
+    {
+        dos->write(data);
+    }
 }
 
 void CustomPayloadPacket::handle(PacketListener *listener)
 {
-	listener->handleCustomPayload( shared_from_this() );
+    listener->handleCustomPayload(shared_from_this());
 }
 
 int CustomPayloadPacket::getEstimatedSize()
 {
-	return 2 + identifier.length() * 2 + 2 + length;
+    return 2 + identifier.length() * 2 + 2 + length;
 }

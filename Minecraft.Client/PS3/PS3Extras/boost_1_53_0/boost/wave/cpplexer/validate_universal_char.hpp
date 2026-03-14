@@ -14,9 +14,9 @@
 
 #include <boost/assert.hpp>
 
-#include <boost/wave/wave_config.hpp>
-#include <boost/wave/util/file_position.hpp>
 #include <boost/wave/cpplexer/cpplexer_exceptions.hpp>
+#include <boost/wave/util/file_position.hpp>
+#include <boost/wave/wave_config.hpp>
 
 // this must occur after all of the includes and before any code appears
 #ifdef BOOST_HAS_ABI_HEADERS
@@ -24,12 +24,17 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost {
-namespace wave {
-namespace cpplexer {
-namespace impl {
+namespace boost
+{
+namespace wave
+{
+namespace cpplexer
+{
+namespace impl
+{
 
-enum universal_char_type {
+enum universal_char_type
+{
     universal_char_type_valid = 0,
     universal_char_type_invalid = 1,
     universal_char_type_base_charset = 2,
@@ -70,23 +75,27 @@ in_range(unsigned long ch, unsigned long l, unsigned long u)
 //
 ///////////////////////////////////////////////////////////////////////////////
 inline universal_char_type
-classify_universal_char (unsigned long ch)
+classify_universal_char(unsigned long ch)
 {
-// test for invalid characters
+    // test for invalid characters
     if (ch <= 0x0020 || in_range(ch, 0x007f, 0x009f))
+    {
         return universal_char_type_invalid;
+    }
 
-// test for characters in the range of the base character set
+    // test for characters in the range of the base character set
     if (in_range(ch, 0x0021, 0x005f) || in_range(ch, 0x0061, 0x007e))
+    {
         return universal_char_type_base_charset;
+    }
 
-// test for additional valid character values (see C++ Standard: Annex E)
+    // test for additional valid character values (see C++ Standard: Annex E)
     if (in_range(ch, 0x00c0, 0x00d6) || in_range(ch, 0x00d8, 0x00f6) ||
         in_range(ch, 0x00f8, 0x01f5) || in_range(ch, 0x01fa, 0x0217) ||
         in_range(ch, 0x0250, 0x02a8) || in_range(ch, 0x1e00, 0x1e9a) ||
         in_range(ch, 0x1ea0, 0x1ef9))
     {
-        return universal_char_type_valid;   // Latin
+        return universal_char_type_valid; // Latin
     }
 
     if (0x0384 == ch || in_range(ch, 0x0388, 0x038a) ||
@@ -103,7 +112,7 @@ classify_universal_char (unsigned long ch)
         in_range(ch, 0x1fd6, 0x1fdb) || in_range(ch, 0x1fe0, 0x1fec) ||
         in_range(ch, 0x1ff2, 0x1ff4) || in_range(ch, 0x1ff6, 0x1ffc))
     {
-        return universal_char_type_valid;   // Greek
+        return universal_char_type_valid; // Greek
     }
 
     if (in_range(ch, 0x0401, 0x040d) || in_range(ch, 0x040f, 0x044f) ||
@@ -112,24 +121,30 @@ classify_universal_char (unsigned long ch)
         in_range(ch, 0x04cb, 0x04cc) || in_range(ch, 0x04d0, 0x04eb) ||
         in_range(ch, 0x04ee, 0x04f5) || in_range(ch, 0x04f8, 0x04f9))
     {
-        return universal_char_type_valid;   // Cyrillic
+        return universal_char_type_valid; // Cyrillic
     }
 
     if (in_range(ch, 0x0531, 0x0556) || in_range(ch, 0x0561, 0x0587))
-        return universal_char_type_valid;   // Armenian
+    {
+        return universal_char_type_valid; // Armenian
+    }
 
     if (in_range(ch, 0x05d0, 0x05ea) || in_range(ch, 0x05f0, 0x05f4))
-        return universal_char_type_valid;   // Hebrew
+    {
+        return universal_char_type_valid; // Hebrew
+    }
 
     if (in_range(ch, 0x0621, 0x063a) || in_range(ch, 0x0640, 0x0652) ||
         in_range(ch, 0x0670, 0x06b7) || in_range(ch, 0x06ba, 0x06be) ||
         in_range(ch, 0x06c0, 0x06ce) || in_range(ch, 0x06e5, 0x06e7))
     {
-        return universal_char_type_valid;   // Arabic
+        return universal_char_type_valid; // Arabic
     }
 
     if (in_range(ch, 0x0905, 0x0939) || in_range(ch, 0x0958, 0x0962))
-        return universal_char_type_valid;   // Devanagari
+    {
+        return universal_char_type_valid; // Devanagari
+    }
 
     if (in_range(ch, 0x0985, 0x098c) || in_range(ch, 0x098f, 0x0990) ||
         in_range(ch, 0x0993, 0x09a8) || in_range(ch, 0x09aa, 0x09b0) ||
@@ -137,7 +152,7 @@ classify_universal_char (unsigned long ch)
         in_range(ch, 0x09dc, 0x09dd) || in_range(ch, 0x09df, 0x09e1) ||
         in_range(ch, 0x09f0, 0x09f1))
     {
-        return universal_char_type_valid;   // Bengali
+        return universal_char_type_valid; // Bengali
     }
 
     if (in_range(ch, 0x0a05, 0x0a0a) || in_range(ch, 0x0a0f, 0x0a10) ||
@@ -146,7 +161,7 @@ classify_universal_char (unsigned long ch)
         in_range(ch, 0x0a38, 0x0a39) || in_range(ch, 0x0a59, 0x0a5c) ||
         0x0a5e == ch)
     {
-        return universal_char_type_valid;   // Gurmukhi
+        return universal_char_type_valid; // Gurmukhi
     }
 
     if (in_range(ch, 0x0a85, 0x0a8b) || 0x0a8d == ch ||
@@ -154,7 +169,7 @@ classify_universal_char (unsigned long ch)
         in_range(ch, 0x0aaa, 0x0ab0) || in_range(ch, 0x0ab2, 0x0ab3) ||
         in_range(ch, 0x0ab5, 0x0ab9) || 0x0ae0 == ch)
     {
-        return universal_char_type_valid;   // Gujarati
+        return universal_char_type_valid; // Gujarati
     }
 
     if (in_range(ch, 0x0b05, 0x0b0c) || in_range(ch, 0x0b0f, 0x0b10) ||
@@ -162,7 +177,7 @@ classify_universal_char (unsigned long ch)
         in_range(ch, 0x0b32, 0x0b33) || in_range(ch, 0x0b36, 0x0b39) ||
         in_range(ch, 0x0b5c, 0x0b5d) || in_range(ch, 0x0b5f, 0x0b61))
     {
-        return universal_char_type_valid;   // Oriya
+        return universal_char_type_valid; // Oriya
     }
 
     if (in_range(ch, 0x0b85, 0x0b8a) || in_range(ch, 0x0b8e, 0x0b90) ||
@@ -171,34 +186,34 @@ classify_universal_char (unsigned long ch)
         in_range(ch, 0x0ba3, 0x0ba4) || in_range(ch, 0x0ba8, 0x0baa) ||
         in_range(ch, 0x0bae, 0x0bb5) || in_range(ch, 0x0bb7, 0x0bb9))
     {
-        return universal_char_type_valid;   // Tamil
+        return universal_char_type_valid; // Tamil
     }
 
     if (in_range(ch, 0x0c05, 0x0c0c) || in_range(ch, 0x0c0e, 0x0c10) ||
         in_range(ch, 0x0c12, 0x0c28) || in_range(ch, 0x0c2a, 0x0c33) ||
         in_range(ch, 0x0c35, 0x0c39) || in_range(ch, 0x0c60, 0x0c61))
     {
-        return universal_char_type_valid;   // Telugu
+        return universal_char_type_valid; // Telugu
     }
 
     if (in_range(ch, 0x0c85, 0x0c8c) || in_range(ch, 0x0c8e, 0x0c90) ||
         in_range(ch, 0x0c92, 0x0ca8) || in_range(ch, 0x0caa, 0x0cb3) ||
         in_range(ch, 0x0cb5, 0x0cb9) || in_range(ch, 0x0ce0, 0x0ce1))
     {
-        return universal_char_type_valid;   // Kannada
+        return universal_char_type_valid; // Kannada
     }
 
     if (in_range(ch, 0x0d05, 0x0d0c) || in_range(ch, 0x0d0e, 0x0d10) ||
         in_range(ch, 0x0d12, 0x0d28) || in_range(ch, 0x0d2a, 0x0d39) ||
         in_range(ch, 0x0d60, 0x0d61))
     {
-        return universal_char_type_valid;   // Malayalam
+        return universal_char_type_valid; // Malayalam
     }
 
     if (in_range(ch, 0x0e01, 0x0e30) || in_range(ch, 0x0e32, 0x0e33) ||
         in_range(ch, 0x0e40, 0x0e46) || in_range(ch, 0x0e4f, 0x0e5b))
     {
-        return universal_char_type_valid;   // Thai
+        return universal_char_type_valid; // Thai
     }
 
     return universal_char_type_not_allowed_for_identifiers;
@@ -219,41 +234,46 @@ classify_universal_char (unsigned long ch)
 ///////////////////////////////////////////////////////////////////////////////
 template <typename StringT>
 inline void
-validate_identifier_name (StringT const &name, std::size_t line, 
-    std::size_t column, StringT const &file_name)
+validate_identifier_name(StringT const &name, std::size_t line,
+                         std::size_t column, StringT const &file_name)
 {
-    using namespace std;    // some systems have strtoul in namespace std::
+    using namespace std; // some systems have strtoul in namespace std::
 
-typename StringT::size_type pos = name.find_first_of('\\');
+    typename StringT::size_type pos = name.find_first_of('\\');
 
-    while (StringT::npos != pos) {
-    // the identifier name contains a backslash (must be universal char)
-        BOOST_ASSERT('u' == name[pos+1] || 'U' == name[pos+1]);
+    while (StringT::npos != pos)
+    {
+        // the identifier name contains a backslash (must be universal char)
+        BOOST_ASSERT('u' == name[pos + 1] || 'U' == name[pos + 1]);
 
-    StringT uchar_val(name.substr(pos+2, ('u' == name[pos+1]) ? 4 : 8));
-    universal_char_type type =
-        classify_universal_char(strtoul(uchar_val.c_str(), 0, 16));
+        StringT uchar_val(name.substr(pos + 2, ('u' == name[pos + 1]) ? 4 : 8));
+        universal_char_type type =
+            classify_universal_char(strtoul(uchar_val.c_str(), 0, 16));
 
-        if (universal_char_type_valid != type) {
-        // an invalid char was found, so throw an exception
-        StringT error_uchar(name.substr(pos, ('u' == name[pos+1]) ? 6 : 10));
+        if (universal_char_type_valid != type)
+        {
+            // an invalid char was found, so throw an exception
+            StringT error_uchar(name.substr(pos, ('u' == name[pos + 1]) ? 6 : 10));
 
-            if (universal_char_type_invalid == type) {
+            if (universal_char_type_invalid == type)
+            {
                 BOOST_WAVE_LEXER_THROW(lexing_exception, universal_char_invalid,
-                    error_uchar, line, column, file_name.c_str());
+                                       error_uchar, line, column, file_name.c_str());
             }
-            else if (universal_char_type_base_charset == type) {
+            else if (universal_char_type_base_charset == type)
+            {
                 BOOST_WAVE_LEXER_THROW(lexing_exception, universal_char_base_charset,
-                    error_uchar, line, column, file_name.c_str());
+                                       error_uchar, line, column, file_name.c_str());
             }
-            else {
+            else
+            {
                 BOOST_WAVE_LEXER_THROW(lexing_exception, universal_char_not_allowed,
-                    error_uchar, line, column, file_name.c_str());
+                                       error_uchar, line, column, file_name.c_str());
             }
         }
 
-    // find next universal char (if appropriate)
-        pos = name.find_first_of('\\', pos+2);
+        // find next universal char (if appropriate)
+        pos = name.find_first_of('\\', pos + 2);
     }
 }
 
@@ -272,47 +292,51 @@ typename StringT::size_type pos = name.find_first_of('\\');
 ///////////////////////////////////////////////////////////////////////////////
 template <typename StringT>
 inline void
-validate_literal (StringT const &name, std::size_t line, std::size_t column,
-    StringT const &file_name)
+validate_literal(StringT const &name, std::size_t line, std::size_t column,
+                 StringT const &file_name)
 {
-    using namespace std;    // some systems have strtoul in namespace std::
+    using namespace std; // some systems have strtoul in namespace std::
 
-typename StringT::size_type pos = name.find_first_of('\\');
+    typename StringT::size_type pos = name.find_first_of('\\');
 
-    while (StringT::npos != pos) {
-    // the literal contains a backslash (may be universal char)
-        if ('u' == name[pos+1] || 'U' == name[pos+1]) {
-        StringT uchar_val(name.substr(pos+2, ('u' == name[pos+1]) ? 4 : 8));
-        universal_char_type type =
-            classify_universal_char(strtoul(uchar_val.c_str(), 0, 16));
+    while (StringT::npos != pos)
+    {
+        // the literal contains a backslash (may be universal char)
+        if ('u' == name[pos + 1] || 'U' == name[pos + 1])
+        {
+            StringT uchar_val(name.substr(pos + 2, ('u' == name[pos + 1]) ? 4 : 8));
+            universal_char_type type =
+                classify_universal_char(strtoul(uchar_val.c_str(), 0, 16));
 
             if (universal_char_type_valid != type &&
                 universal_char_type_not_allowed_for_identifiers != type)
             {
-            // an invalid char was found, so throw an exception
-            StringT error_uchar(name.substr(pos, ('u' == name[pos+1]) ? 6 : 10));
+                // an invalid char was found, so throw an exception
+                StringT error_uchar(name.substr(pos, ('u' == name[pos + 1]) ? 6 : 10));
 
-                if (universal_char_type_invalid == type) {
+                if (universal_char_type_invalid == type)
+                {
                     BOOST_WAVE_LEXER_THROW(lexing_exception, universal_char_invalid,
-                        error_uchar, line, column, file_name.c_str());
+                                           error_uchar, line, column, file_name.c_str());
                 }
-                else {
+                else
+                {
                     BOOST_WAVE_LEXER_THROW(lexing_exception, universal_char_base_charset,
-                        error_uchar, line, column, file_name.c_str());
+                                           error_uchar, line, column, file_name.c_str());
                 }
             }
         }
 
-    // find next universal char (if appropriate)
-        pos = name.find_first_of('\\', pos+2);
+        // find next universal char (if appropriate)
+        pos = name.find_first_of('\\', pos + 2);
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-}   // namespace impl
-}   // namespace cpplexer
-}   // namespace wave
-}   // namespace boost
+} // namespace impl
+} // namespace cpplexer
+} // namespace wave
+} // namespace boost
 
 // the suffix header occurs after all of the code
 #ifdef BOOST_HAS_ABI_HEADERS

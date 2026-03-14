@@ -8,43 +8,45 @@
 #if !defined(BOOST_FUSION_NVIEW_END_IMPL_SEP_24_2009_0140PM)
 #define BOOST_FUSION_NVIEW_END_IMPL_SEP_24_2009_0140PM
 
-#include <boost/mpl/end.hpp>
 #include <boost/fusion/sequence/intrinsic/end.hpp>
+#include <boost/mpl/end.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct nview_tag;
+namespace fusion
+{
+struct nview_tag;
 
-    template <typename Sequence, typename Pos>
-    struct nview_iterator;
+template <typename Sequence, typename Pos>
+struct nview_iterator;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct end_impl;
+
+// Unary Version
+template <>
+struct end_impl<nview_tag>
+{
+    template <typename Sequence>
+    struct apply
     {
-        template <typename Tag>
-        struct end_impl;
+        typedef typename Sequence::index_type index_type;
 
-        // Unary Version
-        template <>
-        struct end_impl<nview_tag>
+        typedef nview_iterator<Sequence,
+                               typename mpl::end<index_type>::type>
+            type;
+
+        static type call(Sequence &s)
         {
-            template <typename Sequence>
-            struct apply
-            {
-                typedef typename Sequence::index_type index_type;
+            return type(s);
+        }
+    };
+};
+} // namespace extension
 
-                typedef nview_iterator<Sequence, 
-                    typename mpl::end<index_type>::type> type;
-
-                static type call(Sequence& s)
-                {
-                    return type(s);
-                }
-            };
-        };
-    }
-
-}}
+} // namespace fusion
+} // namespace boost
 
 #endif
-
-

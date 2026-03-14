@@ -20,171 +20,187 @@
     functions that do not require the container object!
  */
 
-namespace boost {
-  namespace detail {
+namespace boost
+{
+namespace detail
+{
 
-    //=========================================================================
-    // Linked-List Generic Implementation Functions
+//=========================================================================
+// Linked-List Generic Implementation Functions
 
-    template <class Node, class Next>
-    inline Node
-    slist_insert_after(Node pos, Node x, 
-                       Next next)
-    {
-      next(x) = next(pos);
-      next(pos) = x;
-      return x;
-    }
-
-    // return next(pos) or next(next(pos)) ?
-    template <class Node, class Next>
-    inline Node
-    slist_remove_after(Node pos, 
-                       Next next)
-    {
-      Node n = next(pos);
-      next(pos) = next(n);
-      return n;
-    }
-
-    template <class Node, class Next>
-    inline Node
-    slist_remove_range(Node before_first, Node last, 
-                       Next next)
-    {
-      next(before_first) = last;
-      return last;
-    }
-
-    template <class Node, class Next>
-    inline Node
-    slist_previous(Node head, Node x, Node nil, 
+template <class Node, class Next>
+inline Node
+slist_insert_after(Node pos, Node x,
                    Next next)
-    {
-      while (head != nil && next(head) != x)
-        head = next(head);
-      return head;
-    }
+{
+    next(x) = next(pos);
+    next(pos) = x;
+    return x;
+}
 
-    template<class Node, class Next>
-    inline void
-    slist_splice_after(Node pos, Node before_first, Node before_last, 
-                       Next next)
+// return next(pos) or next(next(pos)) ?
+template <class Node, class Next>
+inline Node
+slist_remove_after(Node pos,
+                   Next next)
+{
+    Node n = next(pos);
+    next(pos) = next(n);
+    return n;
+}
+
+template <class Node, class Next>
+inline Node
+slist_remove_range(Node before_first, Node last,
+                   Next next)
+{
+    next(before_first) = last;
+    return last;
+}
+
+template <class Node, class Next>
+inline Node
+slist_previous(Node head, Node x, Node nil,
+               Next next)
+{
+    while (head != nil && next(head) != x)
     {
-      if (pos != before_first && pos != before_last) {
+        head = next(head);
+    }
+    return head;
+}
+
+template <class Node, class Next>
+inline void
+slist_splice_after(Node pos, Node before_first, Node before_last,
+                   Next next)
+{
+    if (pos != before_first && pos != before_last)
+    {
         Node first = next(before_first);
         Node after = next(pos);
         next(before_first) = next(before_last);
         next(pos) = first;
         next(before_last) = after;
-      }
     }
+}
 
-    template <class Node, class Next>
-    inline Node
-    slist_reverse(Node node, Node nil, 
-                  Next next)
+template <class Node, class Next>
+inline Node
+slist_reverse(Node node, Node nil,
+              Next next)
+{
+    Node result = node;
+    node = next(node);
+    next(result) = nil;
+    while (node)
     {
-      Node result = node;
-      node = next(node);
-      next(result) = nil;
-      while(node) {
         Node next = next(node);
         next(node) = result;
         result = node;
         node = next;
-      }
-      return result;
     }
+    return result;
+}
 
-    template <class Node, class Next>
-    inline std::size_t
-    slist_size(Node head, Node nil, 
-               Next next)
+template <class Node, class Next>
+inline std::size_t
+slist_size(Node head, Node nil,
+           Next next)
+{
+    std::size_t s = 0;
+    for (; head != nil; head = next(head))
     {
-      std::size_t s = 0;
-      for ( ; head != nil; head = next(head))
         ++s;
-      return s;
+    }
+    return s;
+}
+
+template <class Next, class Data>
+class slist_iterator_policies
+{
+  public:
+    explicit slist_iterator_policies(const Next &n, const Data &d)
+        : m_next(n), m_data(d)
+    {
     }
 
-    template <class Next, class Data>
-    class slist_iterator_policies
+    template <class Reference, class Node>
+    Reference dereference(type<Reference>, const Node &x) const
     {
-    public:
-      explicit slist_iterator_policies(const Next& n, const Data& d)
-        : m_next(n), m_data(d) { }
-
-      template <class Reference, class Node>
-      Reference dereference(type<Reference>, const Node& x) const
-        { return m_data(x); }
-
-      template <class Node>
-      void increment(Node& x) const
-        { x = m_next(x); }
-
-      template <class Node>
-      bool equal(Node& x, Node& y) const
-        { return x == y; }
-
-    protected:
-      Next m_next;
-      Data m_data;
-    };
-
-  //===========================================================================
-  // Doubly-Linked List Generic Implementation Functions
-
-    template <class Node, class Next, class Prev>
-    inline void
-    dlist_insert_before(Node pos, Node x, 
-                        Next next, Prev prev)
-    {
-      next(x) = pos;
-      prev(x) = prev(pos);
-      next(prev(pos)) = x;
-      prev(pos) = x;
+        return m_data(x);
     }
 
-    template <class Node, class Next, class Prev>
-    void
-    dlist_remove(Node pos, 
-                 Next next, Prev prev)
+    template <class Node>
+    void increment(Node &x) const
     {
-      Node next_node = next(pos);
-      Node prev_node = prev(pos);
-      next(prev_node) = next_node;
-      prev(next_node) = prev_node;
+        x = m_next(x);
     }
 
-    // This deletes every node in the list except the
-    // sentinel node.
-    template <class Node, class Delete>
-    inline void
-    dlist_clear(Node sentinel, Delete del)
+    template <class Node>
+    bool equal(Node &x, Node &y) const
     {
-      Node i, tmp;
-      i = next(sentinel);
-      while (i != sentinel) {
+        return x == y;
+    }
+
+  protected:
+    Next m_next;
+    Data m_data;
+};
+
+//===========================================================================
+// Doubly-Linked List Generic Implementation Functions
+
+template <class Node, class Next, class Prev>
+inline void
+dlist_insert_before(Node pos, Node x,
+                    Next next, Prev prev)
+{
+    next(x) = pos;
+    prev(x) = prev(pos);
+    next(prev(pos)) = x;
+    prev(pos) = x;
+}
+
+template <class Node, class Next, class Prev>
+void dlist_remove(Node pos,
+                  Next next, Prev prev)
+{
+    Node next_node = next(pos);
+    Node prev_node = prev(pos);
+    next(prev_node) = next_node;
+    prev(next_node) = prev_node;
+}
+
+// This deletes every node in the list except the
+// sentinel node.
+template <class Node, class Delete>
+inline void
+dlist_clear(Node sentinel, Delete del)
+{
+    Node i, tmp;
+    i = next(sentinel);
+    while (i != sentinel)
+    {
         tmp = i;
         i = next(i);
         del(tmp);
-      }
     }
-    
-    template <class Node>
-    inline bool
-    dlist_empty(Node dummy)
-    {
-      return next(dummy) == dummy;
-    }
+}
 
-    template <class Node, class Next, class Prev>  
-    void
-    dlist_transfer(Node pos, Node first, Node last, 
-                   Next next, Prev prev)
+template <class Node>
+inline bool
+dlist_empty(Node dummy)
+{
+    return next(dummy) == dummy;
+}
+
+template <class Node, class Next, class Prev>
+void dlist_transfer(Node pos, Node first, Node last,
+                    Next next, Prev prev)
+{
+    if (pos != last)
     {
-      if (pos != last) {
         // Remove [first,last) from its old position
         next(prev(last)) = pos;
         next(prev(first)) = last;
@@ -195,26 +211,32 @@ namespace boost {
         prev(pos) = prev(last);
         prev(last) = prev(first);
         prev(first) = tmp;
-      }
-    }  
+    }
+}
 
-    template <class Next, class Prev, class Data>
-    class dlist_iterator_policies
-      : public slist_iterator_policies<Next, Data>
+template <class Next, class Prev, class Data>
+class dlist_iterator_policies
+    : public slist_iterator_policies<Next, Data>
+{
+    typedef slist_iterator_policies<Next, Data> Base;
+
+  public:
+    template <class Node>
+    void decrement(Node &x) const
     {
-      typedef slist_iterator_policies<Next, Data> Base;
-    public:
-      template <class Node>
-      void decrement(Node& x) const
-        { x = m_prev(x); }
+        x = m_prev(x);
+    }
 
-      dlist_iterator_policies(Next n, Prev p, Data d) 
-        : Base(n,d), m_prev(p) { }
-    protected:
-      Prev m_prev;
-    };
+    dlist_iterator_policies(Next n, Prev p, Data d)
+        : Base(n, d), m_prev(p)
+    {
+    }
 
-  } // namespace detail
+  protected:
+    Prev m_prev;
+};
+
+} // namespace detail
 } // namespace boost
 
 #endif // BOOST_LIST_BASE_HPP

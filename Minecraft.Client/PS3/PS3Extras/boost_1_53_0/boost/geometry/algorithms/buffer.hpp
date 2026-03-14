@@ -18,22 +18,23 @@
 
 #include <boost/numeric/conversion/cast.hpp>
 
-
 #include <boost/geometry/algorithms/clear.hpp>
-#include <boost/geometry/algorithms/not_implemented.hpp>
 #include <boost/geometry/algorithms/detail/disjoint.hpp>
+#include <boost/geometry/algorithms/not_implemented.hpp>
 #include <boost/geometry/arithmetic/arithmetic.hpp>
 #include <boost/geometry/geometries/concepts/check.hpp>
 #include <boost/geometry/geometries/segment.hpp>
 #include <boost/geometry/util/math.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace buffer
+namespace detail
+{
+namespace buffer
 {
 
 template <typename BoxIn, typename BoxOut, typename T, std::size_t C, std::size_t D, std::size_t N>
@@ -41,7 +42,7 @@ struct box_loop
 {
     typedef typename coordinate_type<BoxOut>::type coordinate_type;
 
-    static inline void apply(BoxIn const& box_in, T const& distance, BoxOut& box_out)
+    static inline void apply(BoxIn const &box_in, T const &distance, BoxOut &box_out)
     {
         coordinate_type d = distance;
         set<C, D>(box_out, get<C, D>(box_in) + d);
@@ -52,12 +53,14 @@ struct box_loop
 template <typename BoxIn, typename BoxOut, typename T, std::size_t C, std::size_t N>
 struct box_loop<BoxIn, BoxOut, T, C, N, N>
 {
-    static inline void apply(BoxIn const&, T const&, BoxOut&) {}
+    static inline void apply(BoxIn const &, T const &, BoxOut &)
+    {
+    }
 };
 
 // Extends a box with the same amount in all directions
-template<typename BoxIn, typename BoxOut, typename T>
-inline void buffer_box(BoxIn const& box_in, T const& distance, BoxOut& box_out)
+template <typename BoxIn, typename BoxOut, typename T>
+inline void buffer_box(BoxIn const &box_in, T const &distance, BoxOut &box_out)
 {
     assert_dimension_equal<BoxIn, BoxOut>();
 
@@ -67,32 +70,29 @@ inline void buffer_box(BoxIn const& box_in, T const& distance, BoxOut& box_out)
     box_loop<BoxIn, BoxOut, T, max_corner, 0, N>::apply(box_in, distance, box_out);
 }
 
-
-
-}} // namespace detail::buffer
+} // namespace buffer
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-template
-<
+template <
     typename Input,
     typename Output,
     typename TagIn = typename tag<Input>::type,
-    typename TagOut = typename tag<Output>::type
->
-struct buffer: not_implemented<TagIn, TagOut>
-{};
-
+    typename TagOut = typename tag<Output>::type>
+struct buffer : not_implemented<TagIn, TagOut>
+{
+};
 
 template <typename BoxIn, typename BoxOut>
 struct buffer<BoxIn, BoxOut, box_tag, box_tag>
 {
     template <typename Distance>
-    static inline void apply(BoxIn const& box_in, Distance const& distance,
-                Distance const& , BoxIn& box_out)
+    static inline void apply(BoxIn const &box_in, Distance const &distance,
+                             Distance const &, BoxIn &box_out)
     {
         detail::buffer::buffer_box(box_in, distance, box_out);
     }
@@ -105,7 +105,6 @@ struct buffer<BoxIn, BoxOut, box_tag, box_tag>
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
 
 /*!
 \brief \brief_calc{buffer}
@@ -123,17 +122,15 @@ struct buffer<BoxIn, BoxOut, box_tag, box_tag>
 \qbk{[include reference/algorithms/buffer.qbk]}
  */
 template <typename Input, typename Output, typename Distance>
-inline void buffer(Input const& geometry_in, Output& geometry_out,
-            Distance const& distance, Distance const& chord_length = -1)
+inline void buffer(Input const &geometry_in, Output &geometry_out,
+                   Distance const &distance, Distance const &chord_length = -1)
 {
-    concept::check<Input const>();
-    concept::check<Output>();
+    concept ::check<Input const>();
+    concept ::check<Output>();
 
-    dispatch::buffer
-        <
-            Input,
-            Output
-        >::apply(geometry_in, distance, chord_length, geometry_out);
+    dispatch::buffer<
+        Input,
+        Output>::apply(geometry_in, distance, chord_length, geometry_out);
 }
 
 /*!
@@ -149,22 +146,21 @@ inline void buffer(Input const& geometry_in, Output& geometry_out,
 \return \return_calc{buffer}
  */
 template <typename Output, typename Input, typename T>
-Output return_buffer(Input const& geometry, T const& distance, T const& chord_length = -1)
+Output return_buffer(Input const &geometry, T const &distance, T const &chord_length = -1)
 {
-    concept::check<Input const>();
-    concept::check<Output>();
+    concept ::check<Input const>();
+    concept ::check<Output>();
 
     Output geometry_out;
 
-    dispatch::buffer
-        <
-            Input,
-            Output
-        >::apply(geometry, distance, chord_length, geometry_out);
+    dispatch::buffer<
+        Input,
+        Output>::apply(geometry, distance, chord_length, geometry_out);
 
     return geometry_out;
 }
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_BUFFER_HPP

@@ -9,65 +9,72 @@
 #ifndef BOOST_PHOENIX_CORE_ARGUMENT_HPP
 #define BOOST_PHOENIX_CORE_ARGUMENT_HPP
 
-#include <boost/phoenix/core/limits.hpp>
+#include <boost/mpl/int.hpp>
 #include <boost/phoenix/core/actor.hpp>
 #include <boost/phoenix/core/expression.hpp>
+#include <boost/phoenix/core/limits.hpp>
 #include <boost/phoenix/core/terminal.hpp>
-#include <boost/mpl/int.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
 {
-    ////////////////////////////////////////////////////////////////////////////
-    //
-    //  argument
-    //
-    //      function for evaluating argument placeholders like: _1
-    //
-    ////////////////////////////////////////////////////////////////////////////
-    
-    template <int I>
-    struct argument
-        //: mpl::int_<I>
-    {
-        typedef typename mpl::int_<I>::value_type value_type;
-        static const value_type value = mpl::int_<I>::value;
-        
-        bool operator==(argument) const
-        {
-            return true;
-        }
-        
-        template <int I2>
-        bool operator==(argument<I2>) const
-        {
-            return false;
-        }
-    };
-}}
-
-namespace boost {
-    template <int I>
-    struct is_placeholder<phoenix::argument<I> >
-        : mpl::int_<I>
-    {};
-}
-
-namespace boost { namespace phoenix
+namespace phoenix
 {
-    namespace expression
+////////////////////////////////////////////////////////////////////////////
+//
+//  argument
+//
+//      function for evaluating argument placeholders like: _1
+//
+////////////////////////////////////////////////////////////////////////////
+
+template <int I>
+struct argument
+//: mpl::int_<I>
+{
+    typedef typename mpl::int_<I>::value_type value_type;
+    static const value_type value = mpl::int_<I>::value;
+
+    bool operator==(argument) const
     {
-        template <int I>
-        struct argument
-            : expression::terminal<phoenix::argument<I> >
-        {
-            typedef typename expression::terminal<phoenix::argument<I> >::type type;
-            static const type make()
-            {
-                type const e = {{{}}};
-                return e;
-            }
-        };
+        return true;
     }
+
+    template <int I2>
+    bool operator==(argument<I2>) const
+    {
+        return false;
+    }
+};
+} // namespace phoenix
+} // namespace boost
+
+namespace boost
+{
+template <int I>
+struct is_placeholder<phoenix::argument<I>>
+    : mpl::int_<I>
+{
+};
+} // namespace boost
+
+namespace boost
+{
+namespace phoenix
+{
+namespace expression
+{
+template <int I>
+struct argument
+    : expression::terminal<phoenix::argument<I>>
+{
+    typedef typename expression::terminal<phoenix::argument<I>>::type type;
+    static const type make()
+    {
+        type const e = {{{}}};
+        return e;
+    }
+};
+} // namespace expression
 
 #if !defined(BOOST_PHOENIX_DONT_USE_PREPROCESSED_FILES)
 
@@ -80,7 +87,7 @@ namespace boost { namespace phoenix
 #else
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 2, line: 0, output: "preprocessed/argument_predefined_" BOOST_PHOENIX_LIMIT_STR ".hpp")
+#pragma wave option(preserve : 2, line : 0, output : "preprocessed/argument_predefined_" BOOST_PHOENIX_LIMIT_STR ".hpp")
 #endif
 /*==============================================================================
     Copyright (c) 2001-2010 Joel de Guzman
@@ -91,7 +98,7 @@ namespace boost { namespace phoenix
 ==============================================================================*/
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 1)
+#pragma wave option(preserve : 1)
 #endif
 
 #ifdef BOOST_PHOENIX_NO_PREDEFINED_TERMINALS
@@ -107,11 +114,11 @@ namespace boost { namespace phoenix
 #endif
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(output: null)
+#pragma wave option(output : null)
 #endif
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 2, line: 0, output: "preprocessed/argument_no_predefined_" BOOST_PHOENIX_LIMIT_STR ".hpp")
+#pragma wave option(preserve : 2, line : 0, output : "preprocessed/argument_no_predefined_" BOOST_PHOENIX_LIMIT_STR ".hpp")
 #endif
 /*==============================================================================
     Copyright (c) 2001-2010 Joel de Guzman
@@ -122,7 +129,7 @@ namespace boost { namespace phoenix
 ==============================================================================*/
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 1)
+#pragma wave option(preserve : 1)
 #endif
 
 #ifndef BOOST_PHOENIX_NO_PREDEFINED_TERMINALS
@@ -138,13 +145,14 @@ namespace boost { namespace phoenix
 #endif
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(output: null)
+#pragma wave option(output : null)
 #endif
 
 #endif
 
 #endif
 
-}}
+} // namespace phoenix
+} // namespace boost
 
 #endif

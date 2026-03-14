@@ -1,11 +1,11 @@
-#include "stdafx.h"
+#include "InputStream.h"
 #include "File.h"
 #include "InputOutputStream.h"
-#include "InputStream.h"
+#include "stdafx.h"
 
 InputStream *InputStream::getResourceAsStream(const wstring &fileName)
 {
-	File file( fileName );
+    File file(fileName);
 
-	return file.exists() ? new FileInputStream( file ) : nullptr;
+    return file.exists() ? new FileInputStream(file) : nullptr;
 }

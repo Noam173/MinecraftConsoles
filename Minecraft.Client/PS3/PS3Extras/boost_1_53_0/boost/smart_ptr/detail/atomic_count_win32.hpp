@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -27,31 +27,29 @@ namespace detail
 
 class atomic_count
 {
-public:
-
-    explicit atomic_count( long v ): value_( v )
+  public:
+    explicit atomic_count(long v) : value_(v)
     {
     }
 
     long operator++()
     {
-        return BOOST_INTERLOCKED_INCREMENT( &value_ );
+        return BOOST_INTERLOCKED_INCREMENT(&value_);
     }
 
     long operator--()
     {
-        return BOOST_INTERLOCKED_DECREMENT( &value_ );
+        return BOOST_INTERLOCKED_DECREMENT(&value_);
     }
 
     operator long() const
     {
-        return static_cast<long const volatile &>( value_ );
+        return static_cast<long const volatile &>(value_);
     }
 
-private:
-
-    atomic_count( atomic_count const & );
-    atomic_count & operator=( atomic_count const & );
+  private:
+    atomic_count(atomic_count const &);
+    atomic_count &operator=(atomic_count const &);
 
     long value_;
 };

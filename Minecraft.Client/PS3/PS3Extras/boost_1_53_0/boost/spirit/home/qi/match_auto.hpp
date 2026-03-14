@@ -10,7 +10,7 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/qi/stream/match_manip.hpp>
 #include <boost/spirit/home/qi/stream/detail/match_manip_auto.hpp>
+#include <boost/spirit/home/qi/stream/match_manip.hpp>
 
 #endif

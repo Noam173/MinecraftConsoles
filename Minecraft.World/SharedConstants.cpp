@@ -1,15 +1,15 @@
-﻿#include "stdafx.h"
+﻿#include "SharedConstants.h"
 #include "File.h"
 #include "InputOutputStream.h"
-#include "SharedConstants.h"
+#include "stdafx.h"
 
 const wstring SharedConstants::VERSION_STRING = L"1.6.4";
 const bool SharedConstants::TEXTURE_LIGHTING = true;
 
 wstring SharedConstants::readAcceptableChars()
 {
-	// 4J-PB - I've added ã in (for Portuguese in bed string) and added the character at the same place in the default.png font
-	wstring result = L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'abcdefghijklmnopqrstuvwxyz{|}~ ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜø£Ø×ƒáíóúñÑªº¿®¬½¼¡«»ã";
+    // 4J-PB - I've added ã in (for Portuguese in bed string) and added the character at the same place in the default.png font
+    wstring result = L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'abcdefghijklmnopqrstuvwxyz{|}~ ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜø£Ø×ƒáíóúñÑªº¿®¬½¼¡«»ã";
 #if 0 // 4J - do we actually really need to get this from a file?
 	//try {
 	//BufferedReader br = new BufferedReader(new InputStreamReader(SharedConstants.class.getResourceAsStream("/font.txt"), "UTF-8"));
@@ -27,25 +27,24 @@ wstring SharedConstants::readAcceptableChars()
 		// TODO 4J Stu - Exception handling?
 	//}
 #endif
-	return result;
+    return result;
 }
 
 bool SharedConstants::isAllowedChatCharacter(char ch)
 {
-	//return ch != '§' && (acceptableLetters.indexOf(ch) >= 0 || (int) ch > 32);
-	// 4J Unused
-	return true;
+    // return ch != '§' && (acceptableLetters.indexOf(ch) >= 0 || (int) ch > 32);
+    //  4J Unused
+    return true;
 }
 
 wstring SharedConstants::acceptableLetters;
 
 void SharedConstants::staticCtor()
 {
-	acceptableLetters = readAcceptableChars();
+    acceptableLetters = readAcceptableChars();
 }
 
 const wchar_t SharedConstants::ILLEGAL_FILE_CHARACTERS[ILLEGAL_FILE_CHARACTERS_LENGTH] =
-{
-	// 4J-PB  - corrected
-	L'/', L'\n', L'\r', L'\t', L'\0', L'\f', L'`', L'?', L'*', L'\\', L'<', L'>', L'|', L'\"', L':'
-};
+    {
+        // 4J-PB  - corrected
+        L'/', L'\n', L'\r', L'\t', L'\0', L'\f', L'`', L'?', L'*', L'\\', L'<', L'>', L'|', L'\"', L':'};

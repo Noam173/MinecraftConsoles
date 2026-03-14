@@ -9,27 +9,26 @@
 #define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_BINDS_HPP_
 
 #include <boost/local_function/aux_/preprocessor/traits/decl_/index.hpp>
-#include <boost/preprocessor/tuple/elem.hpp>
 #include <boost/preprocessor/list/transform.hpp>
+#include <boost/preprocessor/tuple/elem.hpp>
 
 // PRIVATE //
 
 #define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_BIND_APPLY_( \
-        d, bind_macro, bind_traits) \
+    d, bind_macro, bind_traits)                              \
     bind_macro(bind_traits)
 
 // PUBLIC //
 
 // Expand: pp-list of non-const bind-traits.
-#define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_BINDS(decl_traits) \
+#define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_BINDS(decl_traits)         \
     BOOST_PP_TUPLE_ELEM(BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_INDEX_MAX, \
-            BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_INDEX_BINDS, decl_traits)
+                        BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_INDEX_BINDS, decl_traits)
 
 // Expand: pp-list non-const bind-this-traits (size <= 1 after validation).
-#define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_BIND_THIS_TYPES(decl_traits) \
-    BOOST_PP_TUPLE_ELEM(BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_INDEX_MAX, \
-            BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_INDEX_BIND_THIS_TYPES, \
-            decl_traits)
+#define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_BIND_THIS_TYPES(decl_traits)           \
+    BOOST_PP_TUPLE_ELEM(BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_INDEX_MAX,             \
+                        BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_INDEX_BIND_THIS_TYPES, \
+                        decl_traits)
 
 #endif // #include guard
-

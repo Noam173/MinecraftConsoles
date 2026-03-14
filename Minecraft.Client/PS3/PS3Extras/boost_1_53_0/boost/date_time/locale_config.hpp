@@ -19,13 +19,9 @@
 #include "boost/config.hpp" //sets BOOST_NO_STD_LOCALE
 #include "boost/detail/workaround.hpp"
 
-//This file basically becomes a noop if locales are not properly supported
-#if (defined(BOOST_NO_STD_LOCALE)  \
- || (BOOST_WORKAROUND( BOOST_MSVC, < 1300)) \
- || (BOOST_WORKAROUND( __BORLANDC__, BOOST_TESTED_AT( 0x581 )) ) )
+// This file basically becomes a noop if locales are not properly supported
+#if (defined(BOOST_NO_STD_LOCALE) || (BOOST_WORKAROUND(BOOST_MSVC, < 1300)) || (BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x581))))
 #define BOOST_DATE_TIME_NO_LOCALE
 #endif
 
-
 #endif
-

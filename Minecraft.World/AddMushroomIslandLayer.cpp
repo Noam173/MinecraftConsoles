@@ -1,11 +1,10 @@
-#include "stdafx.h"
-#include "net.minecraft.world.level.newbiome.layer.h"
 #include "net.minecraft.world.level.biome.h"
-
+#include "net.minecraft.world.level.newbiome.layer.h"
+#include "stdafx.h"
 
 AddMushroomIslandLayer::AddMushroomIslandLayer(int64_t seedMixup, shared_ptr<Layer> parent) : Layer(seedMixup)
 {
-	this->parent = parent;
+    this->parent = parent;
 }
 
 intArray AddMushroomIslandLayer::getArea(int xo, int yo, int w, int h)
@@ -18,9 +17,9 @@ intArray AddMushroomIslandLayer::getArea(int xo, int yo, int w, int h)
 
     intArray result = IntCache::allocate(w * h);
     for (int y = 0; y < h; y++)
-	{
+    {
         for (int x = 0; x < w; x++)
-		{
+        {
             int n1 = p[(x + 0) + (y + 0) * pw];
             int n2 = p[(x + 2) + (y + 0) * pw];
             int n3 = p[(x + 0) + (y + 2) * pw];
@@ -28,11 +27,11 @@ intArray AddMushroomIslandLayer::getArea(int xo, int yo, int w, int h)
             int c = p[(x + 1) + (y + 1) * pw];
             initRandom(x + xo, y + yo);
             if (c == 0 && (n1 == 0 && n2 == 0 && n3 == 0 && n4 == 0) && nextRandom(100) == 0)
-			{
+            {
                 result[x + y * w] = Biome::mushroomIsland->id;
             }
-			else
-			{
+            else
+            {
                 result[x + y * w] = c;
             }
         }

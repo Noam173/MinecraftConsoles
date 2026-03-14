@@ -18,169 +18,182 @@
 #error "This header can't be used in Windows operating systems"
 #endif
 
-#include <boost/move/move.hpp>
-#include <boost/interprocess/creation_tags.hpp>
-#include <boost/interprocess/exceptions.hpp>
-#include <boost/interprocess/detail/utilities.hpp>
-#include <boost/interprocess/detail/os_file_functions.hpp>
-#include <boost/interprocess/interprocess_fwd.hpp>
-#include <boost/interprocess/exceptions.hpp>
-#include <boost/interprocess/sync/xsi/basic_xsi_semaphore.hpp>
-#include <cstddef>
 #include <boost/assert.hpp>
 #include <boost/cstdint.hpp>
+#include <boost/interprocess/creation_tags.hpp>
+#include <boost/interprocess/detail/os_file_functions.hpp>
+#include <boost/interprocess/detail/utilities.hpp>
+#include <boost/interprocess/exceptions.hpp>
+#include <boost/interprocess/interprocess_fwd.hpp>
+#include <boost/interprocess/sync/xsi/basic_xsi_semaphore.hpp>
+#include <boost/move/move.hpp>
+#include <cstddef>
 #include <string>
-#include <boost/assert.hpp>
 
 //!\file
-//!Describes a class representing a xsi-based named_mutex.
+//! Describes a class representing a xsi-based named_mutex.
 
-namespace boost {
-namespace interprocess {
+namespace boost
+{
+namespace interprocess
+{
 
-//!A class that wraps a XSI (System V)-based named semaphore
-//!that undoes the operation if the process crashes.
+//! A class that wraps a XSI (System V)-based named semaphore
+//! that undoes the operation if the process crashes.
 class xsi_named_mutex
 {
-   /// @cond
-   //Non-copyable and non-assignable
-   xsi_named_mutex(xsi_named_mutex &);
-   xsi_named_mutex &operator=(xsi_named_mutex &);
-   /// @endcond
+    /// @cond
+    // Non-copyable and non-assignable
+    xsi_named_mutex(xsi_named_mutex &);
+    xsi_named_mutex &operator=(xsi_named_mutex &);
+    /// @endcond
 
-   public:
-   BOOST_MOVABLE_BUT_NOT_COPYABLE(xsi_named_mutex)
+  public:
+    BOOST_MOVABLE_BUT_NOT_COPYABLE(xsi_named_mutex)
 
-   //!Default constructor.
-   //!Represents an empty xsi_named_mutex.
-   xsi_named_mutex();
+    //! Default constructor.
+    //! Represents an empty xsi_named_mutex.
+    xsi_named_mutex();
 
-   //!Tries to create a new XSI-based named mutex with a key obtained from a call to ftok (with path
-   //!"path" and id "id"), and permissions "perm".
-   //!If the named mutex previously exists, it tries to open it.
-   //!Otherwise throws an error.
-   xsi_named_mutex(open_or_create_t, const char *path, boost::uint8_t id, int perm = 0666)
-   {  this->priv_open_or_create(ipcdetail::DoOpenOrCreate, path, id, perm);  }
+    //! Tries to create a new XSI-based named mutex with a key obtained from a call to ftok (with path
+    //!"path" and id "id"), and permissions "perm".
+    //! If the named mutex previously exists, it tries to open it.
+    //! Otherwise throws an error.
+    xsi_named_mutex(open_or_create_t, const char *path, boost::uint8_t id, int perm = 0666)
+    {
+        this->priv_open_or_create(ipcdetail::DoOpenOrCreate, path, id, perm);
+    }
 
-   //!Moves the ownership of "moved"'s named mutex to *this.
-   //!After the call, "moved" does not represent any named mutex
-   //!Does not throw
-   xsi_named_mutex(BOOST_RV_REF(xsi_named_mutex) moved)
-   {  this->swap(moved);   }
+    //! Moves the ownership of "moved"'s named mutex to *this.
+    //! After the call, "moved" does not represent any named mutex
+    //! Does not throw
+    xsi_named_mutex(BOOST_RV_REF(xsi_named_mutex) moved)
+    {
+        this->swap(moved);
+    }
 
-   //!Moves the ownership of "moved"'s named mutex to *this.
-   //!After the call, "moved" does not represent any named mutex.
-   //!Does not throw
-   xsi_named_mutex &operator=(BOOST_RV_REF(xsi_named_mutex) moved)
-   {
-      xsi_named_mutex tmp(boost::move(moved));
-      this->swap(tmp);
-      return *this;
-   }
+    //! Moves the ownership of "moved"'s named mutex to *this.
+    //! After the call, "moved" does not represent any named mutex.
+    //! Does not throw
+    xsi_named_mutex &operator=(BOOST_RV_REF(xsi_named_mutex) moved)
+    {
+        xsi_named_mutex tmp(boost::move(moved));
+        this->swap(tmp);
+        return *this;
+    }
 
-   //!Swaps two xsi_named_mutex. Does not throw
-   void swap(xsi_named_mutex &other);
+    //! Swaps two xsi_named_mutex. Does not throw
+    void swap(xsi_named_mutex &other);
 
-   //!Destroys *this. The named mutex is still valid after
-   //!destruction. use remove() to destroy the named mutex.
-   ~xsi_named_mutex();
+    //! Destroys *this. The named mutex is still valid after
+    //! destruction. use remove() to destroy the named mutex.
+    ~xsi_named_mutex();
 
-   //!Returns the path used to construct the
-   //!named mutex.
-   const char *get_path() const;
+    //! Returns the path used to construct the
+    //! named mutex.
+    const char *get_path() const;
 
-   //!Returns access
-   //!permissions
-   int get_permissions() const;
+    //! Returns access
+    //! permissions
+    int get_permissions() const;
 
-   //!Returns the mapping handle.
-   //!Never throws
-   mapping_handle_t get_mapping_handle() const;
+    //! Returns the mapping handle.
+    //! Never throws
+    mapping_handle_t get_mapping_handle() const;
 
-   //!Erases a XSI-based named mutex from the system.
-   //!Returns false on error. Never throws
-   bool remove();
+    //! Erases a XSI-based named mutex from the system.
+    //! Returns false on error. Never throws
+    bool remove();
 
-   void lock();
+    void lock();
 
-   void unlock();
+    void unlock();
 
-   /// @cond
-   private:
+    /// @cond
+  private:
+    //! Closes a previously opened file mapping. Never throws.
+    void priv_close();
 
-   //!Closes a previously opened file mapping. Never throws.
-   void priv_close();
-
-   //!Closes a previously opened file mapping. Never throws.
-   bool priv_open_or_create( ipcdetail::create_enum_t type
-                           , const char *path
-                           , boost::uint8_t id
-                           , int perm);
-   int            m_semid;
-   key_t          m_key;
-   boost::uint8_t m_id;
-   int            m_perm;
-   std::string    m_path;
-   /// @endcond
+    //! Closes a previously opened file mapping. Never throws.
+    bool priv_open_or_create(ipcdetail::create_enum_t type, const char *path, boost::uint8_t id, int perm);
+    int m_semid;
+    key_t m_key;
+    boost::uint8_t m_id;
+    int m_perm;
+    std::string m_path;
+    /// @endcond
 };
 
 /// @cond
 
 inline xsi_named_mutex::xsi_named_mutex()
-   :  m_semid(-1), m_key(-1), m_id(0), m_perm(0), m_path()
-{}
+    : m_semid(-1), m_key(-1), m_id(0), m_perm(0), m_path()
+{
+}
 
 inline xsi_named_mutex::~xsi_named_mutex()
-{  this->priv_close(); }
+{
+    this->priv_close();
+}
 
 inline const char *xsi_named_mutex::get_path() const
-{  return m_path.c_str(); }
+{
+    return m_path.c_str();
+}
 
 inline void xsi_named_mutex::swap(xsi_named_mutex &other)
 {
-   std::swap(m_key,   other.m_key);
-   std::swap(m_id,    other.m_id);
-   std::swap(m_semid, other.m_semid);
-   std::swap(m_perm,  other.m_perm);
-   m_path.swap(other.m_path);
+    std::swap(m_key, other.m_key);
+    std::swap(m_id, other.m_id);
+    std::swap(m_semid, other.m_semid);
+    std::swap(m_perm, other.m_perm);
+    m_path.swap(other.m_path);
 }
 
 inline mapping_handle_t xsi_named_mutex::get_mapping_handle() const
-{  mapping_handle_t mhnd = { m_semid, true};   return mhnd;   }
+{
+    mapping_handle_t mhnd = {m_semid, true};
+    return mhnd;
+}
 
 inline int xsi_named_mutex::get_permissions() const
-{  return m_perm; }
-
-inline bool xsi_named_mutex::priv_open_or_create
-   (ipcdetail::create_enum_t type, const char *path, boost::uint8_t id, int perm)
 {
-   key_t key;
-   if(path){
-      key  = ::ftok(path, id);
-      if(((key_t)-1) == key){
-         error_info err = system_error_code();
-         throw interprocess_exception(err);
-      }
-   }
-   else{
-      key = IPC_PRIVATE;
-   }
+    return m_perm;
+}
 
-   perm &= 0x01FF;
+inline bool xsi_named_mutex::priv_open_or_create(ipcdetail::create_enum_t type, const char *path, boost::uint8_t id, int perm)
+{
+    key_t key;
+    if (path)
+    {
+        key = ::ftok(path, id);
+        if (((key_t)-1) == key)
+        {
+            error_info err = system_error_code();
+            throw interprocess_exception(err);
+        }
+    }
+    else
+    {
+        key = IPC_PRIVATE;
+    }
 
-   int semid;
-   if(!xsi::simple_sem_open_or_create(key, 1, semid, perm)){
-      error_info err = system_error_code();
-      throw interprocess_exception(err);
-   }
+    perm &= 0x01FF;
 
-   m_perm = perm;
-   m_semid = semid;
-   m_path = path ? path : "";
-   m_id   = id;
-   m_key  = key;
+    int semid;
+    if (!xsi::simple_sem_open_or_create(key, 1, semid, perm))
+    {
+        error_info err = system_error_code();
+        throw interprocess_exception(err);
+    }
 
-   return true;
+    m_perm = perm;
+    m_semid = semid;
+    m_path = path ? path : "";
+    m_id = id;
+    m_key = key;
+
+    return true;
 }
 
 inline void xsi_named_mutex::priv_close()
@@ -189,40 +202,44 @@ inline void xsi_named_mutex::priv_close()
 
 inline void xsi_named_mutex::lock()
 {
-   if(!xsi::simple_sem_op(m_semid, -1)){
-      error_info err = system_error_code();
-      throw interprocess_exception(err);
-   }
+    if (!xsi::simple_sem_op(m_semid, -1))
+    {
+        error_info err = system_error_code();
+        throw interprocess_exception(err);
+    }
 }
 
 inline void xsi_named_mutex::unlock()
 {
-   bool success = xsi::simple_sem_op(m_semid, 1);
-   (void)success;
-   BOOST_ASSERT(success);
+    bool success = xsi::simple_sem_op(m_semid, 1);
+    (void)success;
+    BOOST_ASSERT(success);
 }
 
 inline bool xsi_named_mutex::remove()
 {
-   if(m_semid != -1){
-      int ret = ::semctl(m_semid, IPC_RMID, 0);
-      if(-1 == ret)
-         return false;
-      //Now put it in default-constructed state
-      m_semid  = -1;
-      m_key    = -1;
-      m_id     = 0;
-      m_perm   = 0;
-      m_path.clear();
-   }
-   return false;
+    if (m_semid != -1)
+    {
+        int ret = ::semctl(m_semid, IPC_RMID, 0);
+        if (-1 == ret)
+        {
+            return false;
+        }
+        // Now put it in default-constructed state
+        m_semid = -1;
+        m_key = -1;
+        m_id = 0;
+        m_perm = 0;
+        m_path.clear();
+    }
+    return false;
 }
 
 ///@endcond
 
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif   //BOOST_INTERPROCESS_XSI_XSI_NAMED_MUTEX_HPP
+#endif // BOOST_INTERPROCESS_XSI_XSI_NAMED_MUTEX_HPP

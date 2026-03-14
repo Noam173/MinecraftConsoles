@@ -20,13 +20,14 @@
 #include "boost/type_traits/is_base_and_derived.hpp"
 
 #if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-#   include "boost/type_traits/is_same.hpp"
+#include "boost/type_traits/is_same.hpp"
 #endif
 
 // should be the last #include
 #include "boost/type_traits/detail/bool_trait_def.hpp"
 
-namespace boost {
+namespace boost
+{
 
 //////////////////////////////////////////////////////////////////////////
 // class template static_visitor
@@ -35,11 +36,14 @@ namespace boost {
 // visitor. The class is analogous to std::unary_function in this role.
 //
 
-namespace detail {
+namespace detail
+{
 
-    struct is_static_visitor_tag { };
+struct is_static_visitor_tag
+{
+};
 
-    typedef void static_visitor_default_return;
+typedef void static_visitor_default_return;
 
 } // namespace detail
 
@@ -47,15 +51,16 @@ template <typename R = ::boost::detail::static_visitor_default_return>
 class static_visitor
     : public detail::is_static_visitor_tag
 {
-public: // typedefs
-
+  public: // typedefs
     typedef R result_type;
 
-protected: // for use as base class only
-
-    static_visitor() { }
-    ~static_visitor() { }
-
+  protected: // for use as base class only
+    static_visitor()
+    {
+    }
+    ~static_visitor()
+    {
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -70,25 +75,22 @@ protected: // for use as base class only
 // NOTE #2: This template never needs to be specialized!
 //
 
-namespace detail {
+namespace detail
+{
 
 template <typename T>
 struct is_static_visitor_impl
 {
-    BOOST_STATIC_CONSTANT(bool, value = 
-        (::boost::is_base_and_derived< 
-            detail::is_static_visitor_tag,
-            T
-        >::value));
+    BOOST_STATIC_CONSTANT(bool, value =
+                                    (::boost::is_base_and_derived<
+                                        detail::is_static_visitor_tag,
+                                        T>::value));
 };
 
 } // namespace detail
 
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(
-      is_static_visitor
-    , T
-    , (::boost::detail::is_static_visitor_impl<T>::value)
-    )
+    is_static_visitor, T, (::boost::detail::is_static_visitor_impl<T>::value))
 
 } // namespace boost
 

@@ -12,24 +12,25 @@
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits.hpp>
 
-#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/access.hpp>
+#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/radian_access.hpp>
 
-#include <boost/geometry/util/select_coordinate_type.hpp>
 #include <boost/geometry/util/math.hpp>
+#include <boost/geometry/util/select_coordinate_type.hpp>
 
 #include <boost/geometry/strategies/side.hpp>
-//#include <boost/geometry/strategies/concepts/side_concept.hpp>
+// #include <boost/geometry/strategies/concepts/side_concept.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
-namespace strategy { namespace side
+namespace strategy
 {
-
+namespace side
+{
 
 /*!
 \brief Check at which side of a Great Circle segment a point lies
@@ -41,30 +42,22 @@ template <typename CalculationType = void>
 class spherical_side_formula
 {
 
-public :
+  public:
     template <typename P1, typename P2, typename P>
-    static inline int apply(P1 const& p1, P2 const& p2, P const& p)
+    static inline int apply(P1 const &p1, P2 const &p2, P const &p)
     {
-        typedef typename boost::mpl::if_c
-            <
-                boost::is_void<CalculationType>::type::value,
+        typedef typename boost::mpl::if_c<
+            boost::is_void<CalculationType>::type::value,
 
-                // Select at least a double...
-                typename select_most_precise
-                    <
-                        typename select_most_precise
-                            <
-                                typename select_most_precise
-                                    <
-                                        typename coordinate_type<P1>::type,
-                                        typename coordinate_type<P2>::type
-                                    >::type,
-                                typename coordinate_type<P>::type
-                            >::type,
-                        double
-                    >::type,
-                CalculationType
-            >::type coordinate_type;
+            // Select at least a double...
+            typename select_most_precise<
+                typename select_most_precise<
+                    typename select_most_precise<
+                        typename coordinate_type<P1>::type,
+                        typename coordinate_type<P2>::type>::type,
+                    typename coordinate_type<P>::type>::type,
+                double>::type,
+            CalculationType>::type coordinate_type;
 
         // Convenient shortcuts
         typedef coordinate_type ct;
@@ -88,20 +81,16 @@ public :
 
         // (Third point is converted directly)
         ct const cos_delta = cos(delta);
-        
+
         // Apply the "Spherical Side Formula" as presented on my blog
-        ct const dist 
-            = (c1y * c2z - c1z * c2y) * cos_delta * cos(lambda) 
-            + (c1z * c2x - c1x * c2z) * cos_delta * sin(lambda)
-            + (c1x * c2y - c1y * c2x) * sin(delta);
-        
+        ct const dist = (c1y * c2z - c1z * c2y) * cos_delta * cos(lambda) + (c1z * c2x - c1x * c2z) * cos_delta * sin(lambda) + (c1x * c2y - c1y * c2x) * sin(delta);
+
         ct zero = ct();
-        return dist > zero ? 1
-            : dist < zero ? -1
-            : 0;
+        return dist > zero   ? 1
+               : dist < zero ? -1
+                             : 0;
     }
 };
-
 
 #ifndef DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
 namespace services
@@ -125,12 +114,13 @@ struct default_strategy<geographic_tag, CalculationType>
     typedef spherical_side_formula<CalculationType> type;
 };
 
-}
+} // namespace services
 #endif
 
-}} // namespace strategy::side
+} // namespace side
+} // namespace strategy
 
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_SPHERICAL_SSF_HPP

@@ -12,11 +12,11 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/qi/auxiliary/eps.hpp>
-#include <boost/spirit/home/qi/auxiliary/lazy.hpp>
-#include <boost/spirit/home/qi/auxiliary/eol.hpp>
-#include <boost/spirit/home/qi/auxiliary/eoi.hpp>
 #include <boost/spirit/home/qi/auxiliary/attr.hpp>
 #include <boost/spirit/home/qi/auxiliary/attr_cast.hpp>
+#include <boost/spirit/home/qi/auxiliary/eoi.hpp>
+#include <boost/spirit/home/qi/auxiliary/eol.hpp>
+#include <boost/spirit/home/qi/auxiliary/eps.hpp>
+#include <boost/spirit/home/qi/auxiliary/lazy.hpp>
 
 #endif

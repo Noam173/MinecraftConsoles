@@ -9,26 +9,32 @@
 #ifndef BOOST_PROTO_FUNCTIONAL_RANGE_EMPTY_HPP_EAN_27_08_2012
 #define BOOST_PROTO_FUNCTIONAL_RANGE_EMPTY_HPP_EAN_27_08_2012
 
-#include <boost/range/empty.hpp>
 #include <boost/proto/proto_fwd.hpp>
+#include <boost/range/empty.hpp>
 
-namespace boost { namespace proto { namespace functional
+namespace boost
+{
+namespace proto
+{
+namespace functional
 {
 
-    // A PolymorphicFunctionObject that wraps boost::empty()
-    struct empty
+// A PolymorphicFunctionObject that wraps boost::empty()
+struct empty
+{
+    BOOST_PROTO_CALLABLE()
+
+    typedef bool result_type;
+
+    template <typename Rng>
+    bool operator()(Rng const &rng) const
     {
-        BOOST_PROTO_CALLABLE()
+        return boost::empty(rng);
+    }
+};
 
-        typedef bool result_type;
-
-        template<typename Rng>
-        bool operator()(Rng const &rng) const
-        {
-            return boost::empty(rng);
-        }
-    };
-
-}}}
+} // namespace functional
+} // namespace proto
+} // namespace boost
 
 #endif

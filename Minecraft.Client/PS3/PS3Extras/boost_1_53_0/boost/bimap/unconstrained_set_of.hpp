@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_UNCONSTRAINED_SET_OF_HPP
 #define BOOST_BIMAP_UNCONSTRAINED_SET_OF_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -29,14 +29,16 @@
 #include <boost/bimap/tags/support/value_type_of.hpp>
 
 #include <boost/bimap/detail/generate_index_binder.hpp>
-#include <boost/bimap/detail/generate_view_binder.hpp>
 #include <boost/bimap/detail/generate_relation_binder.hpp>
+#include <boost/bimap/detail/generate_view_binder.hpp>
 
 #include <boost/bimap/views/unconstrained_map_view.hpp>
 #include <boost/bimap/views/unconstrained_set_view.hpp>
 
-namespace boost {
-namespace bimaps {
+namespace boost
+{
+namespace bimaps
+{
 
 /// \brief Set Type Specification
 /**
@@ -57,10 +59,8 @@ BOOST_STATIC_ASSERT( is_set_type_of< unconstrained_set_of<Type> >::value )
 See also unconstrained_set_of_relation.
                                                                         **/
 
-template
-<
-    class KeyType
->
+template <
+    class KeyType>
 struct unconstrained_set_of : public ::boost::bimaps::detail::set_type_of_tag
 {
     /// User type, can be tagged
@@ -72,8 +72,8 @@ struct unconstrained_set_of : public ::boost::bimaps::detail::set_type_of_tag
 
     struct lazy_concept_checked
     {
-        BOOST_CLASS_REQUIRE ( value_type,
-                              boost, AssignableConcept );
+        BOOST_CLASS_REQUIRE(value_type,
+                            boost, AssignableConcept);
 
         typedef unconstrained_set_of type;
     };
@@ -83,14 +83,12 @@ struct unconstrained_set_of : public ::boost::bimaps::detail::set_type_of_tag
     BOOST_BIMAP_GENERATE_MAP_VIEW_BINDER(
 
         // binds to
-        views::unconstrained_map_view
-    )
+        views::unconstrained_map_view)
 
     BOOST_BIMAP_GENERATE_SET_VIEW_BINDER(
 
         // binds to
-        views::unconstrained_set_view
-    )
+        views::unconstrained_set_view)
 
     typedef mpl::bool_<true> mutable_key;
 };
@@ -110,24 +108,26 @@ struct unconstrained_set_of_relation : public ::boost::bimaps::detail::set_type_
     BOOST_BIMAP_GENERATE_RELATION_BINDER_0CP(
 
         // binds to
-        unconstrained_set_of
-    )
+        unconstrained_set_of)
 
-    typedef mpl::bool_<true>  left_mutable_key;
+    typedef mpl::bool_<true> left_mutable_key;
     typedef mpl::bool_<true> right_mutable_key;
 };
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace detail {
+namespace detail
+{
 
-template<class T>
-struct is_unconstrained_set_of :
-    ::boost::mpl::false_ {};
+template <class T>
+struct is_unconstrained_set_of : ::boost::mpl::false_
+{
+};
 
-template<class T>
-struct is_unconstrained_set_of< unconstrained_set_of<T> > :
-    ::boost::mpl::true_ {};
+template <class T>
+struct is_unconstrained_set_of<unconstrained_set_of<T>> : ::boost::mpl::true_
+{
+};
 
 } // namespace detail
 
@@ -135,7 +135,6 @@ struct is_unconstrained_set_of< unconstrained_set_of<T> > :
 
 } // namespace bimaps
 } // namespace boost
-
 
 /** \struct boost::bimaps::detail::is_unconstrained_set_of
 \brief Trait to check if a type is unconstrained_set_of.
@@ -145,6 +144,4 @@ struct is_unconstrained_set_of;
 \endcode
                                                                             **/
 
-
 #endif // BOOST_BIMAP_UNCONSTRAINED_SET_OF_HPP
-

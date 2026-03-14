@@ -4,7 +4,7 @@ class BossMob;
 
 class BossMobGuiInfo
 {
-public:
+  public:
     static float healthProgress;
     static int displayTicks;
     static wstring name;

@@ -18,12 +18,13 @@
 #include "boost/variant/detail/generic_result_type.hpp"
 
 #if BOOST_WORKAROUND(__EDG__, BOOST_TESTED_AT(302))
-#include "boost/utility/enable_if.hpp"
 #include "boost/mpl/not.hpp"
 #include "boost/type_traits/is_const.hpp"
+#include "boost/utility/enable_if.hpp"
 #endif
 
-namespace boost {
+namespace boost
+{
 
 //////////////////////////////////////////////////////////////////////////
 // function template apply_visitor(visitor, visitable)
@@ -37,25 +38,21 @@ namespace boost {
 
 #if !BOOST_WORKAROUND(__EDG__, BOOST_TESTED_AT(302))
 
-#   define BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(V) \
+#define BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(V)   \
     BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(typename V::result_type) \
     /**/
 
 #else // EDG-based compilers
 
-#   define BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(V) \
-    typename enable_if< \
-          mpl::not_< is_const< V > > \
-        , BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(typename V::result_type) \
-        >::type \
-    /**/
+#define BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(V) \
+    typename enable_if<                                          \
+        mpl::not_<is_const<V>>, BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(typename V::result_type)>::type /**/
 
 #endif // EDG-based compilers workaround
 
 template <typename Visitor, typename Visitable>
-inline
-    BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(Visitor)
-apply_visitor(Visitor& visitor, Visitable& visitable)
+inline BOOST_VARIANT_AUX_APPLY_VISITOR_NON_CONST_RESULT_TYPE(Visitor)
+    apply_visitor(Visitor &visitor, Visitable &visitable)
 {
     return visitable.apply_visitor(visitor);
 }
@@ -69,9 +66,8 @@ apply_visitor(Visitor& visitor, Visitable& visitable)
 #if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
 
 template <typename Visitor, typename Visitable>
-inline
-    BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(typename Visitor::result_type)
-apply_visitor(const Visitor& visitor, Visitable& visitable)
+inline BOOST_VARIANT_AUX_GENERIC_RESULT_TYPE(typename Visitor::result_type)
+    apply_visitor(const Visitor &visitor, Visitable &visitable)
 {
     return visitable.apply_visitor(visitor);
 }

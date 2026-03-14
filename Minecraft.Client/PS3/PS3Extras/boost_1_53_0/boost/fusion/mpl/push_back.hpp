@@ -7,33 +7,33 @@
 #if !defined(FUSION_PUSH_BACK_10022005_1647)
 #define FUSION_PUSH_BACK_10022005_1647
 
-#include <boost/mpl/push_back.hpp>
-#include <boost/fusion/support/tag_of.hpp>
 #include <boost/fusion/algorithm/transformation/push_back.hpp>
 #include <boost/fusion/sequence/convert.hpp>
+#include <boost/fusion/support/tag_of.hpp>
+#include <boost/mpl/push_back.hpp>
 
-namespace boost { namespace mpl
+namespace boost
 {
-    template <typename Tag>
-    struct push_back_impl;
+namespace mpl
+{
+template <typename Tag>
+struct push_back_impl;
 
-    template <>
-    struct push_back_impl<fusion::fusion_sequence_tag>
+template <>
+struct push_back_impl<fusion::fusion_sequence_tag>
+{
+    template <typename Sequence, typename T>
+    struct apply
     {
-        template <typename Sequence, typename T>
-        struct apply
-        {
-            typedef typename
-                fusion::result_of::push_back<Sequence, T>::type
+        typedef typename fusion::result_of::push_back<Sequence, T>::type
             result;
 
-            typedef typename
-                fusion::result_of::convert<
-                    typename fusion::detail::tag_of<Sequence>::type, result>::type
+        typedef typename fusion::result_of::convert<
+            typename fusion::detail::tag_of<Sequence>::type, result>::type
             type;
-        };
     };
-}}
+};
+} // namespace mpl
+} // namespace boost
 
 #endif
-

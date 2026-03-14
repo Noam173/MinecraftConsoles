@@ -13,7 +13,8 @@
 #include <boost/spirit/home/classic/phoenix/composite.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace phoenix {
+namespace phoenix
+{
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -107,175 +108,148 @@ namespace phoenix {
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename OperationT>
-struct function {
+struct function
+{
 
-    function() : op() {}
-    function(OperationT const& op_) : op(op_) {}
+    function() : op()
+    {
+    }
+    function(OperationT const &op_) : op(op_)
+    {
+    }
 
-    actor<composite<OperationT> >
+    actor<composite<OperationT>>
     operator()() const;
 
     template <typename A>
     typename impl::make_composite<OperationT, A>::type
-    operator()(A const& a) const;
+    operator()(A const &a) const;
 
     template <typename A, typename B>
     typename impl::make_composite<OperationT, A, B>::type
-    operator()(A const& a, B const& b) const;
+    operator()(A const &a, B const &b) const;
 
     template <typename A, typename B, typename C>
     typename impl::make_composite<OperationT, A, B, C>::type
-    operator()(A const& a, B const& b, C const& c) const;
+    operator()(A const &a, B const &b, C const &c) const;
 
 #if PHOENIX_LIMIT > 3
 
     template <typename A, typename B, typename C, typename D>
     typename impl::make_composite<OperationT, A, B, C, D>::type
-    operator()(A const& a, B const& b, C const& c, D const& d) const;
+    operator()(A const &a, B const &b, C const &c, D const &d) const;
 
     template <typename A, typename B, typename C, typename D, typename E>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E
-    >::type
+        OperationT, A, B, C, D, E>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e) const;
 
     template <
         typename A, typename B, typename C, typename D, typename E,
-        typename F
-    >
+        typename F>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F
-    >::type
+        OperationT, A, B, C, D, E, F>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f) const;
 
 #if PHOENIX_LIMIT > 6
 
     template <
         typename A, typename B, typename C, typename D, typename E,
-        typename F, typename G
-    >
+        typename F, typename G>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G
-    >::type
+        OperationT, A, B, C, D, E, F, G>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g) const;
 
     template <
         typename A, typename B, typename C, typename D, typename E,
-        typename F, typename G, typename H
-    >
+        typename F, typename G, typename H>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G, H
-    >::type
+        OperationT, A, B, C, D, E, F, G, H>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g, H const& h
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g, H const &h) const;
 
     template <
         typename A, typename B, typename C, typename D, typename E,
-        typename F, typename G, typename H, typename I
-    >
+        typename F, typename G, typename H, typename I>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G, H, I
-    >::type
+        OperationT, A, B, C, D, E, F, G, H, I>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g, H const& h, I const& i
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g, H const &h, I const &i) const;
 
 #if PHOENIX_LIMIT > 9
 
     template <
         typename A, typename B, typename C, typename D, typename E,
-        typename F, typename G, typename H, typename I, typename J
-    >
+        typename F, typename G, typename H, typename I, typename J>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G, H, I, J
-    >::type
+        OperationT, A, B, C, D, E, F, G, H, I, J>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g, H const& h, I const& i, J const& j
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g, H const &h, I const &i, J const &j) const;
 
     template <
         typename A, typename B, typename C, typename D, typename E,
         typename F, typename G, typename H, typename I, typename J,
-        typename K
-    >
+        typename K>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G, H, I, J, K
-    >::type
+        OperationT, A, B, C, D, E, F, G, H, I, J, K>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g, H const& h, I const& i, J const& j,
-        K const& k
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g, H const &h, I const &i, J const &j,
+        K const &k) const;
 
     template <
         typename A, typename B, typename C, typename D, typename E,
         typename F, typename G, typename H, typename I, typename J,
-        typename K, typename L
-    >
+        typename K, typename L>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G, H, I, J, K, L
-    >::type
+        OperationT, A, B, C, D, E, F, G, H, I, J, K, L>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g, H const& h, I const& i, J const& j,
-        K const& k, L const& l
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g, H const &h, I const &i, J const &j,
+        K const &k, L const &l) const;
 
 #if PHOENIX_LIMIT > 12
 
     template <
         typename A, typename B, typename C, typename D, typename E,
         typename F, typename G, typename H, typename I, typename J,
-        typename K, typename L, typename M
-    >
+        typename K, typename L, typename M>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M
-    >::type
+        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g, H const& h, I const& i, J const& j,
-        K const& k, L const& l, M const& m
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g, H const &h, I const &i, J const &j,
+        K const &k, L const &l, M const &m) const;
 
     template <
         typename A, typename B, typename C, typename D, typename E,
         typename F, typename G, typename H, typename I, typename J,
-        typename K, typename L, typename M, typename N
-    >
+        typename K, typename L, typename M, typename N>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N
-    >::type
+        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g, H const& h, I const& i, J const& j,
-        K const& k, L const& l, M const& m, N const& n
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g, H const &h, I const &i, J const &j,
+        K const &k, L const &l, M const &m, N const &n) const;
 
     template <
         typename A, typename B, typename C, typename D, typename E,
         typename F, typename G, typename H, typename I, typename J,
-        typename K, typename L, typename M, typename N, typename O
-    >
+        typename K, typename L, typename M, typename N, typename O>
     typename impl::make_composite<
-        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
-    >::type
+        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>::type
     operator()(
-        A const& a, B const& b, C const& c, D const& d, E const& e,
-        F const& f, G const& g, H const& h, I const& i, J const& j,
-        K const& k, L const& l, M const& m, N const& n, O const& o
-    ) const;
+        A const &a, B const &b, C const &c, D const &d, E const &e,
+        F const &f, G const &g, H const &h, I const &i, J const &j,
+        K const &k, L const &l, M const &m, N const &n, O const &o) const;
 
 #endif
 #endif
@@ -291,102 +265,89 @@ struct function {
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename OperationT>
-inline actor<composite<OperationT> >
+inline actor<composite<OperationT>>
 function<OperationT>::operator()() const
 {
-    return actor<composite<OperationT> >(op);
+    return actor<composite<OperationT>>(op);
 }
 
 //////////////////////////////////
 template <typename OperationT>
 template <typename A>
 inline typename impl::make_composite<OperationT, A>::type
-function<OperationT>::operator()(A const& a) const
+function<OperationT>::operator()(A const &a) const
 {
     typedef typename impl::make_composite<OperationT, A>::composite_type ret_t;
-    return ret_t
-    (
+    return ret_t(
         op,
-        as_actor<A>::convert(a)
-    );
+        as_actor<A>::convert(a));
 }
 
 //////////////////////////////////
 template <typename OperationT>
 template <typename A, typename B>
 inline typename impl::make_composite<OperationT, A, B>::type
-function<OperationT>::operator()(A const& a, B const& b) const
+function<OperationT>::operator()(A const &a, B const &b) const
 {
-    typedef 
-        typename impl::make_composite<OperationT, A, B>::composite_type 
-        ret_t;
-        
+    typedef
+        typename impl::make_composite<OperationT, A, B>::composite_type
+            ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
-        as_actor<B>::convert(b)
-    );
+        as_actor<B>::convert(b));
 }
 
 //////////////////////////////////
 template <typename OperationT>
 template <typename A, typename B, typename C>
 inline typename impl::make_composite<OperationT, A, B, C>::type
-function<OperationT>::operator()(A const& a, B const& b, C const& c) const
+function<OperationT>::operator()(A const &a, B const &b, C const &c) const
 {
-    typedef 
+    typedef
         typename impl::make_composite<OperationT, A, B, C>::composite_type
-        ret_t;
-        
+            ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
         as_actor<B>::convert(b),
-        as_actor<C>::convert(c)
-    );
+        as_actor<C>::convert(c));
 }
 
 #if PHOENIX_LIMIT > 3
 //////////////////////////////////
 template <typename OperationT>
 template <
-    typename A, typename B, typename C, typename D
->
+    typename A, typename B, typename C, typename D>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D
->::type
+    OperationT, A, B, C, D>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d
-) const
+    A const &a, B const &b, C const &c, D const &d) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D
-        >::composite_type ret_t;
-        
+        OperationT, A, B, C, D>::composite_type ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
         as_actor<B>::convert(b),
         as_actor<C>::convert(c),
-        as_actor<D>::convert(d)
-    );
+        as_actor<D>::convert(d));
 }
 
 //////////////////////////////////
 template <typename OperationT>
 template <
-    typename A, typename B, typename C, typename D, typename E
->
+    typename A, typename B, typename C, typename D, typename E>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E
->::type
+    OperationT, A, B, C, D, E>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E
-        >::composite_type ret_t;
+        OperationT, A, B, C, D, E>::composite_type ret_t;
 
     return ret_t(
         op,
@@ -394,27 +355,22 @@ function<OperationT>::operator()(
         as_actor<B>::convert(b),
         as_actor<C>::convert(c),
         as_actor<D>::convert(d),
-        as_actor<E>::convert(e)
-    );
+        as_actor<E>::convert(e));
 }
 
 //////////////////////////////////
 template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
-    typename F
->
+    typename F>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F
->::type
+    OperationT, A, B, C, D, E, F>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F
-        >::composite_type ret_t;
+        OperationT, A, B, C, D, E, F>::composite_type ret_t;
 
     return ret_t(
         op,
@@ -423,8 +379,7 @@ function<OperationT>::operator()(
         as_actor<C>::convert(c),
         as_actor<D>::convert(d),
         as_actor<E>::convert(e),
-        as_actor<F>::convert(f)
-    );
+        as_actor<F>::convert(f));
 }
 
 #if PHOENIX_LIMIT > 6
@@ -433,19 +388,15 @@ function<OperationT>::operator()(
 template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
-    typename F, typename G
->
+    typename F, typename G>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G
->::type
+    OperationT, A, B, C, D, E, F, G>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G
-        >::composite_type ret_t;
+        OperationT, A, B, C, D, E, F, G>::composite_type ret_t;
 
     return ret_t(
         op,
@@ -455,28 +406,23 @@ function<OperationT>::operator()(
         as_actor<D>::convert(d),
         as_actor<E>::convert(e),
         as_actor<F>::convert(f),
-        as_actor<G>::convert(g)
-    );
+        as_actor<G>::convert(g));
 }
 
 //////////////////////////////////
 template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
-    typename F, typename G, typename H
->
+    typename F, typename G, typename H>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G, H
->::type
+    OperationT, A, B, C, D, E, F, G, H>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g, H const& h
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g, H const &h) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G, H
-        >::composite_type ret_t;
-        
+        OperationT, A, B, C, D, E, F, G, H>::composite_type ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
@@ -486,28 +432,23 @@ function<OperationT>::operator()(
         as_actor<E>::convert(e),
         as_actor<F>::convert(f),
         as_actor<G>::convert(g),
-        as_actor<H>::convert(h)
-    );
+        as_actor<H>::convert(h));
 }
 
 //////////////////////////////////
 template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
-    typename F, typename G, typename H, typename I
->
+    typename F, typename G, typename H, typename I>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G, H, I
->::type
+    OperationT, A, B, C, D, E, F, G, H, I>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g, H const& h, I const& i
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g, H const &h, I const &i) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G, H, I
-        >::composite_type ret_t;
-        
+        OperationT, A, B, C, D, E, F, G, H, I>::composite_type ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
@@ -518,8 +459,7 @@ function<OperationT>::operator()(
         as_actor<F>::convert(f),
         as_actor<G>::convert(g),
         as_actor<H>::convert(h),
-        as_actor<I>::convert(i)
-    );
+        as_actor<I>::convert(i));
 }
 
 #if PHOENIX_LIMIT > 9
@@ -528,20 +468,16 @@ function<OperationT>::operator()(
 template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
-    typename F, typename G, typename H, typename I, typename J
->
+    typename F, typename G, typename H, typename I, typename J>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G, H, I, J
->::type
+    OperationT, A, B, C, D, E, F, G, H, I, J>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g, H const& h, I const& i, J const& j
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g, H const &h, I const &i, J const &j) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G, H, I, J
-        >::composite_type ret_t;
-        
+        OperationT, A, B, C, D, E, F, G, H, I, J>::composite_type ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
@@ -553,8 +489,7 @@ function<OperationT>::operator()(
         as_actor<G>::convert(g),
         as_actor<H>::convert(h),
         as_actor<I>::convert(i),
-        as_actor<J>::convert(j)
-    );
+        as_actor<J>::convert(j));
 }
 
 //////////////////////////////////
@@ -562,21 +497,17 @@ template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
     typename F, typename G, typename H, typename I, typename J,
-    typename K
->
+    typename K>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G, H, I, J, K
->::type
+    OperationT, A, B, C, D, E, F, G, H, I, J, K>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g, H const& h, I const& i, J const& j,
-    K const& k
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g, H const &h, I const &i, J const &j,
+    K const &k) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G, H, I, J, K
-        >::composite_type ret_t;
-        
+        OperationT, A, B, C, D, E, F, G, H, I, J, K>::composite_type ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
@@ -589,8 +520,7 @@ function<OperationT>::operator()(
         as_actor<H>::convert(h),
         as_actor<I>::convert(i),
         as_actor<J>::convert(j),
-        as_actor<K>::convert(k)
-    );
+        as_actor<K>::convert(k));
 }
 
 //////////////////////////////////
@@ -598,21 +528,17 @@ template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
     typename F, typename G, typename H, typename I, typename J,
-    typename K, typename L
->
+    typename K, typename L>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G, H, I, J, K, L
->::type
+    OperationT, A, B, C, D, E, F, G, H, I, J, K, L>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g, H const& h, I const& i, J const& j,
-    K const& k, L const& l
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g, H const &h, I const &i, J const &j,
+    K const &k, L const &l) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G, H, I, J, K, L
-        >::composite_type ret_t;
-        
+        OperationT, A, B, C, D, E, F, G, H, I, J, K, L>::composite_type ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
@@ -626,8 +552,7 @@ function<OperationT>::operator()(
         as_actor<I>::convert(i),
         as_actor<J>::convert(j),
         as_actor<K>::convert(k),
-        as_actor<L>::convert(l)
-    );
+        as_actor<L>::convert(l));
 }
 
 #if PHOENIX_LIMIT > 12
@@ -637,21 +562,17 @@ template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
     typename F, typename G, typename H, typename I, typename J,
-    typename K, typename L, typename M
->
+    typename K, typename L, typename M>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M
->::type
+    OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g, H const& h, I const& i, J const& j,
-    K const& k, L const& l, M const& m
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g, H const &h, I const &i, J const &j,
+    K const &k, L const &l, M const &m) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M
-        >::composite_type ret_t;
-        
+        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M>::composite_type ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
@@ -666,8 +587,7 @@ function<OperationT>::operator()(
         as_actor<J>::convert(j),
         as_actor<K>::convert(k),
         as_actor<L>::convert(l),
-        as_actor<M>::convert(m)
-    );
+        as_actor<M>::convert(m));
 }
 
 //////////////////////////////////
@@ -675,20 +595,16 @@ template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
     typename F, typename G, typename H, typename I, typename J,
-    typename K, typename L, typename M, typename N
->
+    typename K, typename L, typename M, typename N>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N
->::type
+    OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g, H const& h, I const& i, J const& j,
-    K const& k, L const& l, M const& m, N const& n
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g, H const &h, I const &i, J const &j,
+    K const &k, L const &l, M const &m, N const &n) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N
-        >::composite_type ret_t;
+        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N>::composite_type ret_t;
 
     return ret_t(
         op,
@@ -705,8 +621,7 @@ function<OperationT>::operator()(
         as_actor<K>::convert(k),
         as_actor<L>::convert(l),
         as_actor<M>::convert(m),
-        as_actor<N>::convert(n)
-    );
+        as_actor<N>::convert(n));
 }
 
 //////////////////////////////////
@@ -714,21 +629,17 @@ template <typename OperationT>
 template <
     typename A, typename B, typename C, typename D, typename E,
     typename F, typename G, typename H, typename I, typename J,
-    typename K, typename L, typename M, typename N, typename O
->
+    typename K, typename L, typename M, typename N, typename O>
 inline typename impl::make_composite<
-    OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
->::type
+    OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>::type
 function<OperationT>::operator()(
-    A const& a, B const& b, C const& c, D const& d, E const& e,
-    F const& f, G const& g, H const& h, I const& i, J const& j,
-    K const& k, L const& l, M const& m, N const& n, O const& o
-) const
+    A const &a, B const &b, C const &c, D const &d, E const &e,
+    F const &f, G const &g, H const &h, I const &i, J const &j,
+    K const &k, L const &l, M const &m, N const &n, O const &o) const
 {
     typedef typename impl::make_composite<
-            OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
-        >::composite_type ret_t;
-        
+        OperationT, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>::composite_type ret_t;
+
     return ret_t(
         op,
         as_actor<A>::convert(a),
@@ -745,8 +656,7 @@ function<OperationT>::operator()(
         as_actor<L>::convert(l),
         as_actor<M>::convert(m),
         as_actor<N>::convert(n),
-        as_actor<O>::convert(o)
-    );
+        as_actor<O>::convert(o));
 }
 
 #endif
@@ -755,6 +665,6 @@ function<OperationT>::operator()(
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-}   //  namespace phoenix
+} //  namespace phoenix
 
 #endif

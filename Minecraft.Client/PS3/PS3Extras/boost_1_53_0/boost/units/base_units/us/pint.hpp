@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -12,10 +12,10 @@
 #define BOOST_UNITS_BASE_UNITS_US_PINT_HPP_INCLUDED
 
 #include <boost/units/config.hpp>
-#include <boost/units/systems/si/volume.hpp>
 #include <boost/units/conversion.hpp>
+#include <boost/units/systems/si/volume.hpp>
 
-BOOST_UNITS_DEFINE_BASE_UNIT_WITH_CONVERSIONS(us, pint, "pint (U.S.)", "pt", 0.4731765e-3, si::volume, -503);    
+BOOST_UNITS_DEFINE_BASE_UNIT_WITH_CONVERSIONS(us, pint, "pint (U.S.)", "pt", 0.4731765e-3, si::volume, -503);
 
 #if BOOST_UNITS_HAS_BOOST_TYPEOF
 

@@ -10,71 +10,68 @@
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/declval.hpp>
 
-
-namespace boost{ namespace multiprecision{ namespace detail{
+namespace boost
+{
+namespace multiprecision
+{
+namespace detail
+{
 
 template <int N>
-struct dummy_size{};
-
-template<typename S, typename T>
-struct has_generic_interconversion
+struct dummy_size
 {
-   typedef typename mpl::if_c<
-      is_number<S>::value && is_number<T>::value,
-      typename mpl::if_c<
-         number_category<S>::value == number_kind_integer,
-         typename mpl::if_c<
-            number_category<T>::value == number_kind_integer 
-            || number_category<T>::value == number_kind_floating_point
-            || number_category<T>::value == number_kind_rational
-            || number_category<T>::value == number_kind_fixed_point,
-            mpl::true_, 
-            mpl::false_
-         >::type,
-         typename mpl::if_c<
-            number_category<S>::value == number_kind_rational,
-            typename mpl::if_c<
-               number_category<T>::value == number_kind_rational
-               || number_category<T>::value == number_kind_rational,
-               mpl::true_,
-               mpl::false_
-            >::type,
-            typename mpl::if_c<
-               number_category<T>::value == number_kind_floating_point,
-               mpl::true_,
-               mpl::false_
-            >::type
-         >::type
-      >::type,
-      mpl::false_
-   >::type type;
 };
 
-template<typename S, typename T>
+template <typename S, typename T>
+struct has_generic_interconversion
+{
+    typedef typename mpl::if_c<
+        is_number<S>::value && is_number<T>::value,
+        typename mpl::if_c<
+            number_category<S>::value == number_kind_integer,
+            typename mpl::if_c<
+                number_category<T>::value == number_kind_integer || number_category<T>::value == number_kind_floating_point || number_category<T>::value == number_kind_rational || number_category<T>::value == number_kind_fixed_point,
+                mpl::true_,
+                mpl::false_>::type,
+            typename mpl::if_c<
+                number_category<S>::value == number_kind_rational,
+                typename mpl::if_c<
+                    number_category<T>::value == number_kind_rational || number_category<T>::value == number_kind_rational,
+                    mpl::true_,
+                    mpl::false_>::type,
+                typename mpl::if_c<
+                    number_category<T>::value == number_kind_floating_point,
+                    mpl::true_,
+                    mpl::false_>::type>::type>::type,
+        mpl::false_>::type type;
+};
+
+template <typename S, typename T>
 struct is_explicitly_convertible_imp
 {
 #ifndef BOOST_NO_SFINAE_EXPR
-   template<typename S1, typename T1>
-   static type_traits::yes_type selector(dummy_size<sizeof(static_cast<T1>(declval<S1>()))>*);
+    template <typename S1, typename T1>
+    static type_traits::yes_type selector(dummy_size<sizeof(static_cast<T1>(declval<S1>()))> *);
 
-   template<typename S1, typename T1>
-   static type_traits::no_type selector(...);
+    template <typename S1, typename T1>
+    static type_traits::no_type selector(...);
 
-   static const bool value = sizeof(selector<S,T>(0)) == sizeof(type_traits::yes_type);
+    static const bool value = sizeof(selector<S, T>(0)) == sizeof(type_traits::yes_type);
 
-   typedef boost::integral_constant<bool,value> type;
+    typedef boost::integral_constant<bool, value> type;
 #else
-   typedef typename has_generic_interconversion<S, T>::type gen_type;
-   typedef mpl::bool_<boost::is_convertible<S, T>::value || gen_type::value> type;
+    typedef typename has_generic_interconversion<S, T>::type gen_type;
+    typedef mpl::bool_<boost::is_convertible<S, T>::value || gen_type::value> type;
 #endif
 };
 
-template<typename From, typename To>
+template <typename From, typename To>
 struct is_explicitly_convertible : public is_explicitly_convertible_imp<From, To>::type
 {
 };
 
-}}} // namespaces
+} // namespace detail
+} // namespace multiprecision
+} // namespace boost
 
 #endif
-

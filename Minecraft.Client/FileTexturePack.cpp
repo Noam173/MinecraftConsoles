@@ -1,12 +1,12 @@
-#include "stdafx.h"
 #include "FileTexturePack.h"
+#include "stdafx.h"
 
 FileTexturePack::FileTexturePack(DWORD id, File *file, TexturePack *fallback) : AbstractTexturePack(id, file, file->getName(), fallback)
 {
-	// 4J Stu - These calls need to be in the most derived version of the class
-	loadIcon();
-	loadName();
-	loadDescription();
+    // 4J Stu - These calls need to be in the most derived version of the class
+    loadIcon();
+    loadName();
+    loadDescription();
 }
 
 void FileTexturePack::unload(Textures *textures)
@@ -24,7 +24,7 @@ void FileTexturePack::unload(Textures *textures)
 #endif
 }
 
-InputStream *FileTexturePack::getResourceImplementation(const wstring &name) //throws IOException
+InputStream *FileTexturePack::getResourceImplementation(const wstring &name) // throws IOException
 {
 #if 0
 	loadZipFile();
@@ -36,7 +36,7 @@ InputStream *FileTexturePack::getResourceImplementation(const wstring &name) //t
 
 	return zipFile.getInputStream(entry);
 #endif
-	return nullptr;
+    return nullptr;
 }
 
 bool FileTexturePack::hasFile(const wstring &name)
@@ -50,10 +50,10 @@ bool FileTexturePack::hasFile(const wstring &name)
 		return false;
 	}
 #endif
-	return false;
+    return false;
 }
 
-void FileTexturePack::loadZipFile() //throws IOException
+void FileTexturePack::loadZipFile() // throws IOException
 {
 #if 0
 	if (zipFile != null) {
@@ -82,5 +82,5 @@ bool FileTexturePack::isTerrainUpdateCompatible()
 	boolean hasOldFiles = hasFile("terrain.png") || hasFile("gui/items.png");
 	return !hasOldFiles;
 #endif
-	return false;
+    return false;
 }

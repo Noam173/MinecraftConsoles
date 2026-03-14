@@ -12,14 +12,14 @@
 #ifndef BOOST_BIMAP_TAGS_SUPPORT_TAG_OF_HPP
 #define BOOST_BIMAP_TAGS_SUPPORT_TAG_OF_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
-#include <boost/bimap/tags/tagged.hpp>
 #include <boost/bimap/detail/debug/static_error.hpp>
+#include <boost/bimap/tags/tagged.hpp>
 
 /** \struct boost::bimaps::tags::support::tag_of
 \brief Metafunction to obtain the tag of a type.
@@ -43,26 +43,28 @@ See also tagged, value_type_of.
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace tags {
-namespace support {
-
+namespace boost
+{
+namespace bimaps
+{
+namespace tags
+{
+namespace support
+{
 
 // tag_of metafunction
 
-template< class Type >
+template <class Type>
 struct tag_of
 {
-    BOOST_BIMAP_STATIC_ERROR( USING_TAG_OF_WITH_AN_UNTAGGED_TYPE, (Type) );
+    BOOST_BIMAP_STATIC_ERROR(USING_TAG_OF_WITH_AN_UNTAGGED_TYPE, (Type));
 };
 
-template< class Type, class Tag >
-struct tag_of< tagged< Type, Tag > >
+template <class Type, class Tag>
+struct tag_of<tagged<Type, Tag>>
 {
     typedef Tag type;
 };
-
 
 } // namespace support
 } // namespace tags
@@ -72,4 +74,3 @@ struct tag_of< tagged< Type, Tag > >
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_TAGS_SUPPORT_TAG_OF_HPP
-

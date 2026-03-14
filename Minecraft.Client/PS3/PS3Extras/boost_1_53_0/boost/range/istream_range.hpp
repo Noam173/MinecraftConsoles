@@ -13,25 +13,25 @@
  * \file istream_range.hpp
  */
 
-#include <iterator>
-#include <istream>
 #include <boost/config.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <istream>
+#include <iterator>
 
 namespace boost
 {
-    namespace range
-    {
-        template<class Type, class Elem, class Traits> inline
-            iterator_range<std::istream_iterator<Type, Elem, Traits> >
-        istream_range(std::basic_istream<Elem, Traits>& in)
-        {
-            return iterator_range<std::istream_iterator<Type, Elem, Traits> >(
-                std::istream_iterator<Type>(in),
-                std::istream_iterator<Type>());
-        }
-    } // namespace range
-    using range::istream_range;
+namespace range
+{
+template <class Type, class Elem, class Traits>
+inline iterator_range<std::istream_iterator<Type, Elem, Traits>>
+istream_range(std::basic_istream<Elem, Traits> &in)
+{
+    return iterator_range<std::istream_iterator<Type, Elem, Traits>>(
+        std::istream_iterator<Type>(in),
+        std::istream_iterator<Type>());
+}
+} // namespace range
+using range::istream_range;
 } // namespace boost
 
 #endif // include guard

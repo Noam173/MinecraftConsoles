@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -25,15 +25,13 @@ namespace detail
 
 class spinlock
 {
-public:
-
+  public:
     bool locked_;
 
-public:
-
+  public:
     inline bool try_lock()
     {
-        if( locked_ )
+        if (locked_)
         {
             return false;
         }
@@ -46,30 +44,27 @@ public:
 
     inline void lock()
     {
-        BOOST_ASSERT( !locked_ );
+        BOOST_ASSERT(!locked_);
         locked_ = true;
     }
 
     inline void unlock()
     {
-        BOOST_ASSERT( locked_ );
+        BOOST_ASSERT(locked_);
         locked_ = false;
     }
 
-public:
-
+  public:
     class scoped_lock
     {
-    private:
+      private:
+        spinlock &sp_;
 
-        spinlock & sp_;
+        scoped_lock(scoped_lock const &);
+        scoped_lock &operator=(scoped_lock const &);
 
-        scoped_lock( scoped_lock const & );
-        scoped_lock & operator=( scoped_lock const & );
-
-    public:
-
-        explicit scoped_lock( spinlock & sp ): sp_( sp )
+      public:
+        explicit scoped_lock(spinlock &sp) : sp_(sp)
         {
             sp.lock();
         }
@@ -84,6 +79,6 @@ public:
 } // namespace detail
 } // namespace boost
 
-#define BOOST_DETAIL_SPINLOCK_INIT { false }
+#define BOOST_DETAIL_SPINLOCK_INIT {false}
 
 #endif // #ifndef BOOST_SMART_PTR_DETAIL_SPINLOCK_NT_HPP_INCLUDED

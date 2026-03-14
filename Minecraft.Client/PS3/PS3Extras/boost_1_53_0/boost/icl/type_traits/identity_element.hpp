@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------+    
+/*-----------------------------------------------------------------------------+
 Copyright (c) 2008-2009: Joachim Faulhaber
 +------------------------------------------------------------------------------+
    Distributed under the Boost Software License, Version 1.0.
@@ -10,25 +10,33 @@ Copyright (c) 2008-2009: Joachim Faulhaber
 
 #include <boost/icl/type_traits/type_to_string.hpp>
 
-namespace boost{ namespace icl
+namespace boost
 {
-    template <class Type> struct identity_element
-    { 
-        static Type value(); 
-        Type operator()()const { return value(); }
-    };
-
-    template <class Type>
-    inline Type identity_element<Type>::value()
-    { 
-        return Type(); 
+namespace icl
+{
+template <class Type>
+struct identity_element
+{
+    static Type value();
+    Type operator()() const
+    {
+        return value();
     }
+};
 
-    template<>
-    inline std::string unary_template_to_string<identity_element>::apply() { return "0"; }
+template <class Type>
+inline Type identity_element<Type>::value()
+{
+    return Type();
+}
 
-}} // namespace boost icl
+template <>
+inline std::string unary_template_to_string<identity_element>::apply()
+{
+    return "0";
+}
+
+} // namespace icl
+} // namespace boost
 
 #endif
-
-

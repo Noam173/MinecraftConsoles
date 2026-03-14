@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_COMPARISON_ADAPTOR_HPP
 #define BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_COMPARISON_ADAPTOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -21,10 +21,14 @@
 #include <boost/call_traits.hpp>
 #include <functional>
 
-namespace boost {
-namespace bimaps {
-namespace container_adaptor {
-namespace detail {
+namespace boost
+{
+namespace bimaps
+{
+namespace container_adaptor
+{
+namespace detail
+{
 
 /// \brief Comparison adaptor
 /**
@@ -32,41 +36,44 @@ namespace detail {
 A simple comparison adaptor.
                                                                                     **/
 
-template < class Compare, class NewType, class Converter >
-struct comparison_adaptor : std::binary_function<NewType,NewType,bool>
+template <class Compare, class NewType, class Converter>
+struct comparison_adaptor : std::binary_function<NewType, NewType, bool>
 {
-    comparison_adaptor( const Compare & comp, const Converter & conv)
-        : compare(comp), converter(conv) {}
-
-    bool operator()( BOOST_DEDUCED_TYPENAME call_traits<NewType>::param_type x,
-                     BOOST_DEDUCED_TYPENAME call_traits<NewType>::param_type y) const
+    comparison_adaptor(const Compare &comp, const Converter &conv)
+        : compare(comp), converter(conv)
     {
-        return compare( converter(x), converter(y) );
     }
 
-    private:
-    Compare     compare;
-    Converter   converter;
-};
-
-template < class Compare, class NewType, class Converter >
-struct compatible_comparison_adaptor : std::binary_function<NewType,NewType,bool>
-{
-    compatible_comparison_adaptor( const Compare & comp, const Converter & conv)
-        : compare(comp), converter(conv) {}
-
-    template< class CompatibleTypeLeft, class CompatibleTypeRight >
-    bool operator()( const CompatibleTypeLeft  & x,
-                     const CompatibleTypeRight & y) const
+    bool operator()(BOOST_DEDUCED_TYPENAME call_traits<NewType>::param_type x,
+                    BOOST_DEDUCED_TYPENAME call_traits<NewType>::param_type y) const
     {
-        return compare( converter(x), converter(y) );
+        return compare(converter(x), converter(y));
     }
 
-    private:
-    Compare     compare;
-    Converter   converter;
+  private:
+    Compare compare;
+    Converter converter;
 };
 
+template <class Compare, class NewType, class Converter>
+struct compatible_comparison_adaptor : std::binary_function<NewType, NewType, bool>
+{
+    compatible_comparison_adaptor(const Compare &comp, const Converter &conv)
+        : compare(comp), converter(conv)
+    {
+    }
+
+    template <class CompatibleTypeLeft, class CompatibleTypeRight>
+    bool operator()(const CompatibleTypeLeft &x,
+                    const CompatibleTypeRight &y) const
+    {
+        return compare(converter(x), converter(y));
+    }
+
+  private:
+    Compare compare;
+    Converter converter;
+};
 
 /// \brief Unary Check adaptor
 /**
@@ -74,19 +81,20 @@ struct compatible_comparison_adaptor : std::binary_function<NewType,NewType,bool
 A simple unary check adaptor.
                                                                                     **/
 
-template < class Compare, class NewType, class Converter >
-struct unary_check_adaptor : std::unary_function<NewType,bool>
+template <class Compare, class NewType, class Converter>
+struct unary_check_adaptor : std::unary_function<NewType, bool>
 {
-    unary_check_adaptor( const Compare & comp, const Converter & conv ) :
-        compare(comp), converter(conv) {}
-
-    bool operator()( BOOST_DEDUCED_TYPENAME call_traits<NewType>::param_type x) const
+    unary_check_adaptor(const Compare &comp, const Converter &conv) : compare(comp), converter(conv)
     {
-        return compare( converter(x) );
     }
 
-    private:
-    Compare   compare;
+    bool operator()(BOOST_DEDUCED_TYPENAME call_traits<NewType>::param_type x) const
+    {
+        return compare(converter(x));
+    }
+
+  private:
+    Compare compare;
     Converter converter;
 };
 
@@ -95,7 +103,4 @@ struct unary_check_adaptor : std::unary_function<NewType,bool>
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_COMPARISON_ADAPTOR_HPP
-
-

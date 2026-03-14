@@ -15,9 +15,8 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
-
 
 #include <pthread.h>
 
@@ -29,19 +28,17 @@ namespace signals2
 
 class mutex
 {
-private:
-
+  private:
     pthread_mutex_t m_;
 
     mutex(mutex const &);
-    mutex & operator=(mutex const &);
+    mutex &operator=(mutex const &);
 
-public:
-
+  public:
     mutex()
     {
 
-// HPUX 10.20 / DCE has a nonstandard pthread_mutex_init
+        // HPUX 10.20 / DCE has a nonstandard pthread_mutex_init
 
 #if defined(__hpux) && defined(_DECTHREADS_)
         pthread_mutex_init(&m_, pthread_mutexattr_default);

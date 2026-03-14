@@ -1,18 +1,18 @@
-#include "stdafx.h"
-#include "File.h"
+#include "ZonedChunkStorage.h"
 #include "ByteBuffer.h"
+#include "File.h"
+#include "ZoneFile.h"
 #include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.level.chunk.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.tile.entity.h"
-#include "net.minecraft.world.level.chunk.h"
-#include "ZonedChunkStorage.h"
-#include "ZoneFile.h"
+#include "stdafx.h"
 
 // 4J Stu - There are changes to this class for 1.8.2, but since we never use it anyway lets not worry about it
 
 const int ZonedChunkStorage::BIT_TERRAIN_POPULATED = 0x0000001;
 
-const int ZonedChunkStorage::CHUNKS_PER_ZONE_BITS = 5; // = 32
+const int ZonedChunkStorage::CHUNKS_PER_ZONE_BITS = 5;                                       // = 32
 const int ZonedChunkStorage::CHUNKS_PER_ZONE = 1 << ZonedChunkStorage::CHUNKS_PER_ZONE_BITS; // ^2
 
 const int ZonedChunkStorage::CHUNK_WIDTH = 16;
@@ -26,13 +26,15 @@ const ByteOrder ZonedChunkStorage::BYTEORDER = BIGENDIAN;
 
 ZonedChunkStorage::ZonedChunkStorage(File dir)
 {
-	tickCount = 0;
+    tickCount = 0;
 
-	//this->dir = dir;
-	this->dir = File( dir, wstring( L"data" ) );
-	if( !this->dir.exists() ) this->dir.mkdirs();
+    // this->dir = dir;
+    this->dir = File(dir, wstring(L"data"));
+    if (!this->dir.exists())
+    {
+        this->dir.mkdirs();
+    }
 }
-
 
 int ZonedChunkStorage::getSlot(int x, int z)
 {
@@ -51,23 +53,26 @@ ZoneFile *ZonedChunkStorage::getZoneFile(int x, int z, bool create)
     int xZone = x >> CHUNKS_PER_ZONE_BITS;
     int zZone = z >> CHUNKS_PER_ZONE_BITS;
     int64_t key = xZone + (zZone << 20l);
-	// 4J - was !zoneFiles.containsKey(key)
+    // 4J - was !zoneFiles.containsKey(key)
     if (zoneFiles.find(key) == zoneFiles.end())
-	{
-		wchar_t xRadix36[64] {};
-		wchar_t zRadix36[64] {};
-		_itow_s(x,xRadix36,36);
-		_itow_s(z,zRadix36,36);
-		File file = File(dir, wstring( L"zone_") + std::wstring( xRadix36 ) + L"_" + std::wstring( zRadix36 ) + L".dat" );
+    {
+        wchar_t xRadix36[64]{};
+        wchar_t zRadix36[64]{};
+        _itow_s(x, xRadix36, 36);
+        _itow_s(z, zRadix36, 36);
+        File file = File(dir, wstring(L"zone_") + std::wstring(xRadix36) + L"_" + std::wstring(zRadix36) + L".dat");
 
-		if ( !file.exists() )
-		{
-            if (!create) return nullptr;
-			HANDLE ch = CreateFile(wstringtofilename(file.getPath()), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-			CloseHandle(ch);
+        if (!file.exists())
+        {
+            if (!create)
+            {
+                return nullptr;
+            }
+            HANDLE ch = CreateFile(wstringtofilename(file.getPath()), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+            CloseHandle(ch);
         }
 
-		File entityFile = File(dir, wstring( L"entities_") + std::wstring( xRadix36 ) + L"_" + std::wstring( zRadix36 ) + L".dat" );
+        File entityFile = File(dir, wstring(L"entities_") + std::wstring(xRadix36) + L"_" + std::wstring(zRadix36) + L".dat");
 
         zoneFiles[key] = new ZoneFile(key, file, entityFile);
     }
@@ -75,24 +80,32 @@ ZoneFile *ZonedChunkStorage::getZoneFile(int x, int z, bool create)
     ZoneFile *zoneFile = zoneFiles[key];
     zoneFile->lastUse = tickCount;
     if (!zoneFile->containsSlot(slot))
-	{
-        if (!create) return nullptr;
+    {
+        if (!create)
+        {
+            return nullptr;
+        }
     }
     return zoneFile;
-
 }
 
 ZoneIo *ZonedChunkStorage::getBuffer(int x, int z, bool create)
 {
     ZoneFile *zoneFile = getZoneFile(x, z, create);
-    if (zoneFile == nullptr) return nullptr;
+    if (zoneFile == nullptr)
+    {
+        return nullptr;
+    }
     return zoneFile->getZoneIo(getSlot(x, z));
 }
 
 LevelChunk *ZonedChunkStorage::load(Level *level, int x, int z)
 {
     ZoneIo *zoneIo = getBuffer(x, z, false);
-    if (zoneIo == nullptr) return nullptr;
+    if (zoneIo == nullptr)
+    {
+        return nullptr;
+    }
 
     LevelChunk *lc = new LevelChunk(level, x, z);
     lc->unsaved = false;
@@ -116,13 +129,15 @@ LevelChunk *ZonedChunkStorage::load(Level *level, int x, int z)
 
     lc->fixBlocks();
     return lc;
-
 }
 
 void ZonedChunkStorage::save(Level *level, LevelChunk *lc)
 {
     int64_t flags = 0;
-    if (lc->terrainPopulated) flags |= BIT_TERRAIN_POPULATED;
+    if (lc->terrainPopulated)
+    {
+        flags |= BIT_TERRAIN_POPULATED;
+    }
 
     ByteBuffer *header = ByteBuffer::allocate(CHUNK_HEADER_SIZE);
     header->order(ZonedChunkStorage::BYTEORDER);
@@ -146,40 +161,41 @@ void ZonedChunkStorage::tick()
 {
     tickCount++;
     if (tickCount % (20 * 10) == 4)
-	{
-		std::vector<int64_t> toClose;
+    {
+        std::vector<int64_t> toClose;
 
-		for ( auto& it : zoneFiles )
-		{
-			ZoneFile *zoneFile = it.second;
-            if ( zoneFile && tickCount - zoneFile->lastUse > 20 * 60)
-			{
+        for (auto &it : zoneFiles)
+        {
+            ZoneFile *zoneFile = it.second;
+            if (zoneFile && tickCount - zoneFile->lastUse > 20 * 60)
+            {
                 toClose.push_back(zoneFile->key);
             }
-		}
+        }
 
-		for ( int64_t key : toClose )
-		{
-			char buf[256];
-			sprintf(buf,"Closing zone %I64d\n",key);
-			app.DebugPrintf(buf);
+        for (int64_t key : toClose)
+        {
+            char buf[256];
+            sprintf(buf, "Closing zone %I64d\n", key);
+            app.DebugPrintf(buf);
             zoneFiles[key]->close();
-			zoneFiles.erase(zoneFiles.find(key));
-		}
+            zoneFiles.erase(zoneFiles.find(key));
+        }
     }
 }
-
 
 void ZonedChunkStorage::flush()
 {
     auto itEnd = zoneFiles.end();
-	for ( auto& it : zoneFiles )
-	{
-		ZoneFile *zoneFile = it.second;
-        if ( zoneFile )
+    for (auto &it : zoneFiles)
+    {
+        ZoneFile *zoneFile = it.second;
+        if (zoneFile)
+        {
             zoneFile->close();
-	}
-	zoneFiles.clear();
+        }
+    }
+    zoneFiles.clear();
 }
 
 void ZonedChunkStorage::loadEntities(Level *level, LevelChunk *lc)
@@ -188,11 +204,11 @@ void ZonedChunkStorage::loadEntities(Level *level, LevelChunk *lc)
     ZoneFile *zoneFile = getZoneFile(lc->x, lc->z, true);
     vector<CompoundTag *> *tags = zoneFile->entityFile->readAll(slot);
 
-	for ( CompoundTag *tag : *tags )
-	{
+    for (CompoundTag *tag : *tags)
+    {
         int type = tag->getInt(L"_TYPE");
         if (type == 0)
-		{
+        {
             shared_ptr<Entity> e = EntityIO::loadStatic(tag, level);
             if (e != nullptr)
             {
@@ -200,10 +216,13 @@ void ZonedChunkStorage::loadEntities(Level *level, LevelChunk *lc)
                 lc->addRidingEntities(e, tag);
             }
         }
-		else if (type == 1)
-		{
+        else if (type == 1)
+        {
             shared_ptr<TileEntity> te = TileEntity::loadStatic(tag);
-            if (te != nullptr) lc->addTileEntity(te);
+            if (te != nullptr)
+            {
+                lc->addTileEntity(te);
+            }
         }
     }
 }
@@ -216,16 +235,16 @@ void ZonedChunkStorage::saveEntities(Level *level, LevelChunk *lc)
     vector<CompoundTag *> tags;
 
 #ifdef _ENTITIES_RW_SECTION
-	EnterCriticalRWSection(&lc->m_csEntities, true);
+    EnterCriticalRWSection(&lc->m_csEntities, true);
 #else
-	EnterCriticalSection(&lc->m_csEntities);
+    EnterCriticalSection(&lc->m_csEntities);
 #endif
     for (int i = 0; i < LevelChunk::ENTITY_BLOCKS_LENGTH; i++)
-	{
-        vector<shared_ptr<Entity> > *entities = lc->entityBlocks[i];
+    {
+        vector<shared_ptr<Entity>> *entities = lc->entityBlocks[i];
 
-		for ( auto& e : *entities )
-		{
+        for (auto &e : *entities)
+        {
             CompoundTag *cp = new CompoundTag();
             cp->putInt(L"_TYPE", 0);
             e->save(cp);
@@ -233,20 +252,20 @@ void ZonedChunkStorage::saveEntities(Level *level, LevelChunk *lc)
         }
     }
 #ifdef _ENTITIES_RW_SECTION
-	LeaveCriticalRWSection(&lc->m_csEntities, true);
+    LeaveCriticalRWSection(&lc->m_csEntities, true);
 #else
-	LeaveCriticalSection(&lc->m_csEntities);
+    LeaveCriticalSection(&lc->m_csEntities);
 #endif
 
-	for( unordered_map<TilePos, shared_ptr<TileEntity> , TilePosKeyHash, TilePosKeyEq>::iterator it = lc->tileEntities.begin();
-		it != lc->tileEntities.end(); it++)
-	{
-		shared_ptr<TileEntity> te = it->second;
+    for (unordered_map<TilePos, shared_ptr<TileEntity>, TilePosKeyHash, TilePosKeyEq>::iterator it = lc->tileEntities.begin();
+         it != lc->tileEntities.end(); it++)
+    {
+        shared_ptr<TileEntity> te = it->second;
         CompoundTag *cp = new CompoundTag();
         cp->putInt(L"_TYPE", 1);
         te->save(cp);
         tags.push_back(cp);
-	}
+    }
 
     zoneFile->entityFile->replaceSlot(slot, &tags);
 }

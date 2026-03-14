@@ -14,32 +14,39 @@
 #define BOOST_CONTAINER_DETAIL_VALUE_INIT_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
 #include "config_begin.hpp"
 #include <boost/container/detail/workaround.hpp>
 
-namespace boost {
-namespace container {
-namespace container_detail {
+namespace boost
+{
+namespace container
+{
+namespace container_detail
+{
 
-template<class T>
+template <class T>
 struct value_init
 {
-   value_init()
-      : m_t()
-   {}
+    value_init()
+        : m_t()
+    {
+    }
 
-   operator T &() { return m_t; }
+    operator T &()
+    {
+        return m_t;
+    }
 
-   T m_t;
+    T m_t;
 };
 
-}  //namespace container_detail {
-}  //namespace container {
-}  //namespace boost {
+} // namespace container_detail
+} // namespace container
+} // namespace boost
 
 #include <boost/container/detail/config_end.hpp>
 
-#endif   //#ifndef BOOST_CONTAINER_DETAIL_VALUE_INIT_HPP
+#endif // #ifndef BOOST_CONTAINER_DETAIL_VALUE_INIT_HPP

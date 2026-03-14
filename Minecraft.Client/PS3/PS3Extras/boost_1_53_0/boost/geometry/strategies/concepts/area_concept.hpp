@@ -14,62 +14,63 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_CONCEPTS_AREA_CONCEPT_HPP
 #define BOOST_GEOMETRY_STRATEGIES_CONCEPTS_AREA_CONCEPT_HPP
 
-
 #include <boost/concept_check.hpp>
 
-
-namespace boost { namespace geometry { namespace concept
+namespace boost
+{
+namespace geometry
+{
+namespace concept
 {
 
-
-/*!
-    \brief Checks strategy for area
-    \ingroup area
-*/
-template <typename Strategy>
-class AreaStrategy
-{
+    /*!
+        \brief Checks strategy for area
+        \ingroup area
+    */
+    template <typename Strategy>
+    class AreaStrategy
+    {
 #ifndef DOXYGEN_NO_CONCEPT_MEMBERS
 
-    // 1) must define state_type,
-    typedef typename Strategy::state_type state_type;
+        // 1) must define state_type,
+        typedef typename Strategy::state_type state_type;
 
-    // 2) must define return_type,
-    typedef typename Strategy::return_type return_type;
+        // 2) must define return_type,
+        typedef typename Strategy::return_type return_type;
 
-    // 3) must define point_type, of polygon (segments)
-    typedef typename Strategy::segment_point_type spoint_type;
+        // 3) must define point_type, of polygon (segments)
+        typedef typename Strategy::segment_point_type spoint_type;
 
-    struct check_methods
-    {
-        static void apply()
+        struct check_methods
         {
-            Strategy const* str = 0;
-            state_type *st = 0;
+            static void apply()
+            {
+                Strategy const *str = 0;
+                state_type *st = 0;
 
-            // 4) must implement a method apply with the following signature
-            spoint_type const* sp = 0;
-            str->apply(*sp, *sp, *st);
+                // 4) must implement a method apply with the following signature
+                spoint_type const *sp = 0;
+                str->apply(*sp, *sp, *st);
 
-            // 5) must implement a static method result with the following signature
-            return_type r = str->result(*st);
+                // 5) must implement a static method result with the following signature
+                return_type r = str->result(*st);
 
-            boost::ignore_unused_variable_warning(r);
-            boost::ignore_unused_variable_warning(str);
+                boost::ignore_unused_variable_warning(r);
+                boost::ignore_unused_variable_warning(str);
+            }
+        };
+
+      public:
+        BOOST_CONCEPT_USAGE(AreaStrategy)
+        {
+            check_methods::apply();
         }
-    };
-
-public :
-    BOOST_CONCEPT_USAGE(AreaStrategy)
-    {
-        check_methods::apply();
-    }
 
 #endif
-};
+    };
 
-
-}}} // namespace boost::geometry::concept
-
+} // namespace concept
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_CONCEPTS_AREA_CONCEPT_HPP

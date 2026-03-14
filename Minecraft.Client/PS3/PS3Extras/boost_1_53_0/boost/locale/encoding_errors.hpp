@@ -10,60 +10,62 @@
 
 #include <boost/locale/definitions.hpp>
 #ifdef BOOST_MSVC
-#  pragma warning(push)
-#  pragma warning(disable : 4275 4251 4231 4660)
+#pragma warning(push)
+#pragma warning(disable : 4275 4251 4231 4660)
 #endif
 #include <stdexcept>
 
+namespace boost
+{
+namespace locale
+{
+namespace conv
+{
+///
+/// \addtogroup codepage
+///
+/// @{
 
+///
+/// \brief The excepton that is thrown in case of conversion error
+///
+class BOOST_SYMBOL_VISIBLE conversion_error : public std::runtime_error
+{
+  public:
+    conversion_error() : std::runtime_error("Conversion failed")
+    {
+    }
+};
 
-namespace boost {
-    namespace locale {
-        namespace conv {
-            ///
-            /// \addtogroup codepage 
-            ///
-            /// @{
+///
+/// \brief This exception is thrown in case of use of unsupported
+/// or invalid character set
+///
+class BOOST_SYMBOL_VISIBLE invalid_charset_error : public std::runtime_error
+{
+  public:
+    /// Create an error for charset \a charset
+    invalid_charset_error(std::string charset) : std::runtime_error("Invalid or unsupported charset:" + charset)
+    {
+    }
+};
 
-            ///
-            /// \brief The excepton that is thrown in case of conversion error
-            ///
-            class BOOST_SYMBOL_VISIBLE conversion_error : public std::runtime_error {
-            public:
-                conversion_error() : std::runtime_error("Conversion failed") {}
-            };
-            
-            ///
-            /// \brief This exception is thrown in case of use of unsupported
-            /// or invalid character set
-            ///
-            class BOOST_SYMBOL_VISIBLE invalid_charset_error : public std::runtime_error {
-            public:
+///
+/// enum that defines conversion policy
+///
+typedef enum
+{
+    skip = 0,             ///< Skip illegal/unconvertable characters
+    stop = 1,             ///< Stop conversion and throw conversion_error
+    default_method = skip ///< Default method - skip
+} method_type;
 
-                /// Create an error for charset \a charset
-                invalid_charset_error(std::string charset) : 
-                    std::runtime_error("Invalid or unsupported charset:" + charset)
-                {
-                }
-            };
-            
+/// @}
 
-            ///
-            /// enum that defines conversion policy
-            ///
-            typedef enum {
-                skip            = 0,    ///< Skip illegal/unconvertable characters
-                stop            = 1,    ///< Stop conversion and throw conversion_error
-                default_method  = skip  ///< Default method - skip
-            } method_type;
+} // namespace conv
 
-
-            /// @}
-
-        } // conv
-
-    } // locale
-} // boost
+} // namespace locale
+} // namespace boost
 
 #ifdef BOOST_MSVC
 #pragma warning(pop)
@@ -72,4 +74,3 @@ namespace boost {
 #endif
 
 // vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
-

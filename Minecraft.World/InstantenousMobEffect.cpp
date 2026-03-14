@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "net.minecraft.world.effect.h"
+#include "stdafx.h"
 
 InstantenousMobEffect::InstantenousMobEffect(int id, bool isHarmful, eMinecraftColour color) : MobEffect(id, isHarmful, color)
 {
@@ -7,10 +7,10 @@ InstantenousMobEffect::InstantenousMobEffect(int id, bool isHarmful, eMinecraftC
 
 bool InstantenousMobEffect::isInstantenous()
 {
-	return true;
+    return true;
 }
 
 bool InstantenousMobEffect::isDurationEffectTick(int remainingDuration, int amplification)
 {
-	return remainingDuration >= 1;
+    return remainingDuration >= 1;
 }

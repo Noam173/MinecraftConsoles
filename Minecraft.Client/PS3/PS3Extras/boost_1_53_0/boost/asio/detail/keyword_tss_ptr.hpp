@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_KEYWORD_TSS_PTR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -23,43 +23,46 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 template <typename T>
 class keyword_tss_ptr
-  : private noncopyable
+    : private noncopyable
 {
-public:
-  // Constructor.
-  keyword_tss_ptr()
-  {
-  }
+  public:
+    // Constructor.
+    keyword_tss_ptr()
+    {
+    }
 
-  // Destructor.
-  ~keyword_tss_ptr()
-  {
-  }
+    // Destructor.
+    ~keyword_tss_ptr()
+    {
+    }
 
-  // Get the value.
-  operator T*() const
-  {
-    return value_;
-  }
+    // Get the value.
+    operator T *() const
+    {
+        return value_;
+    }
 
-  // Set the value.
-  void operator=(T* value)
-  {
-    value_ = value;
-  }
+    // Set the value.
+    void operator=(T *value)
+    {
+        value_ = value;
+    }
 
-private:
-  static __thread T* value_;
+  private:
+    static __thread T *value_;
 };
 
 template <typename T>
-__thread T* keyword_tss_ptr<T>::value_;
+__thread T *keyword_tss_ptr<T>::value_;
 
 } // namespace detail
 } // namespace asio

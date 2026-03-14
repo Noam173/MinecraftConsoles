@@ -19,14 +19,11 @@
 
 // GCC supports atomic<> from version 4.8 onwards.
 #if defined(__GNUC__)
-# if defined(__GNUC_PATCHLEVEL__)
-#  define __GNUC_VERSION__ (__GNUC__ * 10000 \
-                            + __GNUC_MINOR__ * 100 \
-                            + __GNUC_PATCHLEVEL__)
-# else
-#  define __GNUC_VERSION__ (__GNUC__ * 10000 \
-                            + __GNUC_MINOR__ * 100)
-# endif
+#if defined(__GNUC_PATCHLEVEL__)
+#define __GNUC_VERSION__ (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#else
+#define __GNUC_VERSION__ (__GNUC__ * 10000 + __GNUC_MINOR__ * 100)
+#endif
 #endif
 
 #if (__GNUC_VERSION__ >= 40800) && (__cplusplus >= 201103L)
@@ -41,9 +38,12 @@
 #include <atomic>
 #endif
 
-namespace boost {
-namespace lockfree {
-namespace detail {
+namespace boost
+{
+namespace lockfree
+{
+namespace detail
+{
 
 #if defined(BOOST_LOCKFREE_NO_HDR_ATOMIC)
 using boost::atomic;
@@ -59,13 +59,14 @@ using std::memory_order_relaxed;
 using std::memory_order_release;
 #endif
 
-}
+} // namespace detail
 using detail::atomic;
 using detail::memory_order_acquire;
 using detail::memory_order_consume;
 using detail::memory_order_relaxed;
 using detail::memory_order_release;
 
-}}
+} // namespace lockfree
+} // namespace boost
 
 #endif /* BOOST_LOCKFREE_DETAIL_ATOMIC_HPP */

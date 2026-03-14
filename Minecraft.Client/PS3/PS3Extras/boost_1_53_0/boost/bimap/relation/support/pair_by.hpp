@@ -12,30 +12,34 @@
 #ifndef BOOST_BIMAP_RELATION_SUPPORT_PAIR_BY_HPP
 #define BOOST_BIMAP_RELATION_SUPPORT_PAIR_BY_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
-#include <boost/bimap/relation/support/pair_type_by.hpp>
 #include <boost/bimap/relation/detail/access_builder.hpp>
+#include <boost/bimap/relation/support/pair_type_by.hpp>
 
 #ifdef BOOST_BIMAP_ONLY_DOXYGEN_WILL_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
 /** \brief Gets a pair view of the relation.
 
 \ingroup relation_group
                                                                         **/
 
-template< class Tag, class Relation >
-BOOST_DEDUCED_TYPENAME result_of::pair_by<Tag,Relation>::type
-    pair_by( Relation & rel );
+template <class Tag, class Relation>
+BOOST_DEDUCED_TYPENAME result_of::pair_by<Tag, Relation>::type
+pair_by(Relation &rel);
 
 } // namespace support
 } // namespace relation
@@ -44,14 +48,16 @@ BOOST_DEDUCED_TYPENAME result_of::pair_by<Tag,Relation>::type
 
 #endif // BOOST_BIMAP_ONLY_DOXYGEN_WILL_PROCESS_THE_FOLLOWING_LINES
 
-
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
-
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
 // Since it is very error-prone to directly write the hole bunch
 // of relation accesor. They are buil from litle macro blocks that
@@ -81,39 +87,30 @@ namespace support {
     } // namespace result_of
 */
 
-BOOST_BIMAP_SYMMETRIC_ACCESS_RESULT_OF_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_ACCESS_RESULT_OF_BUILDER(
     pair_by,
-    pair_type_by
-)
-
-
+    pair_type_by)
 
 // Implementation
 // -------------------------------------------------------------------------
 
-BOOST_BIMAP_SYMMETRIC_ACCESS_IMPLEMENTATION_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_ACCESS_IMPLEMENTATION_BUILDER(
     pair_by,
     Relation,
     rel,
     return rel.get_left_pair(),
-    return rel.get_right_pair()
-)
+    return rel.get_right_pair())
 
 // Interface
 // --------------------------------------------------------------------------
 
-BOOST_BIMAP_SYMMETRIC_ACCESS_INTERFACE_BUILDER
-(
-    pair_by
-)
+BOOST_BIMAP_SYMMETRIC_ACCESS_INTERFACE_BUILDER(
+    pair_by)
 
 } // namespace support
 } // namespace relation
 } // namespace bimaps
 } // namespace boost
-
 
 #endif // BOOST_BIMAP_DOXIGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 

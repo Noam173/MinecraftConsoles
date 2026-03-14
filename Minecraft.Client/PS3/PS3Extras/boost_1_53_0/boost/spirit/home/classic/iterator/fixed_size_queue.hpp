@@ -9,28 +9,32 @@
 #ifndef FIXED_SIZE_QUEUE
 #define FIXED_SIZE_QUEUE
 
+#include <cstddef>
 #include <cstdlib>
 #include <iterator>
-#include <cstddef>
 
-#include <boost/spirit/home/classic/namespace.hpp>
 #include <boost/spirit/home/classic/core/assert.hpp> // for BOOST_SPIRIT_ASSERT
+#include <boost/spirit/home/classic/namespace.hpp>
 
 // FIXES for broken compilers
 #include <boost/config.hpp>
 #include <boost/iterator_adaptors.hpp>
 
-#define BOOST_SPIRIT_ASSERT_FSQ_SIZE \
-    BOOST_SPIRIT_ASSERT(((m_tail + N + 1) - m_head) % (N+1) == m_size % (N+1)) \
+#define BOOST_SPIRIT_ASSERT_FSQ_SIZE                                               \
+    BOOST_SPIRIT_ASSERT(((m_tail + N + 1) - m_head) % (N + 1) == m_size % (N + 1)) \
     /**/
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace spirit {
+namespace boost
+{
+namespace spirit
+{
 
 BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace impl {
+namespace impl
+{
 
 #if !defined(BOOST_ITERATOR_ADAPTORS_VERSION) || \
     BOOST_ITERATOR_ADAPTORS_VERSION < 0x0200
@@ -39,28 +43,34 @@ namespace impl {
 
 template <typename QueueT, typename T, typename PointerT>
 class fsq_iterator
-:   public boost::iterator_adaptor<
-        fsq_iterator<QueueT, T, PointerT>, 
-        PointerT,
-        T,
-        std::random_access_iterator_tag
-    >
+    : public boost::iterator_adaptor<
+          fsq_iterator<QueueT, T, PointerT>,
+          PointerT,
+          T,
+          std::random_access_iterator_tag>
 {
-public:
+  public:
     typedef typename QueueT::position_t position;
     typedef boost::iterator_adaptor<
-            fsq_iterator<QueueT, T, PointerT>, PointerT, T,
-            std::random_access_iterator_tag
-        > base_t;
+        fsq_iterator<QueueT, T, PointerT>, PointerT, T,
+        std::random_access_iterator_tag>
+        base_t;
 
-    fsq_iterator() {}
-    fsq_iterator(position const &p_) : p(p_) {}
-    
-    position const &get_position() const { return p; }
-    
-private:
+    fsq_iterator()
+    {
+    }
+    fsq_iterator(position const &p_) : p(p_)
+    {
+    }
+
+    position const &get_position() const
+    {
+        return p;
+    }
+
+  private:
     friend class boost::iterator_core_access;
-    
+
     typename base_t::reference dereference() const
     {
         return p.self->m_queue[p.pos];
@@ -69,41 +79,43 @@ private:
     void increment()
     {
         ++p.pos;
-        if (p.pos == QueueT::MAX_SIZE+1)
+        if (p.pos == QueueT::MAX_SIZE + 1)
+        {
             p.pos = 0;
+        }
     }
 
     void decrement()
     {
         if (p.pos == 0)
+        {
             p.pos = QueueT::MAX_SIZE;
+        }
         else
+        {
             --p.pos;
+        }
     }
 
     template <
-        typename OtherDerivedT, typename OtherIteratorT, 
-        typename V, typename C, typename R, typename D
-    >   
-    bool equal(iterator_adaptor<OtherDerivedT, OtherIteratorT, V, C, R, D> 
-        const &x) const
+        typename OtherDerivedT, typename OtherIteratorT,
+        typename V, typename C, typename R, typename D>
+    bool equal(iterator_adaptor<OtherDerivedT, OtherIteratorT, V, C, R, D> const &x) const
     {
-        position const &rhs_pos = 
+        position const &rhs_pos =
             static_cast<OtherDerivedT const &>(x).get_position();
         return (p.self == rhs_pos.self) && (p.pos == rhs_pos.pos);
     }
 
     template <
-        typename OtherDerivedT, typename OtherIteratorT, 
-        typename V, typename C, typename R, typename D
-    >   
+        typename OtherDerivedT, typename OtherIteratorT,
+        typename V, typename C, typename R, typename D>
     typename base_t::difference_type distance_to(
-        iterator_adaptor<OtherDerivedT, OtherIteratorT, V, C, R, D> 
-        const &x) const
+        iterator_adaptor<OtherDerivedT, OtherIteratorT, V, C, R, D> const &x) const
     {
         typedef typename base_t::difference_type diff_t;
 
-        position const &p2 = 
+        position const &p2 =
             static_cast<OtherDerivedT const &>(x).get_position();
         std::size_t pos1 = p.pos;
         std::size_t pos2 = p2.pos;
@@ -113,14 +125,22 @@ private:
         BOOST_SPIRIT_ASSERT(p.self == p2.self);
 
         if (pos1 < p.self->m_head)
+        {
             pos1 += QueueT::MAX_SIZE;
+        }
         if (pos2 < p2.self->m_head)
+        {
             pos2 += QueueT::MAX_SIZE;
+        }
 
         if (pos2 > pos1)
+        {
             return diff_t(pos2 - pos1);
+        }
         else
+        {
             return -diff_t(pos1 - pos2);
+        }
     }
 
     void advance(typename base_t::difference_type n)
@@ -135,19 +155,25 @@ private:
         {
             n = -n;
             if (p.pos < (std::size_t)n)
-                p.pos = QueueT::MAX_SIZE+1 - (n - p.pos);
+            {
+                p.pos = QueueT::MAX_SIZE + 1 - (n - p.pos);
+            }
             else
+            {
                 p.pos -= n;
+            }
         }
         else
         {
             p.pos += n;
-            if (p.pos >= QueueT::MAX_SIZE+1)
-                p.pos -= QueueT::MAX_SIZE+1;
+            if (p.pos >= QueueT::MAX_SIZE + 1)
+            {
+                p.pos -= QueueT::MAX_SIZE + 1;
+            }
         }
     }
-    
-private:
+
+  private:
     position p;
 };
 
@@ -159,40 +185,43 @@ private:
 template <typename T, std::size_t N>
 class fixed_size_queue
 {
-private:
+  private:
     struct position
     {
-        fixed_size_queue* self;
+        fixed_size_queue *self;
         std::size_t pos;
 
-        position() : self(0), pos(0) {}
+        position() : self(0), pos(0)
+        {
+        }
 
         // The const_cast here is just to avoid to have two different
         //  position structures for the const and non-const case.
         // The const semantic is guaranteed by the iterator itself
-        position(const fixed_size_queue* s, std::size_t p)
-            : self(const_cast<fixed_size_queue*>(s)), pos(p)
-        {}
+        position(const fixed_size_queue *s, std::size_t p)
+            : self(const_cast<fixed_size_queue *>(s)), pos(p)
+        {
+        }
     };
 
-public:
+  public:
     // Declare the iterators
-    typedef impl::fsq_iterator<fixed_size_queue<T, N>, T, T*> iterator;
-    typedef impl::fsq_iterator<fixed_size_queue<T, N>, T const, T const*> 
+    typedef impl::fsq_iterator<fixed_size_queue<T, N>, T, T *> iterator;
+    typedef impl::fsq_iterator<fixed_size_queue<T, N>, T const, T const *>
         const_iterator;
     typedef position position_t;
 
-    friend class impl::fsq_iterator<fixed_size_queue<T, N>, T, T*>;
-    friend class impl::fsq_iterator<fixed_size_queue<T, N>, T const, T const*>;
-    
+    friend class impl::fsq_iterator<fixed_size_queue<T, N>, T, T *>;
+    friend class impl::fsq_iterator<fixed_size_queue<T, N>, T const, T const *>;
+
     fixed_size_queue();
-    fixed_size_queue(const fixed_size_queue& x);
-    fixed_size_queue& operator=(const fixed_size_queue& x);
+    fixed_size_queue(const fixed_size_queue &x);
+    fixed_size_queue &operator=(const fixed_size_queue &x);
     ~fixed_size_queue();
 
-    void push_back(const T& e);
-    void push_front(const T& e);
-    void serve(T& e);
+    void push_back(const T &e);
+    void push_front(const T &e);
+    void serve(T &e);
     void pop_front();
 
     bool empty() const
@@ -230,17 +259,17 @@ public:
         return m_size;
     }
 
-    T& front()
+    T &front()
     {
         return m_queue[m_head];
     }
 
-    const T& front() const
+    const T &front() const
     {
         return m_queue[m_head];
     }
 
-private:
+  private:
     // Redefine the template parameters to avoid using partial template
     //  specialization on the iterator policy to extract N.
     BOOST_STATIC_CONSTANT(std::size_t, MAX_SIZE = N);
@@ -248,39 +277,33 @@ private:
     std::size_t m_head;
     std::size_t m_tail;
     std::size_t m_size;
-    T m_queue[N+1];
+    T m_queue[N + 1];
 };
 
 template <typename T, std::size_t N>
-inline
-fixed_size_queue<T, N>::fixed_size_queue()
-    : m_head(0)
-    , m_tail(0)
-    , m_size(0)
+inline fixed_size_queue<T, N>::fixed_size_queue()
+    : m_head(0), m_tail(0), m_size(0)
 {
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 }
 
 template <typename T, std::size_t N>
-inline
-fixed_size_queue<T, N>::fixed_size_queue(const fixed_size_queue& x)
-    : m_head(x.m_head)
-    , m_tail(x.m_tail)
-    , m_size(x.m_size)
+inline fixed_size_queue<T, N>::fixed_size_queue(const fixed_size_queue &x)
+    : m_head(x.m_head), m_tail(x.m_tail), m_size(x.m_size)
 {
     copy(x.begin(), x.end(), begin());
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 }
 
 template <typename T, std::size_t N>
-inline fixed_size_queue<T, N>&
-fixed_size_queue<T, N>::operator=(const fixed_size_queue& x)
+inline fixed_size_queue<T, N> &
+fixed_size_queue<T, N>::operator=(const fixed_size_queue &x)
 {
     if (this != &x)
     {
@@ -289,113 +312,117 @@ fixed_size_queue<T, N>::operator=(const fixed_size_queue& x)
         m_size = x.m_size;
         copy(x.begin(), x.end(), begin());
     }
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 
     return *this;
 }
 
 template <typename T, std::size_t N>
-inline
-fixed_size_queue<T, N>::~fixed_size_queue()
+inline fixed_size_queue<T, N>::~fixed_size_queue()
 {
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 }
 
 template <typename T, std::size_t N>
 inline void
-fixed_size_queue<T, N>::push_back(const T& e)
+fixed_size_queue<T, N>::push_back(const T &e)
 {
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 
     BOOST_SPIRIT_ASSERT(!full());
 
     m_queue[m_tail] = e;
     ++m_size;
     ++m_tail;
-    if (m_tail == N+1)
+    if (m_tail == N + 1)
+    {
         m_tail = 0;
+    }
 
-
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 }
 
 template <typename T, std::size_t N>
 inline void
-fixed_size_queue<T, N>::push_front(const T& e)
+fixed_size_queue<T, N>::push_front(const T &e)
 {
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 
     BOOST_SPIRIT_ASSERT(!full());
 
     if (m_head == 0)
+    {
         m_head = N;
+    }
     else
+    {
         --m_head;
+    }
 
     m_queue[m_head] = e;
     ++m_size;
 
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 }
-
 
 template <typename T, std::size_t N>
 inline void
-fixed_size_queue<T, N>::serve(T& e)
+fixed_size_queue<T, N>::serve(T &e)
 {
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 
     e = m_queue[m_head];
     pop_front();
 }
 
-
-
 template <typename T, std::size_t N>
 inline void
 fixed_size_queue<T, N>::pop_front()
 {
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 
     ++m_head;
-    if (m_head == N+1)
+    if (m_head == N + 1)
+    {
         m_head = 0;
+    }
     --m_size;
 
-    BOOST_SPIRIT_ASSERT(m_size <= N+1);
+    BOOST_SPIRIT_ASSERT(m_size <= N + 1);
     BOOST_SPIRIT_ASSERT_FSQ_SIZE;
-    BOOST_SPIRIT_ASSERT(m_head <= N+1);
-    BOOST_SPIRIT_ASSERT(m_tail <= N+1);
+    BOOST_SPIRIT_ASSERT(m_head <= N + 1);
+    BOOST_SPIRIT_ASSERT(m_tail <= N + 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 BOOST_SPIRIT_CLASSIC_NAMESPACE_END
 
-}} // namespace BOOST_SPIRIT_CLASSIC_NS
+} // namespace spirit
+} // namespace boost
 
 #undef BOOST_SPIRIT_ASSERT_FSQ_SIZE
 

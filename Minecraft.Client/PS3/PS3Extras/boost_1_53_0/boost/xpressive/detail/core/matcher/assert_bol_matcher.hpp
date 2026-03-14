@@ -10,62 +10,68 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/next_prior.hpp>
-#include <boost/xpressive/detail/detail_fwd.hpp>
+#include <boost/xpressive/detail/core/matcher/assert_line_base.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
 #include <boost/xpressive/detail/core/state.hpp>
-#include <boost/xpressive/detail/core/matcher/assert_line_base.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // assert_bol_matcher
-    //
-    template<typename Traits>
-    struct assert_bol_matcher
-      : assert_line_base<Traits>
+///////////////////////////////////////////////////////////////////////////////
+// assert_bol_matcher
+//
+template <typename Traits>
+struct assert_bol_matcher
+    : assert_line_base<Traits>
+{
+    typedef typename Traits::char_type char_type;
+
+    assert_bol_matcher(Traits const &tr)
+        : assert_line_base<Traits>(tr)
     {
-        typedef typename Traits::char_type char_type;
+    }
 
-        assert_bol_matcher(Traits const &tr)
-          : assert_line_base<Traits>(tr)
+    template <typename BidiIter, typename Next>
+    bool match(match_state<BidiIter> &state, Next const &next) const
+    {
+        if (state.bos())
         {
+            if (!state.flags_.match_bol_)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            char_type ch = *boost::prior(state.cur_);
+
+            // If the previous character is not a newline, we're not at the start of a line
+            if (!traits_cast<Traits>(state).isctype(ch, this->newline_))
+            {
+                return false;
+            }
+            // There is no line-break between \r and \n
+            else if (ch == this->cr_ && !state.eos() && *state.cur_ == this->nl_)
+            {
+                return false;
+            }
         }
 
-        template<typename BidiIter, typename Next>
-        bool match(match_state<BidiIter> &state, Next const &next) const
-        {
-            if(state.bos())
-            {
-                if(!state.flags_.match_bol_)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                char_type ch = *boost::prior(state.cur_);
+        return next.match(state);
+    }
+};
 
-                // If the previous character is not a newline, we're not at the start of a line
-                if(!traits_cast<Traits>(state).isctype(ch, this->newline_))
-                {
-                    return false;
-                }
-                // There is no line-break between \r and \n
-                else if(ch == this->cr_ && !state.eos() && *state.cur_ == this->nl_)
-                {
-                    return false;
-                }
-            }
-
-            return next.match(state);
-        }
-    };
-
-}}}
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

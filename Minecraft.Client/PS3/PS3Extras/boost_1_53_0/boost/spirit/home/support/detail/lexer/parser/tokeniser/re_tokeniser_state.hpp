@@ -7,8 +7,8 @@
 #define BOOST_LEXER_RE_TOKENISER_STATE_HPP
 
 #include "../../consts.hpp"
-#include <locale>
 #include "../../size_t.hpp"
+#include <locale>
 #include <stack>
 
 namespace boost
@@ -17,11 +17,11 @@ namespace lexer
 {
 namespace detail
 {
-template<typename CharT>
+template <typename CharT>
 struct basic_re_tokeniser_state
 {
-    const CharT * const _start;
-    const CharT * const _end;
+    const CharT *const _start;
+    const CharT *const _end;
     const CharT *_curr;
     regex_flags _flags;
     std::stack<regex_flags> _flags_stack;
@@ -31,23 +31,21 @@ struct basic_re_tokeniser_state
     bool _seen_BOL_assertion;
     bool _seen_EOL_assertion;
 
-    basic_re_tokeniser_state (const CharT *start_, const CharT * const end_,
-        const regex_flags flags_, const std::locale locale_) :
-        _start (start_),
-        _end (end_),
-        _curr (start_),
-        _flags (flags_),
-        _locale (locale_),
-        _paren_count (0),
-        _in_string (false),
-        _seen_BOL_assertion (false),
-        _seen_EOL_assertion (false)
+    basic_re_tokeniser_state(const CharT *start_, const CharT *const end_,
+                             const regex_flags flags_, const std::locale locale_) : _start(start_),
+                                                                                    _end(end_),
+                                                                                    _curr(start_),
+                                                                                    _flags(flags_),
+                                                                                    _locale(locale_),
+                                                                                    _paren_count(0),
+                                                                                    _in_string(false),
+                                                                                    _seen_BOL_assertion(false),
+                                                                                    _seen_EOL_assertion(false)
     {
     }
 
     // prevent VC++ 7.1 warning:
-    const basic_re_tokeniser_state &operator =
-        (const basic_re_tokeniser_state &rhs_)
+    const basic_re_tokeniser_state &operator=(const basic_re_tokeniser_state &rhs_)
     {
         _start = rhs_._start;
         _end = rhs_._end;
@@ -61,7 +59,7 @@ struct basic_re_tokeniser_state
         return this;
     }
 
-    inline bool next (CharT &ch_)
+    inline bool next(CharT &ch_)
     {
         if (_curr >= _end)
         {
@@ -71,28 +69,28 @@ struct basic_re_tokeniser_state
         else
         {
             ch_ = *_curr;
-            increment ();
+            increment();
             return false;
         }
     }
 
-    inline void increment ()
+    inline void increment()
     {
         ++_curr;
     }
 
-    inline std::size_t index ()
+    inline std::size_t index()
     {
         return _curr - _start;
     }
 
-    inline bool eos ()
+    inline bool eos()
     {
         return _curr >= _end;
     }
 };
-}
-}
-}
+} // namespace detail
+} // namespace lexer
+} // namespace boost
 
 #endif

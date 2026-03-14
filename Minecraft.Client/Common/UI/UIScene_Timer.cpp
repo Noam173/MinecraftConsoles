@@ -1,32 +1,31 @@
-#include "stdafx.h"
-#include "UI.h"
 #include "UIScene_Timer.h"
-
+#include "UI.h"
+#include "stdafx.h"
 
 UIScene_Timer::UIScene_Timer(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
-	// Setup all the Iggy references we need for this scene
-	initialiseMovie();
+    // Setup all the Iggy references we need for this scene
+    initialiseMovie();
 
-	// In normal usage, we want to hide the new background that's used during texture pack reloading
-	if(initData == 0)
-	{
-		m_controlBackground.setVisible(false);
-	}
+    // In normal usage, we want to hide the new background that's used during texture pack reloading
+    if (initData == 0)
+    {
+        m_controlBackground.setVisible(false);
+    }
 }
 
 wstring UIScene_Timer::getMoviePath()
 {
-	return L"Timer";
+    return L"Timer";
 }
 
 void UIScene_Timer::reloadMovie(bool force)
 {
-	// Never needs reloaded
+    // Never needs reloaded
 }
 
 bool UIScene_Timer::needsReloaded()
 {
-	// Never needs reloaded
-	return false;
+    // Never needs reloaded
+    return false;
 }

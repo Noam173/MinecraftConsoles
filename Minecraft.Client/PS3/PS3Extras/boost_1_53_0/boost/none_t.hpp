@@ -12,13 +12,18 @@
 #ifndef BOOST_NONE_T_17SEP2003_HPP
 #define BOOST_NONE_T_17SEP2003_HPP
 
-namespace boost {
+namespace boost
+{
 
-namespace detail { struct none_helper{}; }
+namespace detail
+{
+struct none_helper
+{
+};
+} // namespace detail
 
-typedef int detail::none_helper::*none_t ;
+typedef int detail::none_helper::*none_t;
 
 } // namespace boost
 
 #endif
-

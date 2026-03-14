@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_SUPPORT_ITERATOR_TYPE_BY_HPP
 #define BOOST_BIMAP_SUPPORT_ITERATOR_TYPE_BY_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -24,7 +24,7 @@
 /** \struct boost::bimaps::support::iterator_type_by
 
 \brief Metafunction to obtain the iterator type of the map view by one of the sides.
-These metafunctions can be used outside the bimap framework for other bimap 
+These metafunctions can be used outside the bimap framework for other bimap
 signature compatible classes.
 \code
 
@@ -72,65 +72,54 @@ See also member_at.
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace support
+{
 
 // Implementation of iterator type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     iterator_type_by,
     left_iterator,
-    right_iterator
-)
+    right_iterator)
 
 // Implementation of const iterator type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     const_iterator_type_by,
     left_const_iterator,
-    right_const_iterator
-)
-
+    right_const_iterator)
 
 // Implementation of reverse iterator type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     reverse_iterator_type_by,
     left_reverse_iterator,
-    right_reverse_iterator
-)
+    right_reverse_iterator)
 
 // Implementation of const reverse iterator type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     const_reverse_iterator_type_by,
     left_const_reverse_iterator,
-    right_const_reverse_iterator
-)
-
+    right_const_reverse_iterator)
 
 // Implementation of local iterator type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     local_iterator_type_by,
     left_local_iterator,
-    right_local_iterator
-)
+    right_local_iterator)
 
 // Implementation of const local iterator type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     const_local_iterator_type_by,
     left_const_local_iterator,
-    right_const_local_iterator
-)
+    right_const_local_iterator)
 
 } // namespace support
 } // namespace bimaps
@@ -139,4 +128,3 @@ BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_SUPPORT_ITERATOR_TYPE_BY_HPP
-

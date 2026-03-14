@@ -12,7 +12,7 @@
 #define BOOST_ASSIGN_STD_STACK_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/assign/list_inserter.hpp>
@@ -24,14 +24,14 @@ namespace boost
 namespace assign
 {
 
-    template< class V, class C, class V2 >
-    inline list_inserter< assign_detail::call_push< std::stack<V,C> >, V >
-    operator+=( std::stack<V,C>& c, V2 v )
-    {
-       return push( c )( v );
-    }
-    
+template <class V, class C, class V2>
+inline list_inserter<assign_detail::call_push<std::stack<V, C>>, V>
+operator+=(std::stack<V, C> &c, V2 v)
+{
+    return push(c)(v);
 }
-}
+
+} // namespace assign
+} // namespace boost
 
 #endif

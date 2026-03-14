@@ -1,6 +1,5 @@
-#include "stdafx.h"
 #include "IceBiome.h"
+#include "stdafx.h"
 
-IceBiome::IceBiome(int id) : Biome(id)
-{
-};
+IceBiome::IceBiome(int id) : Biome(id) {
+                             };

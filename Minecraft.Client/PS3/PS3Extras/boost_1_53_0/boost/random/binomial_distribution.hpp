@@ -22,17 +22,21 @@
 
 #include <boost/random/detail/disable_warnings.hpp>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
-namespace detail {
+namespace detail
+{
 
-template<class RealType>
-struct binomial_table {
+template <class RealType>
+struct binomial_table
+{
     static const RealType table[10];
 };
 
-template<class RealType>
+template <class RealType>
 const RealType binomial_table<RealType>::table[10] = {
     0.08106146679532726,
     0.04134069595540929,
@@ -43,10 +47,9 @@ const RealType binomial_table<RealType>::table[10] = {
     0.01189670994589177,
     0.01041126526197209,
     0.009255462182712733,
-    0.008330563433362871
-};
+    0.008330563433362871};
 
-}
+} // namespace detail
 
 /**
  * The binomial distribution is an integer valued distribution with
@@ -64,14 +67,16 @@ const RealType binomial_table<RealType>::table[10] = {
  *  Issue 1 & 2 April 1993 , pages 101 - 110
  *  @endblockquote
  */
-template<class IntType = int, class RealType = double>
-class binomial_distribution {
-public:
+template <class IntType = int, class RealType = double>
+class binomial_distribution
+{
+  public:
     typedef IntType result_type;
     typedef RealType input_type;
 
-    class param_type {
-    public:
+    class param_type
+    {
+      public:
         typedef binomial_distribution distribution_type;
         /**
          * Construct a param_type object.  @c t and @c p
@@ -79,48 +84,56 @@ public:
          *
          * Requires: t >=0 && 0 <= p <= 1
          */
-        explicit param_type(IntType t_arg = 1, RealType p_arg = RealType (0.5))
-          : _t(t_arg), _p(p_arg)
-        {}
+        explicit param_type(IntType t_arg = 1, RealType p_arg = RealType(0.5))
+            : _t(t_arg), _p(p_arg)
+        {
+        }
         /** Returns the @c t parameter of the distribution. */
-        IntType t() const { return _t; }
+        IntType t() const
+        {
+            return _t;
+        }
         /** Returns the @c p parameter of the distribution. */
-        RealType p() const { return _p; }
+        RealType p() const
+        {
+            return _p;
+        }
 #ifndef BOOST_RANDOM_NO_STREAM_OPERATORS
         /** Writes the parameters of the distribution to a @c std::ostream. */
-        template<class CharT, class Traits>
-        friend std::basic_ostream<CharT,Traits>&
-        operator<<(std::basic_ostream<CharT,Traits>& os,
-                   const param_type& parm)
+        template <class CharT, class Traits>
+        friend std::basic_ostream<CharT, Traits> &
+        operator<<(std::basic_ostream<CharT, Traits> &os,
+                   const param_type &parm)
         {
             os << parm._p << " " << parm._t;
             return os;
         }
-    
+
         /** Reads the parameters of the distribution from a @c std::istream. */
-        template<class CharT, class Traits>
-        friend std::basic_istream<CharT,Traits>&
-        operator>>(std::basic_istream<CharT,Traits>& is, param_type& parm)
+        template <class CharT, class Traits>
+        friend std::basic_istream<CharT, Traits> &
+        operator>>(std::basic_istream<CharT, Traits> &is, param_type &parm)
         {
             is >> parm._p >> std::ws >> parm._t;
             return is;
         }
 #endif
         /** Returns true if the parameters have the same values. */
-        friend bool operator==(const param_type& lhs, const param_type& rhs)
+        friend bool operator==(const param_type &lhs, const param_type &rhs)
         {
             return lhs._t == rhs._t && lhs._p == rhs._p;
         }
         /** Returns true if the parameters have different values. */
-        friend bool operator!=(const param_type& lhs, const param_type& rhs)
+        friend bool operator!=(const param_type &lhs, const param_type &rhs)
         {
             return !(lhs == rhs);
         }
-    private:
+
+      private:
         IntType _t;
         RealType _p;
     };
-    
+
     /**
      * Construct a @c binomial_distribution object. @c t and @c p
      * are the parameters of the distribution.
@@ -129,65 +142,88 @@ public:
      */
     explicit binomial_distribution(IntType t_arg = 1,
                                    RealType p_arg = RealType(0.5))
-      : _t(t_arg), _p(p_arg)
+        : _t(t_arg), _p(p_arg)
     {
         init();
     }
-    
+
     /**
      * Construct an @c binomial_distribution object from the
      * parameters.
      */
-    explicit binomial_distribution(const param_type& parm)
-      : _t(parm.t()), _p(parm.p())
+    explicit binomial_distribution(const param_type &parm)
+        : _t(parm.t()), _p(parm.p())
     {
         init();
     }
-    
+
     /**
      * Returns a random variate distributed according to the
      * binomial distribution.
      */
-    template<class URNG>
-    IntType operator()(URNG& urng) const
+    template <class URNG>
+    IntType operator()(URNG &urng) const
     {
-        if(use_inversion()) {
-            if(0.5 < _p) {
-                return _t - invert(_t, 1-_p, urng);
-            } else {
+        if (use_inversion())
+        {
+            if (0.5 < _p)
+            {
+                return _t - invert(_t, 1 - _p, urng);
+            }
+            else
+            {
                 return invert(_t, _p, urng);
             }
-        } else if(0.5 < _p) {
+        }
+        else if (0.5 < _p)
+        {
             return _t - generate(urng);
-        } else {
+        }
+        else
+        {
             return generate(urng);
         }
     }
-    
+
     /**
      * Returns a random variate distributed according to the
      * binomial distribution with parameters specified by @c param.
      */
-    template<class URNG>
-    IntType operator()(URNG& urng, const param_type& parm) const
+    template <class URNG>
+    IntType operator()(URNG &urng, const param_type &parm) const
     {
         return binomial_distribution(parm)(urng);
     }
 
     /** Returns the @c t parameter of the distribution. */
-    IntType t() const { return _t; }
+    IntType t() const
+    {
+        return _t;
+    }
     /** Returns the @c p parameter of the distribution. */
-    RealType p() const { return _p; }
+    RealType p() const
+    {
+        return _p;
+    }
 
     /** Returns the smallest value that the distribution can produce. */
-    IntType min BOOST_PREVENT_MACRO_SUBSTITUTION() const { return 0; }
+    IntType min BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return 0;
+    }
     /** Returns the largest value that the distribution can produce. */
-    IntType max BOOST_PREVENT_MACRO_SUBSTITUTION() const { return _t; }
+    IntType max BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return _t;
+    }
 
     /** Returns the parameters of the distribution. */
-    param_type param() const { return param_type(_t, _p); }
+    param_type param() const
+    {
+        return param_type(_t, _p);
+    }
     /** Sets parameters of the distribution. */
-    void param(const param_type& parm)
+    void param(const param_type &parm)
     {
         _t = parm.t();
         _p = parm.p();
@@ -198,23 +234,25 @@ public:
      * Effects: Subsequent uses of the distribution do not depend
      * on values produced by any engine prior to invoking reset.
      */
-    void reset() { }
+    void reset()
+    {
+    }
 
 #ifndef BOOST_RANDOM_NO_STREAM_OPERATORS
     /** Writes the parameters of the distribution to a @c std::ostream. */
-    template<class CharT, class Traits>
-    friend std::basic_ostream<CharT,Traits>&
-    operator<<(std::basic_ostream<CharT,Traits>& os,
-               const binomial_distribution& bd)
+    template <class CharT, class Traits>
+    friend std::basic_ostream<CharT, Traits> &
+    operator<<(std::basic_ostream<CharT, Traits> &os,
+               const binomial_distribution &bd)
     {
         os << bd.param();
         return os;
     }
-    
+
     /** Reads the parameters of the distribution from a @c std::istream. */
-    template<class CharT, class Traits>
-    friend std::basic_istream<CharT,Traits>&
-    operator>>(std::basic_istream<CharT,Traits>& is, binomial_distribution& bd)
+    template <class CharT, class Traits>
+    friend std::basic_istream<CharT, Traits> &
+    operator>>(std::basic_istream<CharT, Traits> &is, binomial_distribution &bd)
     {
         bd.read(is);
         return is;
@@ -223,27 +261,28 @@ public:
 
     /** Returns true if the two distributions will produce the same
         sequence of values, given equal generators. */
-    friend bool operator==(const binomial_distribution& lhs,
-                           const binomial_distribution& rhs)
+    friend bool operator==(const binomial_distribution &lhs,
+                           const binomial_distribution &rhs)
     {
         return lhs._t == rhs._t && lhs._p == rhs._p;
     }
     /** Returns true if the two distributions could produce different
         sequences of values, given equal generators. */
-    friend bool operator!=(const binomial_distribution& lhs,
-                           const binomial_distribution& rhs)
+    friend bool operator!=(const binomial_distribution &lhs,
+                           const binomial_distribution &rhs)
     {
         return !(lhs == rhs);
     }
 
-private:
-
+  private:
     /// @cond show_private
 
-    template<class CharT, class Traits>
-    void read(std::basic_istream<CharT, Traits>& is) {
+    template <class CharT, class Traits>
+    void read(std::basic_istream<CharT, Traits> &is)
+    {
         param_type parm;
-        if(is >> parm) {
+        if (is >> parm)
+        {
             param(parm);
         }
     }
@@ -258,116 +297,147 @@ private:
     // for log(k!)
     static RealType fc(IntType k)
     {
-        if(k < 10) return detail::binomial_table<RealType>::table[k];
-        else {
+        if (k < 10)
+        {
+            return detail::binomial_table<RealType>::table[k];
+        }
+        else
+        {
             RealType ikp1 = RealType(1) / (k + 1);
-            return (RealType(1)/12
-                 - (RealType(1)/360
-                 - (RealType(1)/1260)*(ikp1*ikp1))*(ikp1*ikp1))*ikp1;
+            return (RealType(1) / 12 - (RealType(1) / 360 - (RealType(1) / 1260) * (ikp1 * ikp1)) * (ikp1 * ikp1)) * ikp1;
         }
     }
 
     void init()
     {
-        using std::sqrt;
         using std::pow;
+        using std::sqrt;
 
-        RealType p = (0.5 < _p)? (1 - _p) : _p;
+        RealType p = (0.5 < _p) ? (1 - _p) : _p;
         IntType t = _t;
-        
-        m = static_cast<IntType>((t+1)*p);
 
-        if(use_inversion()) {
+        m = static_cast<IntType>((t + 1) * p);
+
+        if (use_inversion())
+        {
             q_n = pow((1 - p), static_cast<RealType>(t));
-        } else {
-            btrd.r = p/(1-p);
-            btrd.nr = (t+1)*btrd.r;
-            btrd.npq = t*p*(1-p);
+        }
+        else
+        {
+            btrd.r = p / (1 - p);
+            btrd.nr = (t + 1) * btrd.r;
+            btrd.npq = t * p * (1 - p);
             RealType sqrt_npq = sqrt(btrd.npq);
             btrd.b = 1.15 + 2.53 * sqrt_npq;
-            btrd.a = -0.0873 + 0.0248*btrd.b + 0.01*p;
-            btrd.c = t*p + 0.5;
-            btrd.alpha = (2.83 + 5.1/btrd.b) * sqrt_npq;
-            btrd.v_r = 0.92 - 4.2/btrd.b;
-            btrd.u_rv_r = 0.86*btrd.v_r;
+            btrd.a = -0.0873 + 0.0248 * btrd.b + 0.01 * p;
+            btrd.c = t * p + 0.5;
+            btrd.alpha = (2.83 + 5.1 / btrd.b) * sqrt_npq;
+            btrd.v_r = 0.92 - 4.2 / btrd.b;
+            btrd.u_rv_r = 0.86 * btrd.v_r;
         }
     }
 
-    template<class URNG>
-    result_type generate(URNG& urng) const
+    template <class URNG>
+    result_type generate(URNG &urng) const
     {
-        using std::floor;
         using std::abs;
+        using std::floor;
         using std::log;
 
-        while(true) {
+        while (true)
+        {
             RealType u;
             RealType v = uniform_01<RealType>()(urng);
-            if(v <= btrd.u_rv_r) {
-                RealType u = v/btrd.v_r - 0.43;
+            if (v <= btrd.u_rv_r)
+            {
+                RealType u = v / btrd.v_r - 0.43;
                 return static_cast<IntType>(floor(
-                    (2*btrd.a/(0.5 - abs(u)) + btrd.b)*u + btrd.c));
+                    (2 * btrd.a / (0.5 - abs(u)) + btrd.b) * u + btrd.c));
             }
 
-            if(v >= btrd.v_r) {
+            if (v >= btrd.v_r)
+            {
                 u = uniform_01<RealType>()(urng) - 0.5;
-            } else {
-                u = v/btrd.v_r - 0.93;
-                u = ((u < 0)? -0.5 : 0.5) - u;
+            }
+            else
+            {
+                u = v / btrd.v_r - 0.93;
+                u = ((u < 0) ? -0.5 : 0.5) - u;
                 v = uniform_01<RealType>()(urng) * btrd.v_r;
             }
 
             RealType us = 0.5 - abs(u);
-            IntType k = static_cast<IntType>(floor((2*btrd.a/us + btrd.b)*u + btrd.c));
-            if(k < 0 || k > _t) continue;
-            v = v*btrd.alpha/(btrd.a/(us*us) + btrd.b);
+            IntType k = static_cast<IntType>(floor((2 * btrd.a / us + btrd.b) * u + btrd.c));
+            if (k < 0 || k > _t)
+            {
+                continue;
+            }
+            v = v * btrd.alpha / (btrd.a / (us * us) + btrd.b);
             RealType km = abs(k - m);
-            if(km <= 15) {
+            if (km <= 15)
+            {
                 RealType f = 1;
-                if(m < k) {
+                if (m < k)
+                {
                     IntType i = m;
-                    do {
+                    do
+                    {
                         ++i;
-                        f = f*(btrd.nr/i - btrd.r);
-                    } while(i != k);
-                } else if(m > k) {
-                    IntType i = k;
-                    do {
-                        ++i;
-                        v = v*(btrd.nr/i - btrd.r);
-                    } while(i != m);
+                        f = f * (btrd.nr / i - btrd.r);
+                    } while (i != k);
                 }
-                if(v <= f) return k;
-                else continue;
-            } else {
+                else if (m > k)
+                {
+                    IntType i = k;
+                    do
+                    {
+                        ++i;
+                        v = v * (btrd.nr / i - btrd.r);
+                    } while (i != m);
+                }
+                if (v <= f)
+                {
+                    return k;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            else
+            {
                 // final acceptance/rejection
                 v = log(v);
                 RealType rho =
-                    (km/btrd.npq)*(((km/3. + 0.625)*km + 1./6)/btrd.npq + 0.5);
-                RealType t = -km*km/(2*btrd.npq);
-                if(v < t - rho) return k;
-                if(v > t + rho) continue;
-
-                IntType nm = _t - m + 1;
-                RealType h = (m + 0.5)*log((m + 1)/(btrd.r*nm))
-                           + fc(m) + fc(_t - m);
-
-                IntType nk = _t - k + 1;
-                if(v <= h + (_t+1)*log(static_cast<RealType>(nm)/nk)
-                          + (k + 0.5)*log(nk*btrd.r/(k+1))
-                          - fc(k)
-                          - fc(_t - k))
+                    (km / btrd.npq) * (((km / 3. + 0.625) * km + 1. / 6) / btrd.npq + 0.5);
+                RealType t = -km * km / (2 * btrd.npq);
+                if (v < t - rho)
                 {
                     return k;
-                } else {
+                }
+                if (v > t + rho)
+                {
+                    continue;
+                }
+
+                IntType nm = _t - m + 1;
+                RealType h = (m + 0.5) * log((m + 1) / (btrd.r * nm)) + fc(m) + fc(_t - m);
+
+                IntType nk = _t - k + 1;
+                if (v <= h + (_t + 1) * log(static_cast<RealType>(nm) / nk) + (k + 0.5) * log(nk * btrd.r / (k + 1)) - fc(k) - fc(_t - k))
+                {
+                    return k;
+                }
+                else
+                {
                     continue;
                 }
             }
         }
     }
 
-    template<class URNG>
-    IntType invert(IntType t, RealType p, URNG& urng) const
+    template <class URNG>
+    IntType invert(IntType t, RealType p, URNG &urng) const
     {
         RealType q = 1 - p;
         RealType s = p / q;
@@ -375,10 +445,11 @@ private:
         RealType r = q_n;
         RealType u = uniform_01<RealType>()(urng);
         IntType x = 0;
-        while(u > r) {
+        while (u > r)
+        {
             u = u - r;
             ++x;
-            r = ((a/x) - s) * r;
+            r = ((a / x) - s) * r;
         }
         return x;
     }
@@ -392,7 +463,8 @@ private:
 
     union {
         // for btrd
-        struct {
+        struct
+        {
             RealType r;
             RealType nr;
             RealType npq;
@@ -410,12 +482,12 @@ private:
     /// @endcond
 };
 
-}
+} // namespace random
 
 // backwards compatibility
 using random::binomial_distribution;
 
-}
+} // namespace boost
 
 #include <boost/random/detail/enable_warnings.hpp>
 

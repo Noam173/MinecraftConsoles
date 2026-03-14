@@ -1,11 +1,11 @@
-#include "stdafx.h"
+#include "DeadBushTile.h"
 #include "net.minecraft.stats.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.level.h"
-#include "DeadBushTile.h"
+#include "stdafx.h"
 
-DeadBushTile::DeadBushTile(int id) : Bush(id,Material::replaceable_plant)
+DeadBushTile::DeadBushTile(int id) : Bush(id, Material::replaceable_plant)
 {
     updateDefaultShape();
 }
@@ -19,28 +19,27 @@ void DeadBushTile::updateDefaultShape()
 
 bool DeadBushTile::mayPlaceOn(int tile)
 {
-	return tile == Tile::sand_Id;
+    return tile == Tile::sand_Id;
 }
 
 int DeadBushTile::getResource(int data, Random *random, int playerBonusLevel)
 {
-	return -1;
+    return -1;
 }
 
 void DeadBushTile::playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data)
 {
-	if (!level->isClientSide && player->getSelectedItem() != nullptr && player->getSelectedItem()->id == Item::shears_Id)
-	{
-		player->awardStat(
-			GenericStats::blocksMined(id),
-			GenericStats::param_blocksMined(id,data,1)
-			);
+    if (!level->isClientSide && player->getSelectedItem() != nullptr && player->getSelectedItem()->id == Item::shears_Id)
+    {
+        player->awardStat(
+            GenericStats::blocksMined(id),
+            GenericStats::param_blocksMined(id, data, 1));
 
-		// drop leaf block instead of sapling
-		popResource(level, x, y, z, std::make_shared<ItemInstance>(Tile::deadBush, 1, data));
-	}
-	else
-	{
-		Bush::playerDestroy(level, player, x, y, z, data);
-	}
+        // drop leaf block instead of sapling
+        popResource(level, x, y, z, std::make_shared<ItemInstance>(Tile::deadBush, 1, data));
+    }
+    else
+    {
+        Bush::playerDestroy(level, player, x, y, z, data);
+    }
 }

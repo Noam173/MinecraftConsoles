@@ -14,22 +14,22 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_CENTROID_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_CENTROID_HPP
 
-
 #include <boost/range.hpp>
 
 #include <boost/geometry/algorithms/centroid.hpp>
-#include <boost/geometry/multi/core/point_type.hpp>
 #include <boost/geometry/multi/algorithms/num_points.hpp>
+#include <boost/geometry/multi/core/point_type.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace centroid
+namespace detail
 {
-
+namespace centroid
+{
 
 /*!
     \brief Building block of a multi-point, to be used as Policy in the
@@ -38,14 +38,12 @@ namespace detail { namespace centroid
 struct centroid_multi_point_state
 {
     template <typename Point, typename Strategy>
-    static inline void apply(Point const& point,
-            Strategy const& strategy, typename Strategy::state_type& state)
+    static inline void apply(Point const &point,
+                             Strategy const &strategy, typename Strategy::state_type &state)
     {
         strategy.apply(point, state);
     }
 };
-
-
 
 /*!
     \brief Generic implementation which calls a policy to calculate the
@@ -59,10 +57,10 @@ template <typename Policy>
 struct centroid_multi
 {
     template <typename Multi, typename Point, typename Strategy>
-    static inline void apply(Multi const& multi, Point& centroid,
-            Strategy const& strategy)
+    static inline void apply(Multi const &multi, Point &centroid,
+                             Strategy const &strategy)
     {
-#if ! defined(BOOST_GEOMETRY_CENTROID_NO_THROW)
+#if !defined(BOOST_GEOMETRY_CENTROID_NO_THROW)
         // If there is nothing in any of the ranges, it is not possible
         // to calculate the centroid
         if (geometry::num_points(multi) == 0)
@@ -74,9 +72,9 @@ struct centroid_multi
         typename Strategy::state_type state;
 
         for (typename boost::range_iterator<Multi const>::type
-                it = boost::begin(multi);
-            it != boost::end(multi);
-            ++it)
+                 it = boost::begin(multi);
+             it != boost::end(multi);
+             ++it)
         {
             Policy::apply(*it, strategy, state);
         }
@@ -84,12 +82,9 @@ struct centroid_multi
     }
 };
 
-
-
-}} // namespace detail::centroid
+} // namespace centroid
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -97,36 +92,29 @@ namespace dispatch
 
 template <typename MultiLinestring>
 struct centroid<MultiLinestring, multi_linestring_tag>
-    : detail::centroid::centroid_multi
-        <
-            detail::centroid::centroid_range_state<closed>
-        >
-{};
+    : detail::centroid::centroid_multi<
+          detail::centroid::centroid_range_state<closed>>
+{
+};
 
 template <typename MultiPolygon>
 struct centroid<MultiPolygon, multi_polygon_tag>
-    : detail::centroid::centroid_multi
-        <
-            detail::centroid::centroid_polygon_state
-        >
-{};
-
+    : detail::centroid::centroid_multi<
+          detail::centroid::centroid_polygon_state>
+{
+};
 
 template <typename MultiPoint>
 struct centroid<MultiPoint, multi_point_tag>
-    : detail::centroid::centroid_multi
-        <
-            detail::centroid::centroid_multi_point_state
-        >
-{};
-
+    : detail::centroid::centroid_multi<
+          detail::centroid::centroid_multi_point_state>
+{
+};
 
 } // namespace dispatch
 #endif
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_CENTROID_HPP
-

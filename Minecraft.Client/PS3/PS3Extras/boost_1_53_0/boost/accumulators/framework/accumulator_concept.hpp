@@ -10,10 +10,12 @@
 
 #include <boost/concept_check.hpp>
 
-namespace boost { namespace accumulators
+namespace boost
+{
+namespace accumulators
 {
 
-template<typename Stat>
+template <typename Stat>
 struct accumulator_concept
 {
     void constraints()
@@ -24,6 +26,7 @@ struct accumulator_concept
     Stat stat;
 };
 
-}} // namespace boost::accumulators
+} // namespace accumulators
+} // namespace boost
 
 #endif

@@ -22,58 +22,58 @@ extern "C" void _ReadWriteBarrier(void);
 
 namespace boost
 {
-    namespace detail
-    {
-        inline long interlocked_read_acquire(long volatile* x) BOOST_NOEXCEPT
-        {
-            long const res=*x;
-            _ReadWriteBarrier();
-            return res;
-        }
-        inline void* interlocked_read_acquire(void* volatile* x) BOOST_NOEXCEPT
-        {
-            void* const res=*x;
-            _ReadWriteBarrier();
-            return res;
-        }
-
-        inline void interlocked_write_release(long volatile* x,long value) BOOST_NOEXCEPT
-        {
-            _ReadWriteBarrier();
-            *x=value;
-        }
-        inline void interlocked_write_release(void* volatile* x,void* value) BOOST_NOEXCEPT
-        {
-            _ReadWriteBarrier();
-            *x=value;
-        }
-    }
+namespace detail
+{
+inline long interlocked_read_acquire(long volatile *x) BOOST_NOEXCEPT
+{
+    long const res = *x;
+    _ReadWriteBarrier();
+    return res;
 }
+inline void *interlocked_read_acquire(void *volatile *x) BOOST_NOEXCEPT
+{
+    void *const res = *x;
+    _ReadWriteBarrier();
+    return res;
+}
+
+inline void interlocked_write_release(long volatile *x, long value) BOOST_NOEXCEPT
+{
+    _ReadWriteBarrier();
+    *x = value;
+}
+inline void interlocked_write_release(void *volatile *x, void *value) BOOST_NOEXCEPT
+{
+    _ReadWriteBarrier();
+    *x = value;
+}
+} // namespace detail
+} // namespace boost
 
 #else
 
 namespace boost
 {
-    namespace detail
-    {
-        inline long interlocked_read_acquire(long volatile* x) BOOST_NOEXCEPT
-        {
-            return BOOST_INTERLOCKED_COMPARE_EXCHANGE(x,0,0);
-        }
-        inline void* interlocked_read_acquire(void* volatile* x) BOOST_NOEXCEPT
-        {
-            return BOOST_INTERLOCKED_COMPARE_EXCHANGE_POINTER(x,0,0);
-        }
-        inline void interlocked_write_release(long volatile* x,long value) BOOST_NOEXCEPT
-        {
-            BOOST_INTERLOCKED_EXCHANGE(x,value);
-        }
-        inline void interlocked_write_release(void* volatile* x,void* value) BOOST_NOEXCEPT
-        {
-            BOOST_INTERLOCKED_EXCHANGE_POINTER(x,value);
-        }
-    }
+namespace detail
+{
+inline long interlocked_read_acquire(long volatile *x) BOOST_NOEXCEPT
+{
+    return BOOST_INTERLOCKED_COMPARE_EXCHANGE(x, 0, 0);
 }
+inline void *interlocked_read_acquire(void *volatile *x) BOOST_NOEXCEPT
+{
+    return BOOST_INTERLOCKED_COMPARE_EXCHANGE_POINTER(x, 0, 0);
+}
+inline void interlocked_write_release(long volatile *x, long value) BOOST_NOEXCEPT
+{
+    BOOST_INTERLOCKED_EXCHANGE(x, value);
+}
+inline void interlocked_write_release(void *volatile *x, void *value) BOOST_NOEXCEPT
+{
+    BOOST_INTERLOCKED_EXCHANGE_POINTER(x, value);
+}
+} // namespace detail
+} // namespace boost
 
 #endif
 

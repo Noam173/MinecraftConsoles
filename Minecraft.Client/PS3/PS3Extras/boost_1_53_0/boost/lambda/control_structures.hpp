@@ -10,7 +10,6 @@
 #ifndef BOOST_LAMBDA_CONTROL_STRUCTURES_HPP
 #define BOOST_LAMBDA_CONTROL_STRUCTURES_HPP
 
-
 #include "boost/lambda/core.hpp"
 
 // Arithmetic type promotion needed for if_then_else_return

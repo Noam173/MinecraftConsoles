@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_LOCAL_FREE_ON_BLOCK_EXIT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -24,28 +24,31 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 class local_free_on_block_exit
-  : private noncopyable
+    : private noncopyable
 {
-public:
-  // Constructor blocks all signals for the calling thread.
-  explicit local_free_on_block_exit(void* p)
-    : p_(p)
-  {
-  }
+  public:
+    // Constructor blocks all signals for the calling thread.
+    explicit local_free_on_block_exit(void *p)
+        : p_(p)
+    {
+    }
 
-  // Destructor restores the previous signal mask.
-  ~local_free_on_block_exit()
-  {
-    ::LocalFree(p_);
-  }
+    // Destructor restores the previous signal mask.
+    ~local_free_on_block_exit()
+    {
+        ::LocalFree(p_);
+    }
 
-private:
-  void* p_;
+  private:
+    void *p_;
 };
 
 } // namespace detail

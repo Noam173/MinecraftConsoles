@@ -1,22 +1,22 @@
-#include "stdafx.h"
 #include "ArrowFireEnchantment.h"
+#include "stdafx.h"
 
 ArrowFireEnchantment::ArrowFireEnchantment(int id, int frequency) : Enchantment(id, frequency, EnchantmentCategory::bow)
 {
-	setDescriptionId(IDS_ENCHANTMENT_ARROW_FIRE);
+    setDescriptionId(IDS_ENCHANTMENT_ARROW_FIRE);
 }
 
 int ArrowFireEnchantment::getMinCost(int level)
 {
-	return 20;
+    return 20;
 }
 
 int ArrowFireEnchantment::getMaxCost(int level)
 {
-	return 50;
+    return 50;
 }
 
 int ArrowFireEnchantment::getMaxLevel()
 {
-	return 1;
+    return 1;
 }

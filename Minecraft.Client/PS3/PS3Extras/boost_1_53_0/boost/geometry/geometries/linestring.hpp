@@ -25,8 +25,9 @@
 
 #include <boost/geometry/geometries/concepts/point_concept.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace model
@@ -45,29 +46,29 @@ namespace model
 }
 
 */
-template
-<
+template <
     typename Point,
-    template<typename,typename> class Container = std::vector,
-    template<typename> class Allocator = std::allocator
->
-class linestring : public Container<Point, Allocator<Point> >
+    template <typename, typename> class Container = std::vector,
+    template <typename> class Allocator = std::allocator>
+class linestring : public Container<Point, Allocator<Point>>
 {
-    BOOST_CONCEPT_ASSERT( (concept::Point<Point>) );
+    BOOST_CONCEPT_ASSERT((concept ::Point<Point>));
 
-    typedef Container<Point, Allocator<Point> > base_type;
+    typedef Container<Point, Allocator<Point>> base_type;
 
-public :
+  public:
     /// \constructor_default{linestring}
     inline linestring()
         : base_type()
-    {}
+    {
+    }
 
     /// \constructor_begin_end{linestring}
     template <typename Iterator>
     inline linestring(Iterator begin, Iterator end)
         : base_type(begin, end)
-    {}
+    {
+    }
 };
 
 } // namespace model
@@ -76,13 +77,11 @@ public :
 namespace traits
 {
 
-template
-<
+template <
     typename Point,
-    template<typename,typename> class Container,
-    template<typename> class Allocator
->
-struct tag<model::linestring<Point, Container, Allocator> >
+    template <typename, typename> class Container,
+    template <typename> class Allocator>
+struct tag<model::linestring<Point, Container, Allocator>>
 {
     typedef linestring_tag type;
 };
@@ -90,6 +89,7 @@ struct tag<model::linestring<Point, Container, Allocator> >
 
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_LINESTRING_HPP

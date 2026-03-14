@@ -14,44 +14,42 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_CONVERT_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_CONVERT_HPP
 
-
 #include <boost/range/metafunctions.hpp>
 
 #include <boost/geometry/algorithms/convert.hpp>
 
 #include <boost/geometry/multi/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace conversion
+namespace detail
+{
+namespace conversion
 {
 
 template <typename Single, typename Multi, typename Policy>
-struct single_to_multi: private Policy
+struct single_to_multi : private Policy
 {
-    static inline void apply(Single const& single, Multi& multi)
+    static inline void apply(Single const &single, Multi &multi)
     {
         traits::resize<Multi>::apply(multi, 1);
         Policy::apply(single, *boost::begin(multi));
     }
 };
 
-
-
 template <typename Multi1, typename Multi2, typename Policy>
-struct multi_to_multi: private Policy
+struct multi_to_multi : private Policy
 {
-    static inline void apply(Multi1 const& multi1, Multi2& multi2)
+    static inline void apply(Multi1 const &multi1, Multi2 &multi2)
     {
         traits::resize<Multi2>::apply(multi2, boost::size(multi1));
 
-        typename boost::range_iterator<Multi1 const>::type it1
-                = boost::begin(multi1);
-        typename boost::range_iterator<Multi2>::type it2
-                = boost::begin(multi2);
+        typename boost::range_iterator<Multi1 const>::type it1 = boost::begin(multi1);
+        typename boost::range_iterator<Multi2>::type it2 = boost::begin(multi2);
 
         for (; it1 != boost::end(multi1); ++it1, ++it2)
         {
@@ -60,10 +58,9 @@ struct multi_to_multi: private Policy
     }
 };
 
-
-}} // namespace detail::convert
+} // namespace conversion
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -75,54 +72,40 @@ namespace dispatch
 
 template <typename Multi1, typename Multi2, std::size_t DimensionCount>
 struct convert<Multi1, Multi2, multi_tag, multi_tag, DimensionCount, false>
-    : detail::conversion::multi_to_multi
-        <
-            Multi1, 
-            Multi2,
-            convert
-                <
-                    typename boost::range_value<Multi1>::type,
-                    typename boost::range_value<Multi2>::type,
-                    typename single_tag_of
-                                <
-                                    typename tag<Multi1>::type
-                                >::type,
-                    typename single_tag_of
-                                <
-                                    typename tag<Multi2>::type
-                                >::type,
-                    DimensionCount
-                >
-        >
-{};
+    : detail::conversion::multi_to_multi<
+          Multi1,
+          Multi2,
+          convert<
+              typename boost::range_value<Multi1>::type,
+              typename boost::range_value<Multi2>::type,
+              typename single_tag_of<
+                  typename tag<Multi1>::type>::type,
+              typename single_tag_of<
+                  typename tag<Multi2>::type>::type,
+              DimensionCount>>
+{
+};
 
 template <typename Single, typename Multi, typename SingleTag, std::size_t DimensionCount>
 struct convert<Single, Multi, SingleTag, multi_tag, DimensionCount, false>
-    : detail::conversion::single_to_multi
-        <
-            Single, 
-            Multi,
-            convert
-                <
-                    Single,
-                    typename boost::range_value<Multi>::type,
-                    typename tag<Single>::type,
-                    typename single_tag_of
-                                <
-                                    typename tag<Multi>::type
-                                >::type,
-                    DimensionCount,
-                    false
-                >
-        >
-{};
-
+    : detail::conversion::single_to_multi<
+          Single,
+          Multi,
+          convert<
+              Single,
+              typename boost::range_value<Multi>::type,
+              typename tag<Single>::type,
+              typename single_tag_of<
+                  typename tag<Multi>::type>::type,
+              DimensionCount,
+              false>>
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_CONVERT_HPP

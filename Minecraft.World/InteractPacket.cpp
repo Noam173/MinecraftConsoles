@@ -1,48 +1,46 @@
-#include "stdafx.h"
-#include <iostream>
+#include "InteractPacket.h"
 #include "InputOutputStream.h"
 #include "PacketListener.h"
-#include "InteractPacket.h"
-
-
+#include "stdafx.h"
+#include <iostream>
 
 const int InteractPacket::INTERACT = 0;
 const int InteractPacket::ATTACK = 1;
 
 InteractPacket::InteractPacket()
 {
-	source = 0;
-	target = 0;
-	action = 0;
+    source = 0;
+    target = 0;
+    action = 0;
 }
 
-InteractPacket::InteractPacket(int source, int target, int action) 
+InteractPacket::InteractPacket(int source, int target, int action)
 {
-	this->source = source;
-	this->target = target;
-	this->action = action;
+    this->source = source;
+    this->target = target;
+    this->action = action;
 }
 
-void InteractPacket::read(DataInputStream *dis) //throws IOException
+void InteractPacket::read(DataInputStream *dis) // throws IOException
 {
-	source = dis->readInt();
-	target = dis->readInt();
-	action = dis->readByte();
+    source = dis->readInt();
+    target = dis->readInt();
+    action = dis->readByte();
 }
 
-void InteractPacket::write(DataOutputStream *dos) // throws IOException 
+void InteractPacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeInt(source);
-	dos->writeInt(target);
-	dos->writeByte(action);
+    dos->writeInt(source);
+    dos->writeInt(target);
+    dos->writeByte(action);
 }
 
-void InteractPacket::handle(PacketListener *listener) 
+void InteractPacket::handle(PacketListener *listener)
 {
-	listener->handleInteract(shared_from_this());
+    listener->handleInteract(shared_from_this());
 }
 
-int InteractPacket::getEstimatedSize() 
+int InteractPacket::getEstimatedSize()
 {
-	return 9;
+    return 9;
 }

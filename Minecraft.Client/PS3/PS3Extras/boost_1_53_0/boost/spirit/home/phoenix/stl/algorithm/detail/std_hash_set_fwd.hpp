@@ -13,7 +13,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(_MSC_VER) && _MSC_VER >= 1000
-# pragma once
+#pragma once
 #endif
 
 #ifndef STD_HASH_SET_FWD_EN_16_12_2004
@@ -25,41 +25,27 @@
 
 namespace BOOST_STD_EXTENSION_NAMESPACE
 {
-    template<
-        class Kty
-      , class Hash
-      , class Cmp
-      , class Alloc
-    >
-    class hash_set;
+template <
+    class Kty, class Hash, class Cmp, class Alloc>
+class hash_set;
 
-    template<
-        class Kty
-      , class Hash
-      , class Cmp
-      , class Alloc
-    >
-    class hash_multiset;
-}
+template <
+    class Kty, class Hash, class Cmp, class Alloc>
+class hash_multiset;
+} // namespace BOOST_STD_EXTENSION_NAMESPACE
 
 #elif defined(BOOST_DINKUMWARE_STDLIB)
 
 namespace BOOST_STD_EXTENSION_NAMESPACE
 {
-    template<
-        class Kty
-      , class Tr
-      , class Alloc
-    >
-    class hash_set;
+template <
+    class Kty, class Tr, class Alloc>
+class hash_set;
 
-    template<
-        class Kty
-      , class Tr
-      , class Alloc
-    >
-    class hash_multiset;
-}
+template <
+    class Kty, class Tr, class Alloc>
+class hash_multiset;
+} // namespace BOOST_STD_EXTENSION_NAMESPACE
 
 #endif
 

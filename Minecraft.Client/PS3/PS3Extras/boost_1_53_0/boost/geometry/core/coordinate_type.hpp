@@ -14,16 +14,16 @@
 #ifndef BOOST_GEOMETRY_CORE_COORDINATE_TYPE_HPP
 #define BOOST_GEOMETRY_CORE_COORDINATE_TYPE_HPP
 
-
 #include <boost/mpl/assert.hpp>
 
-#include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/point_type.hpp>
+#include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/util/bare_type.hpp>
 #include <boost/geometry/util/promote_floating_point.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace traits
@@ -40,10 +40,8 @@ namespace traits
 template <typename Point, typename Enable = void>
 struct coordinate_type
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE, (types<Point>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE, (types<Point>));
 };
 
 } // namespace traits
@@ -64,16 +62,12 @@ struct coordinate_type
 template <typename Point>
 struct coordinate_type<point_tag, Point>
 {
-    typedef typename traits::coordinate_type
-		<
-            typename geometry::util::bare_type<Point>::type
-		>::type type;
+    typedef typename traits::coordinate_type<
+        typename geometry::util::bare_type<Point>::type>::type type;
 };
-
 
 } // namespace core_dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
 
 /*!
 \brief \brief_meta{type, coordinate type (int\, float\, double\, etc), \meta_point_type}
@@ -85,24 +79,19 @@ struct coordinate_type<point_tag, Point>
 template <typename Geometry>
 struct coordinate_type
 {
-	typedef typename core_dispatch::coordinate_type
-				<
-					typename tag<Geometry>::type,
-					typename geometry::util::bare_type<Geometry>::type
-				>::type type;
+    typedef typename core_dispatch::coordinate_type<
+        typename tag<Geometry>::type,
+        typename geometry::util::bare_type<Geometry>::type>::type type;
 };
 
 template <typename Geometry>
 struct fp_coordinate_type
 {
-    typedef typename promote_floating_point
-        <
-            typename coordinate_type<Geometry>::type
-        >::type type;
+    typedef typename promote_floating_point<
+        typename coordinate_type<Geometry>::type>::type type;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_CORE_COORDINATE_TYPE_HPP

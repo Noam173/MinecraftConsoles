@@ -23,40 +23,35 @@
 
 #include <boost/geometry/core/interior_rings.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
 template <typename Geometry, typename Tag = typename tag<Geometry>::type>
 struct num_interior_rings
 {
-    static inline std::size_t apply(Geometry const& )
+    static inline std::size_t apply(Geometry const &)
     {
         return 0;
     }
 };
 
-
-
 template <typename Polygon>
 struct num_interior_rings<Polygon, polygon_tag>
 {
-    static inline std::size_t apply(Polygon const& polygon)
+    static inline std::size_t apply(Polygon const &polygon)
     {
         return boost::size(geometry::interior_rings(polygon));
     }
-
 };
-
 
 } // namespace dispatch
 #endif
-
 
 /*!
 \brief \brief_calc{number of interior rings}
@@ -72,13 +67,12 @@ struct num_interior_rings<Polygon, polygon_tag>
     letter "s" is appended
 */
 template <typename Geometry>
-inline std::size_t num_interior_rings(Geometry const& geometry)
+inline std::size_t num_interior_rings(Geometry const &geometry)
 {
     return dispatch::num_interior_rings<Geometry>::apply(geometry);
 }
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_NUM_INTERIOR_RINGS_HPP

@@ -9,18 +9,20 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_TURN_INFO_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_TURN_INFO_HPP
 
-
 #include <boost/array.hpp>
 
 #include <boost/geometry/algorithms/detail/overlay/segment_identifier.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
 {
-
+namespace overlay
+{
 
 enum operation_type
 {
@@ -31,7 +33,6 @@ enum operation_type
     operation_continue,
     operation_opposite
 };
-
 
 enum method_type
 {
@@ -44,7 +45,6 @@ enum method_type
     method_equal,
     method_error
 };
-
 
 /*!
     \brief Turn operation: operation
@@ -62,9 +62,9 @@ struct turn_operation
 
     inline turn_operation()
         : operation(operation_none)
-    {}
+    {
+    }
 };
-
 
 /*!
     \brief Turn information: intersection point, method, and turn information
@@ -75,12 +75,10 @@ struct turn_operation
     \tparam Operation gives classes opportunity to add additional info
     \tparam Container gives classes opportunity to define how operations are stored
  */
-template
-<
+template <
     typename Point,
     typename Operation = turn_operation,
-    typename Container = boost::array<Operation, 2>
->
+    typename Container = boost::array<Operation, 2>>
 struct turn_info
 {
     typedef Point point_type;
@@ -91,23 +89,21 @@ struct turn_info
     method_type method;
     bool discarded;
 
-
     Container operations;
 
     inline turn_info()
-        : method(method_none)
-        , discarded(false)
-    {}
+        : method(method_none), discarded(false)
+    {
+    }
 
     inline bool both(operation_type type) const
     {
         return has12(type, type);
     }
-    
+
     inline bool has(operation_type type) const
     {
-        return this->operations[0].operation == type
-            || this->operations[1].operation == type;
+        return this->operations[0].operation == type || this->operations[1].operation == type;
     }
 
     inline bool combination(operation_type type1, operation_type type2) const
@@ -115,8 +111,10 @@ struct turn_info
         return has12(type1, type2) || has12(type2, type1);
     }
 
-
-    inline bool is_discarded() const { return discarded; }
+    inline bool is_discarded() const
+    {
+        return discarded;
+    }
     inline bool blocked() const
     {
         return both(operation_blocked);
@@ -130,23 +128,18 @@ struct turn_info
         return has(operation_blocked);
     }
 
-
-private :
+  private:
     inline bool has12(operation_type type1, operation_type type2) const
     {
-        return this->operations[0].operation == type1
-            && this->operations[1].operation == type2
-            ;
+        return this->operations[0].operation == type1 && this->operations[1].operation == type2;
     }
-
 };
 
+} // namespace overlay
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
 
-}} // namespace detail::overlay
-#endif //DOXYGEN_NO_DETAIL
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_TURN_INFO_HPP

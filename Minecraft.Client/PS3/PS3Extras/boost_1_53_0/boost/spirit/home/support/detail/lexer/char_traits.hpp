@@ -13,42 +13,42 @@ namespace boost
 {
 namespace lexer
 {
-template<typename CharT>
+template <typename CharT>
 struct char_traits
 {
     typedef CharT char_type;
     typedef CharT index_type;
 
-    static index_type call (CharT ch)
+    static index_type call(CharT ch)
     {
-       return ch;
+        return ch;
     }
 };
 
-template<>
+template <>
 struct char_traits<char>
 {
     typedef char char_type;
     typedef unsigned char index_type;
-        
-    static index_type call (char ch)
+
+    static index_type call(char ch)
     {
         return static_cast<index_type>(ch);
     }
 };
 
-template<>
+template <>
 struct char_traits<wchar_t>
 {
     typedef wchar_t char_type;
     typedef wchar_t index_type;
 
-    static index_type call (wchar_t ch)
+    static index_type call(wchar_t ch)
     {
         return ch;
     }
 };
-}
-}
+} // namespace lexer
+} // namespace boost
 
 #endif

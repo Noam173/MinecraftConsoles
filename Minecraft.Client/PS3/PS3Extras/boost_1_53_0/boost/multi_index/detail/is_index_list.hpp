@@ -9,7 +9,7 @@
 #ifndef BOOST_MULTI_INDEX_DETAIL_IS_INDEX_LIST_HPP
 #define BOOST_MULTI_INDEX_DETAIL_IS_INDEX_LIST_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -17,21 +17,24 @@
 #include <boost/mpl/empty.hpp>
 #include <boost/mpl/is_sequence.hpp>
 
-namespace boost{
+namespace boost
+{
 
-namespace multi_index{
+namespace multi_index
+{
 
-namespace detail{
+namespace detail
+{
 
-template<typename T>
+template <typename T>
 struct is_index_list
 {
-  BOOST_STATIC_CONSTANT(bool,mpl_sequence=mpl::is_sequence<T>::value);
-  BOOST_STATIC_CONSTANT(bool,non_empty=!mpl::empty<T>::value);
-  BOOST_STATIC_CONSTANT(bool,value=mpl_sequence&&non_empty);
+    BOOST_STATIC_CONSTANT(bool, mpl_sequence = mpl::is_sequence<T>::value);
+    BOOST_STATIC_CONSTANT(bool, non_empty = !mpl::empty<T>::value);
+    BOOST_STATIC_CONSTANT(bool, value = mpl_sequence && non_empty);
 };
 
-} /* namespace multi_index::detail */
+} // namespace detail
 
 } /* namespace multi_index */
 

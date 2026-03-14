@@ -13,18 +13,23 @@
 
 #include <boost/noncopyable.hpp>
 
-namespace boost { namespace msm { namespace back
+namespace boost
 {
-    // deactivates copy
-    struct NoCopy : ::boost::noncopyable
-    {
-    };
-    
-    // allows deep copy
-    struct DeepCopy
-    {
-    };
-} } }//boost::msm::back
+namespace msm
+{
+namespace back
+{
+// deactivates copy
+struct NoCopy : ::boost::noncopyable
+{
+};
 
+// allows deep copy
+struct DeepCopy
+{
+};
+} // namespace back
+} // namespace msm
+} // namespace boost
 
-#endif //BOOST_MSM_BACK_COPY_POLICIES_H
+#endif // BOOST_MSM_BACK_COPY_POLICIES_H

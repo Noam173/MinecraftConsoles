@@ -14,16 +14,15 @@
 #ifndef BOOST_GEOMETRY_UTIL_SELECT_CALCULATION_TYPE_HPP
 #define BOOST_GEOMETRY_UTIL_SELECT_CALCULATION_TYPE_HPP
 
-
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits.hpp>
 
 #include <boost/geometry/util/select_coordinate_type.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 /*!
     \brief Meta-function selecting the "calculation" type
@@ -37,21 +36,15 @@ namespace boost { namespace geometry
 template <typename Geometry1, typename Geometry2, typename CalculationType>
 struct select_calculation_type
 {
-    typedef typename
-        boost::mpl::if_
-        <
-            boost::is_void<CalculationType>,
-            typename select_coordinate_type
-                <
-                    Geometry1,
-                    Geometry2
-                >::type,
-            CalculationType
-        >::type type;
+    typedef typename boost::mpl::if_<
+        boost::is_void<CalculationType>,
+        typename select_coordinate_type<
+            Geometry1,
+            Geometry2>::type,
+        CalculationType>::type type;
 };
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_SELECT_CALCULATION_TYPE_HPP

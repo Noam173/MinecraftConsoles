@@ -11,10 +11,9 @@
 
 #define BOOST_PHOENIX_IS_ITERATING 0
 
-#define BOOST_PHOENIX_ITERATE()                                                 \
-    <boost/phoenix/support/detail/iterate.hpp>
+#define BOOST_PHOENIX_ITERATE() \
+<boost/phoenix/support/detail/iterate.hpp>
 
 #include <boost/phoenix/support/detail/iterate_define.hpp>
 
 #endif
-

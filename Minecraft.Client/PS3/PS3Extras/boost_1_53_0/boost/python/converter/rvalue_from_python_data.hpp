@@ -3,15 +3,15 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef FROM_PYTHON_AUX_DATA_DWA2002128_HPP
-# define FROM_PYTHON_AUX_DATA_DWA2002128_HPP
+#define FROM_PYTHON_AUX_DATA_DWA2002128_HPP
 
-# include <boost/python/converter/constructor_function.hpp>
-# include <boost/python/detail/referent_storage.hpp>
-# include <boost/python/detail/destroy.hpp>
-# include <boost/static_assert.hpp>
-# include <boost/type_traits/add_reference.hpp>
-# include <boost/type_traits/add_cv.hpp>
-# include <cstddef>
+#include <boost/python/converter/constructor_function.hpp>
+#include <boost/python/detail/destroy.hpp>
+#include <boost/python/detail/referent_storage.hpp>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/add_cv.hpp>
+#include <boost/type_traits/add_reference.hpp>
+#include <cstddef>
 
 // Data management for potential rvalue conversions from Python to C++
 // types. When a client requests a conversion to T* or T&, we
@@ -36,7 +36,12 @@
 // references can bind to temporary rvalues, we allow rvalue
 // converters to be chosen when the target type is T const& for some
 // T.
-namespace boost { namespace python { namespace converter { 
+namespace boost
+{
+namespace python
+{
+namespace converter
+{
 
 // Conversions begin by filling in and returning a copy of this
 // structure. The process looks up a converter in the rvalue converter
@@ -61,7 +66,7 @@ namespace boost { namespace python { namespace converter {
 // construct() function is called.
 struct rvalue_from_python_stage1_data
 {
-    void* convertible;
+    void *convertible;
     constructor_function construct;
 };
 
@@ -78,8 +83,7 @@ struct rvalue_from_python_storage
 
     // Storage for the result, in case an rvalue must be constructed
     typename python::detail::referent_storage<
-        typename add_reference<T>::type
-    >::type storage;
+        typename add_reference<T>::type>::type storage;
 };
 
 // Augments rvalue_from_python_storage<T> with a destructor. If
@@ -91,25 +95,23 @@ struct rvalue_from_python_storage
 template <class T>
 struct rvalue_from_python_data : rvalue_from_python_storage<T>
 {
-# if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) \
-        && (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) \
-        && (!defined(__DECCXX_VER) || __DECCXX_VER > 60590014) \
-        && !defined(BOOST_PYTHON_SYNOPSIS) /* Synopsis' OpenCXX has trouble parsing this */
+#if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) && (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) && (!defined(__DECCXX_VER) || __DECCXX_VER > 60590014) && !defined(BOOST_PYTHON_SYNOPSIS) /* Synopsis' OpenCXX has trouble parsing this */
     // This must always be a POD struct with m_data its first member.
-    BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<T>,stage1) == 0);
-# endif
-    
-    // The usual constructor 
-    rvalue_from_python_data(rvalue_from_python_stage1_data const&);
+    BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<T>, stage1) == 0);
+#endif
+
+    // The usual constructor
+    rvalue_from_python_data(rvalue_from_python_stage1_data const &);
 
     // This constructor just sets m_convertible -- used by
     // implicitly_convertible<> to perform the final step of the
     // conversion, where the construct() function is already known.
-    rvalue_from_python_data(void* convertible);
+    rvalue_from_python_data(void *convertible);
 
     // Destroys any object constructed in the storage.
     ~rvalue_from_python_data();
- private:
+
+  private:
     typedef typename add_reference<typename add_cv<T>::type>::type ref_type;
 };
 
@@ -117,13 +119,13 @@ struct rvalue_from_python_data : rvalue_from_python_storage<T>
 // Implementataions
 //
 template <class T>
-inline rvalue_from_python_data<T>::rvalue_from_python_data(rvalue_from_python_stage1_data const& _stage1)
+inline rvalue_from_python_data<T>::rvalue_from_python_data(rvalue_from_python_stage1_data const &_stage1)
 {
     this->stage1 = _stage1;
 }
 
 template <class T>
-inline rvalue_from_python_data<T>::rvalue_from_python_data(void* convertible)
+inline rvalue_from_python_data<T>::rvalue_from_python_data(void *convertible)
 {
     this->stage1.convertible = convertible;
 }
@@ -132,9 +134,13 @@ template <class T>
 inline rvalue_from_python_data<T>::~rvalue_from_python_data()
 {
     if (this->stage1.convertible == this->storage.bytes)
+    {
         python::detail::destroy_referent<ref_type>(this->storage.bytes);
+    }
 }
 
-}}} // namespace boost::python::converter
+} // namespace converter
+} // namespace python
+} // namespace boost
 
 #endif // FROM_PYTHON_AUX_DATA_DWA2002128_HPP

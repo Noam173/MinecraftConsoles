@@ -11,14 +11,13 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_DISJOINT_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_DISJOINT_HPP
 
-
 #include <boost/geometry/algorithms/disjoint.hpp>
 #include <boost/geometry/multi/algorithms/covered_by.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -27,15 +26,14 @@ namespace dispatch
 template <typename Point, typename MultiPolygon>
 struct disjoint<Point, MultiPolygon, 2, point_tag, multi_polygon_tag, false>
     : detail::disjoint::reverse_covered_by<Point, MultiPolygon>
-{};
+{
+};
 
 } // namespace dispatch
 
-
 #endif // DOXYGEN_NO_DISPATCH
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_DISJOINT_HPP

@@ -6,7 +6,12 @@
 #ifndef PARAMETER_REQUIREMENTS_050331_HPP
 #define PARAMETER_REQUIREMENTS_050331_HPP
 
-namespace boost { namespace parameter { namespace aux {
+namespace boost
+{
+namespace parameter
+{
+namespace aux
+{
 
 // Used to pass static information about parameter requirements
 // through the satisfies() overload set (below).  The
@@ -20,6 +25,8 @@ struct parameter_requirements
     typedef HasDefault has_default;
 };
 
-}}} // namespace boost::parameter::aux
+} // namespace aux
+} // namespace parameter
+} // namespace boost
 
 #endif // PARAMETER_REQUIREMENTS_050331_HPP

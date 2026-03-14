@@ -17,12 +17,20 @@
 #include <boost/geometry/io/wkt/read.hpp>
 #include <boost/geometry/io/wkt/write.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-struct format_wkt {};
-struct format_wkb {}; // TODO
-struct format_dsv {}; // TODO
+struct format_wkt
+{
+};
+struct format_wkb
+{
+}; // TODO
+struct format_dsv
+{
+}; // TODO
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -35,7 +43,7 @@ struct read
 template <typename Geometry>
 struct read<format_wkt, Geometry>
 {
-    static inline void apply(Geometry& geometry, std::string const& wkt)
+    static inline void apply(Geometry &geometry, std::string const &wkt)
     {
         read_wkt<typename tag<Geometry>::type, Geometry>::apply(wkt, geometry);
     }
@@ -45,14 +53,15 @@ struct read<format_wkt, Geometry>
 #endif // DOXYGEN_NO_DISPATCH
 
 template <typename Format, typename Geometry>
-inline void read(Geometry& geometry, std::string const& wkt)
+inline void read(Geometry &geometry, std::string const &wkt)
 {
-    geometry::concept::check<Geometry>();
+    geometry::concept ::check<Geometry>();
     dispatch::read<Format, Geometry>::apply(geometry, wkt);
 }
 
 // TODO: wriite
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_IO_HPP

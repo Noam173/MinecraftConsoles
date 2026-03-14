@@ -9,17 +9,19 @@
 #ifndef BOOST_FLYWEIGHT_KEY_VALUE_FWD_HPP
 #define BOOST_FLYWEIGHT_KEY_VALUE_FWD_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
-namespace boost{
+namespace boost
+{
 
-namespace flyweights{
+namespace flyweights
+{
 
 struct no_key_from_value;
 
-template<typename Key,typename Value,typename KeyFromValue=no_key_from_value>
+template <typename Key, typename Value, typename KeyFromValue = no_key_from_value>
 struct key_value;
 
 } /* namespace flyweights */

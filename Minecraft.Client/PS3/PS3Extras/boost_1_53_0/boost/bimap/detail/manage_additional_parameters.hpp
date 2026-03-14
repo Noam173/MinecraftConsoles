@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_DETAIL_MANAGE_ADDITIONAL_PARAMETERS_HPP
 #define BOOST_BIMAP_DETAIL_MANAGE_ADDITIONAL_PARAMETERS_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -21,31 +21,38 @@
 #include <memory>
 
 // Boost.MPL
+#include <boost/mpl/aux_/na.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/aux_/na.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 #include <boost/bimap/detail/is_set_type_of.hpp>
 
-namespace boost {
-namespace bimaps {
+namespace boost
+{
+namespace bimaps
+{
 
-template< class Type >
+template <class Type>
 struct with_info
 {
     typedef Type value_type;
 };
 
-namespace detail {
+namespace detail
+{
 
 /// \brief Metafunction to check if a given type is a data_hook specification.
 
-template< class Type >
-struct is_with_info : ::boost::mpl::false_ {};
+template <class Type>
+struct is_with_info : ::boost::mpl::false_
+{
+};
 
-template< class ValueType >
-struct is_with_info< with_info<ValueType> > : ::boost::mpl::true_ {};
+template <class ValueType>
+struct is_with_info<with_info<ValueType>> : ::boost::mpl::true_
+{
+};
 
 /** \struct boost::bimaps::detail::manage_additional_parameters
 \brief Utility class to extract the additional parameters from the template parameters.
@@ -70,7 +77,7 @@ See also bimap, bimap_core.
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-template< class AP1, class AP2, class AP3 >
+template <class AP1, class AP2, class AP3>
 struct manage_additional_parameters
 {
     // (1) manage_additional_parameters<
@@ -185,51 +192,43 @@ struct manage_additional_parameters
 
     // Some annidated mpl::if_ and we are done!
 
-    typedef BOOST_DEDUCED_TYPENAME mpl::if_
-    <
+    typedef BOOST_DEDUCED_TYPENAME mpl::if_<
         ::boost::mpl::is_na<AP1>,
         case_NNN, // (1)
-        BOOST_DEDUCED_TYPENAME mpl::if_
-        <
+        BOOST_DEDUCED_TYPENAME mpl::if_<
             ::boost::mpl::is_na<AP2>,
-            BOOST_DEDUCED_TYPENAME mpl::if_
-            <
+            BOOST_DEDUCED_TYPENAME mpl::if_<
                 is_set_type_of_relation<AP1>,
                 case_SNN, // (3)
-                BOOST_DEDUCED_TYPENAME mpl::if_
-                <
+                BOOST_DEDUCED_TYPENAME mpl::if_<
                     is_with_info<AP1>,
                     case_HNN, // (5)
                     case_ANN  // (2)
 
-                >::type
+                    >::type
 
-            >::type,
-            BOOST_DEDUCED_TYPENAME mpl::if_
-            <
+                >::type,
+            BOOST_DEDUCED_TYPENAME mpl::if_<
                 ::boost::mpl::is_na<AP3>,
-                BOOST_DEDUCED_TYPENAME mpl::if_
-                <
+                BOOST_DEDUCED_TYPENAME mpl::if_<
                     is_with_info<AP1>,
                     case_HAN, // (7)
-                    BOOST_DEDUCED_TYPENAME mpl::if_
-                    <
+                    BOOST_DEDUCED_TYPENAME mpl::if_<
                         is_with_info<AP2>,
                         case_SHN, // (6)
                         case_SAN  // (4)
 
-                    >::type
+                        >::type
 
-                >::type,
+                    >::type,
 
                 case_SHA // (8)
 
+                >::type
+
             >::type
 
-        >::type
-
-    >::type type;
-
+        >::type type;
 };
 
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
@@ -238,6 +237,4 @@ struct manage_additional_parameters
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_DETAIL_MANAGE_ADDITIONAL_PARAMETERS_HPP
-

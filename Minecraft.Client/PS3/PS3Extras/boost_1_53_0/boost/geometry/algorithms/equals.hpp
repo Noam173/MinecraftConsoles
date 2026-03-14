@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_EQUALS_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_EQUALS_HPP
 
-
 #include <cstddef>
 #include <vector>
 
@@ -39,27 +38,26 @@
 
 #include <boost/geometry/algorithms/detail/equals/collect_vectors.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace equals
+namespace detail
+{
+namespace equals
 {
 
-
-template
-<
+template <
     std::size_t Dimension,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct box_box
 {
     template <typename Box1, typename Box2>
-    static inline bool apply(Box1 const& box1, Box2 const& box2)
+    static inline bool apply(Box1 const &box1, Box2 const &box2)
     {
-        if (!geometry::math::equals(get<min_corner, Dimension>(box1), get<min_corner, Dimension>(box2))
-            || !geometry::math::equals(get<max_corner, Dimension>(box1), get<max_corner, Dimension>(box2)))
+        if (!geometry::math::equals(get<min_corner, Dimension>(box1), get<min_corner, Dimension>(box2)) || !geometry::math::equals(get<max_corner, Dimension>(box1), get<max_corner, Dimension>(box2)))
         {
             return false;
         }
@@ -71,58 +69,51 @@ template <std::size_t DimensionCount>
 struct box_box<DimensionCount, DimensionCount>
 {
     template <typename Box1, typename Box2>
-    static inline bool apply(Box1 const& , Box2 const& )
+    static inline bool apply(Box1 const &, Box2 const &)
     {
         return true;
     }
 };
 
-
 struct area_check
 {
     template <typename Geometry1, typename Geometry2>
-    static inline bool apply(Geometry1 const& geometry1, Geometry2 const& geometry2)
+    static inline bool apply(Geometry1 const &geometry1, Geometry2 const &geometry2)
     {
         return geometry::math::equals(
-                geometry::area(geometry1),
-                geometry::area(geometry2));
+            geometry::area(geometry1),
+            geometry::area(geometry2));
     }
 };
-
 
 struct length_check
 {
     template <typename Geometry1, typename Geometry2>
-    static inline bool apply(Geometry1 const& geometry1, Geometry2 const& geometry2)
+    static inline bool apply(Geometry1 const &geometry1, Geometry2 const &geometry2)
     {
         return geometry::math::equals(
-                geometry::length(geometry1),
-                geometry::length(geometry2));
+            geometry::length(geometry1),
+            geometry::length(geometry2));
     }
 };
-
 
 template <typename TrivialCheck>
 struct equals_by_collection
 {
     template <typename Geometry1, typename Geometry2>
-    static inline bool apply(Geometry1 const& geometry1, Geometry2 const& geometry2)
+    static inline bool apply(Geometry1 const &geometry1, Geometry2 const &geometry2)
     {
-        if (! TrivialCheck::apply(geometry1, geometry2))
+        if (!TrivialCheck::apply(geometry1, geometry2))
         {
             return false;
         }
 
-        typedef typename geometry::select_most_precise
-            <
-                typename select_coordinate_type
-                    <
-                        Geometry1, Geometry2
-                    >::type,
-                double
-            >::type calculation_type;
+        typedef typename geometry::select_most_precise<
+            typename select_coordinate_type<
+                Geometry1, Geometry2>::type,
+            double>::type calculation_type;
 
-        typedef std::vector<collected_vector<calculation_type> > v;
+        typedef std::vector<collected_vector<calculation_type>> v;
         v c1, c2;
 
         geometry::collect_vectors(c1, geometry1);
@@ -141,113 +132,102 @@ struct equals_by_collection
     }
 };
 
-
-}} // namespace detail::equals
+} // namespace equals
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-template
-<
+template <
     typename Geometry1,
     typename Geometry2,
     typename Tag1 = typename tag<Geometry1>::type,
     typename Tag2 = typename tag<Geometry2>::type,
     std::size_t DimensionCount = dimension<Geometry1>::type::value,
-    bool Reverse = reverse_dispatch<Geometry1, Geometry2>::type::value
->
-struct equals: not_implemented<Tag1, Tag2>
-{};
-
+    bool Reverse = reverse_dispatch<Geometry1, Geometry2>::type::value>
+struct equals : not_implemented<Tag1, Tag2>
+{
+};
 
 // If reversal is needed, perform it
-template
-<
+template <
     typename Geometry1, typename Geometry2,
     typename Tag1, typename Tag2,
-    std::size_t DimensionCount
->
+    std::size_t DimensionCount>
 struct equals<Geometry1, Geometry2, Tag1, Tag2, DimensionCount, true>
     : equals<Geometry2, Geometry1, Tag2, Tag1, DimensionCount, false>
 {
-    static inline bool apply(Geometry1 const& g1, Geometry2 const& g2)
+    static inline bool apply(Geometry1 const &g1, Geometry2 const &g2)
     {
-        return equals
-            <
-                Geometry2, Geometry1,
-                Tag2, Tag1,
-                DimensionCount,
-                false
-            >::apply(g2, g1);
+        return equals<
+            Geometry2, Geometry1,
+            Tag2, Tag1,
+            DimensionCount,
+            false>::apply(g2, g1);
     }
 };
 
-
 template <typename P1, typename P2, std::size_t DimensionCount, bool Reverse>
 struct equals<P1, P2, point_tag, point_tag, DimensionCount, Reverse>
-    : geometry::detail::not_
-        <
-            P1,
-            P2,
-            detail::disjoint::point_point<P1, P2, 0, DimensionCount>
-        >
-{};
-
+    : geometry::detail::not_<
+          P1,
+          P2,
+          detail::disjoint::point_point<P1, P2, 0, DimensionCount>>
+{
+};
 
 template <typename Box1, typename Box2, std::size_t DimensionCount, bool Reverse>
 struct equals<Box1, Box2, box_tag, box_tag, DimensionCount, Reverse>
     : detail::equals::box_box<0, DimensionCount>
-{};
-
+{
+};
 
 template <typename Ring1, typename Ring2, bool Reverse>
 struct equals<Ring1, Ring2, ring_tag, ring_tag, 2, Reverse>
     : detail::equals::equals_by_collection<detail::equals::area_check>
-{};
-
+{
+};
 
 template <typename Polygon1, typename Polygon2, bool Reverse>
 struct equals<Polygon1, Polygon2, polygon_tag, polygon_tag, 2, Reverse>
     : detail::equals::equals_by_collection<detail::equals::area_check>
-{};
-
+{
+};
 
 template <typename LineString1, typename LineString2, bool Reverse>
 struct equals<LineString1, LineString2, linestring_tag, linestring_tag, 2, Reverse>
     : detail::equals::equals_by_collection<detail::equals::length_check>
-{};
-
+{
+};
 
 template <typename Polygon, typename Ring, bool Reverse>
 struct equals<Polygon, Ring, polygon_tag, ring_tag, 2, Reverse>
     : detail::equals::equals_by_collection<detail::equals::area_check>
-{};
-
+{
+};
 
 template <typename Ring, typename Box, bool Reverse>
 struct equals<Ring, Box, ring_tag, box_tag, 2, Reverse>
     : detail::equals::equals_by_collection<detail::equals::area_check>
-{};
-
+{
+};
 
 template <typename Polygon, typename Box, bool Reverse>
 struct equals<Polygon, Box, polygon_tag, box_tag, 2, Reverse>
     : detail::equals::equals_by_collection<detail::equals::area_check>
-{};
-
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
 /*!
 \brief \brief_check{are spatially equal}
-\details \details_check12{equals, is spatially equal}. Spatially equal means 
+\details \details_check12{equals, is spatially equal}. Spatially equal means
     that the same point set is included. A box can therefore be spatially equal
-    to a ring or a polygon, or a linestring can be spatially equal to a 
+    to a ring or a polygon, or a linestring can be spatially equal to a
     multi-linestring or a segment. This only theoretically, not all combinations
     are implemented yet.
 \ingroup equals
@@ -261,20 +241,16 @@ struct equals<Polygon, Box, polygon_tag, box_tag, 2, Reverse>
 
  */
 template <typename Geometry1, typename Geometry2>
-inline bool equals(Geometry1 const& geometry1, Geometry2 const& geometry2)
+inline bool equals(Geometry1 const &geometry1, Geometry2 const &geometry2)
 {
-    concept::check_concepts_and_equal_dimensions
-        <
-            Geometry1 const,
-            Geometry2 const
-        >();
+    concept ::check_concepts_and_equal_dimensions<
+        Geometry1 const,
+        Geometry2 const>();
 
     return dispatch::equals<Geometry1, Geometry2>::apply(geometry1, geometry2);
 }
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_EQUALS_HPP
-

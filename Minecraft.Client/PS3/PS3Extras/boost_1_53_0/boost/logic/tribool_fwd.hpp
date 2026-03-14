@@ -5,11 +5,16 @@
 // 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 // For more information, see http://www.boost.org
 #ifndef BOOST_LOGIC_TRIBOOL_FWD_HPP
 #define BOOST_LOGIC_TRIBOOL_FWD_HPP
 
-namespace boost { namespace logic { class tribool; } }
+namespace boost
+{
+namespace logic
+{
+class tribool;
+}
+} // namespace boost
 
 #endif // BOOST_LOGIC_TRIBOOL_FWD_HPP

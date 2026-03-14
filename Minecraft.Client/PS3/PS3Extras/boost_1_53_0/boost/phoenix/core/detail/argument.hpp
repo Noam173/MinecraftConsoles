@@ -7,38 +7,35 @@
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
 
-    #define BOOST_PHOENIX_ARGUMENT_N_TYPE(_, N, name)                           \
-    typedef                                                                     \
-        expression::argument<BOOST_PP_INC(N)>::type                             \
-        BOOST_PP_CAT(BOOST_PP_CAT(name, BOOST_PP_INC(N)), _type);               \
-    /**/
-    
-    #define BOOST_PHOENIX_ARGUMENT_N_INSTANCE(_, N, name)                       \
-    expression::argument<BOOST_PP_INC(N)>::type const                           \
-        BOOST_PP_CAT(name, BOOST_PP_INC(N)) = {{{}}};                           \
+#define BOOST_PHOENIX_ARGUMENT_N_TYPE(_, N, name)                 \
+    typedef expression::argument<BOOST_PP_INC(N)>::type           \
+        BOOST_PP_CAT(BOOST_PP_CAT(name, BOOST_PP_INC(N)), _type); \
     /**/
 
+#define BOOST_PHOENIX_ARGUMENT_N_INSTANCE(_, N, name) \
+    expression::argument<BOOST_PP_INC(N)>::type const \
+        BOOST_PP_CAT(name, BOOST_PP_INC(N)) = {{{}}}; \
+    /**/
 
-    namespace placeholders
-    {
-        BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_TYPE, arg)
-        BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_TYPE, _)
+namespace placeholders
+{
+BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_TYPE, arg)
+BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_TYPE, _)
 #ifndef BOOST_PHOENIX_NO_PREDEFINED_TERMINALS
-        BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_INSTANCE, arg)
-        BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_INSTANCE, _)
+BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_INSTANCE, arg)
+BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_INSTANCE, _)
 #endif
-    }
+} // namespace placeholders
 
-    namespace arg_names
-    {
-        BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_TYPE, arg)
-        BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_TYPE, _)
+namespace arg_names
+{
+BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_TYPE, arg)
+BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_TYPE, _)
 #ifndef BOOST_PHOENIX_NO_PREDEFINED_TERMINALS
-        BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_INSTANCE, arg)
-        BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_INSTANCE, _)
+BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_INSTANCE, arg)
+BOOST_PP_REPEAT(BOOST_PHOENIX_ARG_LIMIT, BOOST_PHOENIX_ARGUMENT_N_INSTANCE, _)
 #endif
-    }
+} // namespace arg_names
 
-    #undef BOOST_PHOENIX_ARGUMENT_N_TYPE
-    #undef BOOST_PHOENIX_ARGUMENT_N_INSTANCE
-
+#undef BOOST_PHOENIX_ARGUMENT_N_TYPE
+#undef BOOST_PHOENIX_ARGUMENT_N_INSTANCE

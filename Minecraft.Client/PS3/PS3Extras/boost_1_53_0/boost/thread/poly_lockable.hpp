@@ -11,58 +11,54 @@
 #ifndef BOOST_THREAD_POLY_LOCKABLE_HPP
 #define BOOST_THREAD_POLY_LOCKABLE_HPP
 
-#include <boost/thread/detail/delete.hpp>
 #include <boost/chrono/chrono.hpp>
+#include <boost/thread/detail/delete.hpp>
 
 namespace boost
 {
 
-  //[basic_poly_lockable
-  class basic_poly_lockable
-  {
+//[basic_poly_lockable
+class basic_poly_lockable
+{
   public:
-
     virtual ~basic_poly_lockable() = 0;
 
     virtual void lock() = 0;
     virtual void unlock() = 0;
+};
+//]
 
-  };
-  //]
-
-  //[poly_lockable
-  class poly_lockable : public basic_poly_lockable<Lockable>
-  {
+//[poly_lockable
+class poly_lockable : public basic_poly_lockable<Lockable>
+{
   public:
-
     virtual ~poly_lockable() = 0;
     virtual bool try_lock() = 0;
-  };
-  //]
+};
+//]
 
-  //[timed_poly_lockable
-  class timed_poly_lockable: public poly_lockable<TimedLock>
-  {
+//[timed_poly_lockable
+class timed_poly_lockable : public poly_lockable<TimedLock>
+{
   public:
-    virtual ~timed_poly_lockable()=0;
+    virtual ~timed_poly_lockable() = 0;
 
-    virtual bool try_lock_until(chrono::system_clock::time_point const & abs_time)=0;
-    virtual bool try_lock_until(chrono::steady_clock::time_point const & abs_time)=0;
+    virtual bool try_lock_until(chrono::system_clock::time_point const &abs_time) = 0;
+    virtual bool try_lock_until(chrono::steady_clock::time_point const &abs_time) = 0;
     template <typename Clock, typename Duration>
-    bool try_lock_until(chrono::time_point<Clock, Duration> const & abs_time)
+    bool try_lock_until(chrono::time_point<Clock, Duration> const &abs_time)
     {
-      return try_lock_until(time_point_cast<Clock::time_point>(abs_time));
+        return try_lock_until(time_point_cast<Clock::time_point>(abs_time));
     }
 
-    virtual bool try_lock_for(chrono::nanoseconds const & relative_time)=0;
+    virtual bool try_lock_for(chrono::nanoseconds const &relative_time) = 0;
     template <typename Rep, typename Period>
-    bool try_lock_for(chrono::duration<Rep, Period> const & rel_time)
+    bool try_lock_for(chrono::duration<Rep, Period> const &rel_time)
     {
-      return try_lock_for(duration_cast<Clock::duration>(rel_time));
+        return try_lock_for(duration_cast<Clock::duration>(rel_time));
     }
+};
+//]
 
-  };
-  //]
-
-}
+} // namespace boost
 #endif

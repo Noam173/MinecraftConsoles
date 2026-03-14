@@ -19,15 +19,18 @@
 #include <boost/heap/detail/heap_comparison.hpp>
 #include <boost/heap/detail/stable_heap.hpp>
 
-namespace boost  {
-namespace heap   {
-namespace detail {
+namespace boost
+{
+namespace heap
+{
+namespace detail
+{
 
 typedef parameter::parameters<boost::parameter::optional<tag::allocator>,
                               boost::parameter::optional<tag::compare>,
                               boost::parameter::optional<tag::stable>,
-                              boost::parameter::optional<tag::stability_counter_type>
-                             > priority_queue_signature;
+                              boost::parameter::optional<tag::stability_counter_type>>
+    priority_queue_signature;
 }
 
 /**
@@ -46,17 +49,15 @@ typedef parameter::parameters<boost::parameter::optional<tag::allocator>,
  *
  */
 #ifdef BOOST_DOXYGEN_INVOKED
-template<class T, class ...Options>
+template <class T, class... Options>
 #else
 template <typename T,
           class A0 = boost::parameter::void_,
           class A1 = boost::parameter::void_,
           class A2 = boost::parameter::void_,
-          class A3 = boost::parameter::void_
-         >
+          class A3 = boost::parameter::void_>
 #endif
-class priority_queue:
-    private detail::make_heap_base<T, typename detail::priority_queue_signature::bind<A0, A1, A2, A3>::type, false>::type
+class priority_queue : private detail::make_heap_base<T, typename detail::priority_queue_signature::bind<A0, A1, A2, A3>::type, false>::type
 {
     typedef detail::make_heap_base<T, typename detail::priority_queue_signature::bind<A0, A1, A2, A3>::type, false> heap_base_maker;
 
@@ -71,8 +72,7 @@ class priority_queue:
     container_type q_;
 
 #ifndef BOOST_DOXYGEN_INVOKED
-    struct implementation_defined:
-        detail::extract_allocator_types<typename heap_base_maker::allocator_argument>
+    struct implementation_defined : detail::extract_allocator_types<typename heap_base_maker::allocator_argument>
     {
         typedef typename heap_base_maker::compare_argument value_compare;
         typedef detail::stable_heap_iterator<T, typename container_type::const_iterator, super_t> iterator;
@@ -81,7 +81,7 @@ class priority_queue:
     };
 #endif
 
-public:
+  public:
     typedef T value_type;
     typedef typename implementation_defined::size_type size_type;
     typedef typename implementation_defined::difference_type difference_type;
@@ -109,9 +109,9 @@ public:
      * \b Complexity: Constant.
      *
      * */
-    explicit priority_queue(value_compare const & cmp = value_compare()):
-        super_t(cmp)
-    {}
+    explicit priority_queue(value_compare const &cmp = value_compare()) : super_t(cmp)
+    {
+    }
 
     /**
      * \b Effects: copy-constructs priority queue from rhs.
@@ -119,9 +119,9 @@ public:
      * \b Complexity: Linear.
      *
      * */
-    priority_queue (priority_queue const & rhs):
-        super_t(rhs), q_(rhs.q_)
-    {}
+    priority_queue(priority_queue const &rhs) : super_t(rhs), q_(rhs.q_)
+    {
+    }
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
     /**
@@ -131,9 +131,9 @@ public:
      *
      * \b Note: Only available, if BOOST_NO_CXX11_RVALUE_REFERENCES is not defined
      * */
-    priority_queue(priority_queue && rhs):
-        super_t(std::move(rhs)), q_(std::move(rhs.q_))
-    {}
+    priority_queue(priority_queue &&rhs) : super_t(std::move(rhs)), q_(std::move(rhs.q_))
+    {
+    }
 
     /**
      * \b Effects: C++11-style move assignment.
@@ -142,7 +142,7 @@ public:
      *
      * \b Note: Only available, if BOOST_NO_CXX11_RVALUE_REFERENCES is not defined
      * */
-    priority_queue & operator=(priority_queue && rhs)
+    priority_queue &operator=(priority_queue &&rhs)
     {
         super_t::operator=(std::move(rhs));
         q_ = std::move(rhs.q_);
@@ -156,9 +156,9 @@ public:
      * \b Complexity: Linear.
      *
      * */
-    priority_queue & operator=(priority_queue const & rhs)
+    priority_queue &operator=(priority_queue const &rhs)
     {
-        static_cast<super_t&>(*this) = static_cast<super_t const &>(rhs);
+        static_cast<super_t &>(*this) = static_cast<super_t const &>(rhs);
         q_ = rhs.q_;
         return *this;
     }
@@ -236,7 +236,7 @@ public:
      * \b Complexity: Logarithmic (amortized). Linear (worst case).
      *
      * */
-    void push(value_type const & v)
+    void push(value_type const &v)
     {
         q_.push_back(super_t::make_node(v));
         std::push_heap(q_.begin(), q_.end(), static_cast<super_t const &>(*this));
@@ -250,7 +250,7 @@ public:
      *
      * */
     template <class... Args>
-    void emplace(Args&&... args)
+    void emplace(Args &&...args)
     {
         q_.emplace_back(super_t::make_node(std::forward<Args>(args)...));
         std::push_heap(q_.begin(), q_.end(), static_cast<super_t const &>(*this));
@@ -276,7 +276,7 @@ public:
      * \b Complexity: Constant.
      *
      * */
-    void swap(priority_queue & rhs)
+    void swap(priority_queue &rhs)
     {
         super_t::swap(rhs);
         q_.swap(rhs.q_);
@@ -321,7 +321,7 @@ public:
      * \b Effect: Returns the value_compare object used by the priority queue
      *
      * */
-    value_compare const & value_comp(void) const
+    value_compare const &value_comp(void) const
     {
         return super_t::value_comp();
     }
@@ -333,7 +333,7 @@ public:
      *
      * */
     template <typename HeapType>
-    bool operator<(HeapType const & rhs) const
+    bool operator<(HeapType const &rhs) const
     {
         return detail::heap_compare(*this, rhs);
     }
@@ -345,7 +345,7 @@ public:
      *
      * */
     template <typename HeapType>
-    bool operator>(HeapType const & rhs) const
+    bool operator>(HeapType const &rhs) const
     {
         return detail::heap_compare(rhs, *this);
     }
@@ -357,7 +357,7 @@ public:
      *
      * */
     template <typename HeapType>
-    bool operator>=(HeapType const & rhs) const
+    bool operator>=(HeapType const &rhs) const
     {
         return !operator<(rhs);
     }
@@ -369,7 +369,7 @@ public:
      *
      * */
     template <typename HeapType>
-    bool operator<=(HeapType const & rhs) const
+    bool operator<=(HeapType const &rhs) const
     {
         return !operator>(rhs);
     }
@@ -381,7 +381,7 @@ public:
      *
      * */
     template <typename HeapType>
-    bool operator==(HeapType const & rhs) const
+    bool operator==(HeapType const &rhs) const
     {
         return detail::heap_equality(*this, rhs);
     }
@@ -393,7 +393,7 @@ public:
      *
      * */
     template <typename HeapType>
-    bool operator!=(HeapType const & rhs) const
+    bool operator!=(HeapType const &rhs) const
     {
         return !(*this == rhs);
     }

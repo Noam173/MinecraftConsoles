@@ -21,7 +21,10 @@
 #include <boost/mpi/communicator.hpp>
 #include <vector>
 
-namespace boost { namespace mpi {
+namespace boost
+{
+namespace mpi
+{
 
 /**
  *  @brief Gather the values stored at every process into vectors of
@@ -47,32 +50,28 @@ namespace boost { namespace mpi {
  *    process ID number. If it is a vector, the vector will be resized
  *    accordingly.
  */
-template<typename T>
-void
-all_gather(const communicator& comm, const T& in_value, 
-           std::vector<T>& out_values);
+template <typename T>
+void all_gather(const communicator &comm, const T &in_value,
+                std::vector<T> &out_values);
 
 /**
  * \overload
  */
-template<typename T>
-void
-all_gather(const communicator& comm, const T& in_value, T* out_values);
+template <typename T>
+void all_gather(const communicator &comm, const T &in_value, T *out_values);
 
 /**
  * \overload
  */
-template<typename T>
-void
-all_gather(const communicator& comm, const T* in_values, int n,
-           std::vector<T>& out_values);
+template <typename T>
+void all_gather(const communicator &comm, const T *in_values, int n,
+                std::vector<T> &out_values);
 
 /**
  * \overload
  */
-template<typename T>
-void
-all_gather(const communicator& comm, const T* in_values, int n, T* out_values);
+template <typename T>
+void all_gather(const communicator &comm, const T *in_values, int n, T *out_values);
 
 /**
  *  @brief Combine the values stored by each process into a single
@@ -119,23 +118,21 @@ all_gather(const communicator& comm, const T* in_values, int n, T* out_values);
  *    @returns If no @p out_value parameter is supplied, returns the
  *    result of the reduction operation.
  */
-template<typename T, typename Op>
-void
-all_reduce(const communicator& comm, const T& in_value, T& out_value, Op op);
+template <typename T, typename Op>
+void all_reduce(const communicator &comm, const T &in_value, T &out_value, Op op);
 
 /**
  * \overload
  */
-template<typename T, typename Op>
-T all_reduce(const communicator& comm, const T& in_value, Op op);
+template <typename T, typename Op>
+T all_reduce(const communicator &comm, const T &in_value, Op op);
 
 /**
  * \overload
  */
-template<typename T, typename Op>
-void
-all_reduce(const communicator& comm, const T* in_values, int n, T* out_values, 
-           Op op);
+template <typename T, typename Op>
+void all_reduce(const communicator &comm, const T *in_values, int n, T *out_values,
+                Op op);
 
 /**
  *  @brief Send data from every process to every other process.
@@ -162,31 +159,28 @@ all_reduce(const communicator& comm, const T* in_values, int n, T* out_values,
  *    updated to contain the values received from other processes. The
  *    jth value in @p out_values will come from the procss with rank j.
  */
-template<typename T>
-void
-all_to_all(const communicator& comm, const std::vector<T>& in_values,
-           std::vector<T>& out_values);
+template <typename T>
+void all_to_all(const communicator &comm, const std::vector<T> &in_values,
+                std::vector<T> &out_values);
 
 /**
  * \overload
  */
-template<typename T>
-void all_to_all(const communicator& comm, const T* in_values, T* out_values);
+template <typename T>
+void all_to_all(const communicator &comm, const T *in_values, T *out_values);
 
 /**
  * \overload
  */
-template<typename T>
-void
-all_to_all(const communicator& comm, const std::vector<T>& in_values, int n,
-           std::vector<T>& out_values);
+template <typename T>
+void all_to_all(const communicator &comm, const std::vector<T> &in_values, int n,
+                std::vector<T> &out_values);
 
 /**
  * \overload
  */
-template<typename T>
-void 
-all_to_all(const communicator& comm, const T* in_values, int n, T* out_values);
+template <typename T>
+void all_to_all(const communicator &comm, const T *in_values, int n, T *out_values);
 
 /**
  * @brief Broadcast a value from a root process to all other
@@ -226,27 +220,26 @@ all_to_all(const communicator& comm, const T* in_values, int n, T* out_values);
  *   @param root The rank/process ID of the process that will be
  *   transmitting the value.
  */
-template<typename T>
-void broadcast(const communicator& comm, T& value, int root);
+template <typename T>
+void broadcast(const communicator &comm, T &value, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void broadcast(const communicator& comm, T* values, int n, int root);
+template <typename T>
+void broadcast(const communicator &comm, T *values, int n, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void broadcast(const communicator& comm, skeleton_proxy<T>& value, int root);
+template <typename T>
+void broadcast(const communicator &comm, skeleton_proxy<T> &value, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void
-broadcast(const communicator& comm, const skeleton_proxy<T>& value, int root);
+template <typename T>
+void broadcast(const communicator &comm, const skeleton_proxy<T> &value, int root);
 
 /**
  *  @brief Gather the values stored at every process into a vector at
@@ -276,45 +269,41 @@ broadcast(const communicator& comm, const skeleton_proxy<T>& value, int root);
  *    @param root The process ID number that will collect the
  *    values. This value must be the same on all processes.
  */
-template<typename T>
-void
-gather(const communicator& comm, const T& in_value, std::vector<T>& out_values,
-       int root);
+template <typename T>
+void gather(const communicator &comm, const T &in_value, std::vector<T> &out_values,
+            int root);
 
 /**
  * \overload
  */
-template<typename T>
-void
-gather(const communicator& comm, const T& in_value, T* out_values, int root);
+template <typename T>
+void gather(const communicator &comm, const T &in_value, T *out_values, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void gather(const communicator& comm, const T& in_value, int root);
+template <typename T>
+void gather(const communicator &comm, const T &in_value, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void
-gather(const communicator& comm, const T* in_values, int n, 
-       std::vector<T>& out_values, int root);
+template <typename T>
+void gather(const communicator &comm, const T *in_values, int n,
+            std::vector<T> &out_values, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void
-gather(const communicator& comm, const T* in_values, int n, T* out_values, 
-       int root);
+template <typename T>
+void gather(const communicator &comm, const T *in_values, int n, T *out_values,
+            int root);
 
 /**
  * \overload
  */
-template<typename T>
-void gather(const communicator& comm, const T* in_values, int n, int root);
+template <typename T>
+void gather(const communicator &comm, const T *in_values, int n, int root);
 
 /**
  *  @brief Scatter the values stored at the root to all processes
@@ -345,45 +334,41 @@ void gather(const communicator& comm, const T* in_values, int n, int root);
  *    @param root The process ID number that will scatter the
  *    values. This value must be the same on all processes.
  */
-template<typename T>
-void
-scatter(const communicator& comm, const std::vector<T>& in_values, T& out_value,
-        int root);
+template <typename T>
+void scatter(const communicator &comm, const std::vector<T> &in_values, T &out_value,
+             int root);
 
 /**
  * \overload
  */
-template<typename T>
-void
-scatter(const communicator& comm, const T* in_values, T& out_value, int root);
+template <typename T>
+void scatter(const communicator &comm, const T *in_values, T &out_value, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void scatter(const communicator& comm, T& out_value, int root);
+template <typename T>
+void scatter(const communicator &comm, T &out_value, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void
-scatter(const communicator& comm, const std::vector<T>& in_values, 
-        T* out_values, int n, int root);
+template <typename T>
+void scatter(const communicator &comm, const std::vector<T> &in_values,
+             T *out_values, int n, int root);
 
 /**
  * \overload
  */
-template<typename T>
-void
-scatter(const communicator& comm, const T* in_values, T* out_values, int n,
-        int root);
+template <typename T>
+void scatter(const communicator &comm, const T *in_values, T *out_values, int n,
+             int root);
 
 /**
  * \overload
  */
-template<typename T>
-void scatter(const communicator& comm, T* out_values, int n, int root);
+template <typename T>
+void scatter(const communicator &comm, T *out_values, int n, int root);
 
 /**
  *  @brief Combine the values stored by each process into a single
@@ -396,7 +381,7 @@ void scatter(const communicator& comm, T* out_values, int n, int root);
  *  serializable or has an associated MPI data type. One can think of
  *  this operation as a @c gather to the @p root, followed by an @c
  *  std::accumulate() over the gathered values and using the operation
- *  @c op. 
+ *  @c op.
  *
  *  When the type @c T has an associated MPI data type, this routine
  *  invokes @c MPI_Reduce to perform the reduction. If possible,
@@ -436,31 +421,28 @@ void scatter(const communicator& comm, T* out_values, int n, int root);
  *    @param root The process ID number that will receive the final,
  *    combined value. This value must be the same on all processes.
  */
-template<typename T, typename Op>
-void
-reduce(const communicator& comm, const T& in_value, T& out_value, Op op,
-       int root);
+template <typename T, typename Op>
+void reduce(const communicator &comm, const T &in_value, T &out_value, Op op,
+            int root);
 
 /**
  * \overload
  */
-template<typename T, typename Op>
-void reduce(const communicator& comm, const T& in_value, Op op, int root);
+template <typename T, typename Op>
+void reduce(const communicator &comm, const T &in_value, Op op, int root);
 
 /**
  * \overload
  */
-template<typename T, typename Op>
-void
-reduce(const communicator& comm, const T* in_values, int n, T* out_values, 
-       Op op, int root);
+template <typename T, typename Op>
+void reduce(const communicator &comm, const T *in_values, int n, T *out_values,
+            Op op, int root);
 
 /**
  * \overload
  */
-template<typename T, typename Op>
-void 
-reduce(const communicator& comm, const T* in_values, int n, Op op, int root);
+template <typename T, typename Op>
+void reduce(const communicator &comm, const T *in_values, int n, Op op, int root);
 
 /**
  *  @brief Compute a prefix reduction of values from all processes in
@@ -510,36 +492,33 @@ reduce(const communicator& comm, const T* in_values, int n, Op op, int root);
  *    @returns If no @p out_value parameter is provided, returns the
  *    result of prefix reduction.
  */
-template<typename T, typename Op>
-void
-scan(const communicator& comm, const T& in_value, T& out_value, Op op);
+template <typename T, typename Op>
+void scan(const communicator &comm, const T &in_value, T &out_value, Op op);
 
 /**
  * \overload
  */
-template<typename T, typename Op>
-T
-scan(const communicator& comm, const T& in_value, Op op);
+template <typename T, typename Op>
+T scan(const communicator &comm, const T &in_value, Op op);
 
 /**
  * \overload
  */
-template<typename T, typename Op>
-void
-scan(const communicator& comm, const T* in_values, int n, T* out_values, Op op);
+template <typename T, typename Op>
+void scan(const communicator &comm, const T *in_values, int n, T *out_values, Op op);
 
-} } // end namespace boost::mpi
+} // namespace mpi
+} // namespace boost
 #endif // BOOST_MPI_COLLECTIVES_HPP
 
 #ifndef BOOST_MPI_COLLECTIVES_FORWARD_ONLY
 // Include implementations of each of the collectives
-#  include <boost/mpi/collectives/all_gather.hpp>
-#  include <boost/mpi/collectives/all_reduce.hpp>
-#  include <boost/mpi/collectives/all_to_all.hpp>
-#  include <boost/mpi/collectives/broadcast.hpp>
-#  include <boost/mpi/collectives/gather.hpp>
-#  include <boost/mpi/collectives/scatter.hpp>
-#  include <boost/mpi/collectives/reduce.hpp>
-#  include <boost/mpi/collectives/scan.hpp>
+#include <boost/mpi/collectives/all_gather.hpp>
+#include <boost/mpi/collectives/all_reduce.hpp>
+#include <boost/mpi/collectives/all_to_all.hpp>
+#include <boost/mpi/collectives/broadcast.hpp>
+#include <boost/mpi/collectives/gather.hpp>
+#include <boost/mpi/collectives/reduce.hpp>
+#include <boost/mpi/collectives/scan.hpp>
+#include <boost/mpi/collectives/scatter.hpp>
 #endif
-

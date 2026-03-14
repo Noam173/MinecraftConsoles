@@ -8,40 +8,42 @@
 #ifndef BOOST_FUSION_CONTAINER_MAP_DETAIL_DEREF_DATA_IMPL_HPP
 #define BOOST_FUSION_CONTAINER_MAP_DETAIL_DEREF_DATA_IMPL_HPP
 
-#include <boost/fusion/iterator/value_of.hpp>
 #include <boost/fusion/iterator/deref.hpp>
+#include <boost/fusion/iterator/value_of.hpp>
 #include <boost/fusion/support/detail/access.hpp>
-#include <boost/type_traits/is_const.hpp>
 #include <boost/mpl/if.hpp>
+#include <boost/type_traits/is_const.hpp>
 
-namespace boost { namespace fusion { namespace extension
+namespace boost
 {
-    template <typename>
-    struct deref_data_impl;
+namespace fusion
+{
+namespace extension
+{
+template <typename>
+struct deref_data_impl;
 
-    template <>
-    struct deref_data_impl<map_iterator_tag>
+template <>
+struct deref_data_impl<map_iterator_tag>
+{
+    template <typename It>
+    struct apply
     {
-        template <typename It>
-        struct apply
-        {
-            typedef typename result_of::value_of<It>::type::second_type data;
+        typedef typename result_of::value_of<It>::type::second_type data;
 
-            typedef typename
-                mpl::if_<
-                    is_const<typename It::seq_type>
-                  , typename detail::cref_result<data>::type
-                  , typename detail::ref_result<data>::type
-                >::type
+        typedef typename mpl::if_<
+            is_const<typename It::seq_type>, typename detail::cref_result<data>::type, typename detail::ref_result<data>::type>::type
             type;
 
-            static type
-            call(It const& it)
-            {
-                return fusion::deref(it).second;
-            }
-        };
+        static type
+        call(It const &it)
+        {
+            return fusion::deref(it).second;
+        }
     };
-}}}
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

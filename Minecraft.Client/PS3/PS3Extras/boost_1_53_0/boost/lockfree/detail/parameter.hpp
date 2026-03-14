@@ -11,9 +11,12 @@
 
 #include <boost/lockfree/policies.hpp>
 
-namespace boost {
-namespace lockfree {
-namespace detail {
+namespace boost
+{
+namespace lockfree
+{
+namespace detail
+{
 
 namespace mpl = boost::mpl;
 
@@ -24,7 +27,6 @@ struct has_arg
     static const bool value = mpl::is_not_void_<type>::type::value;
 };
 
-
 template <typename bound_args>
 struct extract_capacity
 {
@@ -32,12 +34,10 @@ struct extract_capacity
 
     typedef typename mpl::if_c<has_capacity,
                                typename has_arg<bound_args, tag::capacity>::type,
-                               mpl::size_t< 0 >
-                              >::type capacity_t;
+                               mpl::size_t<0>>::type capacity_t;
 
     static const std::size_t capacity = capacity_t::value;
 };
-
 
 template <typename bound_args, typename T>
 struct extract_allocator
@@ -46,8 +46,7 @@ struct extract_allocator
 
     typedef typename mpl::if_c<has_allocator,
                                typename has_arg<bound_args, tag::allocator>::type,
-                               std::allocator<T>
-                              >::type allocator_arg;
+                               std::allocator<T>>::type allocator_arg;
 
     typedef typename allocator_arg::template rebind<T>::other type;
 };
@@ -59,12 +58,10 @@ struct extract_fixed_sized
 
     typedef typename mpl::if_c<has_fixed_sized,
                                typename has_arg<bound_args, tag::fixed_sized>::type,
-                               mpl::bool_<default_>
-                              >::type type;
+                               mpl::bool_<default_>>::type type;
 
     static const bool value = type::value;
 };
-
 
 } /* namespace detail */
 } /* namespace lockfree */

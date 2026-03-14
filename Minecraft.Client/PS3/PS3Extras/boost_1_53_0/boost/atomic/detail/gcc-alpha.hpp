@@ -7,9 +7,9 @@
 //  See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/atomic/detail/config.hpp>
 #include <boost/atomic/detail/base.hpp>
 #include <boost/atomic/detail/builder.hpp>
+#include <boost/atomic/detail/config.hpp>
 
 #ifdef BOOST_ATOMIC_HAS_PRAGMA_ONCE
 #pragma once
@@ -45,63 +45,74 @@
     as it apparently does not hurt either.
 */
 
-namespace boost {
-namespace atomics {
-namespace detail {
+namespace boost
+{
+namespace atomics
+{
+namespace detail
+{
 
 inline void fence_before(memory_order order)
 {
-    switch(order) {
-        case memory_order_consume:
-        case memory_order_release:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __asm__ __volatile__ ("mb" ::: "memory");
-        default:;
+    switch (order)
+    {
+    case memory_order_consume:
+    case memory_order_release:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __asm__ __volatile__("mb" ::: "memory");
+    default:;
     }
 }
 
 inline void fence_after(memory_order order)
 {
-    switch(order) {
-        case memory_order_acquire:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __asm__ __volatile__ ("mb" ::: "memory");
-        default:;
+    switch (order)
+    {
+    case memory_order_acquire:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __asm__ __volatile__("mb" ::: "memory");
+    default:;
     }
 }
 
-template<>
+template <>
 inline void platform_atomic_thread_fence(memory_order order)
 {
-    switch(order) {
-        case memory_order_acquire:
-        case memory_order_consume:
-        case memory_order_release:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __asm__ __volatile__ ("mb" ::: "memory");
-        default:;
+    switch (order)
+    {
+    case memory_order_acquire:
+    case memory_order_consume:
+    case memory_order_release:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __asm__ __volatile__("mb" ::: "memory");
+    default:;
     }
 }
 
-template<typename T>
-class atomic_alpha_32 {
-public:
+template <typename T>
+class atomic_alpha_32
+{
+  public:
     typedef T integral_type;
-    explicit atomic_alpha_32(T v) : i(v) {}
-    atomic_alpha_32() {}
-    T load(memory_order order=memory_order_seq_cst) const volatile
+    explicit atomic_alpha_32(T v) : i(v)
     {
-        T v=*reinterpret_cast<volatile const int *>(&i);
+    }
+    atomic_alpha_32()
+    {
+    }
+    T load(memory_order order = memory_order_seq_cst) const volatile
+    {
+        T v = *reinterpret_cast<volatile const int *>(&i);
         fence_after(order);
         return v;
     }
-    void store(T v, memory_order order=memory_order_seq_cst) volatile
+    void store(T v, memory_order order = memory_order_seq_cst) volatile
     {
         fence_before(order);
-        *reinterpret_cast<volatile int *>(&i)=(int)v;
+        *reinterpret_cast<volatile int *>(&i) = (int)v;
     }
     bool compare_exchange_weak(
         T &expected,
@@ -124,17 +135,26 @@ public:
             "br 2b\n"
             ".previous\n"
 
-            : "+&r" (expected), "+&r" (desired), "=&r"(current), "=&r"(success)
-            : "m" (i)
-            :
-        );
-        if (desired) fence_after(success_order);
-        else fence_after(failure_order);
+            : "+&r"(expected), "+&r"(desired), "=&r"(current), "=&r"(success)
+            : "m"(i)
+            :);
+        if (desired)
+        {
+            fence_after(success_order);
+        }
+        else
+        {
+            fence_after(failure_order);
+        }
         return desired;
     }
 
-    bool is_lock_free(void) const volatile {return true;}
-protected:
+    bool is_lock_free(void) const volatile
+    {
+        return true;
+    }
+
+  protected:
     inline T fetch_add_var(T c, memory_order order) volatile
     {
         fence_before(order);
@@ -149,10 +169,9 @@ protected:
             "2: br 1b\n"
             ".previous\n"
 
-            : "=&r" (original), "=&r" (modified)
-            : "m" (i), "r" (c)
-            :
-        );
+            : "=&r"(original), "=&r"(modified)
+            : "m"(i), "r"(c)
+            :);
         fence_after(order);
         return original;
     }
@@ -170,10 +189,9 @@ protected:
             "2: br 1b\n"
             ".previous\n"
 
-            : "=&r" (original), "=&r" (modified)
-            : "m" (i)
-            :
-        );
+            : "=&r"(original), "=&r"(modified)
+            : "m"(i)
+            :);
         fence_after(order);
         return original;
     }
@@ -191,33 +209,38 @@ protected:
             "2: br 1b\n"
             ".previous\n"
 
-            : "=&r" (original), "=&r" (modified)
-            : "m" (i)
-            :
-        );
+            : "=&r"(original), "=&r"(modified)
+            : "m"(i)
+            :);
         fence_after(order);
         return original;
     }
-private:
+
+  private:
     T i;
 };
 
-template<typename T>
-class atomic_alpha_64 {
-public:
+template <typename T>
+class atomic_alpha_64
+{
+  public:
     typedef T integral_type;
-    explicit atomic_alpha_64(T v) : i(v) {}
-    atomic_alpha_64() {}
-    T load(memory_order order=memory_order_seq_cst) const volatile
+    explicit atomic_alpha_64(T v) : i(v)
     {
-        T v=*reinterpret_cast<volatile const T *>(&i);
+    }
+    atomic_alpha_64()
+    {
+    }
+    T load(memory_order order = memory_order_seq_cst) const volatile
+    {
+        T v = *reinterpret_cast<volatile const T *>(&i);
         fence_after(order);
         return v;
     }
-    void store(T v, memory_order order=memory_order_seq_cst) volatile
+    void store(T v, memory_order order = memory_order_seq_cst) volatile
     {
         fence_before(order);
-        *reinterpret_cast<volatile T *>(&i)=v;
+        *reinterpret_cast<volatile T *>(&i) = v;
     }
     bool compare_exchange_weak(
         T &expected,
@@ -240,17 +263,26 @@ public:
             "br 2b\n"
             ".previous\n"
 
-            : "+&r" (expected), "+&r" (desired), "=&r"(current), "=&r"(success)
-            : "m" (i)
-            :
-        );
-        if (desired) fence_after(success_order);
-        else fence_after(failure_order);
+            : "+&r"(expected), "+&r"(desired), "=&r"(current), "=&r"(success)
+            : "m"(i)
+            :);
+        if (desired)
+        {
+            fence_after(success_order);
+        }
+        else
+        {
+            fence_after(failure_order);
+        }
         return desired;
     }
 
-    bool is_lock_free(void) const volatile {return true;}
-protected:
+    bool is_lock_free(void) const volatile
+    {
+        return true;
+    }
+
+  protected:
     inline T fetch_add_var(T c, memory_order order) volatile
     {
         fence_before(order);
@@ -265,10 +297,9 @@ protected:
             "2: br 1b\n"
             ".previous\n"
 
-            : "=&r" (original), "=&r" (modified)
-            : "m" (i), "r" (c)
-            :
-        );
+            : "=&r"(original), "=&r"(modified)
+            : "m"(i), "r"(c)
+            :);
         fence_after(order);
         return original;
     }
@@ -286,10 +317,9 @@ protected:
             "2: br 1b\n"
             ".previous\n"
 
-            : "=&r" (original), "=&r" (modified)
-            : "m" (i)
-            :
-        );
+            : "=&r"(original), "=&r"(modified)
+            : "m"(i)
+            :);
         fence_after(order);
         return original;
     }
@@ -307,53 +337,73 @@ protected:
             "2: br 1b\n"
             ".previous\n"
 
-            : "=&r" (original), "=&r" (modified)
-            : "m" (i)
-            :
-        );
+            : "=&r"(original), "=&r"(modified)
+            : "m"(i)
+            :);
         fence_after(order);
         return original;
     }
-private:
+
+  private:
     T i;
 };
 
-template<typename T>
-class platform_atomic_integral<T, 4> : public build_atomic_from_typical<build_exchange<atomic_alpha_32<T> > > {
-public:
-    typedef build_atomic_from_typical<build_exchange<atomic_alpha_32<T> > > super;
-    explicit platform_atomic_integral(T v) : super(v) {}
-    platform_atomic_integral(void) {}
+template <typename T>
+class platform_atomic_integral<T, 4> : public build_atomic_from_typical<build_exchange<atomic_alpha_32<T>>>
+{
+  public:
+    typedef build_atomic_from_typical<build_exchange<atomic_alpha_32<T>>> super;
+    explicit platform_atomic_integral(T v) : super(v)
+    {
+    }
+    platform_atomic_integral(void)
+    {
+    }
 };
 
-template<typename T>
-class platform_atomic_integral<T, 8> : public build_atomic_from_typical<build_exchange<atomic_alpha_64<T> > > {
-public:
-    typedef build_atomic_from_typical<build_exchange<atomic_alpha_64<T> > > super;
-    explicit platform_atomic_integral(T v) : super(v) {}
-    platform_atomic_integral(void) {}
+template <typename T>
+class platform_atomic_integral<T, 8> : public build_atomic_from_typical<build_exchange<atomic_alpha_64<T>>>
+{
+  public:
+    typedef build_atomic_from_typical<build_exchange<atomic_alpha_64<T>>> super;
+    explicit platform_atomic_integral(T v) : super(v)
+    {
+    }
+    platform_atomic_integral(void)
+    {
+    }
 };
 
-template<typename T>
-class platform_atomic_integral<T, 1>: public build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T> {
-public:
+template <typename T>
+class platform_atomic_integral<T, 1> : public build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T>
+{
+  public:
     typedef build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T> super;
 
-    explicit platform_atomic_integral(T v) : super(v) {}
-    platform_atomic_integral(void) {}
+    explicit platform_atomic_integral(T v) : super(v)
+    {
+    }
+    platform_atomic_integral(void)
+    {
+    }
 };
 
-template<typename T>
-class platform_atomic_integral<T, 2>: public build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T> {
-public:
+template <typename T>
+class platform_atomic_integral<T, 2> : public build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T>
+{
+  public:
     typedef build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T> super;
 
-    explicit platform_atomic_integral(T v) : super(v) {}
-    platform_atomic_integral(void) {}
+    explicit platform_atomic_integral(T v) : super(v)
+    {
+    }
+    platform_atomic_integral(void)
+    {
+    }
 };
 
-}
-}
-}
+} // namespace detail
+} // namespace atomics
+} // namespace boost
 
 #endif

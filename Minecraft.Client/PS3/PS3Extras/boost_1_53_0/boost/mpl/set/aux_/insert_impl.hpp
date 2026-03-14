@@ -5,8 +5,8 @@
 // Copyright Aleksey Gurtovoy 2003-2007
 // Copyright David Abrahams 2003-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -15,51 +15,45 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
+#include <boost/mpl/aux_/na.hpp>
+#include <boost/mpl/base.hpp>
+#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/identity.hpp>
 #include <boost/mpl/insert_fwd.hpp>
 #include <boost/mpl/set/aux_/has_key_impl.hpp>
 #include <boost/mpl/set/aux_/item.hpp>
 #include <boost/mpl/set/aux_/tag.hpp>
-#include <boost/mpl/identity.hpp>
-#include <boost/mpl/base.hpp>
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/aux_/na.hpp>
 
 #include <boost/type_traits/is_same.hpp>
 
-namespace boost { namespace mpl {
+namespace boost
+{
+namespace mpl
+{
 
-namespace aux {
-template<  typename Set, typename T > struct set_insert_impl
-    : eval_if< 
-          has_key_impl<aux::set_tag>::apply<Set,T>
-        , identity<Set>
-        , eval_if< 
-              is_same< T,typename Set::last_masked_ > 
-            , base<Set>
-            , identity< s_item<T,typename Set::item_> >
-            >
-        >
+namespace aux
+{
+template <typename Set, typename T>
+struct set_insert_impl
+    : eval_if<
+          has_key_impl<aux::set_tag>::apply<Set, T>, identity<Set>, eval_if<is_same<T, typename Set::last_masked_>, base<Set>, identity<s_item<T, typename Set::item_>>>>
 {
 };
-}
+} // namespace aux
 
-template<>
-struct insert_impl< aux::set_tag >
+template <>
+struct insert_impl<aux::set_tag>
 {
-    template< 
-          typename Set
-        , typename PosOrKey
-        , typename KeyOrNA
-        > 
+    template <
+        typename Set, typename PosOrKey, typename KeyOrNA>
     struct apply
         : aux::set_insert_impl<
-              Set
-            , typename if_na<KeyOrNA,PosOrKey>::type
-            >
+              Set, typename if_na<KeyOrNA, PosOrKey>::type>
     {
     };
 };
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_SET_AUX_INSERT_IMPL_HPP_INCLUDED

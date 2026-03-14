@@ -1,4 +1,4 @@
-# /* **************************************************************************
+#/* **************************************************************************
 #  *                                                                          *
 #  *     (C) Copyright Paul Mensonides 2011.                                  *
 #  *     (C) Copyright Edward Diener 2011.                                    *
@@ -8,18 +8,18 @@
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+#/* See http://www.boost.org for most recent version. */
 #
-# ifndef BOOST_PREPROCESSOR_FACILITIES_OVERLOAD_HPP
-# define BOOST_PREPROCESSOR_FACILITIES_OVERLOAD_HPP
+#ifndef BOOST_PREPROCESSOR_FACILITIES_OVERLOAD_HPP
+#define BOOST_PREPROCESSOR_FACILITIES_OVERLOAD_HPP
 #
-# include <boost/preprocessor/cat.hpp>
-# include <boost/preprocessor/variadic/size.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/variadic/size.hpp>
 #
-# /* BOOST_PP_OVERLOAD */
+#/* BOOST_PP_OVERLOAD */
 #
-# if BOOST_PP_VARIADICS
-#    define BOOST_PP_OVERLOAD(prefix, ...) BOOST_PP_CAT(prefix, BOOST_PP_VARIADIC_SIZE(__VA_ARGS__))
-# endif
+#if BOOST_PP_VARIADICS
+#define BOOST_PP_OVERLOAD(prefix, ...) BOOST_PP_CAT(prefix, BOOST_PP_VARIADIC_SIZE(__VA_ARGS__))
+#endif
 #
-# endif
+#endif

@@ -12,14 +12,14 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/support/unused.hpp>
-#include <boost/spirit/home/qi/nonterminal/debug_handler_state.hpp>
 #include <boost/fusion/include/out.hpp>
-#include <iostream>
-#include <boost/mpl/if.hpp>
 #include <boost/mpl/and.hpp>
-#include <boost/type_traits/is_convertible.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/spirit/home/qi/nonterminal/debug_handler_state.hpp>
 #include <boost/spirit/home/support/attributes.hpp>
+#include <boost/spirit/home/support/unused.hpp>
+#include <boost/type_traits/is_convertible.hpp>
+#include <iostream>
 
 //  The stream to use for debug output
 #if !defined(BOOST_SPIRIT_DEBUG_OUT)
@@ -36,100 +36,107 @@
 #define BOOST_SPIRIT_DEBUG_INDENT 2
 #endif
 
-namespace boost { namespace spirit { namespace qi
+namespace boost
 {
-    namespace detail
+namespace spirit
+{
+namespace qi
+{
+namespace detail
+{
+template <typename Char>
+inline void token_printer(std::ostream &o, Char c)
+{
+    // allow to customize the token printer routine
+    spirit::traits::print_token(o, c);
+}
+} // namespace detail
+
+struct simple_trace
+{
+    int &get_indent() const
     {
-        template<typename Char>
-        inline void token_printer(std::ostream& o, Char c)
+        static int indent = 0;
+        return indent;
+    }
+
+    void print_indent(int n) const
+    {
+        n *= BOOST_SPIRIT_DEBUG_INDENT;
+        for (int i = 0; i != n; ++i)
         {
-            // allow to customize the token printer routine
-            spirit::traits::print_token(o, c);
+            BOOST_SPIRIT_DEBUG_OUT << ' ';
         }
     }
 
-    struct simple_trace
+    template <typename Iterator>
+    void print_some(
+        char const *tag, int /*indent*/
+        ,
+        Iterator first, Iterator const &last) const
     {
-        int& get_indent() const
+        print_indent(get_indent());
+        BOOST_SPIRIT_DEBUG_OUT << '<' << tag << '>';
+        int const n = BOOST_SPIRIT_DEBUG_PRINT_SOME;
+        for (int i = 0; first != last && i != n && *first; ++i, ++first)
         {
-            static int indent = 0;
-            return indent;
+            detail::token_printer(BOOST_SPIRIT_DEBUG_OUT, *first);
         }
+        BOOST_SPIRIT_DEBUG_OUT << "</" << tag << '>' << std::endl;
 
-        void print_indent(int n) const
-        {
-            n *= BOOST_SPIRIT_DEBUG_INDENT;
-            for (int i = 0; i != n; ++i)
-                BOOST_SPIRIT_DEBUG_OUT << ' ';
-        }
+        // $$$ FIXME convert invalid xml characters (e.g. '<') to valid
+        // character entities. $$$
+    }
 
-        template <typename Iterator>
-        void print_some(
-            char const* tag
-          , int /*indent*/
-          , Iterator first, Iterator const& last) const
+    template <typename Iterator, typename Context, typename State>
+    void operator()(
+        Iterator const &first, Iterator const &last, Context const &context, State state, std::string const &rule_name) const
+    {
+        switch (state)
         {
+        case pre_parse:
+            print_indent(get_indent()++);
+            BOOST_SPIRIT_DEBUG_OUT
+                << '<' << rule_name << '>'
+                << std::endl;
+            print_some("try", get_indent(), first, last);
+            break;
+        case successful_parse:
+            print_some("success", get_indent(), first, last);
             print_indent(get_indent());
-            BOOST_SPIRIT_DEBUG_OUT << '<' << tag << '>';
-            int const n = BOOST_SPIRIT_DEBUG_PRINT_SOME;
-            for (int i = 0; first != last && i != n && *first; ++i, ++first)
-                detail::token_printer(BOOST_SPIRIT_DEBUG_OUT, *first);
-            BOOST_SPIRIT_DEBUG_OUT << "</" << tag << '>' << std::endl;
-
-            // $$$ FIXME convert invalid xml characters (e.g. '<') to valid
-            // character entities. $$$
-        }
-
-        template <typename Iterator, typename Context, typename State>
-        void operator()(
-            Iterator const& first
-          , Iterator const& last
-          , Context const& context
-          , State state
-          , std::string const& rule_name) const
-        {
-            switch (state)
+            BOOST_SPIRIT_DEBUG_OUT
+                << "<attributes>";
+            traits::print_attribute(
+                BOOST_SPIRIT_DEBUG_OUT,
+                context.attributes);
+            BOOST_SPIRIT_DEBUG_OUT
+                << "</attributes>";
+            if (!fusion::empty(context.locals))
             {
-                case pre_parse:
-                    print_indent(get_indent()++);
-                    BOOST_SPIRIT_DEBUG_OUT
-                        << '<' << rule_name << '>'
-                        << std::endl;
-                    print_some("try", get_indent(), first, last);
-                    break;
-                case successful_parse:
-                    print_some("success", get_indent(), first, last);
-                    print_indent(get_indent());
-                    BOOST_SPIRIT_DEBUG_OUT
-                        << "<attributes>";
-                    traits::print_attribute(
-                        BOOST_SPIRIT_DEBUG_OUT,
-                        context.attributes
-                    );
-                    BOOST_SPIRIT_DEBUG_OUT
-                        << "</attributes>";
-                    if (!fusion::empty(context.locals))
-                        BOOST_SPIRIT_DEBUG_OUT
-                            << "<locals>"
-                            << context.locals
-                            << "</locals>";
-                    BOOST_SPIRIT_DEBUG_OUT << std::endl;
-                    print_indent(--get_indent());
-                    BOOST_SPIRIT_DEBUG_OUT
-                        << "</" << rule_name << '>'
-                        << std::endl;
-                    break;
-                case failed_parse:
-                    print_indent(get_indent());
-                    BOOST_SPIRIT_DEBUG_OUT << "<fail/>" << std::endl;
-                    print_indent(--get_indent());
-                    BOOST_SPIRIT_DEBUG_OUT
-                        << "</" << rule_name << '>'
-                        << std::endl;
-                    break;
+                BOOST_SPIRIT_DEBUG_OUT
+                    << "<locals>"
+                    << context.locals
+                    << "</locals>";
             }
+            BOOST_SPIRIT_DEBUG_OUT << std::endl;
+            print_indent(--get_indent());
+            BOOST_SPIRIT_DEBUG_OUT
+                << "</" << rule_name << '>'
+                << std::endl;
+            break;
+        case failed_parse:
+            print_indent(get_indent());
+            BOOST_SPIRIT_DEBUG_OUT << "<fail/>" << std::endl;
+            print_indent(--get_indent());
+            BOOST_SPIRIT_DEBUG_OUT
+                << "</" << rule_name << '>'
+                << std::endl;
+            break;
         }
-    };
-}}}
+    }
+};
+} // namespace qi
+} // namespace spirit
+} // namespace boost
 
 #endif

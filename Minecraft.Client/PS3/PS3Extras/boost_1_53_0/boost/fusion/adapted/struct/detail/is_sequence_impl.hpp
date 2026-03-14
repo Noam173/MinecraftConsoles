@@ -12,24 +12,32 @@
 
 #include <boost/mpl/bool.hpp>
 
-namespace boost { namespace fusion { namespace extension
+namespace boost
 {
-    template<typename>
-    struct is_sequence_impl;
+namespace fusion
+{
+namespace extension
+{
+template <typename>
+struct is_sequence_impl;
 
-    template<>
-    struct is_sequence_impl<struct_tag>
+template <>
+struct is_sequence_impl<struct_tag>
+{
+    template <typename Seq>
+    struct apply
+        : mpl::true_
     {
-        template<typename Seq>
-        struct apply
-          : mpl::true_
-        {};
     };
+};
 
-    template <>
-    struct is_sequence_impl<assoc_struct_tag>
-      : is_sequence_impl<struct_tag>
-    {};
-}}}
+template <>
+struct is_sequence_impl<assoc_struct_tag>
+    : is_sequence_impl<struct_tag>
+{
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

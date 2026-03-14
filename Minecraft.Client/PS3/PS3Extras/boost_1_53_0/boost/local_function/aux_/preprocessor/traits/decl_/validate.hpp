@@ -8,17 +8,15 @@
 #ifndef BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_VALIDATE_HPP_
 #define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_VALIDATE_HPP_
 
-#include <boost/local_function/aux_/preprocessor/traits/decl_/validate_/this_count.hpp>
 #include <boost/local_function/aux_/preprocessor/traits/decl_/validate_/return_count.hpp>
+#include <boost/local_function/aux_/preprocessor/traits/decl_/validate_/this_count.hpp>
 
 // PUBLIC //
 
 // Validate params after they have been parsed.
-#define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_VALIDATE(decl_traits) \
-    BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_VALIDATE_THIS_COUNT( \
-    BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_VALIDATE_RETURN_COUNT( \
-        decl_traits \
-    ))
+#define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_VALIDATE(decl_traits)  \
+    BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_VALIDATE_THIS_COUNT(       \
+        BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_VALIDATE_RETURN_COUNT( \
+            decl_traits))
 
 #endif // #include guard
-

@@ -1,8 +1,8 @@
-#include "stdafx.h"
 #include "CraftingScreen.h"
-#include "Textures.h"
-#include "MultiplayerLocalPlayer.h"
 #include "..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "MultiplayerLocalPlayer.h"
+#include "Textures.h"
+#include "stdafx.h"
 
 CraftingScreen::CraftingScreen(shared_ptr<Inventory> inventory, Level *level, int x, int y, int z) : AbstractContainerScreen(new CraftingMenu(inventory, level, x, y, z))
 {
@@ -22,7 +22,7 @@ void CraftingScreen::renderLabels()
 
 void CraftingScreen::renderBg(float a)
 {
-	// 4J Unused
+    // 4J Unused
 #if 0
     int tex = minecraft->textures->loadTexture(L"/gui/crafting.png");
     glColor4f(1, 1, 1, 1);

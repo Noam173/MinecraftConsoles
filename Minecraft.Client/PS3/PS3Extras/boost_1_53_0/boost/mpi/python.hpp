@@ -20,7 +20,12 @@
  *
  */
 
-namespace boost { namespace mpi { namespace python {
+namespace boost
+{
+namespace mpi
+{
+namespace python
+{
 
 /**
  * @brief Register the type T for direct serialization within Boost.MPI
@@ -40,9 +45,8 @@ namespace boost { namespace mpi { namespace python {
  *  T. If not provided, it will be computed from the same value @p
  *  value.
  */
-template<typename T>
-void
-register_serialized(const T& value = T(), PyTypeObject* type = 0);
+template <typename T>
+void register_serialized(const T &value = T(), PyTypeObject *type = 0);
 
 /**
  * @brief Registers a type for use with the skeleton/content mechanism
@@ -63,17 +67,18 @@ register_serialized(const T& value = T(), PyTypeObject* type = 0);
  *  T. If not provided, it will be computed from the same value @p
  *  value.
  */
-template<typename T>
-void 
-register_skeleton_and_content(const T& value = T(), PyTypeObject* type = 0);
+template <typename T>
+void register_skeleton_and_content(const T &value = T(), PyTypeObject *type = 0);
 
-} } } // end namespace boost::mpi::python
+} // namespace python
+} // namespace mpi
+} // namespace boost
 
 #ifndef BOOST_MPI_PYTHON_FORWARD_ONLY
-#  include <boost/mpi/python/serialize.hpp>
-#  include <boost/mpi/python/skeleton_and_content.hpp>
+#include <boost/mpi/python/serialize.hpp>
+#include <boost/mpi/python/skeleton_and_content.hpp>
 #else
-#  undef BOOST_MPI_PYTHON_FORWARD_ONLY
+#undef BOOST_MPI_PYTHON_FORWARD_ONLY
 #endif
 
 #endif // BOOST_MPI_PYTHON_HPP

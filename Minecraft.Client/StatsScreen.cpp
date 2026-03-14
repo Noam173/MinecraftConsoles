@@ -1,24 +1,24 @@
-#include "stdafx.h"
 #include "StatsScreen.h"
-#include "StatsCounter.h"
-#include "ItemRenderer.h"
-#include "Button.h"
-#include "Font.h"
-#include "Lighting.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
 #include "..\Minecraft.World\net.minecraft.stats.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "Button.h"
+#include "Font.h"
+#include "ItemRenderer.h"
+#include "Lighting.h"
+#include "StatsCounter.h"
+#include "stdafx.h"
 
 const float StatsScreen::SLOT_TEX_SIZE = 128.0f;
 ItemRenderer *StatsScreen::itemRenderer = nullptr;
 
 StatsScreen::StatsScreen(Screen *lastScreen, StatsCounter *stats)
 {
-	// 4J - added initialisers
-	itemRenderer = new ItemRenderer();
-	statsList = nullptr;
-	itemStatsList = nullptr;
-	blockStatsList = nullptr;
+    // 4J - added initialisers
+    itemRenderer = new ItemRenderer();
+    statsList = nullptr;
+    itemStatsList = nullptr;
+    blockStatsList = nullptr;
     this->lastScreen = lastScreen;
     this->stats = stats;
 }
@@ -53,37 +53,39 @@ void StatsScreen::postInit()
     buttons.push_back(itemButton = new Button(BUTTON_ITEMSTATS_ID, width / 2 + 62, height - 52, 100, 20, language->getElement(L"stat.itemsButton")));
 
     if (blockStatsList->getNumberOfItems() == 0)
-	{
+    {
         blockButton->active = false;
     }
     if (itemStatsList->getNumberOfItems() == 0)
-	{
+    {
         itemButton->active = false;
     }
-
 }
 
 void StatsScreen::buttonClicked(Button *button)
 {
-    if (!button->active) return;
+    if (!button->active)
+    {
+        return;
+    }
     if (button->id == BUTTON_CANCEL_ID)
-	{
+    {
         minecraft->setScreen(lastScreen);
     }
-	else if (button->id == BUTTON_STATS_ID)
-	{
+    else if (button->id == BUTTON_STATS_ID)
+    {
         activeList = statsList;
     }
-	else if (button->id == BUTTON_ITEMSTATS_ID)
-	{
+    else if (button->id == BUTTON_ITEMSTATS_ID)
+    {
         activeList = itemStatsList;
     }
-	else if (button->id == BUTTON_BLOCKITEMSTATS_ID)
-	{
+    else if (button->id == BUTTON_BLOCKITEMSTATS_ID)
+    {
         activeList = blockStatsList;
     }
-	else
-	{
+    else
+    {
         activeList->buttonClicked(button);
     }
 }
@@ -95,19 +97,17 @@ void StatsScreen::render(int xm, int ym, float a)
     drawCenteredString(font, title, width / 2, 20, 0xffffff);
 
     Screen::render(xm, ym, a);
-
 }
-
 
 StatsScreen::GeneralStatisticsList::GeneralStatisticsList(StatsScreen *ss) : ScrolledSelectionList(ss->minecraft, ss->width, ss->height, 32, ss->height - 64, 10)
 {
-	parent = ss;
-	setRenderSelection(false);
+    parent = ss;
+    setRenderSelection(false);
 }
 
 int StatsScreen::GeneralStatisticsList::getNumberOfItems()
 {
-	return static_cast<int>(Stats::generalStats->size());
+    return static_cast<int>(Stats::generalStats->size());
 }
 
 void StatsScreen::GeneralStatisticsList::selectItem(int item, bool doubleClick)
@@ -116,17 +116,17 @@ void StatsScreen::GeneralStatisticsList::selectItem(int item, bool doubleClick)
 
 bool StatsScreen::GeneralStatisticsList::isSelectedItem(int item)
 {
-	return false;
+    return false;
 }
 
 int StatsScreen::GeneralStatisticsList::getMaxPosition()
 {
-	return getNumberOfItems() * 10;
+    return getNumberOfItems() * 10;
 }
 
 void StatsScreen::GeneralStatisticsList::renderBackground()
 {
-	parent->renderBackground();	// 4J - was StatsScreen.this.renderBackground();
+    parent->renderBackground(); // 4J - was StatsScreen.this.renderBackground();
 }
 
 void StatsScreen::GeneralStatisticsList::renderItem(int i, int x, int y, int h, Tesselator *t)
@@ -159,12 +159,12 @@ void StatsScreen::blitSlot(int x, int y, int item)
 
 void StatsScreen::blitSlotBg(int x, int y)
 {
-	blitSlotIcon(x, y, 0, 0);
+    blitSlotIcon(x, y, 0, 0);
 }
 
 void StatsScreen::blitSlotIcon(int x, int y, int sx, int sy)
 {
-	// 4J Unused
+    // 4J Unused
 #if 0
     int tex = minecraft->textures->loadTexture(L"/gui/slot.png");
     glColor4f(1, 1, 1, 1);
@@ -187,11 +187,11 @@ void StatsScreen::blitSlotIcon(int x, int y, int sx, int sy)
 // 4J - added parameter so we can access parent
 StatsScreen::StatisticsList::StatisticsList(StatsScreen *ss) : ScrolledSelectionList(ss->minecraft, ss->width, ss->height, 32, ss->height - 64, SLOT_STAT_HEIGHT)
 {
-	// 4J - added initialisers
-	parent = ss;
-	headerPressed = -1;
-	sortColumn = -1;
-	sortOrder = SORT_NONE;
+    // 4J - added initialisers
+    parent = ss;
+    headerPressed = -1;
+    sortColumn = -1;
+    sortOrder = SORT_NONE;
 
     setRenderSelection(false);
     setRenderHeader(true, SLOT_STAT_HEIGHT);
@@ -203,89 +203,88 @@ void StatsScreen::StatisticsList::selectItem(int item, bool doubleClick)
 
 bool StatsScreen::StatisticsList::isSelectedItem(int item)
 {
-	return false;
+    return false;
 }
 
 void StatsScreen::StatisticsList::renderBackground()
 {
-	parent->renderBackground();	// 4J - was	StatsScreen.this.renderBackground();
+    parent->renderBackground(); // 4J - was	StatsScreen.this.renderBackground();
 }
 
 void StatsScreen::StatisticsList::renderHeader(int x, int y, Tesselator *t)
 {
-        if (!Mouse::isButtonDown(0))
-		{
-            headerPressed = -1;
+    if (!Mouse::isButtonDown(0))
+    {
+        headerPressed = -1;
+    }
+
+    if (headerPressed == 0)
+    {
+        parent->blitSlotIcon(x + ROW_COL_1 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 0);
+    }
+    else
+    {
+        parent->blitSlotIcon(x + ROW_COL_1 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 1);
+    }
+
+    if (headerPressed == 1)
+    {
+        parent->blitSlotIcon(x + ROW_COL_2 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 0);
+    }
+    else
+    {
+        parent->blitSlotIcon(x + ROW_COL_2 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 1);
+    }
+
+    if (headerPressed == 2)
+    {
+        parent->blitSlotIcon(x + ROW_COL_3 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 0);
+    }
+    else
+    {
+        parent->blitSlotIcon(x + ROW_COL_3 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 1);
+    }
+
+    if (sortColumn != -1)
+    {
+        int offset = ROW_COL_1 - SLOT_BG_SIZE * 2;
+        int image = SLOT_BG_SIZE;
+
+        if (sortColumn == 1)
+        {
+            offset = ROW_COL_2 - SLOT_BG_SIZE * 2;
+        }
+        else if (sortColumn == 2)
+        {
+            offset = ROW_COL_3 - SLOT_BG_SIZE * 2;
         }
 
-        if (headerPressed == 0)
-		{
-            parent->blitSlotIcon(x + ROW_COL_1 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 0);
+        if (sortOrder == SORT_UP)
+        {
+            image = SLOT_BG_SIZE * 2;
         }
-		else
-		{
-            parent->blitSlotIcon(x + ROW_COL_1 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 1);
-        }
-
-        if (headerPressed == 1)
-		{
-            parent->blitSlotIcon(x + ROW_COL_2 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 0);
-		}
-		else
-		{
-            parent->blitSlotIcon(x + ROW_COL_2 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 1);
-        }
-
-        if (headerPressed == 2)
-		{
-            parent->blitSlotIcon(x + ROW_COL_3 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 0);
-        }
-		else
-		{
-            parent->blitSlotIcon(x + ROW_COL_3 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 0, SLOT_BG_SIZE * 1);
-        }
-
-        if (sortColumn != -1)
-		{
-            int offset = ROW_COL_1 - SLOT_BG_SIZE * 2;
-            int image = SLOT_BG_SIZE;
-
-            if (sortColumn == 1)
-			{
-                offset = ROW_COL_2 - SLOT_BG_SIZE * 2;
-            }
-			else if (sortColumn == 2)
-			{
-                offset = ROW_COL_3 - SLOT_BG_SIZE * 2;
-            }
-
-            if (sortOrder == SORT_UP)
-			{
-                image = SLOT_BG_SIZE * 2;
-            }
-            parent->blitSlotIcon(x + offset, y + SLOT_BG_Y, image, SLOT_BG_SIZE * 0);
-        }
-
+        parent->blitSlotIcon(x + offset, y + SLOT_BG_Y, image, SLOT_BG_SIZE * 0);
+    }
 }
 
 void StatsScreen::StatisticsList::clickedHeader(int headerMouseX, int headerMouseY)
 {
     headerPressed = -1;
     if (headerMouseX >= (ROW_COL_1 - SLOT_BG_SIZE * 2) && headerMouseX < ROW_COL_1)
-	{
+    {
         headerPressed = 0;
     }
-	else if (headerMouseX >= (ROW_COL_2 - SLOT_BG_SIZE * 2) && headerMouseX < ROW_COL_2)
-	{
+    else if (headerMouseX >= (ROW_COL_2 - SLOT_BG_SIZE * 2) && headerMouseX < ROW_COL_2)
+    {
         headerPressed = 1;
     }
-	else if (headerMouseX >= (ROW_COL_3 - SLOT_BG_SIZE * 2) && headerMouseX < ROW_COL_3)
-	{
+    else if (headerMouseX >= (ROW_COL_3 - SLOT_BG_SIZE * 2) && headerMouseX < ROW_COL_3)
+    {
         headerPressed = 2;
     }
 
     if (headerPressed >= 0)
-	{
+    {
         sortByColumn(headerPressed);
         parent->minecraft->soundEngine->playUI(eSoundType_RANDOM_CLICK, 1, 1);
     }
@@ -293,23 +292,23 @@ void StatsScreen::StatisticsList::clickedHeader(int headerMouseX, int headerMous
 
 int StatsScreen::StatisticsList::getNumberOfItems()
 {
-	return static_cast<int>(statItemList.size());
+    return static_cast<int>(statItemList.size());
 }
 
 ItemStat *StatsScreen::StatisticsList::getSlotStat(int slot)
 {
-	return statItemList.at(slot);
+    return statItemList.at(slot);
 }
 
 void StatsScreen::StatisticsList::renderStat(ItemStat *stat, int x, int y, bool shaded)
 {
     if (stat != nullptr)
-	{
+    {
         wstring msg = stat->format(parent->stats->getTotalValue(stat));
         parent->drawString(parent->font, msg, x - parent->font->width(msg), y + SLOT_TEXT_OFFSET, shaded ? 0xffffff : 0x909090);
     }
-	else
-	{
+    else
+    {
         wstring msg = L"-";
         parent->drawString(parent->font, msg, x - parent->font->width(msg), y + SLOT_TEXT_OFFSET, shaded ? 0xffffff : 0x909090);
     }
@@ -317,47 +316,47 @@ void StatsScreen::StatisticsList::renderStat(ItemStat *stat, int x, int y, bool 
 
 void StatsScreen::StatisticsList::renderDecorations(int mouseX, int mouseY)
 {
-    if (mouseY < y0 || mouseY > y1 )
-	{
+    if (mouseY < y0 || mouseY > y1)
+    {
         return;
     }
 
     int slot = getItemAtPosition(mouseX, mouseY);
     int rowX = parent->width / 2 - 92 - 16;
     if (slot >= 0)
-	{
+    {
         if (mouseX < (rowX + SLOT_LEFT_INSERT) || mouseX > (rowX + SLOT_LEFT_INSERT + 20))
-		{
+        {
             return;
         }
 
         ItemStat *stat = getSlotStat(slot);
         renderMousehoverTooltip(stat, mouseX, mouseY);
     }
-	else
-	{
+    else
+    {
         wstring elementName;
         if (mouseX >= (rowX + ROW_COL_1 - SLOT_BG_SIZE) && mouseX <= (rowX + ROW_COL_1))
-		{
+        {
             elementName = getHeaderDescriptionId(0);
         }
-		else if (mouseX >= (rowX + ROW_COL_2 - SLOT_BG_SIZE) && mouseX <= (rowX + ROW_COL_2))
-		{
+        else if (mouseX >= (rowX + ROW_COL_2 - SLOT_BG_SIZE) && mouseX <= (rowX + ROW_COL_2))
+        {
             elementName = getHeaderDescriptionId(1);
         }
-		else if (mouseX >= (rowX + ROW_COL_3 - SLOT_BG_SIZE) && mouseX <= (rowX + ROW_COL_3))
-		{
+        else if (mouseX >= (rowX + ROW_COL_3 - SLOT_BG_SIZE) && mouseX <= (rowX + ROW_COL_3))
+        {
             elementName = getHeaderDescriptionId(2);
         }
-		else
-		{
+        else
+        {
             return;
         }
 
         elementName = trimString(L"" + Language::getInstance()->getElement(elementName));
 
         if (elementName.length() > 0)
-		{
+        {
             int rx = mouseX + 12;
             int ry = mouseY - 12;
             int width = parent->font->width(elementName);
@@ -366,12 +365,11 @@ void StatsScreen::StatisticsList::renderDecorations(int mouseX, int mouseY)
             parent->font->drawShadow(elementName, rx, ry, 0xffffffff);
         }
     }
-
 }
 
 void StatsScreen::StatisticsList::renderMousehoverTooltip(ItemStat *stat, int x, int y)
 {
-	// 4J Stu - Unused
+    // 4J Stu - Unused
 #if 0
     if (stat == nullptr)
 	{
@@ -397,53 +395,52 @@ void StatsScreen::StatisticsList::renderMousehoverTooltip(ItemStat *stat, int x,
 void StatsScreen::StatisticsList::sortByColumn(int column)
 {
     if (column != sortColumn)
-	{
+    {
         sortColumn = column;
         sortOrder = SORT_DOWN;
     }
-	else if (sortOrder == SORT_DOWN)
-	{
+    else if (sortOrder == SORT_DOWN)
+    {
         sortOrder = SORT_UP;
     }
-	else
-	{
+    else
+    {
         sortColumn = -1;
         sortOrder = SORT_NONE;
     }
 
-//    Collections.sort(statItemList, itemStatSorter);		// 4J - TODO
+    //    Collections.sort(statItemList, itemStatSorter);		// 4J - TODO
 }
-
 
 StatsScreen::ItemStatisticsList::ItemStatisticsList(StatsScreen *ss) : StatsScreen::StatisticsList(ss)
 {
-	//4J Gordon: Removed, not used anyway
-	/*for(vector<ItemStat *>::iterator it = Stats::itemStats->begin(); it != Stats::itemStats->end(); it++ )
-	{
-		ItemStat *stat = *it;
+    // 4J Gordon: Removed, not used anyway
+    /*for(vector<ItemStat *>::iterator it = Stats::itemStats->begin(); it != Stats::itemStats->end(); it++ )
+    {
+        ItemStat *stat = *it;
 
         bool addToList = false;
         int id = stat->getItemId();
 
         if (parent->stats->getTotalValue(stat) > 0)
-		{
+        {
             addToList = true;
         }
-		else if (Stats::itemBroke[id] != nullptr && parent->stats->getTotalValue(Stats::itemBroke[id]) > 0)
-		{
+        else if (Stats::itemBroke[id] != nullptr && parent->stats->getTotalValue(Stats::itemBroke[id]) > 0)
+        {
             addToList = true;
         }
-		else if (Stats::itemCrafted[id] != nullptr && parent->stats->getTotalValue(Stats::itemCrafted[id]) > 0)
-		{
+        else if (Stats::itemCrafted[id] != nullptr && parent->stats->getTotalValue(Stats::itemCrafted[id]) > 0)
+        {
             addToList = true;
         }
         if (addToList)
-		{
+        {
             statItemList.push_back(stat);
         }
     }*/
 
-	/* 4J - TODO
+    /* 4J - TODO
     itemStatSorter = new Comparator<ItemStat>() {
         public int compare(ItemStat o1, ItemStat o2) {
             int id1 = o1.getItemId();
@@ -479,7 +476,7 @@ StatsScreen::ItemStatisticsList::ItemStatisticsList(StatsScreen *ss) : StatsScre
             return id1 - id2;
         }
     };
-	*/
+    */
 }
 
 void StatsScreen::ItemStatisticsList::renderHeader(int x, int y, Tesselator *t)
@@ -487,35 +484,34 @@ void StatsScreen::ItemStatisticsList::renderHeader(int x, int y, Tesselator *t)
     StatsScreen::StatisticsList::renderHeader(x, y, t);
 
     if (headerPressed == 0)
-	{
+    {
         parent->blitSlotIcon(x + ROW_COL_1 - SLOT_BG_SIZE + 1, y + SLOT_BG_Y + 1, SLOT_BG_SIZE * 4, SLOT_BG_SIZE * 1);
     }
-	else
-	{
+    else
+    {
         parent->blitSlotIcon(x + ROW_COL_1 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 4, SLOT_BG_SIZE * 1);
     }
     if (headerPressed == 1)
-	{
+    {
         parent->blitSlotIcon(x + ROW_COL_2 - SLOT_BG_SIZE + 1, y + SLOT_BG_Y + 1, SLOT_BG_SIZE * 1, SLOT_BG_SIZE * 1);
     }
-	else
-	{
+    else
+    {
         parent->blitSlotIcon(x + ROW_COL_2 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 1, SLOT_BG_SIZE * 1);
     }
     if (headerPressed == 2)
-	{
+    {
         parent->blitSlotIcon(x + ROW_COL_3 - SLOT_BG_SIZE + 1, y + SLOT_BG_Y + 1, SLOT_BG_SIZE * 2, SLOT_BG_SIZE * 1);
     }
-	else
-	{
+    else
+    {
         parent->blitSlotIcon(x + ROW_COL_3 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 2, SLOT_BG_SIZE * 1);
     }
-
 }
 
 void StatsScreen::ItemStatisticsList::renderItem(int i, int x, int y, int h, Tesselator *t)
 {
-	//4J Gordon: Removed, not used anyway
+    // 4J Gordon: Removed, not used anyway
     /*ItemStat *stat = getSlotStat(i);
     int id = stat->getItemId();
 
@@ -528,49 +524,49 @@ void StatsScreen::ItemStatisticsList::renderItem(int i, int x, int y, int h, Tes
 
 wstring StatsScreen::ItemStatisticsList::getHeaderDescriptionId(int column)
 {
-	if (column == COLUMN_CRAFTED)
-	{
-		return L"stat.crafted";
-	}
-	else if (column == COLUMN_USED)
-	{
-		return L"stat.used";
-	}
-	else
-	{
-		return L"stat.depleted";
-	}
+    if (column == COLUMN_CRAFTED)
+    {
+        return L"stat.crafted";
+    }
+    else if (column == COLUMN_USED)
+    {
+        return L"stat.used";
+    }
+    else
+    {
+        return L"stat.depleted";
+    }
 }
 
 StatsScreen::BlockStatisticsList::BlockStatisticsList(StatsScreen *ss) : StatisticsList(ss)
 {
-	//4J Gordon: Removed, not used anyway
-	/*for(vector<ItemStat *>::iterator it = Stats::blockStats->begin(); it != Stats::blockStats->end(); it++ )
-	{
-		ItemStat *stat = *it;
+    // 4J Gordon: Removed, not used anyway
+    /*for(vector<ItemStat *>::iterator it = Stats::blockStats->begin(); it != Stats::blockStats->end(); it++ )
+    {
+        ItemStat *stat = *it;
 
         bool addToList = false;
         int id = stat->getItemId();
 
         if (parent->stats->getTotalValue(stat) > 0)
-		{
+        {
             addToList = true;
         }
-		else if (Stats::itemUsed[id] != nullptr && parent->stats->getTotalValue(Stats::itemUsed[id]) > 0)
-		{
+        else if (Stats::itemUsed[id] != nullptr && parent->stats->getTotalValue(Stats::itemUsed[id]) > 0)
+        {
             addToList = true;
         }
-		else if (Stats::itemCrafted[id] != nullptr && parent->stats->getTotalValue(Stats::itemCrafted[id]) > 0)
-		{
+        else if (Stats::itemCrafted[id] != nullptr && parent->stats->getTotalValue(Stats::itemCrafted[id]) > 0)
+        {
             addToList = true;
         }
         if (addToList)
-		{
+        {
             statItemList.push_back(stat);
         }
     }*/
 
-	/* 4J - TODO
+    /* 4J - TODO
             itemStatSorter = new Comparator<ItemStat>() {
                 public int compare(ItemStat o1, ItemStat o2) {
                     int id1 = o1.getItemId();
@@ -606,7 +602,7 @@ StatsScreen::BlockStatisticsList::BlockStatisticsList(StatsScreen *ss) : Statist
                     return id1 - id2;
                 }
             };
-	*/
+    */
 }
 
 void StatsScreen::BlockStatisticsList::renderHeader(int x, int y, Tesselator *t)
@@ -614,35 +610,34 @@ void StatsScreen::BlockStatisticsList::renderHeader(int x, int y, Tesselator *t)
     StatisticsList::renderHeader(x, y, t);
 
     if (headerPressed == 0)
-	{
+    {
         parent->blitSlotIcon(x + ROW_COL_1 - SLOT_BG_SIZE + 1, y + SLOT_BG_Y + 1, SLOT_BG_SIZE * 1, SLOT_BG_SIZE * 1);
     }
-	else
-	{
+    else
+    {
         parent->blitSlotIcon(x + ROW_COL_1 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 1, SLOT_BG_SIZE * 1);
     }
     if (headerPressed == 1)
-	{
+    {
         parent->blitSlotIcon(x + ROW_COL_2 - SLOT_BG_SIZE + 1, y + SLOT_BG_Y + 1, SLOT_BG_SIZE * 2, SLOT_BG_SIZE * 1);
     }
-	else
-	{
+    else
+    {
         parent->blitSlotIcon(x + ROW_COL_2 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 2, SLOT_BG_SIZE * 1);
     }
     if (headerPressed == 2)
-	{
+    {
         parent->blitSlotIcon(x + ROW_COL_3 - SLOT_BG_SIZE + 1, y + SLOT_BG_Y + 1, SLOT_BG_SIZE * 3, SLOT_BG_SIZE * 1);
     }
-	else
-	{
+    else
+    {
         parent->blitSlotIcon(x + ROW_COL_3 - SLOT_BG_SIZE, y + SLOT_BG_Y, SLOT_BG_SIZE * 3, SLOT_BG_SIZE * 1);
     }
-
 }
 
 void StatsScreen::BlockStatisticsList::renderItem(int i, int x, int y, int h, Tesselator *t)
 {
-	//4J Gordon: Removed, not used anyway
+    // 4J Gordon: Removed, not used anyway
     /*ItemStat *mineCount = getSlotStat(i);
     int id = mineCount->getItemId();
 
@@ -655,16 +650,16 @@ void StatsScreen::BlockStatisticsList::renderItem(int i, int x, int y, int h, Te
 
 wstring StatsScreen::BlockStatisticsList::getHeaderDescriptionId(int column)
 {
-	if (column == COLUMN_CRAFTED)
-	{
-		return L"stat.crafted";
-	}
-	else if (column == COLUMN_USED)
-	{
-		return L"stat.used";
-	}
-	else
-	{
-		return L"stat.mined";
-	}
+    if (column == COLUMN_CRAFTED)
+    {
+        return L"stat.crafted";
+    }
+    else if (column == COLUMN_USED)
+    {
+        return L"stat.used";
+    }
+    else
+    {
+        return L"stat.mined";
+    }
 }

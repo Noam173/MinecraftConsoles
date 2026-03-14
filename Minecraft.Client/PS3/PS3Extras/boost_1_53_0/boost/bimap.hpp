@@ -14,6 +14,5 @@
 
 namespace boost
 {
-    using ::boost::bimaps::bimap;
+using ::boost::bimaps::bimap;
 }
-

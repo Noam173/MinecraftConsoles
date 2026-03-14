@@ -15,18 +15,15 @@
 // PRIVATE //
 
 #define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_SIGN_VALIDATE_1_(sign, error) \
-    BOOST_PP_IIF(BOOST_PP_IS_EMPTY(error(/* expand empty */)), \
-        BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_SIGN_VALIDATE_THIS \
-    , \
-        error BOOST_PP_TUPLE_EAT(1) \
-    )(sign)
+    BOOST_PP_IIF(BOOST_PP_IS_EMPTY(error(/* expand empty */)),                \
+                 BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_SIGN_VALIDATE_THIS,  \
+                 error BOOST_PP_TUPLE_EAT(1))(sign)
 
 // PUBLIC //
 
 // Validate params before starting to parse it.
 #define BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_SIGN_VALIDATE(sign) \
-    BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_SIGN_VALIDATE_1_(sign, \
-        BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_SIGN_VALIDATE_DEFAULTS(sign))
+    BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_SIGN_VALIDATE_1_(sign,  \
+                                                             BOOST_LOCAL_FUNCTION_AUX_PP_DECL_TRAITS_SIGN_VALIDATE_DEFAULTS(sign))
 
 #endif // #include guard
-

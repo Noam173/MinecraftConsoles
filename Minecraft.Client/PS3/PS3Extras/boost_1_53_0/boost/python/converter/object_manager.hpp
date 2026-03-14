@@ -3,15 +3,15 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef OBJECT_MANAGER_DWA2002614_HPP
-# define OBJECT_MANAGER_DWA2002614_HPP
+#define OBJECT_MANAGER_DWA2002614_HPP
 
-# include <boost/python/handle.hpp>
-# include <boost/python/cast.hpp>
-# include <boost/python/converter/pyobject_traits.hpp>
-# include <boost/type_traits/object_traits.hpp>
-# include <boost/mpl/if.hpp>
-# include <boost/python/detail/indirect_traits.hpp>
-# include <boost/mpl/bool.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/python/cast.hpp>
+#include <boost/python/converter/pyobject_traits.hpp>
+#include <boost/python/detail/indirect_traits.hpp>
+#include <boost/python/handle.hpp>
+#include <boost/type_traits/object_traits.hpp>
 
 // Facilities for dealing with types which always manage Python
 // objects. Some examples are object, list, str, et. al. Different
@@ -34,7 +34,6 @@
 // borrowed<T> cv* is an object manager so that we can use the general
 // to_python mechanisms to convert raw Python object pointers to
 // python, without the usual semantic problems of using raw pointers.
-
 
 // Object Manager Concept requirements:
 //
@@ -62,58 +61,61 @@
 
 // Forward declarations
 //
-namespace boost { namespace python
+namespace boost
 {
-  namespace api
-  {
-    class object; 
-  }
-}}
+namespace python
+{
+namespace api
+{
+class object;
+}
+} // namespace python
+} // namespace boost
 
-namespace boost { namespace python { namespace converter { 
-
+namespace boost
+{
+namespace python
+{
+namespace converter
+{
 
 // Specializations for handle<T>
 template <class T>
 struct handle_object_manager_traits
     : pyobject_traits<typename T::element_type>
 {
- private:
-  typedef pyobject_traits<typename T::element_type> base;
-  
- public:
-  BOOST_STATIC_CONSTANT(bool, is_specialized = true);
+  private:
+    typedef pyobject_traits<typename T::element_type> base;
 
-  // Initialize with a null_ok pointer for efficiency, bypassing the
-  // null check since the source is always non-null.
-  static null_ok<typename T::element_type>* adopt(PyObject* p)
-  {
-      return python::allow_null(base::checked_downcast(p));
-  }
+  public:
+    BOOST_STATIC_CONSTANT(bool, is_specialized = true);
+
+    // Initialize with a null_ok pointer for efficiency, bypassing the
+    // null check since the source is always non-null.
+    static null_ok<typename T::element_type> *adopt(PyObject *p)
+    {
+        return python::allow_null(base::checked_downcast(p));
+    }
 };
 
 template <class T>
 struct default_object_manager_traits
 {
     BOOST_STATIC_CONSTANT(
-        bool, is_specialized = python::detail::is_borrowed_ptr<T>::value
-        );
+        bool, is_specialized = python::detail::is_borrowed_ptr<T>::value);
 };
 
 template <class T>
 struct object_manager_traits
     : mpl::if_c<
-         is_handle<T>::value
-       , handle_object_manager_traits<T>
-       , default_object_manager_traits<T>
-    >::type
+          is_handle<T>::value, handle_object_manager_traits<T>, default_object_manager_traits<T>>::type
 {
 };
 
 //
 // Traits for detecting whether a type is an object manager or a
 // (cv-qualified) reference to an object manager.
-// 
+//
 
 template <class T>
 struct is_object_manager
@@ -121,7 +123,7 @@ struct is_object_manager
 {
 };
 
-# ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+#ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 template <class T>
 struct is_reference_to_object_manager
     : mpl::false_
@@ -129,102 +131,94 @@ struct is_reference_to_object_manager
 };
 
 template <class T>
-struct is_reference_to_object_manager<T&>
+struct is_reference_to_object_manager<T &>
     : is_object_manager<T>
 {
 };
 
 template <class T>
-struct is_reference_to_object_manager<T const&>
+struct is_reference_to_object_manager<T const &>
     : is_object_manager<T>
 {
 };
 
 template <class T>
-struct is_reference_to_object_manager<T volatile&>
+struct is_reference_to_object_manager<T volatile &>
     : is_object_manager<T>
 {
 };
 
 template <class T>
-struct is_reference_to_object_manager<T const volatile&>
+struct is_reference_to_object_manager<T const volatile &>
     : is_object_manager<T>
 {
 };
-# else
+#else
 
 namespace detail
 {
-  typedef char (&yes_reference_to_object_manager)[1];
-  typedef char (&no_reference_to_object_manager)[2];
+typedef char (&yes_reference_to_object_manager)[1];
+typedef char (&no_reference_to_object_manager)[2];
 
-  // A number of nastinesses go on here in order to work around MSVC6
-  // bugs.
-  template <class T>
-  struct is_object_manager_help
-  {
-      typedef typename mpl::if_<
-          is_object_manager<T>
-          , yes_reference_to_object_manager
-          , no_reference_to_object_manager
-          >::type type;
+// A number of nastinesses go on here in order to work around MSVC6
+// bugs.
+template <class T>
+struct is_object_manager_help
+{
+    typedef typename mpl::if_<
+        is_object_manager<T>, yes_reference_to_object_manager, no_reference_to_object_manager>::type type;
 
-      // If we just use the type instead of the result of calling this
-      // function, VC6 will ICE.
-      static type call();
-  };
+    // If we just use the type instead of the result of calling this
+    // function, VC6 will ICE.
+    static type call();
+};
 
-  // A set of overloads for each cv-qualification. The same argument
-  // is passed twice: the first one is used to unwind the cv*, and the
-  // second one is used to avoid relying on partial ordering for
-  // overload resolution.
-  template <class U>
-  typename is_object_manager_help<U>
-  is_object_manager_helper(U*, void*);
-  
-  template <class U>
-  typename is_object_manager_help<U>
-  is_object_manager_helper(U const*, void const*);
-  
-  template <class U>
-  typename is_object_manager_help<U>
-  is_object_manager_helper(U volatile*, void volatile*);
-  
-  template <class U>
-  typename is_object_manager_help<U>
-  is_object_manager_helper(U const volatile*, void const volatile*);
-  
-  template <class T>
-  struct is_reference_to_object_manager_nonref
-      : mpl::false_
-  {
-  };
+// A set of overloads for each cv-qualification. The same argument
+// is passed twice: the first one is used to unwind the cv*, and the
+// second one is used to avoid relying on partial ordering for
+// overload resolution.
+template <class U>
+typename is_object_manager_help<U>
+is_object_manager_helper(U *, void *);
 
-  template <class T>
-  struct is_reference_to_object_manager_ref
-  {
-      static T sample_object;
-      BOOST_STATIC_CONSTANT(
-        bool, value
-        = (sizeof(is_object_manager_helper(&sample_object, &sample_object).call())
-            == sizeof(detail::yes_reference_to_object_manager)
-          )
-        );
-      typedef mpl::bool_<value> type;
-  };
-}
+template <class U>
+typename is_object_manager_help<U>
+is_object_manager_helper(U const *, void const *);
+
+template <class U>
+typename is_object_manager_help<U>
+is_object_manager_helper(U volatile *, void volatile *);
+
+template <class U>
+typename is_object_manager_help<U>
+is_object_manager_helper(U const volatile *, void const volatile *);
+
+template <class T>
+struct is_reference_to_object_manager_nonref
+    : mpl::false_
+{
+};
+
+template <class T>
+struct is_reference_to_object_manager_ref
+{
+    static T sample_object;
+    BOOST_STATIC_CONSTANT(
+        bool, value = (sizeof(is_object_manager_helper(&sample_object, &sample_object).call()) == sizeof(detail::yes_reference_to_object_manager)));
+    typedef mpl::bool_<value> type;
+};
+} // namespace detail
 
 template <class T>
 struct is_reference_to_object_manager
     : mpl::if_<
-        is_reference<T>
-        , detail::is_reference_to_object_manager_ref<T>
-        , detail::is_reference_to_object_manager_nonref<T>
-    >::type
+          is_reference<T>, detail::is_reference_to_object_manager_ref<T>, detail::is_reference_to_object_manager_nonref<T>>::type
 {
 };
-# endif 
+#endif
 
-}}} // namespace boost::python::converter
+} // namespace converter
+} // namespace python
+} // namespace boost
 
 #endif // OBJECT_MANAGER_DWA2002614_HPP

@@ -9,68 +9,74 @@
 
 #include <boost/fusion/support/sequence_base.hpp>
 #include <boost/fusion/support/tag_of.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/mpl/is_sequence.hpp>
 #include <boost/mpl/or.hpp>
-#include <boost/mpl/bool.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/type_traits/is_same.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    // Special tags:
-    struct non_fusion_tag;
-    struct boost_tuple_tag; // boost::tuples::tuple tag
-    struct boost_array_tag; // boost::array tag
-    struct mpl_sequence_tag; // mpl sequence tag
-    struct std_pair_tag; // std::pair tag
+namespace fusion
+{
+// Special tags:
+struct non_fusion_tag;
+struct boost_tuple_tag;  // boost::tuples::tuple tag
+struct boost_array_tag;  // boost::array tag
+struct mpl_sequence_tag; // mpl sequence tag
+struct std_pair_tag;     // std::pair tag
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct is_sequence_impl
+{
+    template <typename Sequence>
+    struct apply
+        : is_convertible<Sequence, detail::from_sequence_convertible_type>
     {
-        template <typename T>
-        struct is_sequence_impl
-        {
-            template <typename Sequence>
-            struct apply
-              : is_convertible<Sequence, detail::from_sequence_convertible_type>
-            {};
-        };
+    };
+};
 
-        template <>
-        struct is_sequence_impl<non_fusion_tag>
-        {
-            template <typename T>
-            struct apply : mpl::false_ {};
-        };
-
-        template <>
-        struct is_sequence_impl<boost_tuple_tag>;
-
-        template <>
-        struct is_sequence_impl<boost_array_tag>;
-
-        template <>
-        struct is_sequence_impl<mpl_sequence_tag>;
-
-        template <>
-        struct is_sequence_impl<std_pair_tag>;
-    }
-
-    namespace traits
+template <>
+struct is_sequence_impl<non_fusion_tag>
+{
+    template <typename T>
+    struct apply : mpl::false_
     {
-        template <typename T>
-        struct is_sequence
-          : mpl::bool_<
-                (bool)extension::is_sequence_impl<
-                typename fusion::detail::tag_of<T>::type
-                >::template apply<T>::type::value
-            >
-        {};
+    };
+};
 
-        template <typename Sequence, typename Enable = void>
-        struct is_native_fusion_sequence
-          : is_convertible<Sequence, detail::from_sequence_convertible_type>
-        {};
-    }
-}}
+template <>
+struct is_sequence_impl<boost_tuple_tag>;
+
+template <>
+struct is_sequence_impl<boost_array_tag>;
+
+template <>
+struct is_sequence_impl<mpl_sequence_tag>;
+
+template <>
+struct is_sequence_impl<std_pair_tag>;
+} // namespace extension
+
+namespace traits
+{
+template <typename T>
+struct is_sequence
+    : mpl::bool_<
+          (bool)extension::is_sequence_impl<
+              typename fusion::detail::tag_of<T>::type>::template apply<T>::type::value>
+{
+};
+
+template <typename Sequence, typename Enable = void>
+struct is_native_fusion_sequence
+    : is_convertible<Sequence, detail::from_sequence_convertible_type>
+{
+};
+} // namespace traits
+} // namespace fusion
+} // namespace boost
 
 #endif

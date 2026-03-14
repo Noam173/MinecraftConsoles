@@ -6,12 +6,8 @@
 // ing file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //////////////////////////////////////////////////////////////////////////////
 
-
-
-#include <boost/detail/atomic_count.hpp>
 #include <boost/config.hpp> // BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP
-
-
+#include <boost/detail/atomic_count.hpp>
 
 namespace boost
 {
@@ -20,49 +16,61 @@ namespace statechart
 namespace detail
 {
 
-
-  
-template< bool NeedsLocking >
+template <bool NeedsLocking>
 struct count_base
 {
-  count_base() : count_( 0 ) {}
-  mutable boost::detail::atomic_count count_;
+    count_base() : count_(0)
+    {
+    }
+    mutable boost::detail::atomic_count count_;
 };
 
-template<>
-struct count_base< false >
+template <>
+struct count_base<false>
 {
-  count_base() : count_( 0 ) {}
-  mutable long count_;
+    count_base() : count_(0)
+    {
+    }
+    mutable long count_;
 };
 
 //////////////////////////////////////////////////////////////////////////////
-template< bool NeedsLocking = true >
-class counted_base : private count_base< NeedsLocking >
+template <bool NeedsLocking = true>
+class counted_base : private count_base<NeedsLocking>
 {
-  typedef count_base< NeedsLocking > base_type;
+    typedef count_base<NeedsLocking> base_type;
+
   public:
     //////////////////////////////////////////////////////////////////////////
     bool ref_counted() const
     {
-      return base_type::count_ != 0;
+        return base_type::count_ != 0;
     }
 
     long ref_count() const
     {
-      return base_type::count_;
+        return base_type::count_;
     }
 
   protected:
     //////////////////////////////////////////////////////////////////////////
-    counted_base() {}
-    ~counted_base() {}
+    counted_base()
+    {
+    }
+    ~counted_base()
+    {
+    }
 
     // do nothing copy implementation is intentional (the number of
     // referencing pointers of the source and the destination is not changed
     // through the copy operation)
-    counted_base( const counted_base & ) : base_type() {}
-    counted_base & operator=( const counted_base & ) { return *this; }
+    counted_base(const counted_base &) : base_type()
+    {
+    }
+    counted_base &operator=(const counted_base &)
+    {
+        return *this;
+    }
 
   public:
     //////////////////////////////////////////////////////////////////////////
@@ -71,22 +79,18 @@ class counted_base : private count_base< NeedsLocking >
     //////////////////////////////////////////////////////////////////////////
     void add_ref() const
     {
-      ++base_type::count_;
+        ++base_type::count_;
     }
 
     bool release() const
     {
-      BOOST_ASSERT( base_type::count_ > 0 );
-      return --base_type::count_ == 0;
+        BOOST_ASSERT(base_type::count_ > 0);
+        return --base_type::count_ == 0;
     }
 };
-
-
 
 } // namespace detail
 } // namespace statechart
 } // namespace boost
-
-
 
 #endif

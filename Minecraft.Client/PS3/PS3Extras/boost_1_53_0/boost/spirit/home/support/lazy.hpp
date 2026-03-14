@@ -11,31 +11,36 @@
 #pragma once
 #endif
 
-#include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/proto/proto.hpp>
-#include <boost/spirit/home/support/modify.hpp>
 #include <boost/spirit/home/support/detail/is_spirit_tag.hpp>
+#include <boost/spirit/home/support/modify.hpp>
+#include <boost/spirit/include/phoenix_core.hpp>
 
-namespace boost { namespace spirit
+namespace boost
 {
-    template <typename Eval>
-    typename proto::terminal<phoenix::actor<Eval> >::type
-    lazy(phoenix::actor<Eval> const& f)
-    {
-        return proto::terminal<phoenix::actor<Eval> >::type::make(f);
-    }
+namespace spirit
+{
+template <typename Eval>
+typename proto::terminal<phoenix::actor<Eval>>::type
+lazy(phoenix::actor<Eval> const &f)
+{
+    return proto::terminal<phoenix::actor<Eval>>::type::make(f);
+}
 
-    namespace tag
-    {
-        struct lazy_eval 
-        {
-            BOOST_SPIRIT_IS_TAG()
-        };
-    }
+namespace tag
+{
+struct lazy_eval
+{
+    BOOST_SPIRIT_IS_TAG()
+};
+} // namespace tag
 
-    template <typename Domain>
-    struct is_modifier_directive<Domain, tag::lazy_eval>
-      : mpl::true_ {};
-}}
+template <typename Domain>
+struct is_modifier_directive<Domain, tag::lazy_eval>
+    : mpl::true_
+{
+};
+} // namespace spirit
+} // namespace boost
 
 #endif

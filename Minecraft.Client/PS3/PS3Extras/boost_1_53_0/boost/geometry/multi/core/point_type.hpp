@@ -11,19 +11,17 @@
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_GEOMETRY_MULTI_CORE_POINT_TYPE_HPP
 #define BOOST_GEOMETRY_MULTI_CORE_POINT_TYPE_HPP
-
 
 #include <boost/range/metafunctions.hpp>
 
 #include <boost/geometry/core/point_type.hpp>
 #include <boost/geometry/multi/core/tags.hpp>
 
-
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
@@ -36,29 +34,24 @@ struct point_type<multi_point_tag, MultiPoint>
     typedef typename boost::range_value<MultiPoint>::type type;
 };
 
-
 template <typename MultiLinestring>
 struct point_type<multi_linestring_tag, MultiLinestring>
 {
     typedef typename point_type<linestring_tag,
-        typename boost::range_value<MultiLinestring>::type>::type type;
+                                typename boost::range_value<MultiLinestring>::type>::type type;
 };
-
-
 
 template <typename MultiPolygon>
 struct point_type<multi_polygon_tag, MultiPolygon>
 {
     typedef typename point_type<polygon_tag,
-        typename boost::range_value<MultiPolygon>::type>::type type;
+                                typename boost::range_value<MultiPolygon>::type>::type type;
 };
 
-
-}
+} // namespace core_dispatch
 #endif
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_CORE_POINT_TYPE_HPP

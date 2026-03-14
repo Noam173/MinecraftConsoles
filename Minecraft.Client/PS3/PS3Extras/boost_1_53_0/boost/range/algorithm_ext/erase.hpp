@@ -10,52 +10,52 @@
 #ifndef BOOST_RANGE_ALGORITHM_EXT_ERASE_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_EXT_ERASE_HPP_INCLUDED
 
-#include <boost/range/config.hpp>
-#include <boost/range/concepts.hpp>
-#include <boost/range/difference_type.hpp>
-#include <boost/range/iterator_range_core.hpp>
-#include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/assert.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/concepts.hpp>
+#include <boost/range/config.hpp>
+#include <boost/range/difference_type.hpp>
+#include <boost/range/end.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace boost
 {
-    namespace range
-    {
-
-template< class Container >
-inline Container& erase( Container& on,
-      iterator_range<BOOST_DEDUCED_TYPENAME Container::iterator> to_erase )
+namespace range
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( ForwardRangeConcept<Container> ));
-    on.erase( boost::begin(to_erase), boost::end(to_erase) );
+
+template <class Container>
+inline Container &erase(Container &on,
+                        iterator_range<BOOST_DEDUCED_TYPENAME Container::iterator> to_erase)
+{
+    BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<Container>));
+    on.erase(boost::begin(to_erase), boost::end(to_erase));
     return on;
 }
 
-template< class Container, class T >
-inline Container& remove_erase( Container& on, const T& val )
+template <class Container, class T>
+inline Container &remove_erase(Container &on, const T &val)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( ForwardRangeConcept<Container> ));
+    BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<Container>));
     on.erase(
         std::remove(boost::begin(on), boost::end(on), val),
         boost::end(on));
     return on;
 }
 
-template< class Container, class Pred >
-inline Container& remove_erase_if( Container& on, Pred pred )
+template <class Container, class Pred>
+inline Container &remove_erase_if(Container &on, Pred pred)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( ForwardRangeConcept<Container> ));
+    BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<Container>));
     on.erase(
         std::remove_if(boost::begin(on), boost::end(on), pred),
         boost::end(on));
     return on;
 }
 
-    } // namespace range
-    using range::erase;
-    using range::remove_erase;
-    using range::remove_erase_if;
+} // namespace range
+using range::erase;
+using range::remove_erase;
+using range::remove_erase_if;
 } // namespace boost
 
 #endif // include guard

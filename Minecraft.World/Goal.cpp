@@ -1,19 +1,19 @@
-#include "stdafx.h"
 #include "Goal.h"
+#include "stdafx.h"
 
 Goal::Goal()
 {
-	_requiredControlFlags = 0;
+    _requiredControlFlags = 0;
 }
 
 bool Goal::canContinueToUse()
 {
-	return canUse();
+    return canUse();
 }
 
 bool Goal::canInterrupt()
 {
-	return true;
+    return true;
 }
 
 void Goal::start()
@@ -30,10 +30,10 @@ void Goal::tick()
 
 void Goal::setRequiredControlFlags(int requiredControlFlags)
 {
-	_requiredControlFlags = requiredControlFlags;
+    _requiredControlFlags = requiredControlFlags;
 }
 
 int Goal::getRequiredControlFlags()
 {
-	return _requiredControlFlags;
+    return _requiredControlFlags;
 }

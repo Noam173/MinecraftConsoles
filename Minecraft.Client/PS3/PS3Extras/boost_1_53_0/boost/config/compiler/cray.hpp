@@ -10,14 +10,14 @@
 #define BOOST_COMPILER "Cray C version " BOOST_STRINGIZE(_RELEASE)
 
 #if _RELEASE < 7
-#  error "Boost is not configured for Cray compilers prior to version 7, please try the configure script."
+#error "Boost is not configured for Cray compilers prior to version 7, please try the configure script."
 #endif
 
 //
 // Check this is a recent EDG based compiler, otherwise we don't support it here:
 //
 #ifndef __EDG_VERSION__
-#  error "Unsupported Cray compiler, please try running the configure script."
+#error "Unsupported Cray compiler, please try running the configure script."
 #endif
 
 #include "boost/config/compiler/common_edg.hpp"
@@ -54,10 +54,9 @@
 #define BOOST_NO_COMPLETE_VALUE_INITIALIZATION
 #define BOOST_NO_CXX11_CHAR32_T
 #define BOOST_NO_CXX11_CHAR16_T
-//#define BOOST_BCB_PARTIAL_SPECIALIZATION_BUG
+// #define BOOST_BCB_PARTIAL_SPECIALIZATION_BUG
 #define BOOST_MATH_DISABLE_STD_FPCLASSIFY
-//#define BOOST_HAS_FPCLASSIFY
+// #define BOOST_HAS_FPCLASSIFY
 
-#define BOOST_SP_USE_PTHREADS 
-#define BOOST_AC_USE_PTHREADS 
-
+#define BOOST_SP_USE_PTHREADS
+#define BOOST_AC_USE_PTHREADS

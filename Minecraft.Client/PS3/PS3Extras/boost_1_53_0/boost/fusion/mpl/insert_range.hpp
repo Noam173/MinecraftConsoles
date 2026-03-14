@@ -7,33 +7,33 @@
 #if !defined(FUSION_INSERT_RANGE_10022005_1838)
 #define FUSION_INSERT_RANGE_10022005_1838
 
-#include <boost/mpl/insert_range.hpp>
-#include <boost/fusion/support/tag_of.hpp>
 #include <boost/fusion/algorithm/transformation/insert_range.hpp>
 #include <boost/fusion/sequence/convert.hpp>
+#include <boost/fusion/support/tag_of.hpp>
+#include <boost/mpl/insert_range.hpp>
 
-namespace boost { namespace mpl
+namespace boost
 {
-    template <typename Tag>
-    struct insert_range_impl;
+namespace mpl
+{
+template <typename Tag>
+struct insert_range_impl;
 
-    template <>
-    struct insert_range_impl<fusion::fusion_sequence_tag>
+template <>
+struct insert_range_impl<fusion::fusion_sequence_tag>
+{
+    template <typename Sequence, typename Pos, typename Range>
+    struct apply
     {
-        template <typename Sequence, typename Pos, typename Range>
-        struct apply
-        {
-            typedef typename
-                fusion::result_of::insert_range<Sequence, Pos, Range>::type
+        typedef typename fusion::result_of::insert_range<Sequence, Pos, Range>::type
             result;
 
-            typedef typename
-                fusion::result_of::convert<
-                    typename fusion::detail::tag_of<Sequence>::type, result>::type
+        typedef typename fusion::result_of::convert<
+            typename fusion::detail::tag_of<Sequence>::type, result>::type
             type;
-        };
     };
-}}
+};
+} // namespace mpl
+} // namespace boost
 
 #endif
-

@@ -12,10 +12,10 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/xpressive/xpressive_static.hpp>
 #include <boost/xpressive/xpressive_dynamic.hpp>
+#include <boost/xpressive/xpressive_static.hpp>
 
 #endif

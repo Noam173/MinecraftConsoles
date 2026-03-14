@@ -7,31 +7,40 @@
 //
 //  Copyright (c) 2011 Helge Bahmann
 
-#include <cstddef>
+#include <boost/atomic/detail/base.hpp>
+#include <boost/atomic/detail/config.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/memory_order.hpp>
-#include <boost/atomic/detail/config.hpp>
-#include <boost/atomic/detail/base.hpp>
+#include <cstddef>
 
 #ifdef BOOST_ATOMIC_HAS_PRAGMA_ONCE
 #pragma once
 #endif
 
-namespace boost {
-namespace atomics {
-namespace detail {
+namespace boost
+{
+namespace atomics
+{
+namespace detail
+{
 
 /* integral types */
 
-template<typename T, bool Sign>
-class base_atomic<T, int, 1, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, int, 1, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef T difference_type;
     typedef uint32_t storage_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
@@ -53,30 +62,34 @@ public:
     exchange(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, v, order, memory_order_relaxed));
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
         platform_fence_before(success_order);
 
-        storage_type expected_s = (storage_type) expected;
-        storage_type desired_s = (storage_type) desired;
+        storage_type expected_s = (storage_type)expected;
+        storage_type desired_s = (storage_type)desired;
 
         bool success = platform_cmpxchg32(expected_s, desired_s, &v_);
 
-        if (success) {
+        if (success)
+        {
             platform_fence_after(success_order);
-        } else {
+        }
+        else
+        {
             platform_fence_after(failure_order);
-            expected = (value_type) expected_s;
+            expected = (value_type)expected_s;
         }
 
         return success;
@@ -84,16 +97,20 @@ public:
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
-        for(;;) {
+        for (;;)
+        {
             value_type tmp = expected;
             if (compare_exchange_weak(tmp, desired, success_order, failure_order))
+            {
                 return true;
-            if (tmp != expected) {
+            }
+            if (tmp != expected)
+            {
                 expected = tmp;
                 return false;
             }
@@ -104,7 +121,8 @@ public:
     fetch_add(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original + v, order, memory_order_relaxed));
         return original;
     }
@@ -113,7 +131,8 @@ public:
     fetch_sub(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original - v, order, memory_order_relaxed));
         return original;
     }
@@ -122,7 +141,8 @@ public:
     fetch_and(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original & v, order, memory_order_relaxed));
         return original;
     }
@@ -131,7 +151,8 @@ public:
     fetch_or(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original | v, order, memory_order_relaxed));
         return original;
     }
@@ -140,7 +161,8 @@ public:
     fetch_xor(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original ^ v, order, memory_order_relaxed));
         return original;
     }
@@ -152,21 +174,27 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T, int, 2, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, int, 2, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef T difference_type;
     typedef uint32_t storage_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
@@ -188,30 +216,34 @@ public:
     exchange(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, v, order, memory_order_relaxed));
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
         platform_fence_before(success_order);
 
-        storage_type expected_s = (storage_type) expected;
-        storage_type desired_s = (storage_type) desired;
+        storage_type expected_s = (storage_type)expected;
+        storage_type desired_s = (storage_type)desired;
 
         bool success = platform_cmpxchg32(expected_s, desired_s, &v_);
 
-        if (success) {
+        if (success)
+        {
             platform_fence_after(success_order);
-        } else {
+        }
+        else
+        {
             platform_fence_after(failure_order);
-            expected = (value_type) expected_s;
+            expected = (value_type)expected_s;
         }
 
         return success;
@@ -219,16 +251,20 @@ public:
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
-        for(;;) {
+        for (;;)
+        {
             value_type tmp = expected;
             if (compare_exchange_weak(tmp, desired, success_order, failure_order))
+            {
                 return true;
-            if (tmp != expected) {
+            }
+            if (tmp != expected)
+            {
                 expected = tmp;
                 return false;
             }
@@ -239,7 +275,8 @@ public:
     fetch_add(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original + v, order, memory_order_relaxed));
         return original;
     }
@@ -248,7 +285,8 @@ public:
     fetch_sub(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original - v, order, memory_order_relaxed));
         return original;
     }
@@ -257,7 +295,8 @@ public:
     fetch_and(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original & v, order, memory_order_relaxed));
         return original;
     }
@@ -266,7 +305,8 @@ public:
     fetch_or(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original | v, order, memory_order_relaxed));
         return original;
     }
@@ -275,7 +315,8 @@ public:
     fetch_xor(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original ^ v, order, memory_order_relaxed));
         return original;
     }
@@ -287,20 +328,26 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T, int, 4, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, int, 4, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef T difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
@@ -322,14 +369,15 @@ public:
     exchange(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, v, order, memory_order_relaxed));
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -338,9 +386,12 @@ public:
 
         bool success = platform_cmpxchg32(expected, desired, &v_);
 
-        if (success) {
+        if (success)
+        {
             platform_fence_after(success_order);
-        } else {
+        }
+        else
+        {
             platform_fence_after(failure_order);
         }
 
@@ -349,16 +400,20 @@ public:
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
-        for(;;) {
+        for (;;)
+        {
             value_type tmp = expected;
             if (compare_exchange_weak(tmp, desired, success_order, failure_order))
+            {
                 return true;
-            if (tmp != expected) {
+            }
+            if (tmp != expected)
+            {
                 expected = tmp;
                 return false;
             }
@@ -369,7 +424,8 @@ public:
     fetch_add(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original + v, order, memory_order_relaxed));
         return original;
     }
@@ -378,7 +434,8 @@ public:
     fetch_sub(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original - v, order, memory_order_relaxed));
         return original;
     }
@@ -387,7 +444,8 @@ public:
     fetch_and(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original & v, order, memory_order_relaxed));
         return original;
     }
@@ -396,7 +454,8 @@ public:
     fetch_or(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original | v, order, memory_order_relaxed));
         return original;
     }
@@ -405,7 +464,8 @@ public:
     fetch_xor(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original ^ v, order, memory_order_relaxed));
         return original;
     }
@@ -417,22 +477,28 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_INTEGRAL_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
 /* pointer types */
 
-template<bool Sign>
-class base_atomic<void *, void *, 4, Sign> {
+template <bool Sign>
+class base_atomic<void *, void *, 4, Sign>
+{
     typedef base_atomic this_type;
-    typedef void * value_type;
+    typedef void *value_type;
     typedef ptrdiff_t difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
@@ -454,14 +520,15 @@ public:
     exchange(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, v, order, memory_order_relaxed));
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -470,9 +537,12 @@ public:
 
         bool success = platform_cmpxchg32(expected, desired, &v_);
 
-        if (success) {
+        if (success)
+        {
             platform_fence_after(success_order);
-        } else {
+        }
+        else
+        {
             platform_fence_after(failure_order);
         }
 
@@ -481,16 +551,20 @@ public:
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
-        for(;;) {
+        for (;;)
+        {
             value_type tmp = expected;
             if (compare_exchange_weak(tmp, desired, success_order, failure_order))
+            {
                 return true;
-            if (tmp != expected) {
+            }
+            if (tmp != expected)
+            {
                 expected = tmp;
                 return false;
             }
@@ -504,20 +578,26 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T *, void *, 4, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T *, void *, 4, Sign>
+{
     typedef base_atomic this_type;
-    typedef T * value_type;
+    typedef T *value_type;
     typedef ptrdiff_t difference_type;
-public:
-    explicit base_atomic(value_type v) : v_(v) {}
-    base_atomic(void) {}
+
+  public:
+    explicit base_atomic(value_type v) : v_(v)
+    {
+    }
+    base_atomic(void)
+    {
+    }
 
     void
     store(value_type v, memory_order order = memory_order_seq_cst) volatile
@@ -539,14 +619,15 @@ public:
     exchange(value_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, v, order, memory_order_relaxed));
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
@@ -555,9 +636,12 @@ public:
 
         bool success = platform_cmpxchg32(expected, desired, &v_);
 
-        if (success) {
+        if (success)
+        {
             platform_fence_after(success_order);
-        } else {
+        }
+        else
+        {
             platform_fence_after(failure_order);
         }
 
@@ -566,16 +650,20 @@ public:
 
     bool
     compare_exchange_strong(
-        value_type & expected,
+        value_type &expected,
         value_type desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
-        for(;;) {
+        for (;;)
+        {
             value_type tmp = expected;
             if (compare_exchange_weak(tmp, desired, success_order, failure_order))
+            {
                 return true;
-            if (tmp != expected) {
+            }
+            if (tmp != expected)
+            {
                 expected = tmp;
                 return false;
             }
@@ -586,7 +674,8 @@ public:
     fetch_add(difference_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original + v, order, memory_order_relaxed));
         return original;
     }
@@ -595,7 +684,8 @@ public:
     fetch_sub(difference_type v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, original - v, order, memory_order_relaxed));
         return original;
     }
@@ -607,28 +697,32 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_POINTER_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     value_type v_;
 };
 
 /* generic types */
 
-template<typename T, bool Sign>
-class base_atomic<T, void, 1, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, void, 1, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint32_t storage_type;
-public:
-    explicit base_atomic(value_type const& v) : v_(0)
+
+  public:
+    explicit base_atomic(value_type const &v) : v_(0)
     {
         memcpy(&v_, &v, sizeof(value_type));
     }
-    base_atomic(void) {}
+    base_atomic(void)
+    {
+    }
 
     void
-    store(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    store(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0;
         memcpy(&tmp, &v, sizeof(value_type));
@@ -649,18 +743,19 @@ public:
     }
 
     value_type
-    exchange(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    exchange(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, v, order, memory_order_relaxed));
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -672,9 +767,12 @@ public:
 
         bool success = platform_cmpxchg32(expected_s, desired_s, &v_);
 
-        if (success) {
+        if (success)
+        {
             platform_fence_after(success_order);
-        } else {
+        }
+        else
+        {
             platform_fence_after(failure_order);
             memcpy(&expected, &expected_s, sizeof(value_type));
         }
@@ -684,16 +782,20 @@ public:
 
     bool
     compare_exchange_strong(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
-        for(;;) {
+        for (;;)
+        {
             value_type tmp = expected;
             if (compare_exchange_weak(tmp, desired, success_order, failure_order))
+            {
                 return true;
-            if (tmp != expected) {
+            }
+            if (tmp != expected)
+            {
                 expected = tmp;
                 return false;
             }
@@ -707,26 +809,30 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T, void, 2, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, void, 2, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint32_t storage_type;
-public:
-    explicit base_atomic(value_type const& v) : v_(0)
+
+  public:
+    explicit base_atomic(value_type const &v) : v_(0)
     {
         memcpy(&v_, &v, sizeof(value_type));
     }
-    base_atomic(void) {}
+    base_atomic(void)
+    {
+    }
 
     void
-    store(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    store(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0;
         memcpy(&tmp, &v, sizeof(value_type));
@@ -747,18 +853,19 @@ public:
     }
 
     value_type
-    exchange(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    exchange(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, v, order, memory_order_relaxed));
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -770,9 +877,12 @@ public:
 
         bool success = platform_cmpxchg32(expected_s, desired_s, &v_);
 
-        if (success) {
+        if (success)
+        {
             platform_fence_after(success_order);
-        } else {
+        }
+        else
+        {
             platform_fence_after(failure_order);
             memcpy(&expected, &expected_s, sizeof(value_type));
         }
@@ -782,16 +892,20 @@ public:
 
     bool
     compare_exchange_strong(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
-        for(;;) {
+        for (;;)
+        {
             value_type tmp = expected;
             if (compare_exchange_weak(tmp, desired, success_order, failure_order))
+            {
                 return true;
-            if (tmp != expected) {
+            }
+            if (tmp != expected)
+            {
                 expected = tmp;
                 return false;
             }
@@ -805,26 +919,30 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-template<typename T, bool Sign>
-class base_atomic<T, void, 4, Sign> {
+template <typename T, bool Sign>
+class base_atomic<T, void, 4, Sign>
+{
     typedef base_atomic this_type;
     typedef T value_type;
     typedef uint32_t storage_type;
-public:
-    explicit base_atomic(value_type const& v) : v_(0)
+
+  public:
+    explicit base_atomic(value_type const &v) : v_(0)
     {
         memcpy(&v_, &v, sizeof(value_type));
     }
-    base_atomic(void) {}
+    base_atomic(void)
+    {
+    }
 
     void
-    store(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    store(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         storage_type tmp = 0;
         memcpy(&tmp, &v, sizeof(value_type));
@@ -845,18 +963,19 @@ public:
     }
 
     value_type
-    exchange(value_type const& v, memory_order order = memory_order_seq_cst) volatile
+    exchange(value_type const &v, memory_order order = memory_order_seq_cst) volatile
     {
         value_type original = load(memory_order_relaxed);
-        do {
+        do
+        {
         } while (!compare_exchange_weak(original, v, order, memory_order_relaxed));
         return original;
     }
 
     bool
     compare_exchange_weak(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
@@ -868,9 +987,12 @@ public:
 
         bool success = platform_cmpxchg32(expected_s, desired_s, &v_);
 
-        if (success) {
+        if (success)
+        {
             platform_fence_after(success_order);
-        } else {
+        }
+        else
+        {
             platform_fence_after(failure_order);
             memcpy(&expected, &expected_s, sizeof(value_type));
         }
@@ -880,16 +1002,20 @@ public:
 
     bool
     compare_exchange_strong(
-        value_type & expected,
-        value_type const& desired,
+        value_type &expected,
+        value_type const &desired,
         memory_order success_order,
         memory_order failure_order) volatile
     {
-        for(;;) {
+        for (;;)
+        {
             value_type tmp = expected;
             if (compare_exchange_weak(tmp, desired, success_order, failure_order))
+            {
                 return true;
-            if (tmp != expected) {
+            }
+            if (tmp != expected)
+            {
                 expected = tmp;
                 return false;
             }
@@ -903,14 +1029,14 @@ public:
     }
 
     BOOST_ATOMIC_DECLARE_BASE_OPERATORS
-private:
-    base_atomic(const base_atomic &) /* = delete */ ;
-    void operator=(const base_atomic &) /* = delete */ ;
+  private:
+    base_atomic(const base_atomic &) /* = delete */;
+    void operator=(const base_atomic &) /* = delete */;
     storage_type v_;
 };
 
-}
-}
-}
+} // namespace detail
+} // namespace atomics
+} // namespace boost
 
 #endif

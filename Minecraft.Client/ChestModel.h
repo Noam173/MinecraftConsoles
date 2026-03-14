@@ -6,13 +6,13 @@ class Cube;
 
 class ChestModel : public Model
 {
-public:
-	using Model::render;
+  public:
+    using Model::render;
 
-	ModelPart *lid;
-	ModelPart *bottom;
-	ModelPart *lock;
+    ModelPart *lid;
+    ModelPart *bottom;
+    ModelPart *lock;
 
-	ChestModel();
-	void render(bool usecompiled);
+    ChestModel();
+    void render(bool usecompiled);
 };

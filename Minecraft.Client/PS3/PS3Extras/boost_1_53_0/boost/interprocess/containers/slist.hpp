@@ -12,20 +12,22 @@
 #define BOOST_INTERPROCESS_CONTAINERS_SLIST_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
-#include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/container/slist.hpp>
 #include <boost/interprocess/containers/containers_fwd.hpp>
+#include <boost/interprocess/detail/config_begin.hpp>
 
-namespace boost {
-namespace interprocess {
+namespace boost
+{
+namespace interprocess
+{
 
 using boost::container::slist;
 
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 

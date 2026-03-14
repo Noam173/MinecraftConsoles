@@ -14,51 +14,44 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_EQUALS_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_EQUALS_HPP
 
-
-#include <boost/geometry/multi/core/tags.hpp>
 #include <boost/geometry/multi/core/geometry_id.hpp>
+#include <boost/geometry/multi/core/tags.hpp>
 
 #include <boost/geometry/algorithms/equals.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
 template <typename MultiPolygon1, typename MultiPolygon2, bool Reverse>
-struct equals
-    <
-        MultiPolygon1, MultiPolygon2,
-        multi_polygon_tag, multi_polygon_tag,
-        2,
-        Reverse
-    >
+struct equals<
+    MultiPolygon1, MultiPolygon2,
+    multi_polygon_tag, multi_polygon_tag,
+    2,
+    Reverse>
     : detail::equals::equals_by_collection<detail::equals::area_check>
-{};
-
+{
+};
 
 template <typename Polygon, typename MultiPolygon, bool Reverse>
-struct equals
-    <
-        Polygon, MultiPolygon,
-        polygon_tag, multi_polygon_tag,
-        2,
-        Reverse
-    >
+struct equals<
+    Polygon, MultiPolygon,
+    polygon_tag, multi_polygon_tag,
+    2,
+    Reverse>
     : detail::equals::equals_by_collection<detail::equals::area_check>
-{};
-
+{
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_EQUALS_HPP
-

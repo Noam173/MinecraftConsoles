@@ -4,8 +4,8 @@
 
 // Copyright Aleksey Gurtovoy 2000-2004
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -14,22 +14,22 @@
 // $Date: 2008-10-10 23:19:02 -0700 (Fri, 10 Oct 2008) $
 // $Revision: 49267 $
 
-#include <boost/mpl/long.hpp>
-#include <boost/mpl/void.hpp>
-#include <boost/mpl/next_prior.hpp>
-#include <boost/mpl/aux_/type_wrapper.hpp>
-#include <boost/mpl/aux_/config/typeof.hpp>
 #include <boost/mpl/aux_/config/ctps.hpp>
+#include <boost/mpl/aux_/config/typeof.hpp>
+#include <boost/mpl/aux_/type_wrapper.hpp>
+#include <boost/mpl/long.hpp>
+#include <boost/mpl/next_prior.hpp>
+#include <boost/mpl/void.hpp>
 
-namespace boost { namespace mpl {
+namespace boost
+{
+namespace mpl
+{
 
 #if defined(BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES)
 
-template< 
-      typename T
-    , typename Base
-    , int at_front = 0
-    >
+template <
+    typename T, typename Base, int at_front = 0>
 struct v_item
     : Base
 {
@@ -45,11 +45,9 @@ struct v_item
     using Base::item_;
 };
 
-template<
-      typename T
-    , typename Base
-    >
-struct v_item<T,Base,1>
+template <
+    typename T, typename Base>
+struct v_item<T, Base, 1>
     : Base
 {
     typedef typename prior<typename Base::lower_bound_>::type index_;
@@ -63,10 +61,8 @@ struct v_item<T,Base,1>
 };
 
 // "erasure" item
-template< 
-      typename Base
-    , int at_front
-    >
+template <
+    typename Base, int at_front>
 struct v_mask
     : Base
 {
@@ -80,10 +76,9 @@ struct v_mask
     using Base::item_;
 };
 
-template< 
-      typename Base
-    >
-struct v_mask<Base,1>
+template <
+    typename Base>
+struct v_mask<Base, 1>
     : Base
 {
     typedef typename Base::lower_bound_ index_;
@@ -98,6 +93,7 @@ struct v_mask<Base,1>
 
 #endif // BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES
 
-}}
+} // namespace mpl
+} // namespace boost
 
 #endif // BOOST_MPL_VECTOR_AUX_ITEM_HPP_INCLUDED

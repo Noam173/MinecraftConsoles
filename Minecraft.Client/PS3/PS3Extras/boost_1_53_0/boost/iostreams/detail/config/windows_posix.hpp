@@ -12,14 +12,14 @@
 //------------------From boost/libs/filesystem/src/path_posix_windows.cpp-----//
 
 // BOOST_IOSTREAMS_POSIX or BOOST_IOSTREAMS_WINDOWS specify which API to use.
-#if !defined( BOOST_IOSTREAMS_WINDOWS ) && !defined( BOOST_IOSTREAMS_POSIX )
-# if (defined(_WIN32) || defined(__WIN32__) || defined(WIN32)) && \
-     !defined(__CYGWIN__) \
-     /**/
-#  define BOOST_IOSTREAMS_WINDOWS
-# else
-#  define BOOST_IOSTREAMS_POSIX
-# endif
+#if !defined(BOOST_IOSTREAMS_WINDOWS) && !defined(BOOST_IOSTREAMS_POSIX)
+#if (defined(_WIN32) || defined(__WIN32__) || defined(WIN32)) && \
+    !defined(__CYGWIN__)
+/**/
+#define BOOST_IOSTREAMS_WINDOWS
+#else
+#define BOOST_IOSTREAMS_POSIX
+#endif
 #endif
 
 #endif // #ifndef BOOST_IOSTREAMS_DETAIL_CONFIG_WINDOWS_POSIX_HPP_INCLUDED

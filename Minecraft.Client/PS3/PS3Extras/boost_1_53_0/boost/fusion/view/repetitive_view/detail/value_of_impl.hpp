@@ -10,25 +10,28 @@
 
 #include <boost/fusion/iterator/value_of.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct repetitive_view_iterator_tag;
+namespace fusion
+{
+struct repetitive_view_iterator_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct value_of_impl;
+
+template <>
+struct value_of_impl<repetitive_view_iterator_tag>
+{
+    template <typename Iterator>
+    struct apply
+        : result_of::value_of<typename Iterator::pos_type>
     {
-        template<typename Tag>
-        struct value_of_impl;
-
-        template<>
-        struct value_of_impl<repetitive_view_iterator_tag>
-        {
-            template<typename Iterator>
-            struct apply
-                : result_of::value_of<typename Iterator::pos_type>
-            { };
-        };
-    }
-}}
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif
-

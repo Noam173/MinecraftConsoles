@@ -1,42 +1,40 @@
+#include "AnimatePacket.h"
+#include "InputOutputStream.h"
+#include "PacketListener.h"
+#include "net.minecraft.world.entity.h"
 #include "stdafx.h"
 #include <iostream>
-#include "InputOutputStream.h"
-#include "net.minecraft.world.entity.h"
-#include "PacketListener.h"
-#include "AnimatePacket.h"
-
-
 
 AnimatePacket::AnimatePacket()
 {
-	id = -1;
-	action = 0;
+    id = -1;
+    action = 0;
 }
 
 AnimatePacket::AnimatePacket(shared_ptr<Entity> e, int action)
 {
-	id = e->entityId;
-	this->action = action;
+    id = e->entityId;
+    this->action = action;
 }
 
-void AnimatePacket::read(DataInputStream *dis) //throws IOException 
+void AnimatePacket::read(DataInputStream *dis) // throws IOException
 {
-	id = dis->readInt();
-	action = dis->readByte();
+    id = dis->readInt();
+    action = dis->readByte();
 }
 
-void AnimatePacket::write(DataOutputStream *dos) //throws IOException 
+void AnimatePacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeInt(id);
-	dos->writeByte(action);
+    dos->writeInt(id);
+    dos->writeByte(action);
 }
 
-void AnimatePacket::handle(PacketListener *listener) 
+void AnimatePacket::handle(PacketListener *listener)
 {
-	listener->handleAnimate(shared_from_this());
+    listener->handleAnimate(shared_from_this());
 }
 
-int AnimatePacket::getEstimatedSize() 
+int AnimatePacket::getEstimatedSize()
 {
-	return 5;
+    return 5;
 }

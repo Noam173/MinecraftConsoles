@@ -8,8 +8,8 @@
 #ifndef BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_HPP_
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_HPP_
 
-#include <boost/local_function/detail/preprocessor/keyword/facility/is.hpp>
 #include <boost/local_function/detail/preprocessor/keyword/facility/add.hpp>
+#include <boost/local_function/detail/preprocessor/keyword/facility/is.hpp>
 #include <boost/local_function/detail/preprocessor/keyword/facility/remove.hpp>
 
 // PRIVATE //
@@ -26,33 +26,32 @@
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_FRONT(tokens) \
     BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_IS_)
+                                                             BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_IS_)
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_BACK(token) \
     BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_IS_BACK(token, \
-            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_IS)
+                                                            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_IS)
 
 // Remove.
 
-#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_REMOVE_FRONT(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_FRONT, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_REMOVE_)
+#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_REMOVE_FRONT(tokens)                                               \
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_FRONT(tokens,                                               \
+                                                                 BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_FRONT, \
+                                                                 BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_REMOVE_)
 
-#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_REMOVE_BACK(tokens) \
-    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_BACK(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_BACK, \
-            _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_REMOVE)
+#define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_REMOVE_BACK(tokens)                                              \
+    BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_REMOVE_BACK(tokens,                                              \
+                                                                BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_BACK, \
+                                                                _BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_REMOVE)
 
 // Add.
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_ADD_FRONT(tokens) \
     BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_FRONT(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_FRONT, void)
+                                                              BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_FRONT, void)
 
 #define BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_VOID_ADD_BACK(tokens) \
     BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_FACILITY_ADD_BACK(tokens, \
-            BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_BACK, void)
+                                                             BOOST_LOCAL_FUNCTION_DETAIL_PP_KEYWORD_IS_VOID_BACK, void)
 
 #endif // #include guard
-

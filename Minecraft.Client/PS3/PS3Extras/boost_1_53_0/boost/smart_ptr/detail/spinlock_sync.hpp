@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -17,8 +17,8 @@
 
 #include <boost/smart_ptr/detail/yield_k.hpp>
 
-#if defined( __ia64__ ) && defined( __INTEL_COMPILER )
-# include <ia64intrin.h>
+#if defined(__ia64__) && defined(__INTEL_COMPILER)
+#include <ia64intrin.h>
 #endif
 
 namespace boost
@@ -29,45 +29,40 @@ namespace detail
 
 class spinlock
 {
-public:
-
+  public:
     int v_;
 
-public:
-
+  public:
     bool try_lock()
     {
-        int r = __sync_lock_test_and_set( &v_, 1 );
+        int r = __sync_lock_test_and_set(&v_, 1);
         return r == 0;
     }
 
     void lock()
     {
-        for( unsigned k = 0; !try_lock(); ++k )
+        for (unsigned k = 0; !try_lock(); ++k)
         {
-            boost::detail::yield( k );
+            boost::detail::yield(k);
         }
     }
 
     void unlock()
     {
-        __sync_lock_release( &v_ );
+        __sync_lock_release(&v_);
     }
 
-public:
-
+  public:
     class scoped_lock
     {
-    private:
+      private:
+        spinlock &sp_;
 
-        spinlock & sp_;
+        scoped_lock(scoped_lock const &);
+        scoped_lock &operator=(scoped_lock const &);
 
-        scoped_lock( scoped_lock const & );
-        scoped_lock & operator=( scoped_lock const & );
-
-    public:
-
-        explicit scoped_lock( spinlock & sp ): sp_( sp )
+      public:
+        explicit scoped_lock(spinlock &sp) : sp_(sp)
         {
             sp.lock();
         }

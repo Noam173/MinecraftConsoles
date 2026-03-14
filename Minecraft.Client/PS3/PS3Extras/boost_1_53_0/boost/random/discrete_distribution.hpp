@@ -13,17 +13,17 @@
 #ifndef BOOST_RANDOM_DISCRETE_DISTRIBUTION_HPP_INCLUDED
 #define BOOST_RANDOM_DISCRETE_DISTRIBUTION_HPP_INCLUDED
 
-#include <vector>
-#include <limits>
-#include <numeric>
-#include <utility>
-#include <iterator>
 #include <boost/assert.hpp>
-#include <boost/random/uniform_01.hpp>
-#include <boost/random/uniform_int.hpp>
 #include <boost/random/detail/config.hpp>
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/detail/vector_io.hpp>
+#include <boost/random/uniform_01.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <iterator>
+#include <limits>
+#include <numeric>
+#include <utility>
+#include <vector>
 
 #ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
 #include <initializer_list>
@@ -34,8 +34,10 @@
 
 #include <boost/random/detail/disable_warnings.hpp>
 
-namespace boost {
-namespace random {
+namespace boost
+{
+namespace random
+{
 
 /**
  * The class @c discrete_distribution models a \random_distribution.
@@ -43,28 +45,31 @@ namespace random {
  * of producing each value is specified by the parameters of the
  * distribution.
  */
-template<class IntType = int, class WeightType = double>
-class discrete_distribution {
-public:
+template <class IntType = int, class WeightType = double>
+class discrete_distribution
+{
+  public:
     typedef WeightType input_type;
     typedef IntType result_type;
 
-    class param_type {
-    public:
-
+    class param_type
+    {
+      public:
         typedef discrete_distribution distribution_type;
 
         /**
          * Constructs a @c param_type object, representing a distribution
          * with \f$p(0) = 1\f$ and \f$p(k|k>0) = 0\f$.
          */
-        param_type() : _probabilities(1, static_cast<WeightType>(1)) {}
+        param_type() : _probabilities(1, static_cast<WeightType>(1))
+        {
+        }
         /**
          * If @c first == @c last, equivalent to the default constructor.
          * Otherwise, the values of the range represent weights for the
          * possible values of the distribution.
          */
-        template<class Iter>
+        template <class Iter>
         param_type(Iter first, Iter last) : _probabilities(first, last)
         {
             normalize();
@@ -75,8 +80,8 @@ public:
          * Otherwise, the values of the @c initializer_list represent
          * weights for the possible values of the distribution.
          */
-        param_type(const std::initializer_list<WeightType>& wl)
-          : _probabilities(wl)
+        param_type(const std::initializer_list<WeightType> &wl)
+            : _probabilities(wl)
         {
             normalize();
         }
@@ -86,9 +91,9 @@ public:
          * Otherwise, the elements of the range represent
          * weights for the possible values of the distribution.
          */
-        template<class Range>
-        explicit param_type(const Range& range)
-          : _probabilities(boost::begin(range), boost::end(range))
+        template <class Range>
+        explicit param_type(const Range &range)
+            : _probabilities(boost::begin(range), boost::end(range))
         {
             normalize();
         }
@@ -101,14 +106,15 @@ public:
          * \f$\mbox{xmax} - \delta/2\f$, where
          * \f$\delta = (\mbox{xmax} - \mbox{xmin})/\mbox{nw}\f$.
          */
-        template<class Func>
+        template <class Func>
         param_type(std::size_t nw, double xmin, double xmax, Func fw)
         {
             std::size_t n = (nw == 0) ? 1 : nw;
             double delta = (xmax - xmin) / n;
             BOOST_ASSERT(delta > 0);
-            for(std::size_t k = 0; k < n; ++k) {
-                _probabilities.push_back(fw(xmin + k*delta + delta/2));
+            for (std::size_t k = 0; k < n; ++k)
+            {
+                _probabilities.push_back(fw(xmin + k * delta + delta / 2));
             }
             normalize();
         }
@@ -128,13 +134,14 @@ public:
             detail::print_vector(os, parm._probabilities);
             return os;
         }
-        
+
         /** Reads the parameters from a @c std::istream. */
         BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, param_type, parm)
         {
             std::vector<WeightType> temp;
             detail::read_vector(is, temp);
-            if(is) {
+            if (is)
+            {
                 parm._probabilities.swap(temp);
             }
             return is;
@@ -147,21 +154,22 @@ public:
         }
         /** Returns true if the two sets of parameters are different. */
         BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(param_type)
-    private:
+      private:
         /// @cond show_private
         friend class discrete_distribution;
-        explicit param_type(const discrete_distribution& dist)
-          : _probabilities(dist.probabilities())
-        {}
+        explicit param_type(const discrete_distribution &dist)
+            : _probabilities(dist.probabilities())
+        {
+        }
         void normalize()
         {
             WeightType sum =
                 std::accumulate(_probabilities.begin(), _probabilities.end(),
                                 static_cast<WeightType>(0));
-            for(typename std::vector<WeightType>::iterator
-                    iter = _probabilities.begin(),
-                    end = _probabilities.end();
-                    iter != end; ++iter)
+            for (typename std::vector<WeightType>::iterator
+                     iter = _probabilities.begin(),
+                     end = _probabilities.end();
+                 iter != end; ++iter)
             {
                 *iter /= sum;
             }
@@ -185,7 +193,7 @@ public:
      * Otherwise, the values of the range represent weights for the
      * possible values of the distribution.
      */
-    template<class Iter>
+    template <class Iter>
     discrete_distribution(Iter first, Iter last)
     {
         init(first, last);
@@ -216,8 +224,8 @@ public:
      * Otherwise, the values of the range represent weights for the
      * possible values of the distribution.
      */
-    template<class Range>
-    explicit discrete_distribution(const Range& range)
+    template <class Range>
+    explicit discrete_distribution(const Range &range)
     {
         init(boost::begin(range), boost::end(range));
     }
@@ -230,22 +238,23 @@ public:
      * \f$\mbox{xmax} - \delta/2\f$, where
      * \f$\delta = (\mbox{xmax} - \mbox{xmin})/\mbox{nw}\f$.
      */
-    template<class Func>
+    template <class Func>
     discrete_distribution(std::size_t nw, double xmin, double xmax, Func fw)
     {
         std::size_t n = (nw == 0) ? 1 : nw;
         double delta = (xmax - xmin) / n;
         BOOST_ASSERT(delta > 0);
         std::vector<WeightType> weights;
-        for(std::size_t k = 0; k < n; ++k) {
-            weights.push_back(fw(xmin + k*delta + delta/2));
+        for (std::size_t k = 0; k < n; ++k)
+        {
+            weights.push_back(fw(xmin + k * delta + delta / 2));
         }
         init(weights.begin(), weights.end());
     }
     /**
      * Constructs a discrete_distribution from its parameters.
      */
-    explicit discrete_distribution(const param_type& parm)
+    explicit discrete_distribution(const param_type &parm)
     {
         param(parm);
     }
@@ -254,48 +263,58 @@ public:
      * Returns a value distributed according to the parameters of the
      * discrete_distribution.
      */
-    template<class URNG>
-    IntType operator()(URNG& urng) const
+    template <class URNG>
+    IntType operator()(URNG &urng) const
     {
         BOOST_ASSERT(!_alias_table.empty());
         WeightType test = uniform_01<WeightType>()(urng);
         IntType result = uniform_int<IntType>((min)(), (max)())(urng);
-        if(test < _alias_table[result].first) {
+        if (test < _alias_table[result].first)
+        {
             return result;
-        } else {
-            return(_alias_table[result].second);
+        }
+        else
+        {
+            return (_alias_table[result].second);
         }
     }
-    
+
     /**
      * Returns a value distributed according to the parameters
      * specified by param.
      */
-    template<class URNG>
-    IntType operator()(URNG& urng, const param_type& parm) const
+    template <class URNG>
+    IntType operator()(URNG &urng, const param_type &parm) const
     {
-        while(true) {
+        while (true)
+        {
             WeightType val = uniform_01<WeightType>()(urng);
             WeightType sum = 0;
             std::size_t result = 0;
-            for(typename std::vector<WeightType>::const_iterator
-                iter = parm._probabilities.begin(),
-                end = parm._probabilities.end();
-                iter != end; ++iter, ++result)
+            for (typename std::vector<WeightType>::const_iterator
+                     iter = parm._probabilities.begin(),
+                     end = parm._probabilities.end();
+                 iter != end; ++iter, ++result)
             {
                 sum += *iter;
-                if(sum > val) {
+                if (sum > val)
+                {
                     return result;
                 }
             }
         }
     }
-    
+
     /** Returns the smallest value that the distribution can produce. */
-    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION () const { return 0; }
+    result_type min BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return 0;
+    }
     /** Returns the largest value that the distribution can produce. */
-    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION () const
-    { return static_cast<result_type>(_alias_table.size() - 1); }
+    result_type max BOOST_PREVENT_MACRO_SUBSTITUTION() const
+    {
+        return static_cast<result_type>(_alias_table.size() - 1);
+    }
 
     /**
      * Returns a vector containing the probabilities of each
@@ -314,16 +333,16 @@ public:
         const WeightType mean =
             static_cast<WeightType>(1) / _alias_table.size();
         std::size_t i = 0;
-        for(typename alias_table_t::const_iterator
-                iter = _alias_table.begin(),
-                end = _alias_table.end();
-                iter != end; ++iter, ++i)
+        for (typename alias_table_t::const_iterator
+                 iter = _alias_table.begin(),
+                 end = _alias_table.end();
+             iter != end; ++iter, ++i)
         {
             WeightType val = iter->first * mean;
             result[i] += val;
             result[iter->second] += mean - val;
         }
-        return(result);
+        return (result);
     }
 
     /** Returns the parameters of the distribution. */
@@ -332,16 +351,18 @@ public:
         return param_type(*this);
     }
     /** Sets the parameters of the distribution. */
-    void param(const param_type& parm)
+    void param(const param_type &parm)
     {
         init(parm._probabilities.begin(), parm._probabilities.end());
     }
-    
+
     /**
      * Effects: Subsequent uses of the distribution do not depend
      * on values produced by any engine prior to invoking reset.
      */
-    void reset() {}
+    void reset()
+    {
+    }
 
     /** Writes a distribution to a @c std::ostream. */
     BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(os, discrete_distribution, dd)
@@ -354,7 +375,8 @@ public:
     BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, discrete_distribution, dd)
     {
         param_type parm;
-        if(is >> parm) {
+        if (is >> parm)
+        {
             dd.param(parm);
         }
         return is;
@@ -374,32 +396,35 @@ public:
      */
     BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(discrete_distribution)
 
-private:
-
+  private:
     /// @cond show_private
 
-    template<class Iter>
+    template <class Iter>
     void init(Iter first, Iter last, std::input_iterator_tag)
     {
         std::vector<WeightType> temp(first, last);
         init(temp.begin(), temp.end());
     }
-    template<class Iter>
+    template <class Iter>
     void init(Iter first, Iter last, std::forward_iterator_tag)
     {
-        std::vector<std::pair<WeightType, IntType> > below_average;
-        std::vector<std::pair<WeightType, IntType> > above_average;
+        std::vector<std::pair<WeightType, IntType>> below_average;
+        std::vector<std::pair<WeightType, IntType>> above_average;
         std::size_t size = std::distance(first, last);
         WeightType weight_sum =
             std::accumulate(first, last, static_cast<WeightType>(0));
         WeightType weight_average = weight_sum / size;
         std::size_t i = 0;
-        for(; first != last; ++first, ++i) {
+        for (; first != last; ++first, ++i)
+        {
             WeightType val = *first / weight_average;
             std::pair<WeightType, IntType> elem(val, static_cast<IntType>(i));
-            if(val < static_cast<WeightType>(1)) {
+            if (val < static_cast<WeightType>(1))
+            {
                 below_average.push_back(elem);
-            } else {
+            }
+            else
+            {
                 above_average.push_back(elem);
             }
         }
@@ -409,44 +434,52 @@ private:
             b_iter = below_average.begin(),
             b_end = below_average.end(),
             a_iter = above_average.begin(),
-            a_end = above_average.end()
-            ;
-        while(b_iter != b_end && a_iter != a_end) {
+            a_end = above_average.end();
+        while (b_iter != b_end && a_iter != a_end)
+        {
             _alias_table[b_iter->second] =
                 std::make_pair(b_iter->first, a_iter->second);
             a_iter->first -= (static_cast<WeightType>(1) - b_iter->first);
-            if(a_iter->first < static_cast<WeightType>(1)) {
+            if (a_iter->first < static_cast<WeightType>(1))
+            {
                 *b_iter = *a_iter++;
-            } else {
+            }
+            else
+            {
                 ++b_iter;
             }
         }
-        for(; b_iter != b_end; ++b_iter) {
+        for (; b_iter != b_end; ++b_iter)
+        {
             _alias_table[b_iter->second].first = static_cast<WeightType>(1);
         }
-        for(; a_iter != a_end; ++a_iter) {
+        for (; a_iter != a_end; ++a_iter)
+        {
             _alias_table[a_iter->second].first = static_cast<WeightType>(1);
         }
     }
-    template<class Iter>
+    template <class Iter>
     void init(Iter first, Iter last)
     {
-        if(first == last) {
+        if (first == last)
+        {
             _alias_table.clear();
             _alias_table.push_back(std::make_pair(static_cast<WeightType>(1),
                                                   static_cast<IntType>(0)));
-        } else {
+        }
+        else
+        {
             typename std::iterator_traits<Iter>::iterator_category category;
             init(first, last, category);
         }
     }
-    typedef std::vector<std::pair<WeightType, IntType> > alias_table_t;
+    typedef std::vector<std::pair<WeightType, IntType>> alias_table_t;
     alias_table_t _alias_table;
     /// @endcond
 };
 
-}
-}
+} // namespace random
+} // namespace boost
 
 #include <boost/random/detail/enable_warnings.hpp>
 

@@ -7,46 +7,45 @@
 #if !defined(BOOST_FUSION_AT_IMPL_09242011_1744)
 #define BOOST_FUSION_AT_IMPL_09242011_1744
 
+#include <boost/fusion/support/detail/access.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <tuple>
 #include <utility>
-#include <boost/mpl/if.hpp>
-#include <boost/fusion/support/detail/access.hpp>
-#include <boost/type_traits/remove_const.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct std_tuple_tag;
+namespace fusion
+{
+struct std_tuple_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename T>
+struct at_impl;
+
+template <>
+struct at_impl<std_tuple_tag>
+{
+    template <typename Sequence, typename N>
+    struct apply
     {
-        template<typename T>
-        struct at_impl;
+        typedef typename remove_const<Sequence>::type seq_type;
+        typedef typename std::tuple_element<N::value, seq_type>::type element;
 
-        template <>
-        struct at_impl<std_tuple_tag>
+        typedef typename mpl::if_<
+            is_const<Sequence>, typename fusion::detail::cref_result<element>::type, typename fusion::detail::ref_result<element>::type>::type
+            type;
+
+        static type
+        call(Sequence &seq)
         {
-            template <typename Sequence, typename N>
-            struct apply
-            {
-                typedef typename remove_const<Sequence>::type seq_type;
-                typedef typename std::tuple_element<N::value, seq_type>::type element;
-
-                typedef typename
-                    mpl::if_<
-                        is_const<Sequence>
-                      , typename fusion::detail::cref_result<element>::type
-                      , typename fusion::detail::ref_result<element>::type
-                    >::type
-                type;
-
-                static type
-                call(Sequence& seq)
-                {
-                    return std::get<N::value>(seq);
-                }
-            };
-        };
-    }
-}}
+            return std::get<N::value>(seq);
+        }
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

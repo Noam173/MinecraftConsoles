@@ -12,56 +12,55 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/config.hpp>
 #include <boost/mpl/bool.hpp>
-#include <boost/xpressive/xpressive_fwd.hpp>
-#include <boost/xpressive/regex_constants.hpp>
-#include <boost/xpressive/detail/detail_fwd.hpp>
-#include <boost/xpressive/detail/core/regex_impl.hpp>
 #include <boost/xpressive/detail/core/regex_domain.hpp>
+#include <boost/xpressive/detail/core/regex_impl.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
+#include <boost/xpressive/regex_constants.hpp>
+#include <boost/xpressive/xpressive_fwd.hpp>
 
 // Doxygen can't handle proto :-(
 #ifndef BOOST_XPRESSIVE_DOXYGEN_INVOKED
-# include <boost/xpressive/detail/static/grammar.hpp>
-# include <boost/proto/extends.hpp>
+#include <boost/proto/extends.hpp>
+#include <boost/xpressive/detail/static/grammar.hpp>
 #endif
 
 #if BOOST_XPRESSIVE_HAS_MS_STACK_GUARD
-# include <excpt.h>     // for _exception_code()
-# include <malloc.h>    // for _resetstkoflw()
+#include <excpt.h>  // for _exception_code()
+#include <malloc.h> // for _resetstkoflw()
 #endif
 
-namespace boost { namespace xpressive
+namespace boost
+{
+namespace xpressive
 {
 
 namespace detail
 {
-    inline void throw_on_stack_error(bool stack_error)
-    {
-        BOOST_XPR_ENSURE_(!stack_error, regex_constants::error_stack, "Regex stack space exhausted");
-    }
+inline void throw_on_stack_error(bool stack_error)
+{
+    BOOST_XPR_ENSURE_(!stack_error, regex_constants::error_stack, "Regex stack space exhausted");
 }
+} // namespace detail
 
 ///////////////////////////////////////////////////////////////////////////////
 // basic_regex
 //
 /// \brief Class template basic_regex\<\> is a class for holding a compiled regular expression.
-template<typename BidiIter>
+template <typename BidiIter>
 struct basic_regex
-  : proto::extends<
-        proto::expr<proto::tag::terminal, proto::term<detail::tracking_ptr<detail::regex_impl<BidiIter> > >, 0>
-      , basic_regex<BidiIter>
-      , detail::regex_domain
-    >
+    : proto::extends<
+          proto::expr<proto::tag::terminal, proto::term<detail::tracking_ptr<detail::regex_impl<BidiIter>>>, 0>, basic_regex<BidiIter>, detail::regex_domain>
 {
-private:
-    typedef proto::expr<proto::tag::terminal, proto::term<detail::tracking_ptr<detail::regex_impl<BidiIter> > >, 0> pimpl_type;
+  private:
+    typedef proto::expr<proto::tag::terminal, proto::term<detail::tracking_ptr<detail::regex_impl<BidiIter>>>, 0> pimpl_type;
     typedef proto::extends<pimpl_type, basic_regex<BidiIter>, detail::regex_domain> base_type;
 
-public:
+  public:
     typedef BidiIter iterator_type;
     typedef typename iterator_value<BidiIter>::type char_type;
     // For compatibility with std::basic_regex
@@ -69,20 +68,20 @@ public:
     typedef typename detail::string_type<char_type>::type string_type;
     typedef regex_constants::syntax_option_type flag_type;
 
-    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, ECMAScript         = regex_constants::ECMAScript);
-    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, icase              = regex_constants::icase_);
-    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, nosubs             = regex_constants::nosubs);
-    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, optimize           = regex_constants::optimize);
-    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, collate            = regex_constants::collate);
-    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, single_line        = regex_constants::single_line);
-    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, not_dot_null       = regex_constants::not_dot_null);
-    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, not_dot_newline    = regex_constants::not_dot_newline);
+    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, ECMAScript = regex_constants::ECMAScript);
+    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, icase = regex_constants::icase_);
+    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, nosubs = regex_constants::nosubs);
+    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, optimize = regex_constants::optimize);
+    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, collate = regex_constants::collate);
+    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, single_line = regex_constants::single_line);
+    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, not_dot_null = regex_constants::not_dot_null);
+    BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, not_dot_newline = regex_constants::not_dot_newline);
     BOOST_STATIC_CONSTANT(regex_constants::syntax_option_type, ignore_white_space = regex_constants::ignore_white_space);
 
     /// \post regex_id()    == 0
     /// \post mark_count()  == 0
     basic_regex()
-      : base_type()
+        : base_type()
     {
     }
 
@@ -90,7 +89,7 @@ public:
     /// \post regex_id()    == that.regex_id()
     /// \post mark_count()  == that.mark_count()
     basic_regex(basic_regex<BidiIter> const &that)
-      : base_type(that)
+        : base_type(that)
     {
     }
 
@@ -98,7 +97,7 @@ public:
     /// \post regex_id()    == that.regex_id()
     /// \post mark_count()  == that.mark_count()
     /// \return *this
-    basic_regex<BidiIter> &operator =(basic_regex<BidiIter> const &that)
+    basic_regex<BidiIter> &operator=(basic_regex<BidiIter> const &that)
     {
         proto::value(*this) = proto::value(that);
         return *this;
@@ -110,9 +109,9 @@ public:
     /// \pre    Expr is the type of a static regular expression.
     /// \post   regex_id()   != 0
     /// \post   mark_count() \>= 0
-    template<typename Expr>
+    template <typename Expr>
     basic_regex(Expr const &expr)
-      : base_type()
+        : base_type()
     {
         BOOST_XPRESSIVE_CHECK_REGEX(Expr, char_type);
         this->compile_(expr, is_valid_regex<Expr, char_type>());
@@ -126,8 +125,8 @@ public:
     /// \post   mark_count() \>= 0
     /// \throw  std::bad_alloc on out of memory
     /// \return *this
-    template<typename Expr>
-    basic_regex<BidiIter> &operator =(Expr const &expr)
+    template <typename Expr>
+    basic_regex<BidiIter> &operator=(Expr const &expr)
     {
         BOOST_XPRESSIVE_CHECK_REGEX(Expr, char_type);
         this->compile_(expr, is_valid_regex<Expr, char_type>());
@@ -179,7 +178,7 @@ public:
     ///         valid string-based representation of a regular expression.
     /// \throw  regex_error when the range of characters has invalid regular
     ///         expression syntax.
-    template<typename InputIter>
+    template <typename InputIter>
     static basic_regex<BidiIter> compile(InputIter begin, InputIter end, flag_type flags = regex_constants::ECMAScript)
     {
         return regex_compiler<BidiIter>().compile(begin, end, flags);
@@ -187,7 +186,7 @@ public:
 
     /// \overload
     ///
-    template<typename InputRange>
+    template <typename InputRange>
     static basic_regex<BidiIter> compile(InputRange const &pat, flag_type flags = regex_constants::ECMAScript)
     {
         return regex_compiler<BidiIter>().compile(pat, flags);
@@ -207,7 +206,7 @@ public:
         return regex_compiler<BidiIter>().compile(begin, len, flags);
     }
 
-private:
+  private:
     friend struct detail::core_access<BidiIter>;
 
     // Avoid a common programming mistake. Construction from a string is
@@ -226,27 +225,27 @@ private:
     /// INTERNAL ONLY
     bool match_(detail::match_state<BidiIter> &state) const
     {
-        #if BOOST_XPRESSIVE_HAS_MS_STACK_GUARD
+#if BOOST_XPRESSIVE_HAS_MS_STACK_GUARD
         bool success = false, stack_error = false;
         __try
         {
             success = proto::value(*this)->xpr_->match(state);
         }
-        __except(_exception_code() == 0xC00000FDUL)
+        __except (_exception_code() == 0xC00000FDUL)
         {
             stack_error = true;
             _resetstkoflw();
         }
         detail::throw_on_stack_error(stack_error);
         return success;
-        #else
+#else
         return proto::value(*this)->xpr_->match(state);
-        #endif
+#endif
     }
 
     // Compiles valid static regexes into a state machine.
     /// INTERNAL ONLY
-    template<typename Expr>
+    template <typename Expr>
     void compile_(Expr const &expr, mpl::true_)
     {
         detail::static_compile(expr, proto::value(*this).get());
@@ -254,22 +253,31 @@ private:
 
     // No-op for invalid static regexes.
     /// INTERNAL ONLY
-    template<typename Expr>
+    template <typename Expr>
     void compile_(Expr const &, mpl::false_)
     {
     }
 };
 
 #ifndef BOOST_NO_INCLASS_MEMBER_INITIALIZATION
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::ECMAScript;
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::icase;
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::nosubs;
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::optimize;
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::collate;
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::single_line;
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::not_dot_null;
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::not_dot_newline;
-template<typename BidiIter> regex_constants::syntax_option_type const basic_regex<BidiIter>::ignore_white_space;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::ECMAScript;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::icase;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::nosubs;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::optimize;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::collate;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::single_line;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::not_dot_null;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::not_dot_newline;
+template <typename BidiIter>
+regex_constants::syntax_option_type const basic_regex<BidiIter>::ignore_white_space;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -284,12 +292,13 @@ template<typename BidiIter> regex_constants::syntax_option_type const basic_rege
 ///             enclosing regular expression. It is done this way to ensure
 ///             that swap() cannot throw.
 /// \throw      nothrow
-template<typename BidiIter>
+template <typename BidiIter>
 inline void swap(basic_regex<BidiIter> &left, basic_regex<BidiIter> &right) // throw()
 {
     left.swap(right);
 }
 
-}} // namespace boost::xpressive
+} // namespace xpressive
+} // namespace boost
 
 #endif // BOOST_XPRESSIVE_BASIC_REGEX_HPP_EAN_10_04_2005

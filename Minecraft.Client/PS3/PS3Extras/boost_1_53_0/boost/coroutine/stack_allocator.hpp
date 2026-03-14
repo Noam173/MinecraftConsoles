@@ -9,15 +9,18 @@
 
 #include <boost/config.hpp>
 
-#if defined (BOOST_WINDOWS)
+#if defined(BOOST_WINDOWS)
 #include <boost/coroutine/detail/stack_allocator_windows.hpp>
 #else
 #include <boost/coroutine/detail/stack_allocator_posix.hpp>
 #endif
 
-namespace boost {
-namespace coroutines {
+namespace boost
+{
+namespace coroutines
+{
 using detail::stack_allocator;
-}}
+}
+} // namespace boost
 
 #endif // BOOST_COROUTINES_STACK_ALLOCATOR_H

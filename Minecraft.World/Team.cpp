@@ -4,13 +4,13 @@
 
 bool Team::isAlliedTo(Team *other)
 {
-	if (other == nullptr)
-	{
-		return false;
-	}
-	if (this == other)
-	{
-		return true;
-	}
-	return false;
+    if (other == nullptr)
+    {
+        return false;
+    }
+    if (this == other)
+    {
+        return true;
+    }
+    return false;
 }

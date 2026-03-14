@@ -31,7 +31,7 @@
 #endif // !defined(PHOENIX_LIMIT)
 
 ///////////////////////////////////////////////////////////////////////////////
-#include <boost/spirit/home/classic/attribute/parametric.hpp>
 #include <boost/spirit/home/classic/attribute/closure.hpp>
+#include <boost/spirit/home/classic/attribute/parametric.hpp>
 
 #endif // !defined(BOOST_SPIRIT_ATTRIBUTE_MAIN_HPP)

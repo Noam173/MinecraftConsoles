@@ -10,74 +10,78 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
 #include <boost/xpressive/detail/core/state.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
-    //////////////////////////////////////////////////////////////////////////
-    // logical_newline_matcher
-    //
-    template<typename Traits>
-    struct logical_newline_matcher
-      : quant_style_variable_width
+//////////////////////////////////////////////////////////////////////////
+// logical_newline_matcher
+//
+template <typename Traits>
+struct logical_newline_matcher
+    : quant_style_variable_width
+{
+    typedef typename Traits::char_type char_type;
+    typedef typename Traits::char_class_type char_class_type;
+
+    logical_newline_matcher(Traits const &tr)
+        : newline_(lookup_classname(tr, "newline")), nl_(tr.widen('\n')), cr_(tr.widen('\r'))
     {
-        typedef typename Traits::char_type char_type;
-        typedef typename Traits::char_class_type char_class_type;
+    }
 
-        logical_newline_matcher(Traits const &tr)
-          : newline_(lookup_classname(tr, "newline"))
-          , nl_(tr.widen('\n'))
-          , cr_(tr.widen('\r'))
+    template <typename BidiIter, typename Next>
+    bool match(match_state<BidiIter> &state, Next const &next) const
+    {
+        if (state.eos())
         {
-        }
-
-        template<typename BidiIter, typename Next>
-        bool match(match_state<BidiIter> &state, Next const &next) const
-        {
-            if(state.eos())
-            {
-                return false;
-            }
-
-            char_type ch = *state.cur_;
-            if(traits_cast<Traits>(state).isctype(ch, this->newline_))
-            {
-                ++state.cur_;
-                if(this->cr_ == ch && !state.eos() && this->nl_ == *state.cur_)
-                {
-                    ++state.cur_;
-                    if(next.match(state))
-                    {
-                        return true;
-                    }
-                    --state.cur_;
-                }
-                else if(next.match(state))
-                {
-                    return true;
-                }
-
-                --state.cur_;
-            }
             return false;
         }
 
-        char_class_type newline() const
+        char_type ch = *state.cur_;
+        if (traits_cast<Traits>(state).isctype(ch, this->newline_))
         {
-            return this->newline_;
+            ++state.cur_;
+            if (this->cr_ == ch && !state.eos() && this->nl_ == *state.cur_)
+            {
+                ++state.cur_;
+                if (next.match(state))
+                {
+                    return true;
+                }
+                --state.cur_;
+            }
+            else if (next.match(state))
+            {
+                return true;
+            }
+
+            --state.cur_;
         }
+        return false;
+    }
 
-    private:
-        char_class_type newline_;
-        char_type nl_, cr_;
-    };
+    char_class_type newline() const
+    {
+        return this->newline_;
+    }
 
-}}}
+  private:
+    char_class_type newline_;
+    char_type nl_, cr_;
+};
+
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

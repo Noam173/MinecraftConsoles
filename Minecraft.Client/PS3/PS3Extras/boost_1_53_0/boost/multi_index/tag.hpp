@@ -9,18 +9,18 @@
 #ifndef BOOST_MULTI_INDEX_TAG_HPP
 #define BOOST_MULTI_INDEX_TAG_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
-#include <boost/multi_index/detail/no_duplicate_tags.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/vector.hpp>
-#include <boost/preprocessor/facilities/intercept.hpp> 
-#include <boost/preprocessor/repetition/enum_binary_params.hpp> 
-#include <boost/preprocessor/repetition/enum_params.hpp> 
+#include <boost/multi_index/detail/no_duplicate_tags.hpp>
+#include <boost/preprocessor/facilities/intercept.hpp>
+#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
 
@@ -34,53 +34,56 @@
  */
 
 #if !defined(BOOST_MULTI_INDEX_LIMIT_TAG_SIZE)
-#if defined(BOOST_MSVC)&&(BOOST_MSVC<1300)
+#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
 #define BOOST_MULTI_INDEX_LIMIT_TAG_SIZE 3
 #else
 #define BOOST_MULTI_INDEX_LIMIT_TAG_SIZE BOOST_MPL_LIMIT_VECTOR_SIZE
 #endif
 #endif
 
-#if BOOST_MULTI_INDEX_LIMIT_TAG_SIZE<BOOST_MPL_LIMIT_VECTOR_SIZE
+#if BOOST_MULTI_INDEX_LIMIT_TAG_SIZE < BOOST_MPL_LIMIT_VECTOR_SIZE
 #define BOOST_MULTI_INDEX_TAG_SIZE BOOST_MULTI_INDEX_LIMIT_TAG_SIZE
 #else
 #define BOOST_MULTI_INDEX_TAG_SIZE BOOST_MPL_LIMIT_VECTOR_SIZE
 #endif
 
-namespace boost{
-
-namespace multi_index{
-
-namespace detail{
-
-struct tag_marker{};
-
-template<typename T>
-struct is_tag
+namespace boost
 {
-  BOOST_STATIC_CONSTANT(bool,value=(is_base_and_derived<tag_marker,T>::value));
+
+namespace multi_index
+{
+
+namespace detail
+{
+
+struct tag_marker
+{
 };
 
-} /* namespace multi_index::detail */
-
-template<
-  BOOST_PP_ENUM_BINARY_PARAMS(
-    BOOST_MULTI_INDEX_TAG_SIZE,
-    typename T,
-    =mpl::na BOOST_PP_INTERCEPT) 
->
-struct tag:private detail::tag_marker
+template <typename T>
+struct is_tag
 {
-  /* The mpl::transform pass produces shorter symbols (without
-   * trailing mpl::na's.)
-   */
+    BOOST_STATIC_CONSTANT(bool, value = (is_base_and_derived<tag_marker, T>::value));
+};
 
-  typedef typename mpl::transform<
-    mpl::vector<BOOST_PP_ENUM_PARAMS(BOOST_MULTI_INDEX_TAG_SIZE,T)>,
-    mpl::identity<mpl::_1>
-  >::type type;
+} // namespace detail
 
-  BOOST_STATIC_ASSERT(detail::no_duplicate_tags<type>::value);
+template <
+    BOOST_PP_ENUM_BINARY_PARAMS(
+        BOOST_MULTI_INDEX_TAG_SIZE,
+        typename T,
+        = mpl::na BOOST_PP_INTERCEPT)>
+struct tag : private detail::tag_marker
+{
+    /* The mpl::transform pass produces shorter symbols (without
+     * trailing mpl::na's.)
+     */
+
+    typedef typename mpl::transform<
+        mpl::vector<BOOST_PP_ENUM_PARAMS(BOOST_MULTI_INDEX_TAG_SIZE, T)>,
+        mpl::identity<mpl::_1>>::type type;
+
+    BOOST_STATIC_ASSERT(detail::no_duplicate_tags<type>::value);
 };
 
 } /* namespace multi_index */

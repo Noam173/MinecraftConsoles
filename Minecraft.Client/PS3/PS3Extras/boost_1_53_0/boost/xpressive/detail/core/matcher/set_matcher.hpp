@@ -10,39 +10,41 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
-# pragma warning(push)
-# pragma warning(disable : 4127) // conditional expression constant
-# pragma warning(disable : 4100) // unreferenced formal parameter
-# pragma warning(disable : 4351) // vc8 new behavior: elements of array 'foo' will be default initialized
+#pragma once
+#pragma warning(push)
+#pragma warning(disable : 4127) // conditional expression constant
+#pragma warning(disable : 4100) // unreferenced formal parameter
+#pragma warning(disable : 4351) // vc8 new behavior: elements of array 'foo' will be default initialized
 #endif
 
 #include <algorithm>
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/same_traits.hpp>
-#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
 #include <boost/xpressive/detail/core/state.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // set_matcher
 //
-template<typename Traits, typename Size>
+template <typename Traits, typename Size>
 struct set_matcher
-  : quant_style_fixed_width<1>
+    : quant_style_fixed_width<1>
 {
     typedef typename Traits::char_type char_type;
-    char_type set_[ Size::value ];
+    char_type set_[Size::value];
     bool not_;
     bool icase_;
 
     set_matcher()
-      : set_()
-      , not_(false)
-      , icase_(false)
+        : set_(), not_(false), icase_(false)
     {
     }
 
@@ -55,7 +57,7 @@ struct set_matcher
     {
         this->icase_ = true;
 
-        for(int i = 0; i < Size::value; ++i)
+        for (int i = 0; i < Size::value; ++i)
         {
             this->set_[i] = tr.translate_nocase(this->set_[i]);
         }
@@ -68,15 +70,15 @@ struct set_matcher
         return end != std::find(begin, end, ch);
     }
 
-    template<typename BidiIter, typename Next>
+    template <typename BidiIter, typename Next>
     bool match(match_state<BidiIter> &state, Next const &next) const
     {
-        if(state.eos() || this->not_ == this->in_set(traits_cast<Traits>(state), *state.cur_))
+        if (state.eos() || this->not_ == this->in_set(traits_cast<Traits>(state), *state.cur_))
         {
             return false;
         }
 
-        if(++state.cur_, next.match(state))
+        if (++state.cur_, next.match(state))
         {
             return true;
         }
@@ -92,9 +94,11 @@ struct set_initializer
 };
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma warning(pop)
+#pragma warning(pop)
 #endif
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

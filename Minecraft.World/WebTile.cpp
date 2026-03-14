@@ -1,44 +1,40 @@
-#include "stdafx.h"
+#include "WebTile.h"
 #include "net.minecraft.world.entity.h"
 #include "net.minecraft.world.item.h"
-#include "WebTile.h"
+#include "stdafx.h"
 
 WebTile::WebTile(int id) : Tile(id, Material::web)
 {
 }
 
-
 void WebTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
-	entity->makeStuckInWeb();
+    entity->makeStuckInWeb();
 }
-
 
 bool WebTile::isSolidRender(bool isServerLevel)
 {
-	return false;
+    return false;
 }
-
 
 AABB *WebTile::getAABB(Level *level, int x, int y, int z)
 {
-	return nullptr;
+    return nullptr;
 }
-
 
 int WebTile::getRenderShape()
 {
-	return Tile::SHAPE_CROSS_TEXTURE;
+    return Tile::SHAPE_CROSS_TEXTURE;
 }
 
 bool WebTile::blocksLight()
 {
-	return false;
+    return false;
 }
 
 bool WebTile::isCubeShaped()
 {
-	return false;
+    return false;
 }
 
 int WebTile::getResource(int data, Random *random, int playerBonusLevel)
@@ -49,5 +45,5 @@ int WebTile::getResource(int data, Random *random, int playerBonusLevel)
 
 bool WebTile::isSilkTouchable()
 {
-	return true;
+    return true;
 }

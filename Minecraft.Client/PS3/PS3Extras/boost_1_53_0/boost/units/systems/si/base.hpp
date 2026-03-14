@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -13,30 +13,33 @@
 
 #include <string>
 
+#include <boost/units/make_system.hpp>
 #include <boost/units/static_constant.hpp>
 #include <boost/units/unit.hpp>
-#include <boost/units/make_system.hpp>
 
-#include <boost/units/base_units/si/meter.hpp>
-#include <boost/units/base_units/si/kilogram.hpp>
-#include <boost/units/base_units/si/second.hpp>
-#include <boost/units/base_units/si/ampere.hpp>
-#include <boost/units/base_units/si/kelvin.hpp>
-#include <boost/units/base_units/si/mole.hpp>
-#include <boost/units/base_units/si/candela.hpp>
 #include <boost/units/base_units/angle/radian.hpp>
 #include <boost/units/base_units/angle/steradian.hpp>
+#include <boost/units/base_units/si/ampere.hpp>
+#include <boost/units/base_units/si/candela.hpp>
+#include <boost/units/base_units/si/kelvin.hpp>
+#include <boost/units/base_units/si/kilogram.hpp>
+#include <boost/units/base_units/si/meter.hpp>
+#include <boost/units/base_units/si/mole.hpp>
+#include <boost/units/base_units/si/second.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units { 
+namespace units
+{
 
-namespace si {
+namespace si
+{
 
 /// placeholder class defining si unit system
-typedef make_system<meter_base_unit, 
-                    kilogram_base_unit, 
-                    second_base_unit, 
+typedef make_system<meter_base_unit,
+                    kilogram_base_unit,
+                    second_base_unit,
                     ampere_base_unit,
                     kelvin_base_unit,
                     mole_base_unit,
@@ -45,7 +48,7 @@ typedef make_system<meter_base_unit,
                     angle::steradian_base_unit>::type system;
 
 /// dimensionless si unit
-typedef unit<dimensionless_type,system>         dimensionless;
+typedef unit<dimensionless_type, system> dimensionless;
 
 } // namespace si
 

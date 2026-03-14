@@ -1,17 +1,17 @@
-#include "stdafx.h"
 #include "LeashKnotRenderer.h"
 #include "LeashKnotModel.h"
+#include "stdafx.h"
 
 ResourceLocation LeashKnotRenderer::KNOT_LOCATION = ResourceLocation(TN_ITEM_LEASHKNOT);
 
 LeashKnotRenderer::LeashKnotRenderer() : EntityRenderer()
 {
-	model = new LeashKnotModel();
+    model = new LeashKnotModel();
 }
 
 LeashKnotRenderer::~LeashKnotRenderer()
 {
-	delete model;
+    delete model;
 }
 
 void LeashKnotRenderer::render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a)

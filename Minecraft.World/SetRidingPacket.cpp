@@ -1,53 +1,51 @@
-#include "stdafx.h"
-#include <iostream>
+#include "SetRidingPacket.h"
 #include "InputOutputStream.h"
 #include "PacketListener.h"
 #include "net.minecraft.world.entity.h"
-#include "SetRidingPacket.h"
-
-
+#include "stdafx.h"
+#include <iostream>
 
 SetRidingPacket::SetRidingPacket()
 {
-	riderId = -1;
-	riddenId = -1;
+    riderId = -1;
+    riddenId = -1;
 }
 
 SetRidingPacket::SetRidingPacket(shared_ptr<Entity> rider, shared_ptr<Entity> riding)
 {
-	this->riderId = rider->entityId;
-	this->riddenId = riding != NULL ? riding->entityId : -1;
+    this->riderId = rider->entityId;
+    this->riddenId = riding != NULL ? riding->entityId : -1;
 }
 
-int SetRidingPacket::getEstimatedSize() 
+int SetRidingPacket::getEstimatedSize()
 {
-	return 8;
+    return 8;
 }
 
-void SetRidingPacket::read(DataInputStream *dis) //throws IOException
+void SetRidingPacket::read(DataInputStream *dis) // throws IOException
 {
-	riderId = dis->readInt();
-	riddenId = dis->readInt();
+    riderId = dis->readInt();
+    riddenId = dis->readInt();
 }
 
-void SetRidingPacket::write(DataOutputStream *dos) //throws IOException
+void SetRidingPacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeInt(riderId);
-	dos->writeInt(riddenId);
+    dos->writeInt(riderId);
+    dos->writeInt(riddenId);
 }
 
 void SetRidingPacket::handle(PacketListener *listener)
 {
-	listener->handleRidePacket(shared_from_this());
+    listener->handleRidePacket(shared_from_this());
 }
 
 bool SetRidingPacket::canBeInvalidated()
 {
-	return true;
+    return true;
 }
 
 bool SetRidingPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	shared_ptr<SetRidingPacket> target = dynamic_pointer_cast<SetRidingPacket>(packet);
-	return target->riderId == riderId;
+    shared_ptr<SetRidingPacket> target = dynamic_pointer_cast<SetRidingPacket>(packet);
+    return target->riderId == riderId;
 }

@@ -3,90 +3,95 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef BACK_REFERENCE_DWA2002510_HPP
-# define BACK_REFERENCE_DWA2002510_HPP
+#define BACK_REFERENCE_DWA2002510_HPP
 
-# include <boost/python/detail/prefix.hpp>
+#include <boost/python/detail/prefix.hpp>
 
-# include <boost/python/object_fwd.hpp>
-# include <boost/python/detail/dependent.hpp>
-# include <boost/python/detail/raw_pyobject.hpp>
+#include <boost/python/detail/dependent.hpp>
+#include <boost/python/detail/raw_pyobject.hpp>
+#include <boost/python/object_fwd.hpp>
 
-namespace boost { namespace python { 
+namespace boost
+{
+namespace python
+{
 
 template <class T>
 struct back_reference
 {
- private: // types
-    typedef typename detail::dependent<object,T>::type source_t;
- public:
+  private: // types
+    typedef typename detail::dependent<object, T>::type source_t;
+
+  public:
     typedef T type;
-    
-    back_reference(PyObject*, T);
-    source_t const& source() const;
+
+    back_reference(PyObject *, T);
+    source_t const &source() const;
     T get() const;
- private:
+
+  private:
     source_t m_source;
     T m_value;
 };
 
-# ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-template<typename T>
+#ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+template <typename T>
 class is_back_reference
 {
- public:
-    BOOST_STATIC_CONSTANT(bool, value = false); 
+  public:
+    BOOST_STATIC_CONSTANT(bool, value = false);
 };
 
-template<typename T>
-class is_back_reference<back_reference<T> >
+template <typename T>
+class is_back_reference<back_reference<T>>
 {
- public:
+  public:
     BOOST_STATIC_CONSTANT(bool, value = true);
 };
 
-# else // no partial specialization
-
-}} // namespace boost::python
+#else // no partial specialization
+}
+} // namespace boost::python
 
 #include <boost/type.hpp>
 
-namespace boost { namespace python {
+namespace boost
+{
+namespace python
+{
 
 namespace detail
 {
-  typedef char (&yes_back_reference_t)[1];
-  typedef char (&no_back_reference_t)[2];
-      
-  no_back_reference_t is_back_reference_test(...);
+typedef char (&yes_back_reference_t)[1];
+typedef char (&no_back_reference_t)[2];
 
-  template<typename T>
-  yes_back_reference_t is_back_reference_test(boost::type< back_reference<T> >);
-}
+no_back_reference_t is_back_reference_test(...);
 
-template<typename T>
+template <typename T>
+yes_back_reference_t is_back_reference_test(boost::type<back_reference<T>>);
+} // namespace detail
+
+template <typename T>
 class is_back_reference
 {
- public:
+  public:
     BOOST_STATIC_CONSTANT(
-        bool, value = (
-            sizeof(detail::is_back_reference_test(boost::type<T>()))
-            == sizeof(detail::yes_back_reference_t)));
+        bool, value = (sizeof(detail::is_back_reference_test(boost::type<T>())) == sizeof(detail::yes_back_reference_t)));
 };
 
-# endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+#endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
 //
 // implementations
 //
 template <class T>
-back_reference<T>::back_reference(PyObject* p, T x)
-    : m_source(detail::borrowed_reference(p))
-      , m_value(x)
+back_reference<T>::back_reference(PyObject *p, T x)
+    : m_source(detail::borrowed_reference(p)), m_value(x)
 {
 }
 
 template <class T>
-typename back_reference<T>::source_t const& back_reference<T>::source() const
+typename back_reference<T>::source_t const &back_reference<T>::source() const
 {
     return m_source;
 }
@@ -97,6 +102,7 @@ T back_reference<T>::get() const
     return m_value;
 }
 
-}} // namespace boost::python
+} // namespace python
+} // namespace boost
 
 #endif // BACK_REFERENCE_DWA2002510_HPP

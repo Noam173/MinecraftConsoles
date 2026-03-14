@@ -5,9 +5,9 @@
 #ifndef BOOST_TYPEOF_STD_string_hpp_INCLUDED
 #define BOOST_TYPEOF_STD_string_hpp_INCLUDED
 
-#include <string>
-#include <boost/typeof/typeof.hpp>
 #include <boost/typeof/std/memory.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <string>
 
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
@@ -17,8 +17,8 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(std::basic_string, 2)
 BOOST_TYPEOF_REGISTER_TEMPLATE(std::basic_string, 3)
 
 #ifndef __BORLANDC__
-//Borland chokes on this "double definition" of string
+// Borland chokes on this "double definition" of string
 BOOST_TYPEOF_REGISTER_TYPE(std::string)
 #endif
 
-#endif//BOOST_TYPEOF_STD_string_hpp_INCLUDED
+#endif // BOOST_TYPEOF_STD_string_hpp_INCLUDED

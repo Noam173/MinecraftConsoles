@@ -9,42 +9,42 @@
 #ifndef BOOST_RANGE_ALGORITHM_REVERSE_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_REVERSE_HPP_INCLUDED
 
+#include <algorithm>
 #include <boost/concept_check.hpp>
 #include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/concepts.hpp>
 #include <boost/range/detail/range_return.hpp>
-#include <algorithm>
+#include <boost/range/end.hpp>
 
 namespace boost
 {
-    namespace range
-    {
+namespace range
+{
 
 /// \brief template function reverse
 ///
 /// range-based version of the reverse std algorithm
 ///
 /// \pre BidirectionalRange is a model of the BidirectionalRangeConcept
-template<class BidirectionalRange>
-inline BidirectionalRange& reverse(BidirectionalRange& rng)
+template <class BidirectionalRange>
+inline BidirectionalRange &reverse(BidirectionalRange &rng)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( BidirectionalRangeConcept<BidirectionalRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((BidirectionalRangeConcept<BidirectionalRange>));
     std::reverse(boost::begin(rng), boost::end(rng));
     return rng;
 }
 
 /// \overload
-template<class BidirectionalRange>
-inline const BidirectionalRange& reverse(const BidirectionalRange& rng)
+template <class BidirectionalRange>
+inline const BidirectionalRange &reverse(const BidirectionalRange &rng)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( BidirectionalRangeConcept<const BidirectionalRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((BidirectionalRangeConcept<const BidirectionalRange>));
     std::reverse(boost::begin(rng), boost::end(rng));
     return rng;
 }
 
-    } // namespace range
-    using range::reverse;
+} // namespace range
+using range::reverse;
 } // namespace boost
 
 #endif // include guard

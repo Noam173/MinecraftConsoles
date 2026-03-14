@@ -18,8 +18,9 @@
 
 #include <boost/geometry/multi/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
@@ -32,21 +33,21 @@ namespace splitted_dispatch
 template <typename Geometry, typename Point>
 struct append_point<multi_point_tag, Geometry, Point>
     : detail::append::append_point<Geometry, Point>
-{};
+{
+};
 
 template <typename Geometry, typename Range>
 struct append_range<multi_point_tag, Geometry, Range>
     : detail::append::append_range<Geometry, Range>
-{};
+{
+};
 
-}
-
+} // namespace splitted_dispatch
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_APPEND_HPP

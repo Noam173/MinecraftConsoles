@@ -5,12 +5,10 @@
 //  Distributed under the Boost Software License, Version 1.0.
 //  See http://www.boost.org/LICENSE_1_0.txt
 
-
 #ifndef BOOST_DETAIL_WIN_TIMERS_HPP
 #define BOOST_DETAIL_WIN_TIMERS_HPP
 
 #include <boost/detail/win/basic_types.hpp>
-
 
 namespace boost
 {
@@ -18,24 +16,23 @@ namespace detail
 {
 namespace win32
 {
-#if defined( BOOST_USE_WINDOWS_H )
-    using ::QueryPerformanceCounter;
-    using ::QueryPerformanceFrequency;
+#if defined(BOOST_USE_WINDOWS_H)
+using ::QueryPerformanceCounter;
+using ::QueryPerformanceFrequency;
 #else
-extern "C" { 
+extern "C"
+{
     __declspec(dllimport) BOOL_ WINAPI
-        QueryPerformanceCounter(
-            LARGE_INTEGER_ *lpPerformanceCount
-        );
+    QueryPerformanceCounter(
+        LARGE_INTEGER_ *lpPerformanceCount);
 
     __declspec(dllimport) BOOL_ WINAPI
-        QueryPerformanceFrequency(
-            LARGE_INTEGER_ *lpFrequency
-        );
+    QueryPerformanceFrequency(
+        LARGE_INTEGER_ *lpFrequency);
 }
 #endif
-}
-}
-}
+} // namespace win32
+} // namespace detail
+} // namespace boost
 
 #endif // BOOST_DETAIL_WIN_TIMERS_HPP

@@ -13,26 +13,30 @@
 #ifndef BOOST_RANDOM_DETAIL_VECTOR_IO_HPP
 #define BOOST_RANDOM_DETAIL_VECTOR_IO_HPP
 
-#include <vector>
 #include <iosfwd>
 #include <istream>
+#include <vector>
 
-namespace boost {
-namespace random {
-namespace detail {
+namespace boost
+{
+namespace random
+{
+namespace detail
+{
 
-template<class CharT, class Traits, class T>
-void print_vector(std::basic_ostream<CharT, Traits>& os,
-                  const std::vector<T>& vec)
+template <class CharT, class Traits, class T>
+void print_vector(std::basic_ostream<CharT, Traits> &os,
+                  const std::vector<T> &vec)
 {
     typename std::vector<T>::const_iterator
         iter = vec.begin(),
-        end =  vec.end();
+        end = vec.end();
     os << os.widen('[');
-    if(iter != end) {
+    if (iter != end)
+    {
         os << *iter;
         ++iter;
-        for(; iter != end; ++iter)
+        for (; iter != end; ++iter)
         {
             os << os.widen(' ') << *iter;
         }
@@ -40,36 +44,42 @@ void print_vector(std::basic_ostream<CharT, Traits>& os,
     os << os.widen(']');
 }
 
-template<class CharT, class Traits, class T>
-void read_vector(std::basic_istream<CharT, Traits>& is, std::vector<T>& vec)
+template <class CharT, class Traits, class T>
+void read_vector(std::basic_istream<CharT, Traits> &is, std::vector<T> &vec)
 {
     CharT ch;
-    if(!(is >> ch)) {
+    if (!(is >> ch))
+    {
         return;
     }
-    if(ch != is.widen('[')) {
+    if (ch != is.widen('['))
+    {
         is.putback(ch);
         is.setstate(std::ios_base::failbit);
         return;
     }
     T val;
-    while(is >> std::ws >> val) {
+    while (is >> std::ws >> val)
+    {
         vec.push_back(val);
     }
-    if(is.fail()) {
+    if (is.fail())
+    {
         is.clear();
-        if(!(is >> ch)) {
+        if (!(is >> ch))
+        {
             return;
         }
-        if(ch != is.widen(']')) {
+        if (ch != is.widen(']'))
+        {
             is.putback(ch);
             is.setstate(std::ios_base::failbit);
         }
     }
 }
 
-}
-}
-}
+} // namespace detail
+} // namespace random
+} // namespace boost
 
 #endif // BOOST_RANDOM_DETAIL_VECTOR_IO_HPP

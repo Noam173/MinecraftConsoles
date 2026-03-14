@@ -14,17 +14,16 @@
 #ifndef BOOST_GEOMETRY_VIEWS_BOX_VIEW_HPP
 #define BOOST_GEOMETRY_VIEWS_BOX_VIEW_HPP
 
-
 #include <boost/range.hpp>
 
+#include <boost/geometry/algorithms/assign.hpp>
 #include <boost/geometry/core/point_type.hpp>
 #include <boost/geometry/views/detail/points_view.hpp>
-#include <boost/geometry/algorithms/assign.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 /*!
 \brief Makes a box behave like a ring or a range
@@ -43,40 +42,38 @@ namespace boost { namespace geometry
 \qbk{[include reference/views/box_view.qbk]}
 */
 template <typename Box, bool Clockwise = true>
-struct box_view 
-    : public detail::points_view
-        <
-            typename geometry::point_type<Box>::type, 
-            5
-        >
+struct box_view
+    : public detail::points_view<
+          typename geometry::point_type<Box>::type,
+          5>
 {
     typedef typename geometry::point_type<Box>::type point_type;
-    
+
     /// Constructor accepting the box to adapt
-    explicit box_view(Box const& box)
+    explicit box_view(Box const &box)
         : detail::points_view<point_type, 5>(copy_policy(box))
-    {}
-    
-private :    
-    
+    {
+    }
+
+  private:
     class copy_policy
     {
-    public :
-        inline copy_policy(Box const& box)
+      public:
+        inline copy_policy(Box const &box)
             : m_box(box)
-        {}
-        
-        inline void apply(point_type* points) const
+        {
+        }
+
+        inline void apply(point_type *points) const
         {
             detail::assign_box_corners_oriented<!Clockwise>(m_box, points);
             points[4] = points[0];
         }
-    private :
-        Box const& m_box;
+
+      private:
+        Box const &m_box;
     };
-
 };
-
 
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
@@ -84,31 +81,29 @@ private :
 namespace traits
 {
 
-template<typename Box, bool Clockwise>
-struct tag<box_view<Box, Clockwise> >
+template <typename Box, bool Clockwise>
+struct tag<box_view<Box, Clockwise>>
 {
     typedef ring_tag type;
 };
 
-template<typename Box>
-struct point_order<box_view<Box, false> >
+template <typename Box>
+struct point_order<box_view<Box, false>>
 {
     static order_selector const value = counterclockwise;
 };
 
-
-template<typename Box>
-struct point_order<box_view<Box, true> >
+template <typename Box>
+struct point_order<box_view<Box, true>>
 {
     static order_selector const value = clockwise;
 };
 
-}
+} // namespace traits
 
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_VIEWS_BOX_VIEW_HPP

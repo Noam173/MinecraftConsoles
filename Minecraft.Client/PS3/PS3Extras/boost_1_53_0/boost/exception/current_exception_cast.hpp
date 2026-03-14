@@ -1,7 +1,7 @@
-//Copyright (c) 2006-2009 Emil Dotchevski and Reverge Studios, Inc.
+// Copyright (c) 2006-2009 Emil Dotchevski and Reverge Studios, Inc.
 
-//Distributed under the Boost Software License, Version 1.0. (See accompanying
-//file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef UUID_7E83C166200811DE885E826156D89593
 #define UUID_7E83C166200811DE885E826156D89593
@@ -9,33 +9,31 @@
 #pragma GCC system_header
 #endif
 #if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
-#pragma warning(push,1)
+#pragma warning(push, 1)
 #endif
 
-namespace
-boost
+namespace boost
+{
+template <class E>
+inline E *
+current_exception_cast()
+{
+    try
     {
-    template <class E>
-    inline
-    E *
-    current_exception_cast()
-        {
-        try
-            {
-            throw;
-            }
-        catch(
-        E & e )
-            {
-            return &e;
-            }
-        catch(
-        ...)
-            {
-            return 0;
-            }
-        }
+        throw;
     }
+    catch (
+        E &e)
+    {
+        return &e;
+    }
+    catch (
+        ...)
+    {
+        return 0;
+    }
+}
+} // namespace boost
 
 #if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
 #pragma warning(pop)

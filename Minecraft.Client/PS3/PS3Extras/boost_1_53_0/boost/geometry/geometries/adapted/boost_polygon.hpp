@@ -9,10 +9,9 @@
 #ifndef BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_POLYGON_HPP
 #define BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_POLYGON_HPP
 
-#include <boost/geometry/geometries/adapted/boost_polygon/point.hpp>
 #include <boost/geometry/geometries/adapted/boost_polygon/box.hpp>
-#include <boost/geometry/geometries/adapted/boost_polygon/ring.hpp>
+#include <boost/geometry/geometries/adapted/boost_polygon/point.hpp>
 #include <boost/geometry/geometries/adapted/boost_polygon/polygon.hpp>
+#include <boost/geometry/geometries/adapted/boost_polygon/ring.hpp>
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_POLYGON_HPP
-

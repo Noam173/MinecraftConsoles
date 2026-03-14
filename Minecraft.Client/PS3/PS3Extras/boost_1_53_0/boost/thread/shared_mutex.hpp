@@ -27,22 +27,22 @@
 
 namespace boost
 {
-  namespace sync
-  {
+namespace sync
+{
 #ifdef BOOST_THREAD_NO_AUTO_DETECT_MUTEX_TYPES
-    template<>
-    struct is_basic_lockable<shared_mutex>
-    {
-      BOOST_STATIC_CONSTANT(bool, value = true);
-    };
-    template<>
-    struct is_lockable<shared_mutex>
-    {
-      BOOST_STATIC_CONSTANT(bool, value = true);
-    };
+template <>
+struct is_basic_lockable<shared_mutex>
+{
+    BOOST_STATIC_CONSTANT(bool, value = true);
+};
+template <>
+struct is_lockable<shared_mutex>
+{
+    BOOST_STATIC_CONSTANT(bool, value = true);
+};
 #endif
 
-  }
-}
+} // namespace sync
+} // namespace boost
 
 #endif

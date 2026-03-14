@@ -1,13 +1,13 @@
-#include "stdafx.h"
 #include "SpiderModel.h"
 #include "..\Minecraft.World\Mth.h"
 #include "ModelPart.h"
+#include "stdafx.h"
 
 SpiderModel::SpiderModel() : Model()
 {
     float g = 0;
-        
-    int yo = 18+6-9;
+
+    int yo = 18 + 6 - 9;
 
     head = new ModelPart(this, 32, 4);
     head->addBox(-4, -4, -8, 8, 8, 8, g); // Head
@@ -15,12 +15,11 @@ SpiderModel::SpiderModel() : Model()
 
     body0 = new ModelPart(this, 0, 0);
     body0->addBox(-3, -3, -3, 6, 6, 6, g); // Body
-    body0->setPos(0,static_cast<float>(yo), 0);
+    body0->setPos(0, static_cast<float>(yo), 0);
 
     body1 = new ModelPart(this, 0, 12);
     body1->addBox(-5, -4, -6, 10, 8, 12, g); // Body
     body1->setPos(0, static_cast<float>(0 + yo), 3 + 6);
-
 
     leg0 = new ModelPart(this, 18, 0);
     leg0->addBox(-15, -1, -1, 16, 2, 2, g); // Leg0
@@ -54,57 +53,57 @@ SpiderModel::SpiderModel() : Model()
     leg7->addBox(-1, -1, -1, 16, 2, 2, g); // Leg3
     leg7->setPos(4, static_cast<float>(0 + yo), -1);
 
-	// 4J added - compile now to avoid random performance hit first time cubes are rendered
-    head->compile(1.0f/16.0f);
-    body0->compile(1.0f/16.0f);
-    body1->compile(1.0f/16.0f);
-    leg0->compile(1.0f/16.0f);
-    leg1->compile(1.0f/16.0f);
-    leg2->compile(1.0f/16.0f);
-    leg3->compile(1.0f/16.0f);
-    leg4->compile(1.0f/16.0f);
-    leg5->compile(1.0f/16.0f);
-    leg6->compile(1.0f/16.0f);
-    leg7->compile(1.0f/16.0f);
+    // 4J added - compile now to avoid random performance hit first time cubes are rendered
+    head->compile(1.0f / 16.0f);
+    body0->compile(1.0f / 16.0f);
+    body1->compile(1.0f / 16.0f);
+    leg0->compile(1.0f / 16.0f);
+    leg1->compile(1.0f / 16.0f);
+    leg2->compile(1.0f / 16.0f);
+    leg3->compile(1.0f / 16.0f);
+    leg4->compile(1.0f / 16.0f);
+    leg5->compile(1.0f / 16.0f);
+    leg6->compile(1.0f / 16.0f);
+    leg7->compile(1.0f / 16.0f);
 }
 
 void SpiderModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
     setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
-    head->render(scale,usecompiled);
-    body0->render(scale,usecompiled);
-    body1->render(scale,usecompiled);
-    leg0->render(scale,usecompiled);
-    leg1->render(scale,usecompiled);
-    leg2->render(scale,usecompiled);
-    leg3->render(scale,usecompiled);
-    leg4->render(scale,usecompiled);
-    leg5->render(scale,usecompiled);
-    leg6->render(scale,usecompiled);
-    leg7->render(scale,usecompiled);
+    head->render(scale, usecompiled);
+    body0->render(scale, usecompiled);
+    body1->render(scale, usecompiled);
+    leg0->render(scale, usecompiled);
+    leg1->render(scale, usecompiled);
+    leg2->render(scale, usecompiled);
+    leg3->render(scale, usecompiled);
+    leg4->render(scale, usecompiled);
+    leg5->render(scale, usecompiled);
+    leg6->render(scale, usecompiled);
+    leg7->render(scale, usecompiled);
 }
 
 void SpiderModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
-    head->yRot = yRot / (float) (180 / PI);
-    head->xRot = xRot / (float) (180 / PI);
+    head->yRot = yRot / (float)(180 / PI);
+    head->xRot = xRot / (float)(180 / PI);
 
-    float sr = (float) PI / 4.0f;
+    float sr = (float)PI / 4.0f;
     leg0->zRot = -sr;
     leg1->zRot = sr;
-		
+
     leg2->zRot = -sr * 0.74f;
     leg3->zRot = sr * 0.74f;
-		
+
     leg4->zRot = -sr * 0.74f;
     leg5->zRot = sr * 0.74f;
-		
+
     leg6->zRot = -sr;
     leg7->zRot = sr;
 
-    float ro = -(float) PI / 2.0f * 0;
-    float ur = (float) PI / 8.0f;
+    float ro = -(float)PI / 2.0f * 0;
+    float ur = (float)PI / 8.0f;
     leg0->yRot = +ur * 2.0f + ro;
     leg1->yRot = -ur * 2.0f - ro;
     leg2->yRot = +ur * 1.0f + ro;
@@ -114,11 +113,10 @@ void SpiderModel::setupAnim(float time, float r, float bob, float yRot, float xR
     leg6->yRot = -ur * 2.0f + ro;
     leg7->yRot = +ur * 2.0f - ro;
 
-
-    float c0 = -((float) Mth::cos(time * 0.6662f * 2 + PI * 2 * 0 / 4.0f) * 0.4f) * r;
-    float c1 = -((float) Mth::cos(time * 0.6662f * 2 + PI * 2 * 2 / 4.0f) * 0.4f) * r;
-    float c2 = -((float) Mth::cos(time * 0.6662f * 2 + PI * 2 * 1 / 4.0f) * 0.4f) * r;
-    float c3 = -((float) Mth::cos(time * 0.6662f * 2 + PI * 2 * 3 / 4.0f) * 0.4f) * r;
+    float c0 = -((float)Mth::cos(time * 0.6662f * 2 + PI * 2 * 0 / 4.0f) * 0.4f) * r;
+    float c1 = -((float)Mth::cos(time * 0.6662f * 2 + PI * 2 * 2 / 4.0f) * 0.4f) * r;
+    float c2 = -((float)Mth::cos(time * 0.6662f * 2 + PI * 2 * 1 / 4.0f) * 0.4f) * r;
+    float c3 = -((float)Mth::cos(time * 0.6662f * 2 + PI * 2 * 3 / 4.0f) * 0.4f) * r;
 
     float s0 = abs((float)Mth::sin(time * 0.6662f + PI * 2 * 0 / 4.0f) * 0.4f) * r;
     float s1 = abs((float)Mth::sin(time * 0.6662f + PI * 2 * 2 / 4.0f) * 0.4f) * r;

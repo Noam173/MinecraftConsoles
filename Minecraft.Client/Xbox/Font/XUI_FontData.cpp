@@ -1,94 +1,92 @@
-#include "stdafx.h"
-#include "..\..\stubs.h"
-#include "..\..\Minecraft.h"
-#include "..\..\Textures.h"
 #include "XUI_FontData.h"
 #include "..\..\..\Minecraft.World\StringHelpers.h"
-
+#include "..\..\Minecraft.h"
+#include "..\..\Textures.h"
+#include "..\..\stubs.h"
+#include "stdafx.h"
 
 #define USE_NEW 0
-
 
 extern IDirect3DDevice9 *g_pD3DDevice;
 
 int XUI_FontData::getMaxGlyph()
 {
-	return m_fontData->getFontData()->m_uiGlyphCount;
+    return m_fontData->getFontData()->m_uiGlyphCount;
 }
 
-float XUI_FontData::getFontHeight() 
-{ 
-	return m_fontData->getFontData()->m_uiGlyphHeight; 
+float XUI_FontData::getFontHeight()
+{
+    return m_fontData->getFontData()->m_uiGlyphHeight;
 }
 
 float XUI_FontData::getFontTopPadding()
-{ 
-	return 0;
+{
+    return 0;
 }
 
 float XUI_FontData::getFontBottomPadding()
 {
-	return 0;
+    return 0;
 }
 
 float XUI_FontData::getFontYAdvance()
 {
-	return m_fontData->getFontData()->m_uiGlyphHeight - 1;
+    return m_fontData->getFontData()->m_uiGlyphHeight - 1;
 }
 
 float XUI_FontData::getFontMaxWidth()
 {
-	return m_fontData->getFontData()->m_uiGlyphWidth;
+    return m_fontData->getFontData()->m_uiGlyphWidth;
 }
 
 float XUI_FontData::getMaxDescent()
-{ 
-	return 0;
+{
+    return 0;
 }
 
 float XUI_FontData::getMaxAscent()
 {
-	return m_fontData->getFontData()->m_uiGlyphHeight;
+    return m_fontData->getFontData()->m_uiGlyphHeight;
 }
 
 int XUI_FontData::getImageWidth()
 {
-	return m_fontData->getFontData()->m_uiGlyphMapX;
+    return m_fontData->getFontData()->m_uiGlyphMapX;
 }
 
 int XUI_FontData::getImageHeight()
 {
-	return m_fontData->getFontData()->m_uiGlyphMapY;
+    return m_fontData->getFontData()->m_uiGlyphMapY;
 }
 
 float XUI_FontData::SChar::getMinX()
 {
-	return 0.0f;
+    return 0.0f;
 }
 
 float XUI_FontData::SChar::getMaxX()
 {
-	return static_cast<float>(m_parent->m_fontData->getFontData()->m_uiGlyphWidth);
+    return static_cast<float>(m_parent->m_fontData->getFontData()->m_uiGlyphWidth);
 }
 
 float XUI_FontData::SChar::getMinY()
 {
-	return 0.0f;
+    return 0.0f;
 }
 
 float XUI_FontData::SChar::getMaxY()
 {
-	return 0.0f; //m_parent->m_fontData->getFontData()->m_uiGlyphHeight;
+    return 0.0f; // m_parent->m_fontData->getFontData()->m_uiGlyphHeight;
 }
 
 float XUI_FontData::SChar::getAdvance()
 {
-	return static_cast<float>(m_parent->m_fontData->getWidth(m_glyphId));
+    return static_cast<float>(m_parent->m_fontData->getWidth(m_glyphId));
 }
 
 int XUI_FontData::SChar::getGlyphId()
 {
-	return m_glyphId;
+    return m_glyphId;
 }
 
 #define USE_NEW_UV 1
@@ -96,59 +94,59 @@ int XUI_FontData::SChar::getGlyphId()
 int XUI_FontData::SChar::tu1()
 {
 #if USE_NEW_UV
-	int row = 0, col = 0;
-	m_parent->m_fontData->getPos(m_glyphId, row, col);
-	return col * m_parent->m_fontData->getFontData()->m_uiGlyphWidth;
+    int row = 0, col = 0;
+    m_parent->m_fontData->getPos(m_glyphId, row, col);
+    return col * m_parent->m_fontData->getFontData()->m_uiGlyphWidth;
 #else
-	return m_parent->m_Glyphs[m_glyphId].tu1;
+    return m_parent->m_Glyphs[m_glyphId].tu1;
 #endif
 }
 
 int XUI_FontData::SChar::tu2()
 {
 #if USE_NEW_UV
-	return tu1() + m_parent->m_fontData->getFontData()->m_uiGlyphWidth;
+    return tu1() + m_parent->m_fontData->getFontData()->m_uiGlyphWidth;
 #else
-	return m_parent->m_Glyphs[m_glyphId].tu2;
+    return m_parent->m_Glyphs[m_glyphId].tu2;
 #endif
 }
 
 int XUI_FontData::SChar::tv1()
 {
 #if USE_NEW_UV
-	int row = 0, col = 0;
-	m_parent->m_fontData->getPos(m_glyphId, row, col);
-	return row * m_parent->m_fontData->getFontData()->m_uiGlyphHeight + 1;
+    int row = 0, col = 0;
+    m_parent->m_fontData->getPos(m_glyphId, row, col);
+    return row * m_parent->m_fontData->getFontData()->m_uiGlyphHeight + 1;
 #else
-	return m_parent->m_Glyphs[m_glyphId].tv1;
+    return m_parent->m_Glyphs[m_glyphId].tv1;
 #endif
 }
 
 int XUI_FontData::SChar::tv2()
 {
 #if USE_NEW_UV
-	return tv1() + m_parent->m_fontData->getFontData()->m_uiGlyphHeight;
+    return tv1() + m_parent->m_fontData->getFontData()->m_uiGlyphHeight;
 #else
-	return m_parent->m_Glyphs[m_glyphId].tv2;
+    return m_parent->m_Glyphs[m_glyphId].tv2;
 #endif
 }
 
 short XUI_FontData::SChar::getOffset()
 {
-	return 0;
+    return 0;
 }
 
 short XUI_FontData::SChar::getWAdvance()
 {
-	return 0;
+    return 0;
 }
 
 XUI_FontData::SChar XUI_FontData::getChar(const wchar_t strChar)
 {
-	SChar out;
-	out.m_glyphId = m_fontData->getGlyphId((unsigned int) strChar);
-	out.m_parent = this;
-	return out;
+    SChar out;
+    out.m_glyphId = m_fontData->getGlyphId((unsigned int)strChar);
+    out.m_parent = this;
+    return out;
 }
 
 //--------------------------------------------------------------------------------------
@@ -158,7 +156,7 @@ XUI_FontData::SChar XUI_FontData::getChar(const wchar_t strChar)
 XUI_FontData::XUI_FontData()
 {
     m_pFontTexture = nullptr;
-	m_iFontTexture = -1;
+    m_iFontTexture = -1;
 
     m_dwNumGlyphs = 0L;
     m_Glyphs = nullptr;
@@ -167,7 +165,6 @@ XUI_FontData::XUI_FontData()
 
     m_dwNestedBeginCount = 0L;
 }
-
 
 //--------------------------------------------------------------------------------------
 // Name: ~XUI_FontData()
@@ -178,30 +175,32 @@ XUI_FontData::~XUI_FontData()
     Destroy();
 }
 
-
 //--------------------------------------------------------------------------------------
 // Name: Create()
 // Desc: Create the font's internal objects (texture and array of glyph info)
 //       using the XPR packed resource file
 //--------------------------------------------------------------------------------------
-HRESULT XUI_FontData::Create( SFontData &sfontdata )
+HRESULT XUI_FontData::Create(SFontData &sfontdata)
 {
 #ifndef _CONTENT_PACKAGE
-	app.DebugPrintf("Attempting to load font data for font: '%s'\n", sfontdata.m_strFontName.c_str());
+    app.DebugPrintf("Attempting to load font data for font: '%s'\n", sfontdata.m_strFontName.c_str());
 #endif
 
-	BufferedImage *img = new BufferedImage(sfontdata.m_wstrFilename, false, true);
-	
-	m_iFontTexture = Minecraft::GetInstance()->textures->getTexture(img, C4JRender::TEXTURE_FORMAT_RxGyBzAw, false);
+    BufferedImage *img = new BufferedImage(sfontdata.m_wstrFilename, false, true);
 
-	int imgWidth = img->getWidth(), imgHeight = img->getHeight();
-	intArray rawPixels(imgWidth * imgHeight);
+    m_iFontTexture = Minecraft::GetInstance()->textures->getTexture(img, C4JRender::TEXTURE_FORMAT_RxGyBzAw, false);
+
+    int imgWidth = img->getWidth(), imgHeight = img->getHeight();
+    intArray rawPixels(imgWidth * imgHeight);
     img->getRGB(0, 0, imgWidth, imgHeight, rawPixels, 0, imgWidth);
-	delete img;
+    delete img;
 
-	m_fontData = new CFontData( sfontdata, rawPixels.data );
+    m_fontData = new CFontData(sfontdata, rawPixels.data);
 
-	if (rawPixels.data != nullptr) delete [] rawPixels.data;
+    if (rawPixels.data != nullptr)
+    {
+        delete[] rawPixels.data;
+    }
 
 #if 0
 	{  // 4J-JEV: Load in FontData (ABC) file, and initialize member variables from it.
@@ -284,19 +283,18 @@ HRESULT XUI_FontData::Create( SFontData &sfontdata )
     }
 #endif
 
-	return S_OK;
+    return S_OK;
 }
-
 
 //--------------------------------------------------------------------------------------
 // Name: Create()
 // Desc: Create the font's internal objects (texture and array of glyph info)
 //--------------------------------------------------------------------------------------
-//HRESULT XUI_FontData::Create( D3DTexture* pFontTexture, const VOID* pFontData )
-HRESULT XUI_FontData::Create( int iFontTexture, const VOID* pFontData )
+// HRESULT XUI_FontData::Create( D3DTexture* pFontTexture, const VOID* pFontData )
+HRESULT XUI_FontData::Create(int iFontTexture, const VOID *pFontData)
 {
     // Save a copy of the texture
-    //m_pFontTexture = pFontTexture;
+    // m_pFontTexture = pFontTexture;
 #if 0
 	m_iFontTexture = iFontTexture;
 
@@ -342,33 +340,32 @@ HRESULT XUI_FontData::Create( int iFontTexture, const VOID* pFontData )
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 // Name: Destroy()
 // Desc: Destroy the font object
 //--------------------------------------------------------------------------------------
 VOID XUI_FontData::Destroy()
 {
-	if(m_pFontTexture!=nullptr)
-	{
-		m_pFontTexture->Release();
-		delete m_pFontTexture;
-	}
+    if (m_pFontTexture != nullptr)
+    {
+        m_pFontTexture->Release();
+        delete m_pFontTexture;
+    }
 
-	m_fontData->release();
+    m_fontData->release();
 
     m_pFontTexture = nullptr;
     m_dwNumGlyphs = 0L;
     m_cMaxGlyph = 0;
-	
+
     m_dwNestedBeginCount = 0L;
 }
 
 /*
 FLOAT XUI_FontData::GetCharAdvance( const WCHAR* strChar )
 {
-	unsigned int uiChar = (unsigned int) *strChar;
-	return 0.0f;// m_fontData.getAdvance(m_fontData.getGlyphId(uiChar));
+    unsigned int uiChar = (unsigned int) *strChar;
+    return 0.0f;// m_fontData.getAdvance(m_fontData.getGlyphId(uiChar));
 }
 
 FLOAT XUI_FontData::GetCharWidth( const WCHAR* strChar )
@@ -378,18 +375,18 @@ FLOAT XUI_FontData::GetCharWidth( const WCHAR* strChar )
 
 void XUI_FontData::GetCharMetrics( const WCHAR* strChar, XUICharMetrics *xuiMetrics)
 {
-	unsigned int uiChar = (unsigned int) *strChar;
-	unsigned short usGlyph = m_fontData->getGlyphId(uiChar);
+    unsigned int uiChar = (unsigned int) *strChar;
+    unsigned short usGlyph = m_fontData->getGlyphId(uiChar);
 
-	xuiMetrics->fAdvance = m_fontData->getWidth(usGlyph); //.getAdvance(usGlyph) * (float) m_fontData.getFontData()->m_uiGlyphHeight;
-	xuiMetrics->fMaxX = (float) m_fontData->getFontData()->m_uiGlyphWidth;
-	xuiMetrics->fMinX = 0.0f;
-	xuiMetrics->fMaxY = 0;// m_fontData.getFontData()->m_fAscent * (float) m_fontData.getFontData()->m_uiGlyphHeight;
-	xuiMetrics->fMinY = 0;//m_fontData.getFontData()->m_fDescent * (float) m_fontData.getFontData()->m_uiGlyphHeight;
+    xuiMetrics->fAdvance = m_fontData->getWidth(usGlyph); //.getAdvance(usGlyph) * (float) m_fontData.getFontData()->m_uiGlyphHeight;
+    xuiMetrics->fMaxX = (float) m_fontData->getFontData()->m_uiGlyphWidth;
+    xuiMetrics->fMinX = 0.0f;
+    xuiMetrics->fMaxY = 0;// m_fontData.getFontData()->m_fAscent * (float) m_fontData.getFontData()->m_uiGlyphHeight;
+    xuiMetrics->fMinY = 0;//m_fontData.getFontData()->m_fDescent * (float) m_fontData.getFontData()->m_uiGlyphHeight;
 }
 
 unsigned short XUI_FontData::getGlyphId(wchar_t character)
-		{
-	return m_fontData->getGlyphId( (unsigned int) character );
+        {
+    return m_fontData->getGlyphId( (unsigned int) character );
 }
 */

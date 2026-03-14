@@ -1,22 +1,22 @@
-#include "stdafx.h"
 #include "AchievementPopup.h"
-#include "ItemRenderer.h"
-#include "Font.h"
-#include "Textures.h"
-#include "Lighting.h"
+#include "..\Minecraft.World\SharedConstants.h"
 #include "..\Minecraft.World\System.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
 #include "..\Minecraft.World\net.minecraft.stats.h"
-#include "..\Minecraft.World\SharedConstants.h"
+#include "Font.h"
+#include "ItemRenderer.h"
+#include "Lighting.h"
+#include "Textures.h"
+#include "stdafx.h"
 
 AchievementPopup::AchievementPopup(Minecraft *mc)
 {
-	// 4J - added initialisers
-	width = 0;
-	height = 0;
-	ach = nullptr;
-	startTime = 0;
-	isHelper = false;
+    // 4J - added initialisers
+    width = 0;
+    height = 0;
+    ach = nullptr;
+    startTime = 0;
+    isHelper = false;
 
     this->mc = mc;
     ir = new ItemRenderer();
@@ -63,7 +63,6 @@ void AchievementPopup::prepareWindow()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0, 0, -2000);
-
 }
 
 void AchievementPopup::render()

@@ -9,16 +9,16 @@
 #ifndef BOOST_RANGE_ALGORITHM_COPY_BACKWARD_HPP_INCLUDED
 #define BOOST_RANGE_ALGORITHM_COPY_BACKWARD_HPP_INCLUDED
 
+#include <algorithm>
 #include <boost/concept_check.hpp>
 #include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 #include <boost/range/concepts.hpp>
-#include <algorithm>
+#include <boost/range/end.hpp>
 
 namespace boost
 {
-    namespace range
-    {
+namespace range
+{
 
 /// \brief template function copy_backward
 ///
@@ -27,17 +27,17 @@ namespace boost
 /// \pre BidirectionalRange is a model of the BidirectionalRangeConcept
 /// \pre BidirectionalTraversalWriteableIterator is a model of the BidirectionalIteratorConcept
 /// \pre BidirectionalTraversalWriteableIterator is a model of the WriteableIteratorConcept
-template< class BidirectionalRange, class BidirectionalTraversalWriteableIterator >
+template <class BidirectionalRange, class BidirectionalTraversalWriteableIterator>
 inline BidirectionalTraversalWriteableIterator
-copy_backward(const BidirectionalRange& rng,
+copy_backward(const BidirectionalRange &rng,
               BidirectionalTraversalWriteableIterator out)
 {
-    BOOST_RANGE_CONCEPT_ASSERT(( BidirectionalRangeConcept<const BidirectionalRange> ));
+    BOOST_RANGE_CONCEPT_ASSERT((BidirectionalRangeConcept<const BidirectionalRange>));
     return std::copy_backward(boost::begin(rng), boost::end(rng), out);
 }
 
-    } // namespace range
-    using range::copy_backward;
+} // namespace range
+using range::copy_backward;
 } // namespace boost
 
 #endif // include guard

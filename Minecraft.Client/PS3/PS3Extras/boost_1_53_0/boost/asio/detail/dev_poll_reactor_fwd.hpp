@@ -12,16 +12,19 @@
 #define BOOST_ASIO_DETAIL_DEV_POLL_REACTOR_FWD_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if defined(BOOST_ASIO_HAS_DEV_POLL)
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 class dev_poll_reactor;
 

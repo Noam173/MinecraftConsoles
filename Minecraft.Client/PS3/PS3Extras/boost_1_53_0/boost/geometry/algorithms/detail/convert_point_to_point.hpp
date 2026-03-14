@@ -18,24 +18,26 @@
 
 #include <cstddef>
 
-#include <boost/numeric/conversion/cast.hpp>
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
 #include <boost/geometry/core/coordinate_type.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace conversion
+namespace detail
 {
-
+namespace conversion
+{
 
 template <typename Source, typename Destination, std::size_t Dimension, std::size_t DimensionCount>
 struct point_to_point
 {
-    static inline void apply(Source const& source, Destination& destination)
+    static inline void apply(Source const &source, Destination &destination)
     {
         typedef typename coordinate_type<Destination>::type coordinate_type;
 
@@ -47,22 +49,22 @@ struct point_to_point
 template <typename Source, typename Destination, std::size_t DimensionCount>
 struct point_to_point<Source, Destination, DimensionCount, DimensionCount>
 {
-    static inline void apply(Source const& , Destination& )
-    {}
+    static inline void apply(Source const &, Destination &)
+    {
+    }
 };
 
-
 template <typename Source, typename Destination>
-inline void convert_point_to_point(Source const& source, Destination& destination)
+inline void convert_point_to_point(Source const &source, Destination &destination)
 {
     point_to_point<Source, Destination, 0, dimension<Destination>::value>::apply(source, destination);
 }
 
-
-
-}} // namespace detail::conversion
+} // namespace conversion
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_CONVERT_POINT_TO_POINT_HPP

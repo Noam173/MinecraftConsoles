@@ -13,10 +13,10 @@
 
 #include <boost/intrusive/detail/config_begin.hpp>
 
-#if    !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
-   #define BOOST_INTRUSIVE_PERFECT_FORWARDING
+#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
+#define BOOST_INTRUSIVE_PERFECT_FORWARDING
 #endif
 
 #include <boost/intrusive/detail/config_end.hpp>
 
-#endif   //#ifndef BOOST_INTRUSIVE_DETAIL_WRKRND_HPP
+#endif // #ifndef BOOST_INTRUSIVE_DETAIL_WRKRND_HPP

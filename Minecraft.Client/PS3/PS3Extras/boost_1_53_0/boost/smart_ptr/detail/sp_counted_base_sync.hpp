@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //  detail/sp_counted_base_sync.hpp - g++ 4.1+ __sync intrinsics
@@ -18,8 +18,8 @@
 #include <boost/detail/sp_typeinfo.hpp>
 #include <limits.h>
 
-#if defined( __ia64__ ) && defined( __INTEL_COMPILER )
-# include <ia64intrin.h>
+#if defined(__ia64__) && defined(__INTEL_COMPILER)
+#include <ia64intrin.h>
 #endif
 
 namespace boost
@@ -38,17 +38,17 @@ typedef long sp_int32_t;
 
 #endif
 
-inline void atomic_increment( sp_int32_t * pw )
+inline void atomic_increment(sp_int32_t *pw)
 {
-    __sync_fetch_and_add( pw, 1 );
+    __sync_fetch_and_add(pw, 1);
 }
 
-inline sp_int32_t atomic_decrement( sp_int32_t * pw )
+inline sp_int32_t atomic_decrement(sp_int32_t *pw)
 {
-    return __sync_fetch_and_add( pw, -1 );
+    return __sync_fetch_and_add(pw, -1);
 }
 
-inline sp_int32_t atomic_conditional_increment( sp_int32_t * pw )
+inline sp_int32_t atomic_conditional_increment(sp_int32_t *pw)
 {
     // long r = *pw;
     // if( r != 0 ) ++*pw;
@@ -56,16 +56,16 @@ inline sp_int32_t atomic_conditional_increment( sp_int32_t * pw )
 
     sp_int32_t r = *pw;
 
-    for( ;; )
+    for (;;)
     {
-        if( r == 0 )
+        if (r == 0)
         {
             return r;
         }
 
-        sp_int32_t r2 = __sync_val_compare_and_swap( pw, r, r + 1 );
+        sp_int32_t r2 = __sync_val_compare_and_swap(pw, r, r + 1);
 
-        if( r2 == r )
+        if (r2 == r)
         {
             return r;
         }
@@ -73,22 +73,20 @@ inline sp_int32_t atomic_conditional_increment( sp_int32_t * pw )
         {
             r = r2;
         }
-    }    
+    }
 }
 
 class sp_counted_base
 {
-private:
+  private:
+    sp_counted_base(sp_counted_base const &);
+    sp_counted_base &operator=(sp_counted_base const &);
 
-    sp_counted_base( sp_counted_base const & );
-    sp_counted_base & operator= ( sp_counted_base const & );
+    sp_int32_t use_count_;  // #shared
+    sp_int32_t weak_count_; // #weak + (#shared != 0)
 
-    sp_int32_t use_count_;        // #shared
-    sp_int32_t weak_count_;       // #weak + (#shared != 0)
-
-public:
-
-    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
+  public:
+    sp_counted_base() : use_count_(1), weak_count_(1)
     {
     }
 
@@ -108,22 +106,22 @@ public:
         delete this;
     }
 
-    virtual void * get_deleter( sp_typeinfo const & ti ) = 0;
-    virtual void * get_untyped_deleter() = 0;
+    virtual void *get_deleter(sp_typeinfo const &ti) = 0;
+    virtual void *get_untyped_deleter() = 0;
 
     void add_ref_copy()
     {
-        atomic_increment( &use_count_ );
+        atomic_increment(&use_count_);
     }
 
     bool add_ref_lock() // true on success
     {
-        return atomic_conditional_increment( &use_count_ ) != 0;
+        return atomic_conditional_increment(&use_count_) != 0;
     }
 
     void release() // nothrow
     {
-        if( atomic_decrement( &use_count_ ) == 1 )
+        if (atomic_decrement(&use_count_) == 1)
         {
             dispose();
             weak_release();
@@ -132,12 +130,12 @@ public:
 
     void weak_add_ref() // nothrow
     {
-        atomic_increment( &weak_count_ );
+        atomic_increment(&weak_count_);
     }
 
     void weak_release() // nothrow
     {
-        if( atomic_decrement( &weak_count_ ) == 1 )
+        if (atomic_decrement(&weak_count_) == 1)
         {
             destroy();
         }
@@ -145,7 +143,7 @@ public:
 
     long use_count() const // nothrow
     {
-        return const_cast< sp_int32_t const volatile & >( use_count_ );
+        return const_cast<sp_int32_t const volatile &>(use_count_);
     }
 };
 
@@ -153,4 +151,4 @@ public:
 
 } // namespace boost
 
-#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_SYNC_HPP_INCLUDED
+#endif // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_BASE_SYNC_HPP_INCLUDED

@@ -10,28 +10,33 @@
 
 #include <boost/fusion/iterator/deref_data.hpp>
 
-namespace boost { namespace fusion { namespace extension
+namespace boost
 {
-    template <typename>
-    struct deref_data_impl;
+namespace fusion
+{
+namespace extension
+{
+template <typename>
+struct deref_data_impl;
 
-    template <>
-    struct deref_data_impl<joint_view_iterator_tag>
+template <>
+struct deref_data_impl<joint_view_iterator_tag>
+{
+    template <typename It>
+    struct apply
     {
-        template <typename It>
-        struct apply
-        {
-            typedef typename
-                result_of::deref_data<typename It::first_type>::type
+        typedef typename result_of::deref_data<typename It::first_type>::type
             type;
 
-            static type
-            call(It const& it)
-            {
-                return fusion::deref_data(it.first);
-            }
-        };
+        static type
+        call(It const &it)
+        {
+            return fusion::deref_data(it.first);
+        }
     };
-}}}
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

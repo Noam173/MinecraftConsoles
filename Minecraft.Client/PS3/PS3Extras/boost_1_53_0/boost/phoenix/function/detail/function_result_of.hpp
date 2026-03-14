@@ -14,7 +14,7 @@
 #define BOOST_PHOENIX_FUNCTION_DETAIL_FUNCTION_RESULT_OF_HPP
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 2, line: 0, output: "preprocessed/function_result_of_" BOOST_PHOENIX_LIMIT_STR ".hpp")
+#pragma wave option(preserve : 2, line : 0, output : "preprocessed/function_result_of_" BOOST_PHOENIX_LIMIT_STR ".hpp")
 #endif
 
 /*==============================================================================
@@ -26,31 +26,28 @@
 ==============================================================================*/
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 1)
+#pragma wave option(preserve : 1)
 #endif
 
-#define BOOST_PHOENIX_ITERATION_PARAMS                                          \
-    (3, (1, BOOST_PHOENIX_ACTOR_LIMIT,                                          \
-    <boost/phoenix/function/detail/function_result_of.hpp>))
+#define BOOST_PHOENIX_ITERATION_PARAMS \
+    (3, (1, BOOST_PHOENIX_ACTOR_LIMIT, \
+         <boost / phoenix / function / detail / function_result_of.hpp>))
 #include PHOENIX_ITERATE()
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(output: null)
+#pragma wave option(output : null)
 #endif
 
 #endif
 
 #else
 
-        template <typename F, BOOST_PHOENIX_typename_A>
-        struct function<F, BOOST_PHOENIX_A>
-            : proto::result_of::make_expr<
-                proto::tag::function
-              , phoenix_domain
-              , F
-              , BOOST_PHOENIX_A
-            >
-        {};
+template <typename F, BOOST_PHOENIX_typename_A>
+struct function<F, BOOST_PHOENIX_A>
+    : proto::result_of::make_expr<
+          proto::tag::function, phoenix_domain, F, BOOST_PHOENIX_A>
+{
+};
 
 #endif
 

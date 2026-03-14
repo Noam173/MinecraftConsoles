@@ -14,11 +14,11 @@
 #include <boost/signals2/detail/variadic_arg_type.hpp>
 
 #define BOOST_SIGNALS2_SLOT_N_BINDING_CONSTRUCTORS \
-  template<typename ... BindArgs> slot(const BindArgs & ... args) \
-  { \
-    init_slot_function(boost::bind(args...)); \
-  }
-
+    template <typename... BindArgs>                \
+    slot(const BindArgs &...args)                  \
+    {                                              \
+        init_slot_function(boost::bind(args...));  \
+    }
 
 #include <boost/signals2/detail/slot_template.hpp>
 #endif // BOOST_SIGNALS2_VARIADIC_SLOT_HPP

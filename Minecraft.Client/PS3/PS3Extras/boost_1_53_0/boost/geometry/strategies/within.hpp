@@ -16,13 +16,15 @@
 
 #include <boost/mpl/assert.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace strategy { namespace within
+namespace strategy
 {
-
+namespace within
+{
 
 namespace services
 {
@@ -37,8 +39,7 @@ namespace services
 \tparam Geometry geometry-type of input (often point, or box)
 \tparam GeometryContaining geometry-type of input (possibly) containing type
 */
-template
-<
+template <
     typename TagContained,
     typename TagContaining,
     typename CastedTagContained,
@@ -46,26 +47,19 @@ template
     typename CsTagContained,
     typename CsTagContaining,
     typename GeometryContained,
-    typename GeometryContaining
->
+    typename GeometryContaining>
 struct default_strategy
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THESE_TYPES
-            , (types<GeometryContained, GeometryContaining>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THESE_TYPES, (types<GeometryContained, GeometryContaining>));
 };
-
 
 } // namespace services
 
+} // namespace within
+} // namespace strategy
 
-}} // namespace strategy::within
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_WITHIN_HPP
-

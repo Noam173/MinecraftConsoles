@@ -8,73 +8,74 @@
 #ifndef BOOST_ACCUMULATORS_STATISTICS_WEIGHTED_SUM_KAHAN_HPP_EAN_11_05_2011
 #define BOOST_ACCUMULATORS_STATISTICS_WEIGHTED_SUM_KAHAN_HPP_EAN_11_05_2011
 
-#include <boost/mpl/placeholders.hpp>
 #include <boost/accumulators/framework/accumulator_base.hpp>
-#include <boost/accumulators/framework/extractor.hpp>
-#include <boost/accumulators/numeric/functional.hpp>
-#include <boost/accumulators/framework/parameters/sample.hpp>
-#include <boost/accumulators/framework/parameters/weight.hpp>
 #include <boost/accumulators/framework/accumulators/external_accumulator.hpp>
 #include <boost/accumulators/framework/depends_on.hpp>
-#include <boost/accumulators/statistics_fwd.hpp>
+#include <boost/accumulators/framework/extractor.hpp>
+#include <boost/accumulators/framework/parameters/sample.hpp>
+#include <boost/accumulators/framework/parameters/weight.hpp>
+#include <boost/accumulators/numeric/functional.hpp>
 #include <boost/accumulators/statistics/weighted_sum.hpp>
+#include <boost/accumulators/statistics_fwd.hpp>
+#include <boost/mpl/placeholders.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 
-namespace boost { namespace accumulators
+namespace boost
+{
+namespace accumulators
 {
 
 namespace impl
 {
 #if _MSC_VER > 1400
-# pragma float_control(push)
-# pragma float_control(precise, on)
+#pragma float_control(push)
+#pragma float_control(precise, on)
 #endif
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // weighted_sum_kahan_impl
-    template<typename Sample, typename Weight, typename Tag>
-    struct weighted_sum_kahan_impl
-      : accumulator_base
+///////////////////////////////////////////////////////////////////////////////
+// weighted_sum_kahan_impl
+template <typename Sample, typename Weight, typename Tag>
+struct weighted_sum_kahan_impl
+    : accumulator_base
+{
+    typedef typename numeric::functional::multiplies<Sample, Weight>::result_type weighted_sample;
+
+    // for boost::result_of
+    typedef weighted_sample result_type;
+
+    template <typename Args>
+    weighted_sum_kahan_impl(Args const &args)
+        : weighted_sum_(
+              args[parameter::keyword<Tag>::get() | Sample()] * numeric::one<Weight>::value),
+          compensation(boost::numeric_cast<weighted_sample>(0.0))
     {
-        typedef typename numeric::functional::multiplies<Sample, Weight>::result_type weighted_sample;
+    }
 
-        // for boost::result_of
-        typedef weighted_sample result_type;
-
-        template<typename Args>
-        weighted_sum_kahan_impl(Args const &args)
-          : weighted_sum_(
-                args[parameter::keyword<Tag>::get() | Sample()] * numeric::one<Weight>::value),
-                compensation(boost::numeric_cast<weighted_sample>(0.0))
-        {
-        }
-
-        template<typename Args>
-        void 
+    template <typename Args>
+    void
 #if BOOST_ACCUMULATORS_GCC_VERSION > 40305
         __attribute__((__optimize__("no-associative-math")))
 #endif
-        operator ()(Args const &args)
-        {
-            const weighted_sample myTmp1 = args[parameter::keyword<Tag>::get()] * args[weight] - this->compensation;
-            const weighted_sample myTmp2 = this->weighted_sum_ + myTmp1;
-            this->compensation = (myTmp2 - this->weighted_sum_) - myTmp1;
-            this->weighted_sum_ = myTmp2;
+        operator()(Args const &args)
+    {
+        const weighted_sample myTmp1 = args[parameter::keyword<Tag>::get()] * args[weight] - this->compensation;
+        const weighted_sample myTmp2 = this->weighted_sum_ + myTmp1;
+        this->compensation = (myTmp2 - this->weighted_sum_) - myTmp1;
+        this->weighted_sum_ = myTmp2;
+    }
 
-        }
+    result_type result(dont_care) const
+    {
+        return this->weighted_sum_;
+    }
 
-        result_type result(dont_care) const
-        {
-            return this->weighted_sum_;
-        }
-
-    private:
-        weighted_sample weighted_sum_;
-        weighted_sample compensation;
-    };
+  private:
+    weighted_sample weighted_sum_;
+    weighted_sample compensation;
+};
 
 #if _MSC_VER > 1400
-# pragma float_control(pop)
+#pragma float_control(pop)
 #endif
 
 } // namespace impl
@@ -85,24 +86,24 @@ namespace impl
 //
 namespace tag
 {
-    struct weighted_sum_kahan
-      : depends_on<>
-    {
-        /// INTERNAL ONLY
-        ///
-        typedef accumulators::impl::weighted_sum_kahan_impl<mpl::_1, mpl::_2, tag::sample> impl;
-    };
+struct weighted_sum_kahan
+    : depends_on<>
+{
+    /// INTERNAL ONLY
+    ///
+    typedef accumulators::impl::weighted_sum_kahan_impl<mpl::_1, mpl::_2, tag::sample> impl;
+};
 
-    template<typename VariateType, typename VariateTag>
-    struct weighted_sum_of_variates_kahan
-      : depends_on<>
-    {
-        /// INTERNAL ONLY
-        ///
-        typedef accumulators::impl::weighted_sum_kahan_impl<VariateType, mpl::_2, VariateTag> impl;
-    };
+template <typename VariateType, typename VariateTag>
+struct weighted_sum_of_variates_kahan
+    : depends_on<>
+{
+    /// INTERNAL ONLY
+    ///
+    typedef accumulators::impl::weighted_sum_kahan_impl<VariateType, mpl::_2, VariateTag> impl;
+};
 
-}
+} // namespace tag
 
 ///////////////////////////////////////////////////////////////////////////////
 // extract::weighted_sum_kahan
@@ -110,29 +111,30 @@ namespace tag
 //
 namespace extract
 {
-    extractor<tag::weighted_sum_kahan> const weighted_sum_kahan = {};
-    extractor<tag::abstract_weighted_sum_of_variates> const weighted_sum_of_variates_kahan = {};
+extractor<tag::weighted_sum_kahan> const weighted_sum_kahan = {};
+extractor<tag::abstract_weighted_sum_of_variates> const weighted_sum_of_variates_kahan = {};
 
-    BOOST_ACCUMULATORS_IGNORE_GLOBAL(weighted_sum_kahan)
-    BOOST_ACCUMULATORS_IGNORE_GLOBAL(weighted_sum_of_variates_kahan)
-}
+BOOST_ACCUMULATORS_IGNORE_GLOBAL(weighted_sum_kahan)
+BOOST_ACCUMULATORS_IGNORE_GLOBAL(weighted_sum_of_variates_kahan)
+} // namespace extract
 
 using extract::weighted_sum_kahan;
 using extract::weighted_sum_of_variates_kahan;
 
 // weighted_sum(kahan) -> weighted_sum_kahan
-template<>
+template <>
 struct as_feature<tag::weighted_sum(kahan)>
 {
     typedef tag::weighted_sum_kahan type;
 };
 
-template<typename VariateType, typename VariateTag>
-struct feature_of<tag::weighted_sum_of_variates_kahan<VariateType, VariateTag> >
-  : feature_of<tag::abstract_weighted_sum_of_variates>
+template <typename VariateType, typename VariateTag>
+struct feature_of<tag::weighted_sum_of_variates_kahan<VariateType, VariateTag>>
+    : feature_of<tag::abstract_weighted_sum_of_variates>
 {
 };
 
-}} // namespace boost::accumulators
+} // namespace accumulators
+} // namespace boost
 
 #endif

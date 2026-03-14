@@ -43,23 +43,23 @@
 #ifndef BOOST_CAST_HPP
 #define BOOST_CAST_HPP
 
-# include <boost/config.hpp>
-# include <boost/assert.hpp>
-# include <typeinfo>
-# include <boost/type.hpp>
-# include <boost/limits.hpp>
-# include <boost/detail/select_type.hpp>
+#include <boost/assert.hpp>
+#include <boost/config.hpp>
+#include <boost/detail/select_type.hpp>
+#include <boost/limits.hpp>
+#include <boost/type.hpp>
+#include <typeinfo>
 
 //  It has been demonstrated numerous times that MSVC 6.0 fails silently at link
 //  time if you use a template function which has template parameters that don't
 //  appear in the function's argument list.
 //
 //  TODO: Add this to config.hpp?
-# if defined(BOOST_MSVC) && BOOST_MSVC < 1300
-#  define BOOST_EXPLICIT_DEFAULT_TARGET , ::boost::type<Target>* = 0
-# else
-#  define BOOST_EXPLICIT_DEFAULT_TARGET
-# endif
+#if defined(BOOST_MSVC) && BOOST_MSVC < 1300
+#define BOOST_EXPLICIT_DEFAULT_TARGET , ::boost::type<Target> * = 0
+#else
+#define BOOST_EXPLICIT_DEFAULT_TARGET
+#endif
 
 namespace boost
 {
@@ -68,40 +68,43 @@ namespace boost
 
 //  polymorphic_cast  --------------------------------------------------------//
 
-    //  Runtime checked polymorphic downcasts and crosscasts.
-    //  Suggested in The C++ Programming Language, 3rd Ed, Bjarne Stroustrup,
-    //  section 15.8 exercise 1, page 425.
+//  Runtime checked polymorphic downcasts and crosscasts.
+//  Suggested in The C++ Programming Language, 3rd Ed, Bjarne Stroustrup,
+//  section 15.8 exercise 1, page 425.
 
-    template <class Target, class Source>
-    inline Target polymorphic_cast(Source* x BOOST_EXPLICIT_DEFAULT_TARGET)
+template <class Target, class Source>
+inline Target polymorphic_cast(Source *x BOOST_EXPLICIT_DEFAULT_TARGET)
+{
+    Target tmp = dynamic_cast<Target>(x);
+    if (tmp == 0)
     {
-        Target tmp = dynamic_cast<Target>(x);
-        if ( tmp == 0 ) throw std::bad_cast();
-        return tmp;
+        throw std::bad_cast();
     }
+    return tmp;
+}
 
 //  polymorphic_downcast  ----------------------------------------------------//
 
-    //  BOOST_ASSERT() checked polymorphic downcast.  Crosscasts prohibited.
+//  BOOST_ASSERT() checked polymorphic downcast.  Crosscasts prohibited.
 
-    //  WARNING: Because this cast uses BOOST_ASSERT(), it violates
-    //  the One Definition Rule if used in multiple translation units
-    //  where BOOST_DISABLE_ASSERTS, BOOST_ENABLE_ASSERT_HANDLER
-    //  NDEBUG are defined inconsistently.
+//  WARNING: Because this cast uses BOOST_ASSERT(), it violates
+//  the One Definition Rule if used in multiple translation units
+//  where BOOST_DISABLE_ASSERTS, BOOST_ENABLE_ASSERT_HANDLER
+//  NDEBUG are defined inconsistently.
 
-    //  Contributed by Dave Abrahams
+//  Contributed by Dave Abrahams
 
-    template <class Target, class Source>
-    inline Target polymorphic_downcast(Source* x BOOST_EXPLICIT_DEFAULT_TARGET)
-    {
-        BOOST_ASSERT( dynamic_cast<Target>(x) == x );  // detect logic error
-        return static_cast<Target>(x);
-    }
+template <class Target, class Source>
+inline Target polymorphic_downcast(Source *x BOOST_EXPLICIT_DEFAULT_TARGET)
+{
+    BOOST_ASSERT(dynamic_cast<Target>(x) == x); // detect logic error
+    return static_cast<Target>(x);
+}
 
-#  undef BOOST_EXPLICIT_DEFAULT_TARGET
+#undef BOOST_EXPLICIT_DEFAULT_TARGET
 
 } // namespace boost
 
-# include <boost/numeric/conversion/cast.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 
-#endif  // BOOST_CAST_HPP
+#endif // BOOST_CAST_HPP

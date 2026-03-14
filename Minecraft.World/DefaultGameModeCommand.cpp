@@ -1,35 +1,35 @@
-#include "stdafx.h"
-#include "net.minecraft.commands.h"
 #include "DefaultGameModeCommand.h"
+#include "net.minecraft.commands.h"
+#include "stdafx.h"
 
 EGameCommand DefaultGameModeCommand::getId()
 {
-	return eGameCommand_DefaultGameMode;
+    return eGameCommand_DefaultGameMode;
 }
 
 void DefaultGameModeCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
 {
-	//if (args.length > 0) {
-	//	GameType newMode = getModeForString(source, args[0]);
-	//	doSetGameType(newMode);
+    // if (args.length > 0) {
+    //	GameType newMode = getModeForString(source, args[0]);
+    //	doSetGameType(newMode);
 
-	//	logAdminAction(source, "commands.defaultgamemode.success", ChatMessageComponent.forTranslation("gameMode." + newMode.getName()));
+    //	logAdminAction(source, "commands.defaultgamemode.success", ChatMessageComponent.forTranslation("gameMode." + newMode.getName()));
 
-	//	return;
-	//}
+    //	return;
+    //}
 
-	//throw new UsageException("commands.defaultgamemode.usage");
+    // throw new UsageException("commands.defaultgamemode.usage");
 }
 
 void DefaultGameModeCommand::doSetGameType(GameType *newGameType)
 {
-	//MinecraftServer minecraftServer = MinecraftServer.getInstance();
-	//minecraftServer.setDefaultGameMode(newGameType);
+    // MinecraftServer minecraftServer = MinecraftServer.getInstance();
+    // minecraftServer.setDefaultGameMode(newGameType);
 
-	//if (minecraftServer.getForceGameType()) {
-	//	for (ServerPlayer player : MinecraftServer.getInstance().getPlayers().players) {
-	//		player.setGameMode(newGameType);
-	//		player.fallDistance = 0; // reset falldistance so flying people do not die :P
-	//	}
-	//}
+    // if (minecraftServer.getForceGameType()) {
+    //	for (ServerPlayer player : MinecraftServer.getInstance().getPlayers().players) {
+    //		player.setGameMode(newGameType);
+    //		player.fallDistance = 0; // reset falldistance so flying people do not die :P
+    //	}
+    // }
 }

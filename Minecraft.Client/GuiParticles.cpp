@@ -1,26 +1,26 @@
-#include "stdafx.h"
 #include "GuiParticles.h"
 #include "GuiParticle.h"
 #include "Textures.h"
+#include "stdafx.h"
 
 GuiParticles::GuiParticles(Minecraft *mc)
 {
-	this->mc = mc;
+    this->mc = mc;
 }
 
 void GuiParticles::tick()
 {
     for (unsigned int i = 0; i < particles.size(); i++)
-	{
+    {
         GuiParticle *gp = particles[i];
 
         gp->preTick();
         gp->tick(this);
 
         if (gp->removed)
-		{
-            particles.erase(particles.begin()+i);
-			i--;
+        {
+            particles.erase(particles.begin() + i);
+            i--;
         }
     }
 }
@@ -33,7 +33,7 @@ void GuiParticles::add(GuiParticle *guiParticle)
 
 void GuiParticles::render(float a)
 {
-	// 4J Stu - Never used
+    // 4J Stu - Never used
 #if 0
     mc->textures->bindTexture(L"/gui/particles.png");
 

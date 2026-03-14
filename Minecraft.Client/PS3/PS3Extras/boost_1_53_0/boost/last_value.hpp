@@ -10,29 +10,36 @@
 #ifndef BOOST_LAST_VALUE_HPP
 #define BOOST_LAST_VALUE_HPP
 
-#include <cassert>
 #include <boost/config.hpp>
+#include <cassert>
 
-namespace boost {
-  template<typename T>
-  struct last_value {
+namespace boost
+{
+template <typename T>
+struct last_value
+{
     typedef T result_type;
 
-    template<typename InputIterator>
+    template <typename InputIterator>
     T operator()(InputIterator first, InputIterator last) const
     {
-      assert(first != last);
-      T value = *first++;
-      while (first != last)
-        value = *first++;
-      return value;
+        assert(first != last);
+        T value = *first++;
+        while (first != last)
+        {
+            value = *first++;
+        }
+        return value;
     }
-  };
+};
 
-  template<>
-  struct last_value<void> {
+template <>
+struct last_value<void>
+{
 #ifdef BOOST_NO_VOID_RETURNS
-    struct unusable {};
+    struct unusable
+    {
+    };
 
   public:
     typedef unusable result_type;
@@ -41,14 +48,16 @@ namespace boost {
     typedef void result_type;
 #endif // BOOST_NO_VOID_RETURNS
 
-    template<typename InputIterator>
+    template <typename InputIterator>
     result_type
     operator()(InputIterator first, InputIterator last) const
     {
-      while (first != last)
-        *first++;
-      return result_type();
+        while (first != last)
+        {
+            *first++;
+        }
+        return result_type();
     }
-  };
-}
+};
+} // namespace boost
 #endif // BOOST_SIGNALS_LAST_VALUE_HPP

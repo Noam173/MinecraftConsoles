@@ -14,7 +14,7 @@
 #define BOOST_ASIO_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/basic_datagram_socket.hpp>
@@ -31,18 +31,18 @@
 #include <boost/asio/basic_streambuf.hpp>
 #include <boost/asio/basic_waitable_timer.hpp>
 #include <boost/asio/buffer.hpp>
-#include <boost/asio/buffered_read_stream_fwd.hpp>
 #include <boost/asio/buffered_read_stream.hpp>
-#include <boost/asio/buffered_stream_fwd.hpp>
+#include <boost/asio/buffered_read_stream_fwd.hpp>
 #include <boost/asio/buffered_stream.hpp>
-#include <boost/asio/buffered_write_stream_fwd.hpp>
+#include <boost/asio/buffered_stream_fwd.hpp>
 #include <boost/asio/buffered_write_stream.hpp>
+#include <boost/asio/buffered_write_stream_fwd.hpp>
 #include <boost/asio/buffers_iterator.hpp>
 #include <boost/asio/completion_condition.hpp>
 #include <boost/asio/connect.hpp>
 #include <boost/asio/datagram_socket_service.hpp>
-#include <boost/asio/deadline_timer_service.hpp>
 #include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/deadline_timer_service.hpp>
 #include <boost/asio/error.hpp>
 #include <boost/asio/handler_alloc_hook.hpp>
 #include <boost/asio/handler_invoke_hook.hpp>

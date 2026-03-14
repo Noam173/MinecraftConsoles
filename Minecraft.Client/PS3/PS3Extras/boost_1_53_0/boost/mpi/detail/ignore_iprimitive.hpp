@@ -13,8 +13,12 @@
 #include <boost/mpi/datatype.hpp>
 #include <boost/serialization/array.hpp>
 
-
-namespace boost { namespace mpi { namespace detail {
+namespace boost
+{
+namespace mpi
+{
+namespace detail
+{
 
 /// @brief a minimal input archive, which ignores any load
 ///
@@ -25,30 +29,34 @@ namespace boost { namespace mpi { namespace detail {
 
 class ignore_iprimitive
 {
-public:
+  public:
     /// a trivial default constructor
     ignore_iprimitive()
-    {}
+    {
+    }
 
+    /// don't do anything when loading binary data
+    void load_binary(void *, std::size_t)
+    {
+    }
 
-        /// don't do anything when loading binary data
-    void load_binary(void *, std::size_t )
-        {}
-
-        /// don't do anything when loading arrays
-    template<class T>
-    void load_array(serialization::array<T> &, unsigned int )
-    {}
+    /// don't do anything when loading arrays
+    template <class T>
+    void load_array(serialization::array<T> &, unsigned int)
+    {
+    }
 
     typedef is_mpi_datatype<mpl::_1> use_array_optimization;
 
-        /// don't do anything when loading primitive types
-    template<class T>
-    void load(T & t)
+    /// don't do anything when loading primitive types
+    template <class T>
+    void load(T &t)
     {
     }
 };
 
-} } } // end namespace boost::mpi::detail
+} // namespace detail
+} // namespace mpi
+} // namespace boost
 
 #endif // BOOST_MPI_DETAIL_IGNORE_IPRIMITIVE_HPP

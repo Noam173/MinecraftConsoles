@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_RELATION_SUPPORT_VALUE_TYPE_OF_HPP
 #define BOOST_BIMAP_RELATION_SUPPORT_VALUE_TYPE_OF_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -38,10 +38,14 @@ See also member_at, get().
 \ingroup relation_group
                                                                     **/
 
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
 // Metafunction value_type_of
 /*
@@ -54,29 +58,22 @@ namespace support {
 
 */
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     value_type_of,
     left_value_type,
-    right_value_type
-)
+    right_value_type)
 
 // Add support for info tags to value_type_of
 
-template< class Tag, class SymmetricType >
-struct value_type_of
-<
+template <class Tag, class SymmetricType>
+struct value_type_of<
     Tag, SymmetricType,
-    BOOST_DEDUCED_TYPENAME enable_if
-    <
-        ::boost::bimaps::relation::support::is_tag_of_member_at_info
-        <
+    BOOST_DEDUCED_TYPENAME enable_if<
+        ::boost::bimaps::relation::support::is_tag_of_member_at_info<
             Tag,
-            SymmetricType
-        >
+            SymmetricType>
 
-    >::type
->
+        >::type>
 {
     typedef BOOST_DEDUCED_TYPENAME SymmetricType::info_type type;
 };
@@ -86,6 +83,4 @@ struct value_type_of
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_RELATION_SUPPORT_VALUE_TYPE_OF_HPP
-

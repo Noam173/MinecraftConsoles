@@ -1,3 +1,2 @@
-#include "stdafx.h"
 #include "GlobalEntity.h"
-
+#include "stdafx.h"

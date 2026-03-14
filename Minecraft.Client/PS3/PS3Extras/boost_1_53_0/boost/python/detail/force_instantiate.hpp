@@ -3,30 +3,41 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef FORCE_INSTANTIATE_DWA200265_HPP
-# define FORCE_INSTANTIATE_DWA200265_HPP
+#define FORCE_INSTANTIATE_DWA200265_HPP
 
-namespace boost { namespace python { namespace detail { 
+namespace boost
+{
+namespace python
+{
+namespace detail
+{
 
 // Allows us to force the argument to be instantiated without
 // incurring unused variable warnings
 
-# if !defined(BOOST_MSVC) || BOOST_MSVC < 1300 || _MSC_FULL_VER > 13102196
+#if !defined(BOOST_MSVC) || BOOST_MSVC < 1300 || _MSC_FULL_VER > 13102196
 
 template <class T>
-inline void force_instantiate(T const&) {}
+inline void force_instantiate(T const &)
+{
+}
 
-# else
+#else
 
-#  pragma optimize("g", off)
-inline void force_instantiate_impl(...) {}
-#  pragma optimize("", on)
+#pragma optimize("g", off)
+inline void force_instantiate_impl(...)
+{
+}
+#pragma optimize("", on)
 template <class T>
-inline void force_instantiate(T const& x)
+inline void force_instantiate(T const &x)
 {
     detail::force_instantiate_impl(&x);
 }
-# endif
+#endif
 
-}}} // namespace boost::python::detail
+} // namespace detail
+} // namespace python
+} // namespace boost
 
 #endif // FORCE_INSTANTIATE_DWA200265_HPP

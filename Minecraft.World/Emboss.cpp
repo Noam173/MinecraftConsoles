@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "Emboss.h"
+#include "stdafx.h"
 
 Emboss::Emboss(Synth *synth)
 {

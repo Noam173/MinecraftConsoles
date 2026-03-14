@@ -8,22 +8,25 @@
 #ifndef BOOST_ACCUMULATORS_STATISTICS_STATS_HPP_EAN_08_12_2005
 #define BOOST_ACCUMULATORS_STATISTICS_STATS_HPP_EAN_08_12_2005
 
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/accumulators/accumulators_fwd.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/preprocessor/repetition/enum_params.hpp>
 
-namespace boost { namespace accumulators
+namespace boost
+{
+namespace accumulators
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // features
 //
-template<BOOST_PP_ENUM_PARAMS(BOOST_ACCUMULATORS_MAX_FEATURES, typename Feature)>
+template <BOOST_PP_ENUM_PARAMS(BOOST_ACCUMULATORS_MAX_FEATURES, typename Feature)>
 struct features
-  : mpl::vector<BOOST_PP_ENUM_PARAMS(BOOST_ACCUMULATORS_MAX_FEATURES, Feature)>
+    : mpl::vector<BOOST_PP_ENUM_PARAMS(BOOST_ACCUMULATORS_MAX_FEATURES, Feature)>
 {
 };
 
-}} // namespace boost::accumulators
+} // namespace accumulators
+} // namespace boost
 
 #endif

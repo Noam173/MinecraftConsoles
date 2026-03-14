@@ -14,7 +14,6 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_CARTESIAN_CENTROID_BASHEIN_DETMER_HPP
 #define BOOST_GEOMETRY_STRATEGIES_CARTESIAN_CENTROID_BASHEIN_DETMER_HPP
 
-
 #include <boost/mpl/if.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/type_traits.hpp>
@@ -25,17 +24,18 @@
 #include <boost/geometry/strategies/centroid.hpp>
 #include <boost/geometry/util/select_coordinate_type.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 // Note: when calling the namespace "centroid", it sometimes,
 // somehow, in gcc, gives compilation problems (confusion with function centroid).
 
-namespace strategy { namespace centroid
+namespace strategy
 {
-
-
+namespace centroid
+{
 
 /*!
 \brief Centroid calculation using algorith Bashein / Detmer
@@ -107,34 +107,25 @@ Statements:
 }
 
  */
-template
-<
+template <
     typename Point,
     typename PointOfSegment = Point,
-    typename CalculationType = void
->
+    typename CalculationType = void>
 class bashein_detmer
 {
-private :
+  private:
     // If user specified a calculation type, use that type,
     //   whatever it is and whatever the point-type(s) are.
     // Else, use the most appropriate coordinate type
     //    of the two points, but at least double
-    typedef typename
-        boost::mpl::if_c
-        <
-            boost::is_void<CalculationType>::type::value,
-            typename select_most_precise
-            <
-                typename select_coordinate_type
-                    <
-                        Point,
-                        PointOfSegment
-                    >::type,
-                double
-            >::type,
-            CalculationType
-        >::type calculation_type;
+    typedef typename boost::mpl::if_c<
+        boost::is_void<CalculationType>::type::value,
+        typename select_most_precise<
+            typename select_coordinate_type<
+                Point,
+                PointOfSegment>::type,
+            double>::type,
+        CalculationType>::type calculation_type;
 
     /*! subclass to keep state */
     class sums
@@ -145,22 +136,19 @@ private :
         calculation_type sum_x;
         calculation_type sum_y;
 
-    public :
+      public:
         inline sums()
-            : count(0)
-            , sum_a2(calculation_type())
-            , sum_x(calculation_type())
-            , sum_y(calculation_type())
+            : count(0), sum_a2(calculation_type()), sum_x(calculation_type()), sum_y(calculation_type())
         {
             typedef calculation_type ct;
         }
     };
 
-public :
+  public:
     typedef sums state_type;
 
-    static inline void apply(PointOfSegment const& p1,
-            PointOfSegment const& p2, sums& state)
+    static inline void apply(PointOfSegment const &p1,
+                             PointOfSegment const &p2, sums &state)
     {
         /* Algorithm:
         For each segment:
@@ -185,29 +173,26 @@ public :
         state.sum_y += ai * (y1 + y2);
     }
 
-    static inline bool result(sums const& state, Point& centroid)
+    static inline bool result(sums const &state, Point &centroid)
     {
         calculation_type const zero = calculation_type();
-        if (state.count > 0 && ! math::equals(state.sum_a2, zero))
+        if (state.count > 0 && !math::equals(state.sum_a2, zero))
         {
             calculation_type const v3 = 3;
             calculation_type const a3 = v3 * state.sum_a2;
 
-            typedef typename geometry::coordinate_type
-                <
-                    Point
-                >::type coordinate_type;
+            typedef typename geometry::coordinate_type<
+                Point>::type coordinate_type;
 
             set<0>(centroid,
-                boost::numeric_cast<coordinate_type>(state.sum_x / a3));
+                   boost::numeric_cast<coordinate_type>(state.sum_x / a3));
             set<1>(centroid,
-                boost::numeric_cast<coordinate_type>(state.sum_y / a3));
+                   boost::numeric_cast<coordinate_type>(state.sum_y / a3));
             return true;
         }
 
         return false;
     }
-
 };
 
 #ifndef DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
@@ -219,24 +204,20 @@ namespace services
 template <typename Point, typename Geometry>
 struct default_strategy<cartesian_tag, areal_tag, 2, Point, Geometry>
 {
-    typedef bashein_detmer
-        <
-            Point,
-            typename point_type<Geometry>::type
-        > type;
+    typedef bashein_detmer<
+        Point,
+        typename point_type<Geometry>::type>
+        type;
 };
-
 
 } // namespace services
 
-
 #endif // DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
 
+} // namespace centroid
+} // namespace strategy
 
-}} // namespace strategy::centroid
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_CARTESIAN_CENTROID_BASHEIN_DETMER_HPP

@@ -7,33 +7,33 @@
 #if !defined(FUSION_POP_BACK_10022005_1801)
 #define FUSION_POP_BACK_10022005_1801
 
-#include <boost/mpl/pop_back.hpp>
-#include <boost/fusion/support/tag_of.hpp>
 #include <boost/fusion/algorithm/transformation/pop_back.hpp>
 #include <boost/fusion/sequence/convert.hpp>
+#include <boost/fusion/support/tag_of.hpp>
+#include <boost/mpl/pop_back.hpp>
 
-namespace boost { namespace mpl
+namespace boost
 {
-    template <typename Tag>
-    struct pop_back_impl;
+namespace mpl
+{
+template <typename Tag>
+struct pop_back_impl;
 
-    template <>
-    struct pop_back_impl<fusion::fusion_sequence_tag>
+template <>
+struct pop_back_impl<fusion::fusion_sequence_tag>
+{
+    template <typename Sequence>
+    struct apply
     {
-        template <typename Sequence>
-        struct apply
-        {
-            typedef typename
-                fusion::result_of::pop_back<Sequence>::type
+        typedef typename fusion::result_of::pop_back<Sequence>::type
             result;
 
-            typedef typename
-                fusion::result_of::convert<
-                    typename fusion::detail::tag_of<Sequence>::type, result>::type
+        typedef typename fusion::result_of::convert<
+            typename fusion::detail::tag_of<Sequence>::type, result>::type
             type;
-        };
     };
-}}
+};
+} // namespace mpl
+} // namespace boost
 
 #endif
-

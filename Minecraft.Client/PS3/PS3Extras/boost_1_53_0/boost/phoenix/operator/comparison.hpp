@@ -8,27 +8,24 @@
 #ifndef BOOST_PHOENIX_OPERATOR_COMPARISON_HPP
 #define BOOST_PHOENIX_OPERATOR_COMPARISON_HPP
 
-#include <boost/phoenix/operator/detail/define_operator.hpp>
 #include <boost/phoenix/core/expression.hpp>
+#include <boost/phoenix/operator/detail/define_operator.hpp>
 #include <boost/proto/operators.hpp>
 
-namespace boost { namespace phoenix
+namespace boost
 {
-    BOOST_PHOENIX_BINARY_OPERATORS(
-        (equal_to)
-        (not_equal_to)
-        (less_equal)
-        (greater_equal)
-        (less)
-        (greater)
-    )
-    using proto::exprns_::operator==;
-    using proto::exprns_::operator!=;
-    using proto::exprns_::operator<=;
-    using proto::exprns_::operator>=;
-    using proto::exprns_::operator<;
-    using proto::exprns_::operator>;
-}}
+namespace phoenix
+{
+BOOST_PHOENIX_BINARY_OPERATORS(
+    (equal_to)(not_equal_to)(less_equal)(greater_equal)(less)(greater))
+using proto::exprns_::operator==;
+using proto::exprns_::operator!=;
+using proto::exprns_::operator<=;
+using proto::exprns_::operator>=;
+using proto::exprns_::operator<;
+using proto::exprns_::operator>;
+} // namespace phoenix
+} // namespace boost
 
 #include <boost/phoenix/operator/detail/undef_operator.hpp>
 

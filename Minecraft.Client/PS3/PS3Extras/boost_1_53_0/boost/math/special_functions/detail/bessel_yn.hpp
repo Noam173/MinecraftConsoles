@@ -10,34 +10,39 @@
 #pragma once
 #endif
 
+#include <boost/math/policies/error_handling.hpp>
+#include <boost/math/special_functions/detail/bessel_jy_series.hpp>
 #include <boost/math/special_functions/detail/bessel_y0.hpp>
 #include <boost/math/special_functions/detail/bessel_y1.hpp>
-#include <boost/math/special_functions/detail/bessel_jy_series.hpp>
-#include <boost/math/policies/error_handling.hpp>
 
 // Bessel function of the second kind of integer order
 // Y_n(z) is the dominant solution, forward recurrence always OK (though unstable)
 
-namespace boost { namespace math { namespace detail{
+namespace boost
+{
+namespace math
+{
+namespace detail
+{
 
 template <typename T, typename Policy>
-T bessel_yn(int n, T x, const Policy& pol)
+T bessel_yn(int n, T x, const Policy &pol)
 {
     BOOST_MATH_STD_USING
     T value, factor, current, prev;
 
     using namespace boost::math::tools;
 
-    static const char* function = "boost::math::bessel_yn<%1%>(%1%,%1%)";
+    static const char *function = "boost::math::bessel_yn<%1%>(%1%,%1%)";
 
     if ((x == 0) && (n == 0))
     {
-       return -policies::raise_overflow_error<T>(function, 0, pol);
+        return -policies::raise_overflow_error<T>(function, 0, pol);
     }
     if (x <= 0)
     {
-       return policies::raise_domain_error<T>(function,
-            "Got x = %1%, but x must be > 0, complex result not supported.", x, pol);
+        return policies::raise_domain_error<T>(function,
+                                               "Got x = %1%, but x must be > 0, complex result not supported.", x, pol);
     }
 
     //
@@ -45,7 +50,7 @@ T bessel_yn(int n, T x, const Policy& pol)
     //
     if (n < 0)
     {
-        factor = (n & 0x1) ? -1 : 1;  // Y_{-n}(z) = (-1)^n Y_n(z)
+        factor = (n & 0x1) ? -1 : 1; // Y_{-n}(z) = (-1)^n Y_n(z)
         n = -n;
     }
     else
@@ -53,13 +58,15 @@ T bessel_yn(int n, T x, const Policy& pol)
         factor = 1;
     }
 
-    if(x < policies::get_epsilon<T, Policy>())
+    if (x < policies::get_epsilon<T, Policy>())
     {
-       T scale = 1;
-       value = bessel_yn_small_z(n, x, &scale, pol);
-       if(tools::max_value<T>() * fabs(scale) < fabs(value))
-          return boost::math::sign(scale) * boost::math::sign(value) * policies::raise_overflow_error<T>(function, 0, pol);
-       value /= scale;
+        T scale = 1;
+        value = bessel_yn_small_z(n, x, &scale, pol);
+        if (tools::max_value<T>() * fabs(scale) < fabs(value))
+        {
+            return boost::math::sign(scale) * boost::math::sign(value) * policies::raise_overflow_error<T>(function, 0, pol);
+        }
+        value /= scale;
     }
     else if (n == 0)
     {
@@ -71,33 +78,35 @@ T bessel_yn(int n, T x, const Policy& pol)
     }
     else
     {
-       prev = bessel_y0(x, pol);
-       current = bessel_y1(x, pol);
-       int k = 1;
-       BOOST_ASSERT(k < n);
-       do
-       {
-           T fact = 2 * k / x;
-           if((tools::max_value<T>() - fabs(prev)) / fact < fabs(current))
-           {
-              prev /= current;
-              factor /= current;
-              current = 1;
-           }
-           value = fact * current - prev;
-           prev = current;
-           current = value;
-           ++k;
-       }
-       while(k < n);
-       if(fabs(tools::max_value<T>() * factor) < fabs(value))
-          return sign(value) * sign(value) * policies::raise_overflow_error<T>(function, 0, pol);
-       value /= factor;
+        prev = bessel_y0(x, pol);
+        current = bessel_y1(x, pol);
+        int k = 1;
+        BOOST_ASSERT(k < n);
+        do
+        {
+            T fact = 2 * k / x;
+            if ((tools::max_value<T>() - fabs(prev)) / fact < fabs(current))
+            {
+                prev /= current;
+                factor /= current;
+                current = 1;
+            }
+            value = fact * current - prev;
+            prev = current;
+            current = value;
+            ++k;
+        } while (k < n);
+        if (fabs(tools::max_value<T>() * factor) < fabs(value))
+        {
+            return sign(value) * sign(value) * policies::raise_overflow_error<T>(function, 0, pol);
+        }
+        value /= factor;
     }
     return value;
 }
 
-}}} // namespaces
+} // namespace detail
+} // namespace math
+} // namespace boost
 
 #endif // BOOST_MATH_BESSEL_YN_HPP
-

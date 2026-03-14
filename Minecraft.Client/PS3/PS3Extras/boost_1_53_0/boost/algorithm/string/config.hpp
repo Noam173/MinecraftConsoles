@@ -15,7 +15,7 @@
 #include <boost/detail/workaround.hpp>
 
 #ifdef BOOST_STRING_DEDUCED_TYPENAME
-#   error "macro already defined!"
+#error "macro already defined!"
 #endif
 
 #define BOOST_STRING_TYPENAME BOOST_DEDUCED_TYPENAME
@@ -25,4 +25,4 @@
 #pragma parse_func_templ off
 #endif
 
-#endif  // BOOST_STRING_CONFIG_HPP
+#endif // BOOST_STRING_CONFIG_HPP

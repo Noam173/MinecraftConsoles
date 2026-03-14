@@ -12,19 +12,21 @@
 #ifndef BOOST_GEOMETRY_STRATEGY_AGNOSTIC_POINT_IN_POLY_WINDING_HPP
 #define BOOST_GEOMETRY_STRATEGY_AGNOSTIC_POINT_IN_POLY_WINDING_HPP
 
-
 #include <boost/geometry/util/math.hpp>
 #include <boost/geometry/util/select_calculation_type.hpp>
 
-#include <boost/geometry/strategies/side.hpp>
 #include <boost/geometry/strategies/covered_by.hpp>
+#include <boost/geometry/strategies/side.hpp>
 #include <boost/geometry/strategies/within.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace strategy { namespace within
+namespace strategy
+{
+namespace within
 {
 
 /*!
@@ -43,27 +45,19 @@ namespace strategy { namespace within
 [link geometry.reference.algorithms.within.within_3_with_strategy within (with strategy)]
 }
  */
-template
-<
+template <
     typename Point,
     typename PointOfSegment = Point,
-    typename CalculationType = void
->
+    typename CalculationType = void>
 class winding
 {
-    typedef typename select_calculation_type
-        <
-            Point,
-            PointOfSegment,
-            CalculationType
-        >::type calculation_type;
+    typedef typename select_calculation_type<
+        Point,
+        PointOfSegment,
+        CalculationType>::type calculation_type;
 
-
-    typedef typename strategy::side::services::default_strategy
-        <
-            typename cs_tag<Point>::type
-        >::type strategy_side_type;
-
+    typedef typename strategy::side::services::default_strategy<
+        typename cs_tag<Point>::type>::type strategy_side_type;
 
     /*! subclass to keep state */
     class counter
@@ -73,24 +67,23 @@ class winding
 
         inline int code() const
         {
-            return m_touches ? 0 : m_count == 0 ? -1 : 1;
+            return m_touches ? 0 : m_count == 0 ? -1
+                                                : 1;
         }
 
-    public :
+      public:
         friend class winding;
 
         inline counter()
-            : m_count(0)
-            , m_touches(false)
-        {}
-
+            : m_count(0), m_touches(false)
+        {
+        }
     };
 
-
     template <size_t D>
-    static inline int check_touch(Point const& point,
-                PointOfSegment const& seg1, PointOfSegment const& seg2,
-                counter& state)
+    static inline int check_touch(Point const &point,
+                                  PointOfSegment const &seg1, PointOfSegment const &seg2,
+                                  counter &state)
     {
         calculation_type const p = get<D>(point);
         calculation_type const s1 = get<D>(seg1);
@@ -102,11 +95,10 @@ class winding
         return 0;
     }
 
-
     template <size_t D>
-    static inline int check_segment(Point const& point,
-                PointOfSegment const& seg1, PointOfSegment const& seg2,
-                counter& state)
+    static inline int check_segment(Point const &point,
+                                    PointOfSegment const &seg1, PointOfSegment const &seg2,
+                                    counter &state)
     {
         calculation_type const p = get<D>(point);
         calculation_type const s1 = get<D>(seg1);
@@ -120,30 +112,25 @@ class winding
         {
             // Both equal p -> segment is horizontal (or vertical for D=0)
             // The only thing which has to be done is check if point is ON segment
-            return check_touch<1 - D>(point, seg1, seg2,state);
+            return check_touch<1 - D>(point, seg1, seg2, state);
         }
 
-        return
-              eq1 ? (s2 > p ?  1 : -1)  // Point on level s1, UP/DOWN depending on s2
-            : eq2 ? (s1 > p ? -1 :  1)  // idem
-            : s1 < p && s2 > p ?  2     // Point between s1 -> s2 --> UP
-            : s2 < p && s1 > p ? -2     // Point between s2 -> s1 --> DOWN
-            : 0;
+        return eq1                ? (s2 > p ? 1 : -1) // Point on level s1, UP/DOWN depending on s2
+               : eq2              ? (s1 > p ? -1 : 1) // idem
+               : s1 < p && s2 > p ? 2                 // Point between s1 -> s2 --> UP
+               : s2 < p && s1 > p ? -2                // Point between s2 -> s1 --> DOWN
+                                  : 0;
     }
 
-
-
-
-public :
-
+  public:
     // Typedefs and static methods to fulfill the concept
     typedef Point point_type;
     typedef PointOfSegment segment_point_type;
     typedef counter state_type;
 
-    static inline bool apply(Point const& point,
-                PointOfSegment const& s1, PointOfSegment const& s2,
-                counter& state)
+    static inline bool apply(Point const &point,
+                             PointOfSegment const &s1, PointOfSegment const &s2,
+                             counter &state)
     {
         int count = check_segment<1>(point, s1, s2, state);
         if (count != 0)
@@ -166,15 +153,14 @@ public :
                 state.m_count += count;
             }
         }
-        return ! state.m_touches;
+        return !state.m_touches;
     }
 
-    static inline int result(counter const& state)
+    static inline int result(counter const &state)
     {
         return state.code();
     }
 };
-
 
 #ifndef DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
 
@@ -194,18 +180,19 @@ struct default_strategy<point_tag, AnyTag, point_tag, areal_tag, spherical_tag, 
     typedef winding<Point, typename geometry::point_type<Geometry>::type> type;
 };
 
-
 } // namespace services
 
 #endif
 
-
-}} // namespace strategy::within
-
-
+} // namespace within
+} // namespace strategy
 
 #ifndef DOXYGEN_NO_STRATEGY_SPECIALIZATIONS
-namespace strategy { namespace covered_by { namespace services
+namespace strategy
+{
+namespace covered_by
+{
+namespace services
 {
 
 // Register using "areal_tag" for ring, polygon, multi-polygon
@@ -221,12 +208,12 @@ struct default_strategy<point_tag, AnyTag, point_tag, areal_tag, spherical_tag, 
     typedef strategy::within::winding<Point, typename geometry::point_type<Geometry>::type> type;
 };
 
-
-}}} // namespace strategy::covered_by::services
+} // namespace services
+} // namespace covered_by
+} // namespace strategy
 #endif
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGY_AGNOSTIC_POINT_IN_POLY_WINDING_HPP

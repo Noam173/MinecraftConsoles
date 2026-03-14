@@ -12,22 +12,25 @@
 #define BOOST_ASIO_DETAIL_SELECT_INTERRUPTER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if defined(BOOST_WINDOWS) || defined(__CYGWIN__) || defined(__SYMBIAN32__)
-# include <boost/asio/detail/socket_select_interrupter.hpp>
+#include <boost/asio/detail/socket_select_interrupter.hpp>
 #elif defined(BOOST_ASIO_HAS_EVENTFD)
-# include <boost/asio/detail/eventfd_select_interrupter.hpp>
+#include <boost/asio/detail/eventfd_select_interrupter.hpp>
 #else
-# include <boost/asio/detail/pipe_select_interrupter.hpp>
+#include <boost/asio/detail/pipe_select_interrupter.hpp>
 #endif
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 #if defined(BOOST_WINDOWS) || defined(__CYGWIN__) || defined(__SYMBIAN32__)
 typedef socket_select_interrupter select_interrupter;

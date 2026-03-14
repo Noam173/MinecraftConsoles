@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_FUNCTOR_BAG_HPP
 #define BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_FUNCTOR_BAG_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -22,8 +22,8 @@
 // This bogus warning will appear when add_const is applied to a
 // const volatile reference because we can't detect const volatile
 // references with MSVC6.
-#   pragma warning(push)
-#   pragma warning(disable:4181)
+#pragma warning(push)
+#pragma warning(disable : 4181)
 // warning C4181: qualifier applied to reference type ignored
 #endif
 
@@ -32,13 +32,17 @@
 #include <boost/type_traits/add_reference.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 
-#include <boost/mpl/inherit_linearly.hpp>
 #include <boost/mpl/inherit.hpp>
+#include <boost/mpl/inherit_linearly.hpp>
 
-namespace boost {
-namespace bimaps {
-namespace container_adaptor {
-namespace detail {
+namespace boost
+{
+namespace bimaps
+{
+namespace container_adaptor
+{
+namespace detail
+{
 
 /// \brief EBO optimizacion helper for functors
 /**
@@ -48,39 +52,43 @@ Nathan C. Myers.\n
 See it at \link http://www.cantrip.org/emptyopt.html
                                                                                     **/
 
-template < class Data, class FunctorList >
+template <class Data, class FunctorList>
 struct data_with_functor_bag :
 
     public mpl::inherit_linearly<
 
         FunctorList,
-        mpl::if_< is_base_of< mpl::_2, mpl::_1 >,
-        //   {
+        mpl::if_<is_base_of<mpl::_2, mpl::_1>,
+                 //   {
                  mpl::_1,
-        //   }
-        //   else
-        //   {
-                 mpl::inherit< mpl::_1, mpl::_2 >
-        //   }
-        >
+                 //   }
+                 //   else
+                 //   {
+                 mpl::inherit<mpl::_1, mpl::_2>
+                 //   }
+                 >
 
-    >::type
+        >::type
 {
     Data data;
 
-    data_with_functor_bag() {}
-
-    data_with_functor_bag(BOOST_DEDUCED_TYPENAME add_reference<Data>::type d)
-        : data(d) {}
-
-    template< class Functor >
-    Functor& functor()
+    data_with_functor_bag()
     {
-        return *(static_cast<Functor*>(this));
     }
 
-    template< class Functor >
-    const Functor& functor() const
+    data_with_functor_bag(BOOST_DEDUCED_TYPENAME add_reference<Data>::type d)
+        : data(d)
+    {
+    }
+
+    template <class Functor>
+    Functor &functor()
+    {
+        return *(static_cast<Functor *>(this));
+    }
+
+    template <class Functor>
+    const Functor &functor() const
     {
         return *(static_cast<Functor const *>(this));
     }
@@ -92,9 +100,7 @@ struct data_with_functor_bag :
 } // namespace boost
 
 #if defined(BOOST_MSVC)
-#   pragma warning(pop)
+#pragma warning(pop)
 #endif
 
 #endif // BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_FUNCTOR_BAG_HPP
-
-

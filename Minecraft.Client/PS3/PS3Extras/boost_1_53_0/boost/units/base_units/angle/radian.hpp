@@ -1,4 +1,4 @@
-// Boost.Units - A C++ library for zero-overhead dimensional analysis and 
+// Boost.Units - A C++ library for zero-overhead dimensional analysis and
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
@@ -13,20 +13,29 @@
 
 #include <string>
 
-#include <boost/units/config.hpp>
 #include <boost/units/base_unit.hpp>
+#include <boost/units/config.hpp>
 #include <boost/units/physical_dimensions/plane_angle.hpp>
 
-namespace boost {
+namespace boost
+{
 
-namespace units {
+namespace units
+{
 
-namespace angle {
+namespace angle
+{
 
 struct radian_base_unit : public base_unit<radian_base_unit, plane_angle_dimension, -2>
 {
-    static std::string name()   { return("radian"); }
-    static std::string symbol() { return("rad"); }
+    static std::string name()
+    {
+        return ("radian");
+    }
+    static std::string symbol()
+    {
+        return ("rad");
+    }
 };
 
 } // namespace angle
@@ -43,6 +52,6 @@ BOOST_TYPEOF_REGISTER_TYPE(boost::units::angle::radian_base_unit)
 
 #endif
 
-//#include <boost/units/base_units/angle/conversions.hpp>
+// #include <boost/units/base_units/angle/conversions.hpp>
 
 #endif // BOOST_UNITS_ANGLE_RADIAN_BASE_UNIT_HPP

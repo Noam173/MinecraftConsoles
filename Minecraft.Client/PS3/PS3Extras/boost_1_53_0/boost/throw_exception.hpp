@@ -4,13 +4,13 @@
 #pragma GCC system_header
 #endif
 #if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
-#pragma warning(push,1)
+#pragma warning(push, 1)
 #endif
 
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -26,41 +26,44 @@
 //  http://www.boost.org/libs/utility/throw_exception.html
 //
 
-#include <boost/exception/detail/attribute_noreturn.hpp>
-#include <boost/detail/workaround.hpp>
 #include <boost/config.hpp>
+#include <boost/detail/workaround.hpp>
+#include <boost/exception/detail/attribute_noreturn.hpp>
 #include <exception>
 
-#if !defined( BOOST_EXCEPTION_DISABLE ) && defined( __BORLANDC__ ) && BOOST_WORKAROUND( __BORLANDC__, BOOST_TESTED_AT(0x593) )
-# define BOOST_EXCEPTION_DISABLE
+#if !defined(BOOST_EXCEPTION_DISABLE) && defined(__BORLANDC__) && BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x593))
+#define BOOST_EXCEPTION_DISABLE
 #endif
 
-#if !defined( BOOST_EXCEPTION_DISABLE ) && defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, < 1310 )
-# define BOOST_EXCEPTION_DISABLE
+#if !defined(BOOST_EXCEPTION_DISABLE) && defined(BOOST_MSVC) && BOOST_WORKAROUND(BOOST_MSVC, < 1310)
+#define BOOST_EXCEPTION_DISABLE
 #endif
 
-#if !defined( BOOST_EXCEPTION_DISABLE )
-# include <boost/exception/exception.hpp>
-# include <boost/current_function.hpp>
-# define BOOST_THROW_EXCEPTION(x) ::boost::exception_detail::throw_exception_(x,BOOST_CURRENT_FUNCTION,__FILE__,__LINE__)
+#if !defined(BOOST_EXCEPTION_DISABLE)
+#include <boost/current_function.hpp>
+#include <boost/exception/exception.hpp>
+#define BOOST_THROW_EXCEPTION(x) ::boost::exception_detail::throw_exception_(x, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__)
 #else
-# define BOOST_THROW_EXCEPTION(x) ::boost::throw_exception(x)
+#define BOOST_THROW_EXCEPTION(x) ::boost::throw_exception(x)
 #endif
 
 namespace boost
 {
 #ifdef BOOST_NO_EXCEPTIONS
 
-void throw_exception( std::exception const & e ); // user defined
+void throw_exception(std::exception const &e); // user defined
 
 #else
 
-inline void throw_exception_assert_compatibility( std::exception const & ) { }
-
-template<class E> BOOST_ATTRIBUTE_NORETURN inline void throw_exception( E const & e )
+inline void throw_exception_assert_compatibility(std::exception const &)
 {
-    //All boost exceptions are required to derive from std::exception,
-    //to ensure compatibility with BOOST_NO_EXCEPTIONS.
+}
+
+template <class E>
+BOOST_ATTRIBUTE_NORETURN inline void throw_exception(E const &e)
+{
+    // All boost exceptions are required to derive from std::exception,
+    // to ensure compatibility with BOOST_NO_EXCEPTIONS.
     throw_exception_assert_compatibility(e);
 
 #ifndef BOOST_EXCEPTION_DISABLE
@@ -72,25 +75,23 @@ template<class E> BOOST_ATTRIBUTE_NORETURN inline void throw_exception( E const 
 
 #endif
 
-#if !defined( BOOST_EXCEPTION_DISABLE )
-    namespace
-    exception_detail
-    {
-        template <class E>
-        BOOST_ATTRIBUTE_NORETURN
-        void
-        throw_exception_( E const & x, char const * current_function, char const * file, int line )
-        {
-            boost::throw_exception(
+#if !defined(BOOST_EXCEPTION_DISABLE)
+namespace exception_detail
+{
+template <class E>
+BOOST_ATTRIBUTE_NORETURN void
+throw_exception_(E const &x, char const *current_function, char const *file, int line)
+{
+    boost::throw_exception(
+        set_info(
+            set_info(
                 set_info(
-                    set_info(
-                        set_info(
-                            enable_error_info(x),
-                            throw_function(current_function)),
-                        throw_file(file)),
-                    throw_line(line)));
-        }
-    }
+                    enable_error_info(x),
+                    throw_function(current_function)),
+                throw_file(file)),
+            throw_line(line)));
+}
+} // namespace exception_detail
 #endif
 } // namespace boost
 

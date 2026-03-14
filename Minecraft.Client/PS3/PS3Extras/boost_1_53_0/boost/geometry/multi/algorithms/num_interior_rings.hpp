@@ -24,38 +24,36 @@
 
 #include <boost/geometry/algorithms/num_interior_rings.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-
 template <typename MultiPolygon>
 struct num_interior_rings<MultiPolygon, multi_polygon_tag>
 {
-    static inline std::size_t apply(MultiPolygon const& multi_polygon)
+    static inline std::size_t apply(MultiPolygon const &multi_polygon)
     {
         std::size_t n = 0;
         for (typename boost::range_iterator<MultiPolygon const>::type
-            it = boost::begin(multi_polygon);
-            it != boost::end(multi_polygon);
-            ++it)
+                 it = boost::begin(multi_polygon);
+             it != boost::end(multi_polygon);
+             ++it)
         {
             n += geometry::num_interior_rings(*it);
         }
         return n;
     }
-
 };
 
 } // namespace dispatch
 #endif
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_NUM_INTERIOR_RINGS_HPP

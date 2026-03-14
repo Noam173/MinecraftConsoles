@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_RELATION_SUPPORT_PAIR_TYPE_BY_HPP
 #define BOOST_BIMAP_RELATION_SUPPORT_PAIR_TYPE_BY_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -38,25 +38,25 @@ See also member_at, pair_by().
 \ingroup relation_group
                                                                     **/
 
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
 // Implementation of pair type by metafunction
 
-BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_METADATA_ACCESS_BUILDER(
     pair_type_by,
     left_pair,
-    right_pair
-)
+    right_pair)
 
 } // namespace support
 } // namespace relation
 } // namespace bimaps
 } // namespace boost
 
-
 #endif // BOOST_BIMAP_RELATION_SUPPORT_PAIR_BY_TYPE_HPP
-

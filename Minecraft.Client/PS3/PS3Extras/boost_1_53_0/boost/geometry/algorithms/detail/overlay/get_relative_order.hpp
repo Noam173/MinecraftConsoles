@@ -9,20 +9,20 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_RELATIVE_ORDER_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_RELATIVE_ORDER_HPP
 
-
 #include <boost/geometry/algorithms/distance.hpp>
 
 #include <boost/geometry/strategies/intersection.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace overlay
+namespace detail
 {
-
+namespace overlay
+{
 
 /*!
     \brief Get relative order
@@ -36,38 +36,36 @@ namespace detail { namespace overlay
 template <typename Point1>
 struct get_relative_order
 {
-    typedef strategy_intersection
-        <
-            typename cs_tag<Point1>::type,
-            Point1,
-            Point1,
-            Point1
-        > si;
+    typedef strategy_intersection<
+        typename cs_tag<Point1>::type,
+        Point1,
+        Point1,
+        Point1>
+        si;
 
     typedef typename si::side_strategy_type strategy;
 
     template <typename Point>
-    static inline int value_via_product(Point const& ti, Point const& tj,
-                    Point const& ui, Point const& uj, int factor)
+    static inline int value_via_product(Point const &ti, Point const &tj,
+                                        Point const &ui, Point const &uj, int factor)
     {
         int const side_ti_u = strategy::apply(ti, tj, ui);
         int const side_tj_u = strategy::apply(ti, tj, uj);
 
 #ifdef BOOST_GEOMETRY_DEBUG_RELATIVE_ORDER
-        std::cout << (factor == 1  ? " r//s " :  " s//r ")
-            << side_ti_u << " / " << side_tj_u;
+        std::cout << (factor == 1 ? " r//s " : " s//r ")
+                  << side_ti_u << " / " << side_tj_u;
 #endif
 
         return side_ti_u * side_tj_u >= 0
-            ? factor * (side_ti_u != 0 ? side_ti_u : side_tj_u)
-            : 0;
+                   ? factor * (side_ti_u != 0 ? side_ti_u : side_tj_u)
+                   : 0;
     }
 
-
     static inline int apply(
-                Point1 const& pi, Point1 const& pj,
-                Point1 const& ri, Point1 const& rj,
-                Point1 const& si, Point1 const& sj)
+        Point1 const &pi, Point1 const &pj,
+        Point1 const &ri, Point1 const &rj,
+        Point1 const &si, Point1 const &sj)
     {
         int const side_ri_p = strategy::apply(pi, pj, ri);
         int const side_si_p = strategy::apply(pi, pj, si);
@@ -90,19 +88,19 @@ struct get_relative_order
 #ifdef BOOST_GEOMETRY_DEBUG_RELATIVE_ORDER
         std::cout
             << " o: " << order
-            << std::endl << std::endl;
+            << std::endl
+            << std::endl;
 #endif
 
         return order;
     }
 };
 
+} // namespace overlay
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
 
-}} // namespace detail::overlay
-#endif //DOXYGEN_NO_DETAIL
-
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_GET_RELATIVE_ORDER_HPP

@@ -14,17 +14,17 @@
 #include <boost/config.hpp>
 
 #ifdef BOOST_HAS_DECLSPEC
-    #if defined(BOOST_ALL_DYN_LINK) || defined(BOOST_RANDOM_DYN_LINK)
-        #if defined(BOOST_RANDOM_SOURCE)
-            #define BOOST_RANDOM_DECL __declspec(dllexport)
-        #else
-            #define BOOST_RANDOM_DECL __declspec(dllimport)
-        #endif
-    #endif
+#if defined(BOOST_ALL_DYN_LINK) || defined(BOOST_RANDOM_DYN_LINK)
+#if defined(BOOST_RANDOM_SOURCE)
+#define BOOST_RANDOM_DECL __declspec(dllexport)
+#else
+#define BOOST_RANDOM_DECL __declspec(dllimport)
+#endif
+#endif
 #endif
 
 #ifndef BOOST_RANDOM_DECL
-    #define BOOST_RANDOM_DECL
+#define BOOST_RANDOM_DECL
 #endif
 
 #if !defined(BOOST_RANDOM_NO_LIB) && !defined(BOOST_ALL_NO_LIB) && !defined(BOOST_RANDOM_SOURCE)
@@ -32,7 +32,7 @@
 #define BOOST_LIB_NAME boost_random
 
 #if defined(BOOST_RANDOM_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)
-    #define BOOST_DYN_LINK
+#define BOOST_DYN_LINK
 #endif
 
 #include <boost/config/auto_link.hpp>

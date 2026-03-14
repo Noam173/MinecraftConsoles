@@ -12,25 +12,25 @@
 #define BOOST_ASIO_SYSTEM_TIMER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
-#if defined(BOOST_ASIO_HAS_STD_CHRONO) \
-  || defined(BOOST_ASIO_HAS_BOOST_CHRONO) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(BOOST_ASIO_HAS_STD_CHRONO) || defined(BOOST_ASIO_HAS_BOOST_CHRONO) || defined(GENERATING_DOCUMENTATION)
 
 #if defined(BOOST_ASIO_HAS_STD_CHRONO)
-# include <chrono>
+#include <chrono>
 #elif defined(BOOST_ASIO_HAS_BOOST_CHRONO)
-# include <boost/chrono/system_clocks.hpp>
+#include <boost/chrono/system_clocks.hpp>
 #endif
 
 #include <boost/asio/basic_waitable_timer.hpp>
 
-namespace boost {
-namespace asio {
+namespace boost
+{
+namespace asio
+{
 
 #if defined(GENERATING_DOCUMENTATION)
 /// Typedef for a timer based on the system clock.
@@ -52,7 +52,7 @@ typedef basic_waitable_timer<boost::chrono::system_clock> system_timer;
 } // namespace asio
 } // namespace boost
 
-#endif // defined(BOOST_ASIO_HAS_STD_CHRONO) 
+#endif // defined(BOOST_ASIO_HAS_STD_CHRONO)
        //   || defined(BOOST_ASIO_HAS_BOOST_CHRONO)
        //   || defined(GENERATING_DOCUMENTATION)
 

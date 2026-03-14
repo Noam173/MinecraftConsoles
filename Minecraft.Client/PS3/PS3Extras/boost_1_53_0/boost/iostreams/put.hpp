@@ -9,7 +9,7 @@
 #define BOOST_IOSTREAMS_PUT_HPP_INCLUDED
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <boost/iostreams/write.hpp>

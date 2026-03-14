@@ -7,22 +7,22 @@
 #define BOOST_LEXER_INPUT
 
 #include "char_traits.hpp"
-#include <boost/detail/iterator.hpp>
 #include "size_t.hpp"
 #include "state_machine.hpp"
+#include <boost/detail/iterator.hpp>
 
 namespace boost
 {
 namespace lexer
 {
-template<typename FwdIter, typename Traits =
-    char_traits<typename boost::detail::iterator_traits<FwdIter>::value_type> >
+template <typename FwdIter, typename Traits =
+                                char_traits<typename boost::detail::iterator_traits<FwdIter>::value_type>>
 class basic_input
 {
-public:
+  public:
     class iterator
     {
-    public:
+      public:
 #if defined _MSC_VER && _MSC_VER <= 1200
         friend basic_input;
 #else
@@ -39,43 +39,41 @@ public:
             std::size_t state;
 
             // Construct in end() state.
-            data () :
-                id (0),
-                unique_id (npos),
-                bol (false),
-                state (npos)
+            data() : id(0),
+                     unique_id(npos),
+                     bol(false),
+                     state(npos)
             {
             }
 
-            bool operator == (const data &rhs_) const
+            bool operator==(const data &rhs_) const
             {
                 return id == rhs_.id && unique_id == rhs_.unique_id &&
-                    start == rhs_.start && end == rhs_.end &&
-                    bol == rhs_.bol && state == rhs_.state;
+                       start == rhs_.start && end == rhs_.end &&
+                       bol == rhs_.bol && state == rhs_.state;
             }
         };
 
-        iterator () :
-            _input (0)
+        iterator() : _input(0)
         {
         }
 
-        bool operator == (const iterator &rhs_) const
+        bool operator==(const iterator &rhs_) const
         {
             return _data == rhs_._data;
         }
 
-        bool operator != (const iterator &rhs_) const
+        bool operator!=(const iterator &rhs_) const
         {
             return !(*this == rhs_);
         }
 
-        data &operator * ()
+        data &operator*()
         {
             return _data;
         }
 
-        data *operator -> ()
+        data *operator->()
         {
             return &_data;
         }
@@ -83,50 +81,48 @@ public:
         // Let compiler generate operator = ().
 
         // prefix version
-        iterator &operator ++ ()
+        iterator &operator++()
         {
-            next_token ();
+            next_token();
             return *this;
         }
 
         // postfix version
-        iterator operator ++ (int)
+        iterator operator++(int)
         {
             iterator iter_ = *this;
 
-            next_token ();
+            next_token();
             return iter_;
         }
 
-    private:
+      private:
         // Not owner (obviously!)
         const basic_input *_input;
         data _data;
 
-        void next_token ()
+        void next_token()
         {
             const detail::internals &internals_ =
-                _input->_state_machine->data ();
+                _input->_state_machine->data();
 
             _data.start = _data.end;
 
-            if (internals_._dfa->size () == 1)
+            if (internals_._dfa->size() == 1)
             {
                 if (internals_._seen_BOL_assertion ||
                     internals_._seen_EOL_assertion)
                 {
-                    _data.id = next
-                        (&internals_._lookup->front ()->front (),
-                        internals_._dfa_alphabet.front (),
-                        &internals_._dfa->front ()->front (),
-                        _data.bol, _data.end, _input->_end, _data.unique_id);
+                    _data.id = next(&internals_._lookup->front()->front(),
+                                    internals_._dfa_alphabet.front(),
+                                    &internals_._dfa->front()->front(),
+                                    _data.bol, _data.end, _input->_end, _data.unique_id);
                 }
                 else
                 {
-                    _data.id = next (&internals_._lookup->front ()->front (),
-                        internals_._dfa_alphabet.front (), &internals_.
-                        _dfa->front ()->front (), _data.end, _input->_end,
-                        _data.unique_id);
+                    _data.id = next(&internals_._lookup->front()->front(),
+                                    internals_._dfa_alphabet.front(), &internals_._dfa->front()->front(), _data.end, _input->_end,
+                                    _data.unique_id);
                 }
             }
             else
@@ -134,13 +130,13 @@ public:
                 if (internals_._seen_BOL_assertion ||
                     internals_._seen_EOL_assertion)
                 {
-                    _data.id = next (internals_, _data.state,
-                        _data.bol, _data.end, _input->_end, _data.unique_id);
+                    _data.id = next(internals_, _data.state,
+                                    _data.bol, _data.end, _input->_end, _data.unique_id);
                 }
                 else
                 {
-                    _data.id = next (internals_, _data.state,
-                        _data.end, _input->_end, _data.unique_id);
+                    _data.id = next(internals_, _data.state,
+                                    _data.end, _input->_end, _data.unique_id);
                 }
             }
 
@@ -151,10 +147,10 @@ public:
             }
         }
 
-        std::size_t next (const detail::internals &internals_,
-            std::size_t &start_state_, bool bol_,
-            FwdIter &start_token_, const FwdIter &end_,
-            std::size_t &unique_id_)
+        std::size_t next(const detail::internals &internals_,
+                         std::size_t &start_state_, bool bol_,
+                         FwdIter &start_token_, const FwdIter &end_,
+                         std::size_t &unique_id_)
         {
             if (start_token_ == end_)
             {
@@ -162,11 +158,10 @@ public:
                 return 0;
             }
 
-        again:
-            const std::size_t * lookup_ = &internals_._lookup[start_state_]->
-                front ();
+again:
+            const std::size_t *lookup_ = &internals_._lookup[start_state_]->front();
             std::size_t dfa_alphabet_ = internals_._dfa_alphabet[start_state_];
-            const std::size_t *dfa_ = &internals_._dfa[start_state_]->front ();
+            const std::size_t *dfa_ = &internals_._dfa[start_state_]->front();
             const std::size_t *ptr_ = dfa_ + dfa_alphabet_;
             FwdIter curr_ = start_token_;
             bool end_state_ = *ptr_ != 0;
@@ -196,8 +191,7 @@ public:
                     bol_ = prev_char_ == '\n';
 
                     const std::size_t state_ =
-                        ptr_[lookup_[static_cast<typename Traits::index_type>
-                        (prev_char_)]];
+                        ptr_[lookup_[static_cast<typename Traits::index_type>(prev_char_)]];
 
                     if (state_ == 0)
                     {
@@ -264,9 +258,9 @@ public:
             return id_;
         }
 
-        std::size_t next (const detail::internals &internals_,
-            std::size_t &start_state_, FwdIter &start_token_,
-            FwdIter const &end_, std::size_t &unique_id_)
+        std::size_t next(const detail::internals &internals_,
+                         std::size_t &start_state_, FwdIter &start_token_,
+                         FwdIter const &end_, std::size_t &unique_id_)
         {
             if (start_token_ == end_)
             {
@@ -274,11 +268,10 @@ public:
                 return 0;
             }
 
-        again:
-            const std::size_t * lookup_ = &internals_._lookup[start_state_]->
-                front ();
+again:
+            const std::size_t *lookup_ = &internals_._lookup[start_state_]->front();
             std::size_t dfa_alphabet_ = internals_._dfa_alphabet[start_state_];
-            const std::size_t *dfa_ = &internals_._dfa[start_state_]->front ();
+            const std::size_t *dfa_ = &internals_._dfa[start_state_]->front();
             const std::size_t *ptr_ = dfa_ + dfa_alphabet_;
             FwdIter curr_ = start_token_;
             bool end_state_ = *ptr_ != 0;
@@ -289,8 +282,7 @@ public:
 
             while (curr_ != end_)
             {
-                const std::size_t state_ = ptr_[lookup_[static_cast
-                    <typename Traits::index_type>(*curr_++)]];
+                const std::size_t state_ = ptr_[lookup_[static_cast<typename Traits::index_type>(*curr_++)]];
 
                 if (state_ == 0)
                 {
@@ -315,7 +307,10 @@ public:
                 start_state_ = end_start_state_;
                 start_token_ = end_token_;
 
-                if (id_ == 0) goto again;
+                if (id_ == 0)
+                {
+                    goto again;
+                }
             }
             else
             {
@@ -329,10 +324,10 @@ public:
             return id_;
         }
 
-        std::size_t next (const std::size_t * const lookup_,
-            const std::size_t dfa_alphabet_, const std::size_t * const dfa_,
-            bool bol_, FwdIter &start_token_, FwdIter const &end_,
-            std::size_t &unique_id_)
+        std::size_t next(const std::size_t *const lookup_,
+                         const std::size_t dfa_alphabet_, const std::size_t *const dfa_,
+                         bool bol_, FwdIter &start_token_, FwdIter const &end_,
+                         std::size_t &unique_id_)
         {
             if (start_token_ == end_)
             {
@@ -368,8 +363,7 @@ public:
                     bol_ = prev_char_ == '\n';
 
                     const std::size_t state_ =
-                        ptr_[lookup_[static_cast<typename Traits::index_type>
-                        (prev_char_)]];
+                        ptr_[lookup_[static_cast<typename Traits::index_type>(prev_char_)]];
 
                     if (state_ == 0)
                     {
@@ -424,10 +418,10 @@ public:
             return id_;
         }
 
-        std::size_t next (const std::size_t * const lookup_,
-            const std::size_t dfa_alphabet_, const std::size_t * const dfa_,
-            FwdIter &start_token_, FwdIter const &end_,
-            std::size_t &unique_id_)
+        std::size_t next(const std::size_t *const lookup_,
+                         const std::size_t dfa_alphabet_, const std::size_t *const dfa_,
+                         FwdIter &start_token_, FwdIter const &end_,
+                         std::size_t &unique_id_)
         {
             if (start_token_ == end_)
             {
@@ -444,8 +438,7 @@ public:
 
             while (curr_ != end_)
             {
-                const std::size_t state_ = ptr_[lookup_[static_cast
-                    <typename Traits::index_type>(*curr_++)]];
+                const std::size_t state_ = ptr_[lookup_[static_cast<typename Traits::index_type>(*curr_++)]];
 
                 if (state_ == 0)
                 {
@@ -488,15 +481,15 @@ public:
 #endif
 
     // Make it explict that we are NOT taking a copy of state_machine_!
-    basic_input (const basic_state_machine<typename Traits::char_type>
-        *state_machine_, const FwdIter &begin_, const FwdIter &end_) :
-        _state_machine (state_machine_),
-        _begin (begin_),
-        _end (end_)
+    basic_input(const basic_state_machine<typename Traits::char_type>
+                    *state_machine_,
+                const FwdIter &begin_, const FwdIter &end_) : _state_machine(state_machine_),
+                                                              _begin(begin_),
+                                                              _end(end_)
     {
     }
 
-    iterator begin () const
+    iterator begin() const
     {
         iterator iter_;
 
@@ -505,13 +498,13 @@ public:
         iter_._data.id = npos;
         iter_._data.start = _begin;
         iter_._data.end = _begin;
-        iter_._data.bol = _state_machine->data ()._seen_BOL_assertion;
+        iter_._data.bol = _state_machine->data()._seen_BOL_assertion;
         iter_._data.state = 0;
         ++iter_;
         return iter_;
     }
 
-    iterator end () const
+    iterator end() const
     {
         iterator iter_;
 
@@ -521,7 +514,7 @@ public:
         return iter_;
     }
 
-private:
+  private:
     const basic_state_machine<typename Traits::char_type> *_state_machine;
     FwdIter _begin;
     FwdIter _end;
@@ -531,7 +524,7 @@ typedef basic_input<std::string::iterator> iter_input;
 typedef basic_input<std::basic_string<wchar_t>::iterator> iter_winput;
 typedef basic_input<const char *> ptr_input;
 typedef basic_input<const wchar_t *> ptr_winput;
-}
-}
+} // namespace lexer
+} // namespace boost
 
 #endif

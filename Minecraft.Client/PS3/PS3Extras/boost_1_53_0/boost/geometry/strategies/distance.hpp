@@ -14,89 +14,83 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_DISTANCE_HPP
 #define BOOST_GEOMETRY_STRATEGIES_DISTANCE_HPP
 
-
 #include <boost/mpl/assert.hpp>
 
 #include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/strategies/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-
-namespace strategy { namespace distance { namespace services
+namespace strategy
+{
+namespace distance
+{
+namespace services
 {
 
-
-template <typename Strategy> struct tag {};
-template <typename Strategy> struct return_type
+template <typename Strategy>
+struct tag
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY, (types<Strategy>)
-        );
 };
-
+template <typename Strategy>
+struct return_type
+{
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY, (types<Strategy>));
+};
 
 /*!
     \brief Metafunction delivering a similar strategy with other input point types
 */
-template
-<
+template <
     typename Strategy,
     typename Point1,
-    typename Point2
->
+    typename Point2>
 struct similar_type
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY
-            , (types<Strategy, Point1, Point2>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY, (types<Strategy, Point1, Point2>));
 };
 
-template
-<
+template <
     typename Strategy,
     typename Point1,
-    typename Point2
->
+    typename Point2>
 struct get_similar
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY
-            , (types<Strategy, Point1, Point2>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY, (types<Strategy, Point1, Point2>));
 };
 
-template <typename Strategy> struct comparable_type
+template <typename Strategy>
+struct comparable_type
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY, (types<Strategy>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY, (types<Strategy>));
 };
 
-template <typename Strategy> struct get_comparable
+template <typename Strategy>
+struct get_comparable
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY, (types<Strategy>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_STRATEGY, (types<Strategy>));
 };
 
-template <typename Strategy> struct result_from_distance {};
-
+template <typename Strategy>
+struct result_from_distance
+{
+};
 
 // For point-segment only:
-template <typename Strategy> struct strategy_point_point {};
-
+template <typename Strategy>
+struct strategy_point_point
+{
+};
 
 // Default strategy
-
 
 /*!
     \brief Traits class binding a default strategy for distance
@@ -108,28 +102,24 @@ template <typename Strategy> struct strategy_point_point {};
     \tparam CsTag1 tag of coordinate system of first point type
     \tparam CsTag2 tag of coordinate system of second point type
 */
-template
-<
+template <
     typename GeometryTag,
     typename Point1,
     typename Point2 = Point1,
     typename CsTag1 = typename cs_tag<Point1>::type,
     typename CsTag2 = typename cs_tag<Point2>::type,
-    typename UnderlyingStrategy = void
->
+    typename UnderlyingStrategy = void>
 struct default_strategy
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE_COMBINATION
-            , (types<Point1, Point2, CsTag1, CsTag2>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE_COMBINATION, (types<Point1, Point2, CsTag1, CsTag2>));
 };
 
+} // namespace services
+} // namespace distance
+} // namespace strategy
 
-}}} // namespace strategy::distance::services
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_DISTANCE_HPP

@@ -9,22 +9,27 @@
 
 #include <boost/mpl/bool.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    struct std_tuple_tag;
+namespace fusion
+{
+struct std_tuple_tag;
 
-    namespace extension
+namespace extension
+{
+template <typename Tag>
+struct is_sequence_impl;
+
+template <>
+struct is_sequence_impl<std_tuple_tag>
+{
+    template <typename Sequence>
+    struct apply : mpl::true_
     {
-        template<typename Tag>
-        struct is_sequence_impl;
-
-        template<>
-        struct is_sequence_impl<std_tuple_tag>
-        {
-            template<typename Sequence>
-            struct apply : mpl::true_ {};
-        };
-    }
-}}
+    };
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

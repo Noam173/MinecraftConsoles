@@ -6,8 +6,6 @@
 // ing file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //////////////////////////////////////////////////////////////////////////////
 
-
-
 namespace boost
 {
 namespace statechart
@@ -15,17 +13,13 @@ namespace statechart
 namespace detail
 {
 
-
-
-template< typename T >
-inline void avoid_unused_warning( const T & ) {}
-
-
+template <typename T>
+inline void avoid_unused_warning(const T &)
+{
+}
 
 } // namespace detail
 } // namespace statechart
 } // namespace boost
-
-
 
 #endif

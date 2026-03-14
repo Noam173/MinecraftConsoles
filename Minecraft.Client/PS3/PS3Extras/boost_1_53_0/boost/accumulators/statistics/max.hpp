@@ -8,49 +8,51 @@
 #ifndef BOOST_ACCUMULATORS_STATISTICS_MAX_HPP_EAN_28_10_2005
 #define BOOST_ACCUMULATORS_STATISTICS_MAX_HPP_EAN_28_10_2005
 
-#include <limits>
-#include <boost/mpl/placeholders.hpp>
 #include <boost/accumulators/framework/accumulator_base.hpp>
+#include <boost/accumulators/framework/depends_on.hpp>
 #include <boost/accumulators/framework/extractor.hpp>
 #include <boost/accumulators/framework/parameters/sample.hpp>
 #include <boost/accumulators/numeric/functional.hpp>
-#include <boost/accumulators/framework/depends_on.hpp>
 #include <boost/accumulators/statistics_fwd.hpp>
+#include <boost/mpl/placeholders.hpp>
+#include <limits>
 
-namespace boost { namespace accumulators
+namespace boost
+{
+namespace accumulators
 {
 
 namespace impl
 {
-    ///////////////////////////////////////////////////////////////////////////////
-    // max_impl
-    template<typename Sample>
-    struct max_impl
-      : accumulator_base
+///////////////////////////////////////////////////////////////////////////////
+// max_impl
+template <typename Sample>
+struct max_impl
+    : accumulator_base
+{
+    // for boost::result_of
+    typedef Sample result_type;
+
+    template <typename Args>
+    max_impl(Args const &args)
+        : max_(numeric::as_min(args[sample | Sample()]))
     {
-        // for boost::result_of
-        typedef Sample result_type;
+    }
 
-        template<typename Args>
-        max_impl(Args const &args)
-          : max_(numeric::as_min(args[sample | Sample()]))
-        {
-        }
+    template <typename Args>
+    void operator()(Args const &args)
+    {
+        numeric::max_assign(this->max_, args[sample]);
+    }
 
-        template<typename Args>
-        void operator ()(Args const &args)
-        {
-            numeric::max_assign(this->max_, args[sample]);
-        }
+    result_type result(dont_care) const
+    {
+        return this->max_;
+    }
 
-        result_type result(dont_care) const
-        {
-            return this->max_;
-        }
-
-    private:
-        Sample max_;
-    };
+  private:
+    Sample max_;
+};
 
 } // namespace impl
 
@@ -59,27 +61,28 @@ namespace impl
 //
 namespace tag
 {
-    struct max
-      : depends_on<>
-    {
-        /// INTERNAL ONLY
-        ///
-        typedef accumulators::impl::max_impl<mpl::_1> impl;
-    };
-}
+struct max
+    : depends_on<>
+{
+    /// INTERNAL ONLY
+    ///
+    typedef accumulators::impl::max_impl<mpl::_1> impl;
+};
+} // namespace tag
 
 ///////////////////////////////////////////////////////////////////////////////
 // extract::max
 //
 namespace extract
 {
-    extractor<tag::max> const max = {};
+extractor<tag::max> const max = {};
 
-    BOOST_ACCUMULATORS_IGNORE_GLOBAL(max)
-}
+BOOST_ACCUMULATORS_IGNORE_GLOBAL(max)
+} // namespace extract
 
 using extract::max;
 
-}} // namespace boost::accumulators
+} // namespace accumulators
+} // namespace boost
 
 #endif

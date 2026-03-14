@@ -14,8 +14,8 @@
 #include <boost/spirit/home/qi/action.hpp>
 #include <boost/spirit/home/qi/auto.hpp>
 #include <boost/spirit/home/qi/auxiliary.hpp>
-#include <boost/spirit/home/qi/char.hpp>
 #include <boost/spirit/home/qi/binary.hpp>
+#include <boost/spirit/home/qi/char.hpp>
 #include <boost/spirit/home/qi/directive.hpp>
 #include <boost/spirit/home/qi/nonterminal.hpp>
 #include <boost/spirit/home/qi/numeric.hpp>
@@ -24,8 +24,8 @@
 #include <boost/spirit/home/qi/parse_attr.hpp>
 #include <boost/spirit/home/qi/parser.hpp>
 #include <boost/spirit/home/qi/skip_over.hpp>
+#include <boost/spirit/home/qi/stream.hpp>
 #include <boost/spirit/home/qi/string.hpp>
 #include <boost/spirit/home/qi/what.hpp>
-#include <boost/spirit/home/qi/stream.hpp>
 
 #endif

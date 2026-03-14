@@ -4,23 +4,26 @@
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_TR1_CMATH_HPP_INCLUDED
-#  define BOOST_TR1_CMATH_HPP_INCLUDED
-#  include <boost/tr1/detail/config.hpp>
+#define BOOST_TR1_CMATH_HPP_INCLUDED
+#include <boost/tr1/detail/config.hpp>
 
 #ifdef BOOST_HAS_TR1_CMATH
 
-#  if defined(BOOST_HAS_INCLUDE_NEXT) && !defined(BOOST_TR1_DISABLE_INCLUDE_NEXT)
-#     include_next BOOST_TR1_HEADER(cmath)
-#  else
-#     include <boost/tr1/detail/config_all.hpp>
-#     include BOOST_TR1_HEADER(cmath)
-#  endif
+#if defined(BOOST_HAS_INCLUDE_NEXT) && !defined(BOOST_TR1_DISABLE_INCLUDE_NEXT)
+#include_next BOOST_TR1_HEADER(cmath)
+#else
+#include <boost/tr1/detail/config_all.hpp>
+#include BOOST_TR1_HEADER(cmath)
+#endif
 
 #else
 
 #include <boost/math/tr1.hpp>
 
-namespace std{ namespace tr1{
+namespace std
+{
+namespace tr1
+{
 
 using boost::math::tr1::assoc_laguerre;
 using boost::math::tr1::assoc_laguerref;
@@ -140,11 +143,11 @@ using boost::math::tr1::copysign;
 using boost::math::tr1::copysignf;
 using boost::math::tr1::copysignl;
 using boost::math::tr1::erf;
-using boost::math::tr1::erff;
-using boost::math::tr1::erfl;
 using boost::math::tr1::erfc;
 using boost::math::tr1::erfcf;
 using boost::math::tr1::erfcl;
+using boost::math::tr1::erff;
+using boost::math::tr1::erfl;
 #if 0
 using boost::math::tr1::exp2;
 using boost::math::tr1::exp2f;
@@ -246,12 +249,12 @@ using boost::math::tr1::trunc;
 using boost::math::tr1::truncf;
 using boost::math::tr1::truncl;
 // C99 macros defined as C++ templates
-using boost::math::tr1::signbit;
 using boost::math::tr1::fpclassify;
 using boost::math::tr1::isfinite;
 using boost::math::tr1::isinf;
 using boost::math::tr1::isnan;
 using boost::math::tr1::isnormal;
+using boost::math::tr1::signbit;
 #if 0
 using boost::math::tr1::isgreater;
 using boost::math::tr1::isgreaterequal;
@@ -260,7 +263,8 @@ using boost::math::tr1::islessequal;
 using boost::math::tr1::islessgreater;
 using boost::math::tr1::isunordered;
 #endif
-} } // namespaces
+} // namespace tr1
+} // namespace std
 
 #endif // BOOST_HAS_TR1_CMATH
 

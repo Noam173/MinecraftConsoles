@@ -10,9 +10,9 @@
 #ifndef BOOST_FUSION_ADAPTED_ADT_HPP
 #define BOOST_FUSION_ADAPTED_ADT_HPP
 
-#include <boost/fusion/adapted/adt/adapt_assoc_adt_named.hpp>
-#include <boost/fusion/adapted/adt/adapt_assoc_adt.hpp>
-#include <boost/fusion/adapted/adt/adapt_adt_named.hpp>
 #include <boost/fusion/adapted/adt/adapt_adt.hpp>
+#include <boost/fusion/adapted/adt/adapt_adt_named.hpp>
+#include <boost/fusion/adapted/adt/adapt_assoc_adt.hpp>
+#include <boost/fusion/adapted/adt/adapt_assoc_adt_named.hpp>
 
 #endif

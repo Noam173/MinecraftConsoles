@@ -8,27 +8,30 @@
  * $Date: 2009-06-04 01:24:49 -0700 (Thu, 04 Jun 2009) $
  */
 
-
-#include "boost/date_time/posix_time/conversion.hpp"
 #include "boost/date_time/c_time.hpp"
 #include "boost/date_time/local_time/local_date_time.hpp"
+#include "boost/date_time/posix_time/conversion.hpp"
 
-namespace boost {
-namespace local_time {
+namespace boost
+{
+namespace local_time
+{
 
 //! Function that creates a tm struct from a local_date_time
-inline
-std::tm to_tm(const local_date_time& lt) {
-  std::tm lt_tm = posix_time::to_tm(lt.local_time());
-  if(lt.is_dst()){
-    lt_tm.tm_isdst = 1;
-  }
-  else{
-    lt_tm.tm_isdst = 0;
-  }
-  return lt_tm;
+inline std::tm to_tm(const local_date_time &lt)
+{
+    std::tm lt_tm = posix_time::to_tm(lt.local_time());
+    if (lt.is_dst())
+    {
+        lt_tm.tm_isdst = 1;
+    }
+    else
+    {
+        lt_tm.tm_isdst = 0;
+    }
+    return lt_tm;
 }
 
-
-}} // namespaces
+} // namespace local_time
+} // namespace boost
 #endif // DATE_TIME_LOCAL_TIME_CONVERSION_HPP__

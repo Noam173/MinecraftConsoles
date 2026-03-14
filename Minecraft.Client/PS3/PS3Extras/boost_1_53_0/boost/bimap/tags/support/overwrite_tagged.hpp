@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_TAGS_SUPPORT_OVERWRITE_TAGGED_HPP
 #define BOOST_BIMAP_TAGS_SUPPORT_OVERWRITE_TAGGED_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -40,26 +40,28 @@ See also tagged, default_tagged.
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace tags {
-namespace support {
-
+namespace boost
+{
+namespace bimaps
+{
+namespace tags
+{
+namespace support
+{
 
 // Change the tag
 
-template< class Type, class NewTag >
+template <class Type, class NewTag>
 struct overwrite_tagged
 {
-    typedef tagged<Type,NewTag> type;
+    typedef tagged<Type, NewTag> type;
 };
 
-template< class Type, class OldTag, class NewTag >
-struct overwrite_tagged< tagged< Type, OldTag >, NewTag >
+template <class Type, class OldTag, class NewTag>
+struct overwrite_tagged<tagged<Type, OldTag>, NewTag>
 {
-    typedef tagged<Type,NewTag> type;
+    typedef tagged<Type, NewTag> type;
 };
-
 
 } // namespace support
 } // namespace tags
@@ -69,5 +71,3 @@ struct overwrite_tagged< tagged< Type, OldTag >, NewTag >
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_TAGS_SUPPORT_OVERWRITE_TAGGED_HPP
-
-

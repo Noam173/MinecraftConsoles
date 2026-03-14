@@ -15,7 +15,8 @@
 
 #include <exception>
 
-namespace boost {
+namespace boost
+{
 
 //////////////////////////////////////////////////////////////////////////
 // class bad_visit
@@ -26,14 +27,12 @@ namespace boost {
 struct bad_visit
     : std::exception
 {
-public: // std::exception interface
-
-    virtual const char * what() const throw()
+  public: // std::exception interface
+    virtual const char *what() const throw()
     {
         return "boost::bad_visit: "
                "failed visitation using boost::apply_visitor";
     }
-
 };
 
 } // namespace boost

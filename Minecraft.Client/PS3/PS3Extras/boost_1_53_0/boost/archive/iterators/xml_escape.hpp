@@ -3,13 +3,13 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // xml_escape.hpp
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -23,42 +23,46 @@
 
 #include <boost/archive/iterators/escape.hpp>
 
-namespace boost { 
-namespace archive {
-namespace iterators {
+namespace boost
+{
+namespace archive
+{
+namespace iterators
+{
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // insert escapes into xml text
 
-template<class Base>
-class xml_escape 
+template <class Base>
+class xml_escape
     : public escape<xml_escape<Base>, Base>
 {
     friend class boost::iterator_core_access;
 
     typedef escape<xml_escape<Base>, Base> super_t;
 
-public:
-    char fill(const char * & bstart, const char * & bend);
-    wchar_t fill(const wchar_t * & bstart, const wchar_t * & bend);
+  public:
+    char fill(const char *&bstart, const char *&bend);
+    wchar_t fill(const wchar_t *&bstart, const wchar_t *&bend);
 
-    template<class T>
-    xml_escape(BOOST_PFTO_WRAPPER(T) start) :
-        super_t(Base(BOOST_MAKE_PFTO_WRAPPER(static_cast< T >(start))))
-    {}
+    template <class T>
+    xml_escape(BOOST_PFTO_WRAPPER(T) start) : super_t(Base(BOOST_MAKE_PFTO_WRAPPER(static_cast<T>(start))))
+    {
+    }
     // intel 7.1 doesn't like default copy constructor
-    xml_escape(const xml_escape & rhs) : 
-        super_t(rhs.base_reference())
-    {}
+    xml_escape(const xml_escape &rhs) : super_t(rhs.base_reference())
+    {
+    }
 };
 
-template<class Base>
+template <class Base>
 char xml_escape<Base>::fill(
-    const char * & bstart, 
-    const char * & bend
-){
-    char current_value = * this->base_reference();
-    switch(current_value){
+    const char *&bstart,
+    const char *&bend)
+{
+    char current_value = *this->base_reference();
+    switch (current_value)
+    {
     case '<':
         bstart = "&lt;";
         bend = bstart + 4;
@@ -85,13 +89,14 @@ char xml_escape<Base>::fill(
     return *bstart;
 }
 
-template<class Base>
+template <class Base>
 wchar_t xml_escape<Base>::fill(
-    const wchar_t * & bstart, 
-    const wchar_t * & bend
-){
-    wchar_t current_value = * this->base_reference();
-    switch(current_value){
+    const wchar_t *&bstart,
+    const wchar_t *&bend)
+{
+    wchar_t current_value = *this->base_reference();
+    switch (current_value)
+    {
     case '<':
         bstart = L"&lt;";
         bend = bstart + 4;

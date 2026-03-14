@@ -1,19 +1,19 @@
-#include "stdafx.h"
 #include "JoinMultiplayerScreen.h"
+#include "..\Minecraft.World\net.minecraft.locale.h"
 #include "Button.h"
 #include "EditBox.h"
 #include "Options.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
+#include "stdafx.h"
 
 JoinMultiplayerScreen::JoinMultiplayerScreen(Screen *lastScreen)
 {
-	ipEdit = nullptr;
-	this->lastScreen = lastScreen;
+    ipEdit = nullptr;
+    this->lastScreen = lastScreen;
 }
 
 void JoinMultiplayerScreen::tick()
 {
-	ipEdit->tick();
+    ipEdit->tick();
 }
 
 void JoinMultiplayerScreen::init()
@@ -24,71 +24,72 @@ void JoinMultiplayerScreen::init()
     buttons.clear();
     buttons.push_back(new Button(0, width / 2 - 100, height / 4 + 24 * 4 + 12, language->getElement(L"multiplayer.connect")));
     buttons.push_back(new Button(1, width / 2 - 100, height / 4 + 24 * 5 + 12, language->getElement(L"gui.cancel")));
-    wstring ip = replaceAll(minecraft->options->lastMpIp,L"_", L":");
+    wstring ip = replaceAll(minecraft->options->lastMpIp, L"_", L":");
     buttons[0]->active = ip.length() > 0;
 
     ipEdit = new EditBox(this, font, width / 2 - 100, height / 4 - 10 + 50 + 18, 200, 20, ip);
     ipEdit->inFocus = true;
     ipEdit->setMaxLength(128);
-
 }
 
 void JoinMultiplayerScreen::removed()
 {
-	Keyboard::enableRepeatEvents(false);
+    Keyboard::enableRepeatEvents(false);
 }
 
 void JoinMultiplayerScreen::buttonClicked(Button *button)
 {
-    if (!button->active) return;
+    if (!button->active)
+    {
+        return;
+    }
     if (button->id == 1)
-	{
+    {
         minecraft->setScreen(lastScreen);
     }
-	else if (button->id == 0)
-	{
+    else if (button->id == 0)
+    {
         wstring ip = trimString(ipEdit->getValue());
 
-        minecraft->options->lastMpIp = replaceAll(ip,L":", L"_");
+        minecraft->options->lastMpIp = replaceAll(ip, L":", L"_");
         minecraft->options->save();
 
-        vector<wstring> parts = stringSplit(ip,L'L');
-        if (ip[0]==L'[')
-		{
+        vector<wstring> parts = stringSplit(ip, L'L');
+        if (ip[0] == L'[')
+        {
             size_t pos = ip.find(L"]");
             if (pos != wstring::npos)
-			{
+            {
                 wstring path = ip.substr(1, pos);
                 wstring port = trimString(ip.substr(pos + 1));
-                if (port[0]==L':' && port.length() > 0)
-				{
+                if (port[0] == L':' && port.length() > 0)
+                {
                     port = port.substr(1);
                     parts.clear();
-					parts.push_back(path);
+                    parts.push_back(path);
                     parts.push_back(port);
                 }
-				else
-				{
-					parts.clear();
+                else
+                {
+                    parts.clear();
                     parts.push_back(path);
                 }
             }
-
         }
         if (parts.size() > 2)
-		{
-			parts.clear();
-			parts.push_back(ip);
+        {
+            parts.clear();
+            parts.push_back(ip);
         }
 
-		// 4J - TODO
-//        minecraft->setScreen(new ConnectScreen(minecraft, parts[0], parts.length > 1 ? parseInt(parts[1], 25565) : 25565));
+        // 4J - TODO
+        //        minecraft->setScreen(new ConnectScreen(minecraft, parts[0], parts.length > 1 ? parseInt(parts[1], 25565) : 25565));
     }
 }
 
-int  JoinMultiplayerScreen::parseInt(const wstring& str, int def)
+int JoinMultiplayerScreen::parseInt(const wstring &str, int def)
 {
-	return _fromString<int>(str);
+    return _fromString<int>(str);
 }
 
 void JoinMultiplayerScreen::keyPressed(wchar_t ch, int eventKey)
@@ -96,7 +97,7 @@ void JoinMultiplayerScreen::keyPressed(wchar_t ch, int eventKey)
     ipEdit->keyPressed(ch, eventKey);
 
     if (ch == 13)
-	{
+    {
         buttonClicked(buttons[0]);
     }
     buttons[0]->active = ipEdit->getValue().length() > 0;
@@ -124,5 +125,4 @@ void JoinMultiplayerScreen::render(int xm, int ym, float a)
     ipEdit->render();
 
     Screen::render(xm, ym, a);
-
 }

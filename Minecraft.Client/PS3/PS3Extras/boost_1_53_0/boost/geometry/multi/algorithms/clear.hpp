@@ -14,14 +14,13 @@
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_CLEAR_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_CLEAR_HPP
 
-
-#include <boost/geometry/multi/core/tags.hpp>
 #include <boost/geometry/algorithms/clear.hpp>
+#include <boost/geometry/multi/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -30,14 +29,13 @@ namespace dispatch
 template <typename Geometry>
 struct clear<Geometry, multi_tag>
     : detail::clear::collection_clear<Geometry>
-{};
-
+{
+};
 
 } // namespace dispatch
 #endif
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_CLEAR_HPP

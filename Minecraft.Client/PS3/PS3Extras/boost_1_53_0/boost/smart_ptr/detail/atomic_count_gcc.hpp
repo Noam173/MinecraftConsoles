@@ -18,9 +18,9 @@
 //
 
 #if __GNUC__ * 100 + __GNUC_MINOR__ >= 402
-# include <ext/atomicity.h> 
-#else 
-# include <bits/atomicity.h>
+#include <ext/atomicity.h>
+#else
+#include <bits/atomicity.h>
 #endif
 
 namespace boost
@@ -38,29 +38,29 @@ using __gnu_cxx::__exchange_and_add;
 
 class atomic_count
 {
-public:
-
-    explicit atomic_count( long v ) : value_( v ) {}
+  public:
+    explicit atomic_count(long v) : value_(v)
+    {
+    }
 
     long operator++()
     {
-        return __exchange_and_add( &value_, +1 ) + 1;
+        return __exchange_and_add(&value_, +1) + 1;
     }
 
     long operator--()
     {
-        return __exchange_and_add( &value_, -1 ) - 1;
+        return __exchange_and_add(&value_, -1) - 1;
     }
 
     operator long() const
     {
-        return __exchange_and_add( &value_, 0 );
+        return __exchange_and_add(&value_, 0);
     }
 
-private:
-
+  private:
     atomic_count(atomic_count const &);
-    atomic_count & operator=(atomic_count const &);
+    atomic_count &operator=(atomic_count const &);
 
     mutable _Atomic_word value_;
 };

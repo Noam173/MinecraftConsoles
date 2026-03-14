@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -20,49 +20,50 @@
 #include <boost/config.hpp>
 
 #if defined(BOOST_SP_USE_STD_ALLOCATOR) && defined(BOOST_SP_USE_QUICK_ALLOCATOR)
-# error BOOST_SP_USE_STD_ALLOCATOR and BOOST_SP_USE_QUICK_ALLOCATOR are incompatible.
+#error BOOST_SP_USE_STD_ALLOCATOR and BOOST_SP_USE_QUICK_ALLOCATOR are incompatible.
 #endif
 
 #include <boost/checked_delete.hpp>
-#include <boost/serialization/throw_exception.hpp>
 #include <boost/detail/lightweight_mutex.hpp>
+#include <boost/serialization/throw_exception.hpp>
 
 #if defined(BOOST_SP_USE_QUICK_ALLOCATOR)
 #include <boost/detail/quick_allocator.hpp>
 #endif
 
-#include <memory>           // std::auto_ptr, std::allocator
-#include <functional>       // std::less
-#include <exception>        // std::exception
-#include <new>              // std::bad_alloc
-#include <typeinfo>         // std::type_info in get_deleter
-#include <cstddef>          // std::size_t
+#include <cstddef>    // std::size_t
+#include <exception>  // std::exception
+#include <functional> // std::less
+#include <memory>     // std::auto_ptr, std::allocator
+#include <new>        // std::bad_alloc
+#include <typeinfo>   // std::type_info in get_deleter
 
 #include <boost/config.hpp> // msvc 6.0 needs this for warning suppression
 #if defined(BOOST_NO_STDC_NAMESPACE)
-namespace std{ 
-    using ::size_t; 
+namespace std
+{
+using ::size_t;
 } // namespace std
 #endif
 
 #ifdef __BORLANDC__
-# pragma warn -8026     // Functions with excep. spec. are not expanded inline
-# pragma warn -8027     // Functions containing try are not expanded inline
+#pragma warn - 8026 // Functions with excep. spec. are not expanded inline
+#pragma warn - 8027 // Functions containing try are not expanded inline
 #endif
 
-namespace boost_132 {
+namespace boost_132
+{
 
 // Debug hooks
 
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
 
-void sp_scalar_constructor_hook(void * px, std::size_t size, void * pn);
-void sp_array_constructor_hook(void * px);
-void sp_scalar_destructor_hook(void * px, std::size_t size, void * pn);
-void sp_array_destructor_hook(void * px);
+void sp_scalar_constructor_hook(void *px, std::size_t size, void *pn);
+void sp_array_constructor_hook(void *px);
+void sp_scalar_destructor_hook(void *px, std::size_t size, void *pn);
+void sp_array_destructor_hook(void *px);
 
 #endif
-
 
 // The standard library that comes with Borland C++ 5.5.1
 // defines std::exception and its members as having C calling
@@ -72,34 +73,33 @@ void sp_array_destructor_hook(void * px);
 // check is deliberately conservative.
 
 #if defined(__BORLANDC__) && __BORLANDC__ == 0x551
-# pragma option push -pc
+#pragma option push -pc
 #endif
 
-class bad_weak_ptr: public std::exception
+class bad_weak_ptr : public std::exception
 {
-public:
-
-    virtual char const * what() const throw()
+  public:
+    virtual char const *what() const throw()
     {
         return "boost::bad_weak_ptr";
     }
 };
 
 #if defined(__BORLANDC__) && __BORLANDC__ == 0x551
-# pragma option pop
+#pragma option pop
 #endif
 
-namespace detail{
+namespace detail
+{
 
 class sp_counted_base
 {
-//private:
+    // private:
 
     typedef boost::detail::lightweight_mutex mutex_type;
 
-public:
-
-    sp_counted_base(): use_count_(1), weak_count_(1)
+  public:
+    sp_counted_base() : use_count_(1), weak_count_(1)
     {
     }
 
@@ -119,7 +119,7 @@ public:
         delete this;
     }
 
-    virtual void * get_deleter(std::type_info const & ti) = 0;
+    virtual void *get_deleter(std::type_info const &ti) = 0;
 
     void add_ref_copy()
     {
@@ -134,7 +134,10 @@ public:
 #if defined(BOOST_HAS_THREADS)
         mutex_type::scoped_lock lock(mtx_);
 #endif
-        if(use_count_ == 0) boost::serialization::throw_exception(bad_weak_ptr());
+        if (use_count_ == 0)
+        {
+            boost::serialization::throw_exception(bad_weak_ptr());
+        }
         ++use_count_;
     }
 
@@ -146,7 +149,10 @@ public:
 #endif
             long new_use_count = --use_count_;
 
-            if(new_use_count != 0) return;
+            if (new_use_count != 0)
+            {
+                return;
+            }
         }
 
         dispose();
@@ -172,7 +178,7 @@ public:
             new_weak_count = --weak_count_;
         }
 
-        if(new_weak_count == 0)
+        if (new_weak_count == 0)
         {
             destruct();
         }
@@ -186,13 +192,13 @@ public:
         return use_count_;
     }
 
-//private:
-public:
+    // private:
+  public:
     sp_counted_base(sp_counted_base const &);
-    sp_counted_base & operator= (sp_counted_base const &);
+    sp_counted_base &operator=(sp_counted_base const &);
 
-    long use_count_;        // #shared
-    long weak_count_;       // #weak + (#shared != 0)
+    long use_count_;  // #shared
+    long weak_count_; // #weak + (#shared != 0)
 
 #if defined(BOOST_HAS_THREADS) || defined(BOOST_LWM_WIN32)
     mutable mutex_type mtx_;
@@ -201,31 +207,37 @@ public:
 
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
 
-template<class T> void cbi_call_constructor_hook(sp_counted_base * pn, T * px, checked_deleter< T > const &, int)
+template <class T>
+void cbi_call_constructor_hook(sp_counted_base *pn, T *px, checked_deleter<T> const &, int)
 {
     boost::sp_scalar_constructor_hook(px, sizeof(T), pn);
 }
 
-template<class T> void cbi_call_constructor_hook(sp_counted_base *, T * px, checked_array_deleter< T > const &, int)
+template <class T>
+void cbi_call_constructor_hook(sp_counted_base *, T *px, checked_array_deleter<T> const &, int)
 {
     boost::sp_array_constructor_hook(px);
 }
 
-template<class P, class D> void cbi_call_constructor_hook(sp_counted_base *, P const &, D const &, long)
+template <class P, class D>
+void cbi_call_constructor_hook(sp_counted_base *, P const &, D const &, long)
 {
 }
 
-template<class T> void cbi_call_destructor_hook(sp_counted_base * pn, T * px, checked_deleter< T > const &, int)
+template <class T>
+void cbi_call_destructor_hook(sp_counted_base *pn, T *px, checked_deleter<T> const &, int)
 {
     boost::sp_scalar_destructor_hook(px, sizeof(T), pn);
 }
 
-template<class T> void cbi_call_destructor_hook(sp_counted_base *, T * px, checked_array_deleter< T > const &, int)
+template <class T>
+void cbi_call_destructor_hook(sp_counted_base *, T *px, checked_array_deleter<T> const &, int)
 {
     boost::sp_array_destructor_hook(px);
 }
 
-template<class P, class D> void cbi_call_destructor_hook(sp_counted_base *, P const &, D const &, long)
+template <class P, class D>
+void cbi_call_destructor_hook(sp_counted_base *, P const &, D const &, long)
 {
 }
 
@@ -235,26 +247,26 @@ template<class P, class D> void cbi_call_destructor_hook(sp_counted_base *, P co
 // Borland's Codeguard trips up over the -Vx- option here:
 //
 #ifdef __CODEGUARD__
-# pragma option push -Vx-
+#pragma option push -Vx-
 #endif
 
-template<class P, class D> class sp_counted_base_impl: public sp_counted_base
+template <class P, class D>
+class sp_counted_base_impl : public sp_counted_base
 {
-//private:
-public:
+    // private:
+  public:
     P ptr; // copy constructor must not throw
     D del; // copy constructor must not throw
 
     sp_counted_base_impl(sp_counted_base_impl const &);
-    sp_counted_base_impl & operator= (sp_counted_base_impl const &);
+    sp_counted_base_impl &operator=(sp_counted_base_impl const &);
 
     typedef sp_counted_base_impl<P, D> this_type;
 
-public:
-
+  public:
     // pre: initial_use_count <= initial_weak_count, d(p) must not throw
 
-    sp_counted_base_impl(P p, D d): ptr(p), del(d)
+    sp_counted_base_impl(P p, D d) : ptr(p), del(d)
     {
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         detail::cbi_call_constructor_hook(this, p, d, 0);
@@ -269,19 +281,19 @@ public:
         del(ptr);
     }
 
-    virtual void * get_deleter(std::type_info const & ti)
+    virtual void *get_deleter(std::type_info const &ti)
     {
-        return ti == typeid(D)? &del: 0;
+        return ti == typeid(D) ? &del : 0;
     }
 
 #if defined(BOOST_SP_USE_STD_ALLOCATOR)
 
-    void * operator new(std::size_t)
+    void *operator new(std::size_t)
     {
         return std::allocator<this_type>().allocate(1, static_cast<this_type *>(0));
     }
 
-    void operator delete(void * p)
+    void operator delete(void *p)
     {
         std::allocator<this_type>().deallocate(static_cast<this_type *>(p), 1);
     }
@@ -290,12 +302,12 @@ public:
 
 #if defined(BOOST_SP_USE_QUICK_ALLOCATOR)
 
-    void * operator new(std::size_t)
+    void *operator new(std::size_t)
     {
         return boost::detail::quick_allocator<this_type>::alloc();
     }
 
-    void operator delete(void * p)
+    void operator delete(void *p)
     {
         boost::detail::quick_allocator<this_type>::dealloc(p);
     }
@@ -306,7 +318,7 @@ public:
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
 
 int const shared_count_id = 0x2C35F101;
-int const   weak_count_id = 0x298C38A4;
+int const weak_count_id = 0x298C38A4;
 
 #endif
 
@@ -314,9 +326,9 @@ class weak_count;
 
 class shared_count
 {
-//private:
-public:
-    sp_counted_base * pi_;
+    // private:
+  public:
+    sp_counted_base *pi_;
 
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
     int id_;
@@ -324,18 +336,20 @@ public:
 
     friend class weak_count;
 
-public:
-
-    shared_count(): pi_(0) // nothrow
+  public:
+    shared_count() : pi_(0) // nothrow
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
-        , id_(shared_count_id)
+                     ,
+                     id_(shared_count_id)
 #endif
     {
     }
 
-    template<class P, class D> shared_count(P p, D d): pi_(0)
+    template <class P, class D>
+    shared_count(P p, D d) : pi_(0)
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
-        , id_(shared_count_id)
+                             ,
+                             id_(shared_count_id)
 #endif
     {
 #ifndef BOOST_NO_EXCEPTIONS
@@ -344,7 +358,7 @@ public:
         {
             pi_ = new sp_counted_base_impl<P, D>(p, d);
         }
-        catch(...)
+        catch (...)
         {
             d(p); // delete p
             throw;
@@ -354,7 +368,7 @@ public:
 
         pi_ = new sp_counted_base_impl<P, D>(p, d);
 
-        if(pi_ == 0)
+        if (pi_ == 0)
         {
             d(p); // delete p
             boost::serialization::throw_exception(std::bad_alloc());
@@ -367,63 +381,76 @@ public:
 
     // auto_ptr<Y> is special cased to provide the strong guarantee
 
-    template<class Y>
-    explicit shared_count(std::auto_ptr<Y> & r): pi_(
-        new sp_counted_base_impl<
-            Y *, 
-            boost::checked_deleter<Y>
-        >(r.get(), boost::checked_deleter<Y>()))
+    template <class Y>
+    explicit shared_count(std::auto_ptr<Y> &r) : pi_(
+                                                     new sp_counted_base_impl<
+                                                         Y *,
+                                                         boost::checked_deleter<Y>>(r.get(), boost::checked_deleter<Y>()))
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
-        , id_(shared_count_id)
+                                                 ,
+                                                 id_(shared_count_id)
 #endif
     {
         r.release();
     }
 
-#endif 
+#endif
 
     ~shared_count() // nothrow
     {
-        if(pi_ != 0) pi_->release();
+        if (pi_ != 0)
+        {
+            pi_->release();
+        }
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         id_ = 0;
 #endif
     }
 
-    shared_count(shared_count const & r): pi_(r.pi_) // nothrow
+    shared_count(shared_count const &r) : pi_(r.pi_) // nothrow
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
-        , id_(shared_count_id)
+                                          ,
+                                          id_(shared_count_id)
 #endif
     {
-        if(pi_ != 0) pi_->add_ref_copy();
+        if (pi_ != 0)
+        {
+            pi_->add_ref_copy();
+        }
     }
 
-    explicit shared_count(weak_count const & r); // throws bad_weak_ptr when r.use_count() == 0
+    explicit shared_count(weak_count const &r); // throws bad_weak_ptr when r.use_count() == 0
 
-    shared_count & operator= (shared_count const & r) // nothrow
+    shared_count &operator=(shared_count const &r) // nothrow
     {
-        sp_counted_base * tmp = r.pi_;
+        sp_counted_base *tmp = r.pi_;
 
-        if(tmp != pi_)
+        if (tmp != pi_)
         {
-            if(tmp != 0) tmp->add_ref_copy();
-            if(pi_ != 0) pi_->release();
+            if (tmp != 0)
+            {
+                tmp->add_ref_copy();
+            }
+            if (pi_ != 0)
+            {
+                pi_->release();
+            }
             pi_ = tmp;
         }
 
         return *this;
     }
 
-    void swap(shared_count & r) // nothrow
+    void swap(shared_count &r) // nothrow
     {
-        sp_counted_base * tmp = r.pi_;
+        sp_counted_base *tmp = r.pi_;
         r.pi_ = pi_;
         pi_ = tmp;
     }
 
     long use_count() const // nothrow
     {
-        return pi_ != 0? pi_->use_count(): 0;
+        return pi_ != 0 ? pi_->use_count() : 0;
     }
 
     bool unique() const // nothrow
@@ -431,32 +458,30 @@ public:
         return use_count() == 1;
     }
 
-    friend inline bool operator==(shared_count const & a, shared_count const & b)
+    friend inline bool operator==(shared_count const &a, shared_count const &b)
     {
         return a.pi_ == b.pi_;
     }
 
-    friend inline bool operator<(shared_count const & a, shared_count const & b)
+    friend inline bool operator<(shared_count const &a, shared_count const &b)
     {
         return std::less<sp_counted_base *>()(a.pi_, b.pi_);
     }
 
-    void * get_deleter(std::type_info const & ti) const
+    void *get_deleter(std::type_info const &ti) const
     {
-        return pi_? pi_->get_deleter(ti): 0;
+        return pi_ ? pi_->get_deleter(ti) : 0;
     }
 };
 
 #ifdef __CODEGUARD__
-# pragma option pop
+#pragma option pop
 #endif
-
 
 class weak_count
 {
-private:
-
-    sp_counted_base * pi_;
+  private:
+    sp_counted_base *pi_;
 
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
     int id_;
@@ -464,88 +489,112 @@ private:
 
     friend class shared_count;
 
-public:
-
-    weak_count(): pi_(0) // nothrow
+  public:
+    weak_count() : pi_(0) // nothrow
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
-        , id_(weak_count_id)
+                   ,
+                   id_(weak_count_id)
 #endif
     {
     }
 
-    weak_count(shared_count const & r): pi_(r.pi_) // nothrow
+    weak_count(shared_count const &r) : pi_(r.pi_) // nothrow
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
-        , id_(shared_count_id)
+                                        ,
+                                        id_(shared_count_id)
 #endif
     {
-        if(pi_ != 0) pi_->weak_add_ref();
+        if (pi_ != 0)
+        {
+            pi_->weak_add_ref();
+        }
     }
 
-    weak_count(weak_count const & r): pi_(r.pi_) // nothrow
+    weak_count(weak_count const &r) : pi_(r.pi_) // nothrow
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
-        , id_(shared_count_id)
+                                      ,
+                                      id_(shared_count_id)
 #endif
     {
-        if(pi_ != 0) pi_->weak_add_ref();
+        if (pi_ != 0)
+        {
+            pi_->weak_add_ref();
+        }
     }
 
     ~weak_count() // nothrow
     {
-        if(pi_ != 0) pi_->weak_release();
+        if (pi_ != 0)
+        {
+            pi_->weak_release();
+        }
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         id_ = 0;
 #endif
     }
 
-    weak_count & operator= (shared_count const & r) // nothrow
+    weak_count &operator=(shared_count const &r) // nothrow
     {
-        sp_counted_base * tmp = r.pi_;
-        if(tmp != 0) tmp->weak_add_ref();
-        if(pi_ != 0) pi_->weak_release();
+        sp_counted_base *tmp = r.pi_;
+        if (tmp != 0)
+        {
+            tmp->weak_add_ref();
+        }
+        if (pi_ != 0)
+        {
+            pi_->weak_release();
+        }
         pi_ = tmp;
 
         return *this;
     }
 
-    weak_count & operator= (weak_count const & r) // nothrow
+    weak_count &operator=(weak_count const &r) // nothrow
     {
-        sp_counted_base * tmp = r.pi_;
-        if(tmp != 0) tmp->weak_add_ref();
-        if(pi_ != 0) pi_->weak_release();
+        sp_counted_base *tmp = r.pi_;
+        if (tmp != 0)
+        {
+            tmp->weak_add_ref();
+        }
+        if (pi_ != 0)
+        {
+            pi_->weak_release();
+        }
         pi_ = tmp;
 
         return *this;
     }
 
-    void swap(weak_count & r) // nothrow
+    void swap(weak_count &r) // nothrow
     {
-        sp_counted_base * tmp = r.pi_;
+        sp_counted_base *tmp = r.pi_;
         r.pi_ = pi_;
         pi_ = tmp;
     }
 
     long use_count() const // nothrow
     {
-        return pi_ != 0? pi_->use_count(): 0;
+        return pi_ != 0 ? pi_->use_count() : 0;
     }
 
-    friend inline bool operator==(weak_count const & a, weak_count const & b)
+    friend inline bool operator==(weak_count const &a, weak_count const &b)
     {
         return a.pi_ == b.pi_;
     }
 
-    friend inline bool operator<(weak_count const & a, weak_count const & b)
+    friend inline bool operator<(weak_count const &a, weak_count const &b)
     {
         return std::less<sp_counted_base *>()(a.pi_, b.pi_);
     }
 };
 
-inline shared_count::shared_count(weak_count const & r): pi_(r.pi_)
+inline shared_count::shared_count(weak_count const &r) : pi_(r.pi_)
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
-        , id_(shared_count_id)
+                                                         ,
+                                                         id_(shared_count_id)
 #endif
 {
-    if(pi_ != 0)
+    if (pi_ != 0)
     {
         pi_->add_ref_lock();
     }
@@ -557,13 +606,13 @@ inline shared_count::shared_count(weak_count const & r): pi_(r.pi_)
 
 } // namespace detail
 
-} // namespace boost
+} // namespace boost_132
 
 BOOST_SERIALIZATION_ASSUME_ABSTRACT(boost_132::detail::sp_counted_base)
 
 #ifdef __BORLANDC__
-# pragma warn .8027     // Functions containing try are not expanded inline
-# pragma warn .8026     // Functions with excep. spec. are not expanded inline
+#pragma warn.8027 // Functions containing try are not expanded inline
+#pragma warn.8026 // Functions with excep. spec. are not expanded inline
 #endif
 
-#endif  // #ifndef BOOST_DETAIL_SHARED_COUNT_HPP_INCLUDED
+#endif // #ifndef BOOST_DETAIL_SHARED_COUNT_HPP_INCLUDED

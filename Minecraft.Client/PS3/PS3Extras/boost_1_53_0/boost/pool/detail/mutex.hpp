@@ -9,12 +9,17 @@
 #ifndef BOOST_POOL_MUTEX_HPP
 #define BOOST_POOL_MUTEX_HPP
 
-#include <boost/config.hpp>  // for workarounds
+#include <boost/config.hpp> // for workarounds
 #ifdef BOOST_HAS_THREADS
 #include <boost/thread/mutex.hpp>
 #endif
 
-namespace boost{ namespace details{ namespace pool{
+namespace boost
+{
+namespace details
+{
+namespace pool
+{
 
 class null_mutex
 {
@@ -23,16 +28,22 @@ class null_mutex
     void operator=(const null_mutex &);
 
   public:
-    null_mutex() { }
+    null_mutex()
+    {
+    }
 
-    static void lock() { }
-    static void unlock() { }
+    static void lock()
+    {
+    }
+    static void unlock()
+    {
+    }
 };
 
 #if !defined(BOOST_HAS_THREADS) || defined(BOOST_NO_MT) || defined(BOOST_POOL_NO_MT)
-  typedef null_mutex default_mutex;
+typedef null_mutex default_mutex;
 #else
-  typedef boost::mutex default_mutex;
+typedef boost::mutex default_mutex;
 #endif
 
 } // namespace pool

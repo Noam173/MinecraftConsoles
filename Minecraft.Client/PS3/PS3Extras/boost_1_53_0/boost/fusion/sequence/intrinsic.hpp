@@ -8,6 +8,7 @@
 #define FUSION_SEQUENCE_INTRINSIC_10022005_0618
 
 #include <boost/fusion/sequence/intrinsic/at.hpp>
+#include <boost/fusion/sequence/intrinsic/at_key.hpp>
 #include <boost/fusion/sequence/intrinsic/back.hpp>
 #include <boost/fusion/sequence/intrinsic/begin.hpp>
 #include <boost/fusion/sequence/intrinsic/empty.hpp>
@@ -17,7 +18,6 @@
 #include <boost/fusion/sequence/intrinsic/segments.hpp>
 #include <boost/fusion/sequence/intrinsic/size.hpp>
 #include <boost/fusion/sequence/intrinsic/value_at.hpp>
-#include <boost/fusion/sequence/intrinsic/at_key.hpp>
 #include <boost/fusion/sequence/intrinsic/value_at_key.hpp>
 
 #endif

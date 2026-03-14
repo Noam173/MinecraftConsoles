@@ -16,53 +16,66 @@
 #include <boost/interprocess/offset_ptr.hpp>
 
 //!\file
-//!Describes a null index adaptor, so that if we don't want to construct
-//!named objects, we can use this null index type to save resources.
+//! Describes a null index adaptor, so that if we don't want to construct
+//! named objects, we can use this null index type to save resources.
 
-namespace boost {
-namespace interprocess {
+namespace boost
+{
+namespace interprocess
+{
 
-//!Null index type
-//!used to save compilation time when
-//!named indexes are not needed.
+//! Null index type
+//! used to save compilation time when
+//! named indexes are not needed.
 template <class MapConfig>
 class null_index
 {
-   /// @cond
-   typedef typename MapConfig::
-      segment_manager_base    segment_manager_base;
-   /// @endcond
+    /// @cond
+    typedef typename MapConfig::
+        segment_manager_base segment_manager_base;
+    /// @endcond
 
-   public:
-   typedef void * iterator;
-   typedef const void * const_iterator;
+  public:
+    typedef void *iterator;
+    typedef const void *const_iterator;
 
-   //!begin() is equal
-   //!to end()
-   const_iterator begin() const
-   {  return const_iterator(0);  }
+    //! begin() is equal
+    //! to end()
+    const_iterator begin() const
+    {
+        return const_iterator(0);
+    }
 
-   //!begin() is equal
-   //!to end()
-   iterator begin()
-   {  return iterator(0);  }
+    //! begin() is equal
+    //! to end()
+    iterator begin()
+    {
+        return iterator(0);
+    }
 
-   //!begin() is equal
-   //!to end()
-   const_iterator end() const
-   {  return const_iterator(0);  }
+    //! begin() is equal
+    //! to end()
+    const_iterator end() const
+    {
+        return const_iterator(0);
+    }
 
-   //!begin() is equal
-   //!to end()
-   iterator end()
-   {  return iterator(0);  }
+    //! begin() is equal
+    //! to end()
+    iterator end()
+    {
+        return iterator(0);
+    }
 
-   //!Empty constructor
-   null_index(segment_manager_base *){}
+    //! Empty constructor
+    null_index(segment_manager_base *)
+    {
+    }
 };
 
-}}   //namespace boost { namespace interprocess {
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 
-#endif   //#ifndef BOOST_INTERPROCESS_NULL_INDEX_HPP
+#endif // #ifndef BOOST_INTERPROCESS_NULL_INDEX_HPP

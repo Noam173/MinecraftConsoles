@@ -11,13 +11,13 @@
 
 #include <boost/concept_check.hpp>
 
-namespace boost {
-namespace heap  {
-
+namespace boost
+{
+namespace heap
+{
 
 template <class C>
-struct PriorityQueue:
-    boost::ForwardContainer<C>
+struct PriorityQueue : boost::ForwardContainer<C>
 {
     typedef typename C::iterator iterator;
     typedef typename C::const_iterator const_iterator;
@@ -25,7 +25,6 @@ struct PriorityQueue:
     typedef typename C::value_compare value_compare;
     typedef typename C::value_type value_type;
     typedef typename C::const_reference const_reference;
-
 
     BOOST_CONCEPT_USAGE(PriorityQueue)
     {
@@ -51,10 +50,10 @@ struct PriorityQueue:
         // verify tags
         has_ordered_iterators = C::has_ordered_iterators;
         is_mergable = C::is_mergable;
-        is_stable   = C::is_stable;
+        is_stable = C::is_stable;
     }
 
-private:
+  private:
     C c, c2;
     allocator_type a;
     typename C::value_type v;
@@ -63,8 +62,7 @@ private:
 };
 
 template <class C>
-struct MergablePriorityQueue:
-    PriorityQueue<C>
+struct MergablePriorityQueue : PriorityQueue<C>
 {
     BOOST_CONCEPT_USAGE(MergablePriorityQueue)
     {
@@ -73,10 +71,8 @@ struct MergablePriorityQueue:
     }
 };
 
-
 template <class C>
-struct MutablePriorityQueue:
-    PriorityQueue<C>
+struct MutablePriorityQueue : PriorityQueue<C>
 {
     typedef typename C::handle_type handle_type;
 
@@ -98,6 +94,7 @@ struct MutablePriorityQueue:
     C c;
 };
 
-}}
+} // namespace heap
+} // namespace boost
 
 #endif /* BOOST_HEAP_CONCEPTS_HPP */

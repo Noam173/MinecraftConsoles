@@ -4,7 +4,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 //
@@ -25,41 +25,36 @@ namespace detail
 
 class spinlock
 {
-public:
-
+  public:
     pthread_mutex_t v_;
 
-public:
-
+  public:
     bool try_lock()
     {
-        return pthread_mutex_trylock( &v_ ) == 0;
+        return pthread_mutex_trylock(&v_) == 0;
     }
 
     void lock()
     {
-        pthread_mutex_lock( &v_ );
+        pthread_mutex_lock(&v_);
     }
 
     void unlock()
     {
-        pthread_mutex_unlock( &v_ );
+        pthread_mutex_unlock(&v_);
     }
 
-public:
-
+  public:
     class scoped_lock
     {
-    private:
+      private:
+        spinlock &sp_;
 
-        spinlock & sp_;
+        scoped_lock(scoped_lock const &);
+        scoped_lock &operator=(scoped_lock const &);
 
-        scoped_lock( scoped_lock const & );
-        scoped_lock & operator=( scoped_lock const & );
-
-    public:
-
-        explicit scoped_lock( spinlock & sp ): sp_( sp )
+      public:
+        explicit scoped_lock(spinlock &sp) : sp_(sp)
         {
             sp.lock();
         }
@@ -74,6 +69,6 @@ public:
 } // namespace detail
 } // namespace boost
 
-#define BOOST_DETAIL_SPINLOCK_INIT { PTHREAD_MUTEX_INITIALIZER }
+#define BOOST_DETAIL_SPINLOCK_INIT {PTHREAD_MUTEX_INITIALIZER}
 
 #endif // #ifndef BOOST_SMART_PTR_DETAIL_SPINLOCK_PT_HPP_INCLUDED

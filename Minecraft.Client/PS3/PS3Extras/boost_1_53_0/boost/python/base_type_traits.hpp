@@ -3,22 +3,29 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef BASE_TYPE_TRAITS_DWA2002614_HPP
-# define BASE_TYPE_TRAITS_DWA2002614_HPP
+#define BASE_TYPE_TRAITS_DWA2002614_HPP
 
-# include <boost/python/detail/prefix.hpp>
+#include <boost/python/detail/prefix.hpp>
 
-namespace boost { namespace python { 
+namespace boost
+{
+namespace python
+{
 
 namespace detail
 {
-  struct unspecialized {};
-}
+struct unspecialized
+{
+};
+} // namespace detail
 
 // Derive from unspecialized so we can detect whether traits are
 // specialized
-template <class T> struct base_type_traits
-  : detail::unspecialized
-{};
+template <class T>
+struct base_type_traits
+    : detail::unspecialized
+{
+};
 
 template <>
 struct base_type_traits<PyObject>
@@ -38,6 +45,7 @@ struct base_type_traits<PyMethodObject>
     typedef PyObject type;
 };
 
-}} // namespace boost::python
+} // namespace python
+} // namespace boost
 
 #endif // BASE_TYPE_TRAITS_DWA2002614_HPP

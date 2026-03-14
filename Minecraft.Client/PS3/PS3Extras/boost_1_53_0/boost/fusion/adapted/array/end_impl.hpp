@@ -1,7 +1,7 @@
 /*=============================================================================
     Copyright (c) 2010 Christopher Schmidt
 
-    Distributed under the Boost Software License, Version 1.0. (See accompanying 
+    Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
 
@@ -9,36 +9,37 @@
 #define BOOST_FUSION_ADAPTED_ARRAY_END_IMPL_HPP
 
 #include <boost/fusion/iterator/basic_iterator.hpp>
-#include <boost/type_traits/rank.hpp>
 #include <boost/type_traits/extent.hpp>
+#include <boost/type_traits/rank.hpp>
 
-namespace boost { namespace fusion { namespace extension
+namespace boost
 {
-    template <typename>
-    struct end_impl;
+namespace fusion
+{
+namespace extension
+{
+template <typename>
+struct end_impl;
 
-    template <>
-    struct end_impl<po_array_tag>
+template <>
+struct end_impl<po_array_tag>
+{
+    template <typename Seq>
+    struct apply
     {
-        template <typename Seq>
-        struct apply
-        {
-            typedef
-                basic_iterator<
-                    po_array_iterator_tag
-                  , random_access_traversal_tag
-                  , Seq
-                  , extent<Seq,rank<Seq>::value-1>::value
-                >
+        typedef basic_iterator<
+            po_array_iterator_tag, random_access_traversal_tag, Seq, extent<Seq, rank<Seq>::value - 1>::value>
             type;
 
-            static type
-            call(Seq& seq)
-            {
-                return type(seq,0);
-            }
-        };
+        static type
+        call(Seq &seq)
+        {
+            return type(seq, 0);
+        }
     };
-}}}
+};
+} // namespace extension
+} // namespace fusion
+} // namespace boost
 
 #endif

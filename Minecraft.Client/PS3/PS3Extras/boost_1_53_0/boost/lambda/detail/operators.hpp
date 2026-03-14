@@ -15,96 +15,81 @@
 
 #include "boost/lambda/detail/is_instance_of.hpp"
 
-namespace boost { 
-namespace lambda {
+namespace boost
+{
+namespace lambda
+{
 
 #if defined BOOST_LAMBDA_BE1
 #error "Multiple defines of BOOST_LAMBDA_BE1"
 #endif
 
-  // For all BOOSTA_LAMBDA_BE* macros:
+// For all BOOSTA_LAMBDA_BE* macros:
 
-  // CONSTA must be either 'A' or 'const A'
-  // CONSTB must be either 'B' or 'const B'
+// CONSTA must be either 'A' or 'const A'
+// CONSTB must be either 'B' or 'const B'
 
-  // It is stupid to have the names A and B as macro arguments, but it avoids
-  // the need to pass in emtpy macro arguments, which gives warnings on some
-  // compilers
+// It is stupid to have the names A and B as macro arguments, but it avoids
+// the need to pass in emtpy macro arguments, which gives warnings on some
+// compilers
 
-#define BOOST_LAMBDA_BE1(OPER_NAME, ACTION, CONSTA, CONSTB, CONVERSION)      \
-template<class Arg, class B>                                                 \
-inline const                                                                 \
-lambda_functor<                                                              \
-  lambda_functor_base<                                                       \
-    ACTION,                                                                  \
-    tuple<lambda_functor<Arg>, typename const_copy_argument <CONSTB>::type>  \
-  >                                                                          \
->                                                                            \
-OPER_NAME (const lambda_functor<Arg>& a, CONSTB& b) {                      \
-  return                                                                     \
-    lambda_functor_base<                                                     \
-      ACTION,                                                                \
-      tuple<lambda_functor<Arg>, typename const_copy_argument <CONSTB>::type>\
-    >                                                                        \
-   (tuple<lambda_functor<Arg>, typename const_copy_argument <CONSTB>::type>(a, b)); \
-}
-
+#define BOOST_LAMBDA_BE1(OPER_NAME, ACTION, CONSTA, CONSTB, CONVERSION)                                                                                            \
+    template <class Arg, class B>                                                                                                                                  \
+    inline const lambda_functor<                                                                                                                                   \
+        lambda_functor_base<                                                                                                                                       \
+            ACTION,                                                                                                                                                \
+            tuple<lambda_functor<Arg>, typename const_copy_argument<CONSTB>::type>>>                                                                               \
+    OPER_NAME(const lambda_functor<Arg> &a, CONSTB &b)                                                                                                             \
+    {                                                                                                                                                              \
+        return lambda_functor_base<                                                                                                                                \
+            ACTION,                                                                                                                                                \
+            tuple<lambda_functor<Arg>, typename const_copy_argument<CONSTB>::type>>(tuple<lambda_functor<Arg>, typename const_copy_argument<CONSTB>::type>(a, b)); \
+    }
 
 #if defined BOOST_LAMBDA_BE2
 #error "Multiple defines of BOOST_LAMBDA_BE2"
 #endif
 
-#define BOOST_LAMBDA_BE2(OPER_NAME, ACTION, CONSTA, CONSTB, CONVERSION)      \
-template<class A, class Arg>                                                 \
-inline const                                                                 \
-lambda_functor<                                                              \
-  lambda_functor_base<                                                       \
-    ACTION,                                                                  \
-    tuple<typename CONVERSION <CONSTA>::type, lambda_functor<Arg> >        \
-  >                                                                          \
->                                                                            \
-OPER_NAME (CONSTA& a, const lambda_functor<Arg>& b) {                      \
-  return                                                                     \
-    lambda_functor_base<                                                     \
-      ACTION,                                                                \
-      tuple<typename CONVERSION <CONSTA>::type, lambda_functor<Arg> >      \
-    >                                                                        \
-  (tuple<typename CONVERSION <CONSTA>::type, lambda_functor<Arg> >(a, b)); \
-}
-
+#define BOOST_LAMBDA_BE2(OPER_NAME, ACTION, CONSTA, CONSTB, CONVERSION)                                                                          \
+    template <class A, class Arg>                                                                                                                \
+    inline const lambda_functor<                                                                                                                 \
+        lambda_functor_base<                                                                                                                     \
+            ACTION,                                                                                                                              \
+            tuple<typename CONVERSION<CONSTA>::type, lambda_functor<Arg>>>>                                                                      \
+    OPER_NAME(CONSTA &a, const lambda_functor<Arg> &b)                                                                                           \
+    {                                                                                                                                            \
+        return lambda_functor_base<                                                                                                              \
+            ACTION,                                                                                                                              \
+            tuple<typename CONVERSION<CONSTA>::type, lambda_functor<Arg>>>(tuple<typename CONVERSION<CONSTA>::type, lambda_functor<Arg>>(a, b)); \
+    }
 
 #if defined BOOST_LAMBDA_BE3
 #error "Multiple defines of BOOST_LAMBDA_BE3"
 #endif
 
-#define BOOST_LAMBDA_BE3(OPER_NAME, ACTION, CONSTA, CONSTB, CONVERSION)    \
-template<class ArgA, class ArgB>                                           \
-inline const                                                               \
-lambda_functor<                                                            \
-  lambda_functor_base<                                                     \
-    ACTION,                                                                \
-    tuple<lambda_functor<ArgA>, lambda_functor<ArgB> >                     \
-  >                                                                        \
->                                                                          \
-OPER_NAME (const lambda_functor<ArgA>& a, const lambda_functor<ArgB>& b) { \
-  return                                                                   \
-    lambda_functor_base<                                                   \
-      ACTION,                                                              \
-      tuple<lambda_functor<ArgA>, lambda_functor<ArgB> >                   \
-    >                                                                      \
-  (tuple<lambda_functor<ArgA>, lambda_functor<ArgB> >(a, b));              \
-}
+#define BOOST_LAMBDA_BE3(OPER_NAME, ACTION, CONSTA, CONSTB, CONVERSION)                                                  \
+    template <class ArgA, class ArgB>                                                                                    \
+    inline const lambda_functor<                                                                                         \
+        lambda_functor_base<                                                                                             \
+            ACTION,                                                                                                      \
+            tuple<lambda_functor<ArgA>, lambda_functor<ArgB>>>>                                                          \
+    OPER_NAME(const lambda_functor<ArgA> &a, const lambda_functor<ArgB> &b)                                              \
+    {                                                                                                                    \
+        return lambda_functor_base<                                                                                      \
+            ACTION,                                                                                                      \
+            tuple<lambda_functor<ArgA>, lambda_functor<ArgB>>>(tuple<lambda_functor<ArgA>, lambda_functor<ArgB>>(a, b)); \
+    }
 
 #if defined BOOST_LAMBDA_BE
 #error "Multiple defines of BOOST_LAMBDA_BE"
 #endif
 
 #define BOOST_LAMBDA_BE(OPER_NAME, ACTION, CONSTA, CONSTB, CONST_CONVERSION) \
-BOOST_LAMBDA_BE1(OPER_NAME, ACTION, CONSTA, CONSTB, CONST_CONVERSION)        \
-BOOST_LAMBDA_BE2(OPER_NAME, ACTION, CONSTA, CONSTB, CONST_CONVERSION)        \
-BOOST_LAMBDA_BE3(OPER_NAME, ACTION, CONSTA, CONSTB, CONST_CONVERSION)
+    BOOST_LAMBDA_BE1(OPER_NAME, ACTION, CONSTA, CONSTB, CONST_CONVERSION)    \
+    BOOST_LAMBDA_BE2(OPER_NAME, ACTION, CONSTA, CONSTB, CONST_CONVERSION)    \
+    BOOST_LAMBDA_BE3(OPER_NAME, ACTION, CONSTA, CONSTB, CONST_CONVERSION)
 
-#define BOOST_LAMBDA_EMPTY() 
+#define BOOST_LAMBDA_EMPTY()
 
 BOOST_LAMBDA_BE(operator+, arithmetic_action<plus_action>, const A, const B, const_copy_argument)
 BOOST_LAMBDA_BE(operator-, arithmetic_action<minus_action>, const A, const B, const_copy_argument)
@@ -136,7 +121,6 @@ BOOST_LAMBDA_BE(operator&=, bitwise_assignment_action<and_action>, A, const B, r
 BOOST_LAMBDA_BE(operator|=, bitwise_assignment_action<or_action>, A, const B, reference_argument)
 BOOST_LAMBDA_BE(operator^=, bitwise_assignment_action<xor_action>, A, const B, reference_argument)
 
-
 // A special trick for comma operator for correct preprocessing
 #if defined BOOST_LAMBDA_COMMA_OPERATOR_NAME
 #error "Multiple defines of BOOST_LAMBDA_COMMA_OPERATOR_NAME"
@@ -148,13 +132,12 @@ BOOST_LAMBDA_BE1(BOOST_LAMBDA_COMMA_OPERATOR_NAME, other_action<comma_action>, c
 BOOST_LAMBDA_BE2(BOOST_LAMBDA_COMMA_OPERATOR_NAME, other_action<comma_action>, const A, const B, const_copy_argument)
 BOOST_LAMBDA_BE3(BOOST_LAMBDA_COMMA_OPERATOR_NAME, other_action<comma_action>, const A, const B, const_copy_argument)
 
-
-
-namespace detail {
+namespace detail
+{
 
 // special cases for ostream& << Any and istream& >> Any ---------------
-// the actual stream classes may vary and thus a specialisation for, 
-// say ostream& does not match (the general case above is chosen). 
+// the actual stream classes may vary and thus a specialisation for,
+// say ostream& does not match (the general case above is chosen).
 // Therefore we specialise for non-const reference:
 // if the left argument is a stream, we store the stream as reference
 // if it is something else, we store a const plain by default
@@ -162,146 +145,122 @@ namespace detail {
 // Note that the overloading is const vs. non-const first argument
 
 #ifdef BOOST_NO_TEMPLATED_STREAMS
-template<class T> struct convert_ostream_to_ref_others_to_c_plain_by_default {
-  typedef typename detail::IF<
-                       boost::is_convertible<T*, std::ostream*>::value,
-                       T&,
-                       typename const_copy_argument <T>::type
-                     >::RET type;
+template <class T>
+struct convert_ostream_to_ref_others_to_c_plain_by_default
+{
+    typedef typename detail::IF<
+        boost::is_convertible<T *, std::ostream *>::value,
+        T &,
+        typename const_copy_argument<T>::type>::RET type;
 };
 
-template<class T> struct convert_istream_to_ref_others_to_c_plain_by_default {
-  typedef typename detail::IF<
-                       boost::is_convertible<T*, std::istream*>::value,
-                       T&,
-                       typename const_copy_argument <T>::type
-                     >::RET type;
+template <class T>
+struct convert_istream_to_ref_others_to_c_plain_by_default
+{
+    typedef typename detail::IF<
+        boost::is_convertible<T *, std::istream *>::value,
+        T &,
+        typename const_copy_argument<T>::type>::RET type;
 };
 #else
 
-template<class T> struct convert_ostream_to_ref_others_to_c_plain_by_default {
-  typedef typename detail::IF<
-                       is_instance_of_2<
-                         T, std::basic_ostream
-                       >::value,
-                       T&,
-                       typename const_copy_argument <T>::type
-                     >::RET type;
+template <class T>
+struct convert_ostream_to_ref_others_to_c_plain_by_default
+{
+    typedef typename detail::IF<
+        is_instance_of_2<
+            T, std::basic_ostream>::value,
+        T &,
+        typename const_copy_argument<T>::type>::RET type;
 };
 
-template<class T> struct convert_istream_to_ref_others_to_c_plain_by_default {
-  typedef typename detail::IF<
-                       is_instance_of_2<
-                         T, std::basic_istream
-                       >::value,
-                       T&,
-                       typename const_copy_argument <T>::type
-                     >::RET type;
+template <class T>
+struct convert_istream_to_ref_others_to_c_plain_by_default
+{
+    typedef typename detail::IF<
+        is_instance_of_2<
+            T, std::basic_istream>::value,
+        T &,
+        typename const_copy_argument<T>::type>::RET type;
 };
 #endif
 
-} // detail
+} // namespace detail
 
-BOOST_LAMBDA_BE2(operator<<, bitwise_action< leftshift_action>, A, const B, detail::convert_ostream_to_ref_others_to_c_plain_by_default)
-BOOST_LAMBDA_BE2(operator>>, bitwise_action< rightshift_action>, A, const B, detail::convert_istream_to_ref_others_to_c_plain_by_default)      
-
+BOOST_LAMBDA_BE2(operator<<, bitwise_action<leftshift_action>, A, const B, detail::convert_ostream_to_ref_others_to_c_plain_by_default)
+BOOST_LAMBDA_BE2(operator>>, bitwise_action<rightshift_action>, A, const B, detail::convert_istream_to_ref_others_to_c_plain_by_default)
 
 // special case for io_manipulators.
 // function references cannot be given as arguments to lambda operator
 // expressions in general. With << and >> the use of manipulators is
 // so common, that specializations are provided to make them work.
 
-template<class Arg, class Ret, class ManipArg>
-inline const 
-lambda_functor<
-  lambda_functor_base<
-    bitwise_action<leftshift_action>,
-    tuple<lambda_functor<Arg>, Ret(&)(ManipArg)> 
-  > 
->
-operator<<(const lambda_functor<Arg>& a, Ret(&b)(ManipArg))
-{
-  return 
-      lambda_functor_base<
+template <class Arg, class Ret, class ManipArg>
+inline const lambda_functor<
+    lambda_functor_base<
         bitwise_action<leftshift_action>,
-        tuple<lambda_functor<Arg>, Ret(&)(ManipArg)>
-      > 
-    ( tuple<lambda_functor<Arg>, Ret(&)(ManipArg)>(a, b) );
-}
-
-template<class Arg, class Ret, class ManipArg>
-inline const 
-lambda_functor<
-  lambda_functor_base<
-    bitwise_action<rightshift_action>,
-    tuple<lambda_functor<Arg>, Ret(&)(ManipArg)>
-  > 
->
-operator>>(const lambda_functor<Arg>& a, Ret(&b)(ManipArg))
+        tuple<lambda_functor<Arg>, Ret (&)(ManipArg)>>>
+operator<<(const lambda_functor<Arg> &a, Ret (&b)(ManipArg))
 {
-  return 
-      lambda_functor_base<
-        bitwise_action<rightshift_action>,
-        tuple<lambda_functor<Arg>, Ret(&)(ManipArg)>
-      > 
-    ( tuple<lambda_functor<Arg>, Ret(&)(ManipArg)>(a, b) );
+    return lambda_functor_base<
+        bitwise_action<leftshift_action>,
+        tuple<lambda_functor<Arg>, Ret (&)(ManipArg)>>(tuple<lambda_functor<Arg>, Ret (&)(ManipArg)>(a, b));
 }
 
+template <class Arg, class Ret, class ManipArg>
+inline const lambda_functor<
+    lambda_functor_base<
+        bitwise_action<rightshift_action>,
+        tuple<lambda_functor<Arg>, Ret (&)(ManipArg)>>>
+operator>>(const lambda_functor<Arg> &a, Ret (&b)(ManipArg))
+{
+    return lambda_functor_base<
+        bitwise_action<rightshift_action>,
+        tuple<lambda_functor<Arg>, Ret (&)(ManipArg)>>(tuple<lambda_functor<Arg>, Ret (&)(ManipArg)>(a, b));
+}
 
-// (+ and -) take their arguments as const references. 
+// (+ and -) take their arguments as const references.
 // This has consquences with pointer artihmetic
-// E.g int a[]; ... *a = 1 works but not *(a+1) = 1. 
+// E.g int a[]; ... *a = 1 works but not *(a+1) = 1.
 // the result of a+1 would be const
-// To make the latter work too, 
+// To make the latter work too,
 // non-const arrays are taken as non-const and stored as non-const as well.
-#if defined  BOOST_LAMBDA_PTR_ARITHMETIC_E1
+#if defined BOOST_LAMBDA_PTR_ARITHMETIC_E1
 #error "Multiple defines of  BOOST_LAMBDA_PTR_ARITHMETIC_E1"
 #endif
 
-#define BOOST_LAMBDA_PTR_ARITHMETIC_E1(OPER_NAME, ACTION, CONSTB)           \
-template<class Arg, int N, class B>                                         \
-inline const                                                                \
-lambda_functor<                                                             \
-  lambda_functor_base<ACTION, tuple<lambda_functor<Arg>, CONSTB(&)[N]> >    \
->                                                                           \
-OPER_NAME (const lambda_functor<Arg>& a, CONSTB(&b)[N])                     \
-{                                                                           \
-  return                                                                    \
-    lambda_functor_base<ACTION, tuple<lambda_functor<Arg>, CONSTB(&)[N]> >  \
-  (tuple<lambda_functor<Arg>, CONSTB(&)[N]>(a, b));                         \
-}
+#define BOOST_LAMBDA_PTR_ARITHMETIC_E1(OPER_NAME, ACTION, CONSTB)                                                                     \
+    template <class Arg, int N, class B>                                                                                              \
+    inline const lambda_functor<                                                                                                      \
+        lambda_functor_base<ACTION, tuple<lambda_functor<Arg>, CONSTB(&)[N]>>>                                                        \
+    OPER_NAME(const lambda_functor<Arg> &a, CONSTB(&b)[N])                                                                            \
+    {                                                                                                                                 \
+        return lambda_functor_base<ACTION, tuple<lambda_functor<Arg>, CONSTB(&)[N]>>(tuple<lambda_functor<Arg>, CONSTB(&)[N]>(a, b)); \
+    }
 
-
-#if defined  BOOST_LAMBDA_PTR_ARITHMETIC_E2
+#if defined BOOST_LAMBDA_PTR_ARITHMETIC_E2
 #error "Multiple defines of  BOOST_LAMBDA_PTR_ARITHMETIC_E2"
 #endif
 
-#define BOOST_LAMBDA_PTR_ARITHMETIC_E2(OPER_NAME, ACTION, CONSTA)           \
-template<int N, class A, class Arg>                                         \
-inline const                                                                \
-lambda_functor<                                                             \
-  lambda_functor_base<ACTION, tuple<CONSTA(&)[N], lambda_functor<Arg> > >   \
->                                                                           \
-OPER_NAME (CONSTA(&a)[N], const lambda_functor<Arg>& b)                     \
-{                                                                           \
-  return                                                                    \
-    lambda_functor_base<ACTION, tuple<CONSTA(&)[N], lambda_functor<Arg> > > \
-    (tuple<CONSTA(&)[N], lambda_functor<Arg> >(a, b));                      \
-}
-
+#define BOOST_LAMBDA_PTR_ARITHMETIC_E2(OPER_NAME, ACTION, CONSTA)                                                                     \
+    template <int N, class A, class Arg>                                                                                              \
+    inline const lambda_functor<                                                                                                      \
+        lambda_functor_base<ACTION, tuple<CONSTA(&)[N], lambda_functor<Arg>>>>                                                        \
+    OPER_NAME(CONSTA(&a)[N], const lambda_functor<Arg> &b)                                                                            \
+    {                                                                                                                                 \
+        return lambda_functor_base<ACTION, tuple<CONSTA(&)[N], lambda_functor<Arg>>>(tuple<CONSTA(&)[N], lambda_functor<Arg>>(a, b)); \
+    }
 
 BOOST_LAMBDA_PTR_ARITHMETIC_E1(operator+, arithmetic_action<plus_action>, B)
 BOOST_LAMBDA_PTR_ARITHMETIC_E2(operator+, arithmetic_action<plus_action>, A)
-BOOST_LAMBDA_PTR_ARITHMETIC_E1(operator+, arithmetic_action<plus_action>,const B)
-BOOST_LAMBDA_PTR_ARITHMETIC_E2(operator+, arithmetic_action<plus_action>,const A)
+BOOST_LAMBDA_PTR_ARITHMETIC_E1(operator+, arithmetic_action<plus_action>, const B)
+BOOST_LAMBDA_PTR_ARITHMETIC_E2(operator+, arithmetic_action<plus_action>, const A)
 
-
-//BOOST_LAMBDA_PTR_ARITHMETIC_E1(operator-, arithmetic_action<minus_action>)
-// This is not needed, since the result of ptr-ptr is an rvalue anyway
+// BOOST_LAMBDA_PTR_ARITHMETIC_E1(operator-, arithmetic_action<minus_action>)
+//  This is not needed, since the result of ptr-ptr is an rvalue anyway
 
 BOOST_LAMBDA_PTR_ARITHMETIC_E2(operator-, arithmetic_action<minus_action>, A)
 BOOST_LAMBDA_PTR_ARITHMETIC_E2(operator-, arithmetic_action<minus_action>, const A)
-
 
 #undef BOOST_LAMBDA_BE1
 #undef BOOST_LAMBDA_BE2
@@ -312,7 +271,6 @@ BOOST_LAMBDA_PTR_ARITHMETIC_E2(operator-, arithmetic_action<minus_action>, const
 #undef BOOST_LAMBDA_PTR_ARITHMETIC_E1
 #undef BOOST_LAMBDA_PTR_ARITHMETIC_E2
 
-
 // ---------------------------------------------------------------------
 // unary operators -----------------------------------------------------
 // ---------------------------------------------------------------------
@@ -321,17 +279,13 @@ BOOST_LAMBDA_PTR_ARITHMETIC_E2(operator-, arithmetic_action<minus_action>, const
 #error "Multiple defines of BOOST_LAMBDA_UE"
 #endif
 
-#define BOOST_LAMBDA_UE(OPER_NAME, ACTION)                                 \
-template<class Arg>                                                        \
-inline const                                                               \
-lambda_functor<lambda_functor_base<ACTION, tuple<lambda_functor<Arg> > > > \
-OPER_NAME (const lambda_functor<Arg>& a)                                   \
-{                                                                          \
-  return                                                                   \
-    lambda_functor_base<ACTION, tuple<lambda_functor<Arg> > >              \
-    ( tuple<lambda_functor<Arg> >(a) );                                    \
-}
-
+#define BOOST_LAMBDA_UE(OPER_NAME, ACTION)                                                             \
+    template <class Arg>                                                                               \
+    inline const lambda_functor<lambda_functor_base<ACTION, tuple<lambda_functor<Arg>>>>               \
+    OPER_NAME(const lambda_functor<Arg> &a)                                                            \
+    {                                                                                                  \
+        return lambda_functor_base<ACTION, tuple<lambda_functor<Arg>>>(tuple<lambda_functor<Arg>>(a)); \
+    }
 
 BOOST_LAMBDA_UE(operator+, unary_arithmetic_action<plus_action>)
 BOOST_LAMBDA_UE(operator-, unary_arithmetic_action<minus_action>)
@@ -346,17 +300,13 @@ BOOST_LAMBDA_UE(operator&, other_action<addressof_action>)
 #error "Multiple defines of BOOST_LAMBDA_POSTFIX_UE"
 #endif
 
-#define BOOST_LAMBDA_POSTFIX_UE(OPER_NAME, ACTION)                         \
-template<class Arg>                                                        \
-inline const                                                               \
-lambda_functor<lambda_functor_base<ACTION, tuple<lambda_functor<Arg> > > > \
-OPER_NAME (const lambda_functor<Arg>& a, int)                              \
-{                                                                          \
-  return                                                                   \
-    lambda_functor_base<ACTION, tuple<lambda_functor<Arg> > >              \
-    ( tuple<lambda_functor<Arg> >(a) );                                    \
-}
-
+#define BOOST_LAMBDA_POSTFIX_UE(OPER_NAME, ACTION)                                                     \
+    template <class Arg>                                                                               \
+    inline const lambda_functor<lambda_functor_base<ACTION, tuple<lambda_functor<Arg>>>>               \
+    OPER_NAME(const lambda_functor<Arg> &a, int)                                                       \
+    {                                                                                                  \
+        return lambda_functor_base<ACTION, tuple<lambda_functor<Arg>>>(tuple<lambda_functor<Arg>>(a)); \
+    }
 
 BOOST_LAMBDA_POSTFIX_UE(operator++, post_increment_decrement_action<increment_action>)
 BOOST_LAMBDA_POSTFIX_UE(operator--, post_increment_decrement_action<decrement_action>)

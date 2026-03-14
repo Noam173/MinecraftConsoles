@@ -20,10 +20,16 @@
 
 #include <boost/geometry/strategies/tags.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
-namespace strategy { namespace transform { namespace services
+namespace strategy
+{
+namespace transform
+{
+namespace services
 {
 
 /*!
@@ -39,25 +45,22 @@ namespace strategy { namespace transform { namespace services
     \tparam D 1, 2 dimension
     \tparam Point 1, 2 point type
  */
-template
-<
+template <
     typename CoordinateSystemTag1, typename CoordinateSystemTag2,
     typename CoordinateSystem1, typename CoordinateSystem2,
     std::size_t Dimension1, std::size_t Dimension2,
-    typename Point1, typename Point2
->
+    typename Point1, typename Point2>
 struct default_strategy
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPES
-            , (types<Point1, Point2>)
-        );
+    BOOST_MPL_ASSERT_MSG(
+        false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPES, (types<Point1, Point2>));
 };
 
-}}} // namespace strategy::transform::services
+} // namespace services
+} // namespace transform
+} // namespace strategy
 
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_STRATEGIES_TRANSFORM_HPP

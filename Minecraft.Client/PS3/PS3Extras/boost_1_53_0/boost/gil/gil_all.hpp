@@ -1,6 +1,6 @@
 /*
     Copyright 2005-2007 Adobe Systems Incorporated
-   
+
     Use, modification and distribution are subject to the Boost Software License,
     Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
     http://www.boost.org/LICENSE_1_0.txt).
@@ -14,7 +14,7 @@
 #define GIL_ALL_HPP
 
 ////////////////////////////////////////////////////////////////////////////////////////
-/// \file               
+/// \file
 /// \brief  Includes all GIL files for convenience
 /// \author Lubomir Bourdev and Hailin Jin \n
 ///         Adobe Systems Incorporated
@@ -22,25 +22,25 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "gil_config.hpp"
-#include "channel_algorithm.hpp"
 #include "algorithm.hpp"
-#include "pixel.hpp"
-#include "packed_pixel.hpp"
-#include "planar_pixel_reference.hpp"
-#include "planar_pixel_iterator.hpp"
-#include "pixel_iterator_adaptor.hpp"
-#include "step_iterator.hpp"
-#include "iterator_from_2d.hpp"
-#include "image.hpp"
-#include "image_view_factory.hpp"
-#include "typedefs.hpp"
-#include "metafunctions.hpp"
+#include "bit_aligned_pixel_iterator.hpp"
+#include "channel_algorithm.hpp"
 #include "color_convert.hpp"
 #include "device_n.hpp"
+#include "gil_config.hpp"
+#include "image.hpp"
+#include "image_view_factory.hpp"
+#include "iterator_from_2d.hpp"
+#include "metafunctions.hpp"
+#include "packed_pixel.hpp"
+#include "pixel.hpp"
+#include "pixel_iterator_adaptor.hpp"
+#include "planar_pixel_iterator.hpp"
+#include "planar_pixel_reference.hpp"
+#include "step_iterator.hpp"
+#include "typedefs.hpp"
 #include "virtual_locator.hpp"
-#include "bit_aligned_pixel_iterator.hpp"
 // Uncomment this line to help in porting your code from an older version of GIL
-//#include "deprecated.hpp"
+// #include "deprecated.hpp"
 
 #endif

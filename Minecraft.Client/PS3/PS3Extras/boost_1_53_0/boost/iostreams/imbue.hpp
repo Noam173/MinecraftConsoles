@@ -9,10 +9,10 @@
 #define BOOST_IOSTREAMS_IMBUE_HPP_INCLUDED
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <boost/config.hpp>  // DEDUCED_TYPENAME, MSVC.
+#include <boost/config.hpp> // DEDUCED_TYPENAME, MSVC.
 #include <boost/detail/workaround.hpp>
 #include <boost/iostreams/detail/dispatch.hpp>
 #include <boost/iostreams/detail/streambuf.hpp>
@@ -23,59 +23,76 @@
 // Must come last.
 #include <boost/iostreams/detail/config/disable_warnings.hpp>
 
-namespace boost { namespace iostreams { 
+namespace boost
+{
+namespace iostreams
+{
 
-namespace detail {
+namespace detail
+{
 
 // Implementation templates for simulated tag dispatch.
-template<typename T> 
+template <typename T>
 struct imbue_impl;
 
 } // End namespace detail.
 
-template<typename T, typename Locale>
-void imbue(T& t, const Locale& loc)
-{ detail::imbue_impl<T>::imbue(detail::unwrap(t), loc); }
+template <typename T, typename Locale>
+void imbue(T &t, const Locale &loc)
+{
+    detail::imbue_impl<T>::imbue(detail::unwrap(t), loc);
+}
 
-namespace detail {
+namespace detail
+{
 
 //------------------Definition of imbue_impl----------------------------------//
 
-template<typename T>
+template <typename T>
 struct imbue_impl
     : mpl::if_<
           is_custom<T>,
           operations<T>,
           imbue_impl<
               BOOST_DEDUCED_TYPENAME
-              dispatch<
-                  T, streambuf_tag, localizable_tag, any_tag
-              >::type
-          >
-      >::type
-    { };
-
-template<>
-struct imbue_impl<any_tag> {
-    template<typename T, typename Locale>
-    static void imbue(T&, const Locale&) { }
+                  dispatch<
+                      T, streambuf_tag, localizable_tag, any_tag>::type>>::type
+{
 };
 
-template<>
-struct imbue_impl<streambuf_tag> {
-    template<typename T, typename Locale>
-    static void imbue(T& t, const Locale& loc) { t.pubimbue(loc); }
+template <>
+struct imbue_impl<any_tag>
+{
+    template <typename T, typename Locale>
+    static void imbue(T &, const Locale &)
+    {
+    }
 };
 
-template<>
-struct imbue_impl<localizable_tag> {
-    template<typename T, typename Locale>
-    static void imbue(T& t, const Locale& loc) { t.imbue(loc); }
+template <>
+struct imbue_impl<streambuf_tag>
+{
+    template <typename T, typename Locale>
+    static void imbue(T &t, const Locale &loc)
+    {
+        t.pubimbue(loc);
+    }
+};
+
+template <>
+struct imbue_impl<localizable_tag>
+{
+    template <typename T, typename Locale>
+    static void imbue(T &t, const Locale &loc)
+    {
+        t.imbue(loc);
+    }
 };
 
 } // End namespace detail.
 
-} } // End namespaces iostreams, boost.
+} // namespace iostreams
+} // namespace boost
 
 #include <boost/iostreams/detail/config/enable_warnings.hpp>
 

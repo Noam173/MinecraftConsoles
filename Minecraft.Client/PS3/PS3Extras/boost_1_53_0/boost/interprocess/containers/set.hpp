@@ -12,21 +12,23 @@
 #define BOOST_INTERPROCESS_CONTAINERS_SET_HPP
 
 #if (defined _MSC_VER) && (_MSC_VER >= 1200)
-#  pragma once
+#pragma once
 #endif
 
-#include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/container/set.hpp>
 #include <boost/interprocess/containers/containers_fwd.hpp>
+#include <boost/interprocess/detail/config_begin.hpp>
 
-namespace boost {
-namespace interprocess {
+namespace boost
+{
+namespace interprocess
+{
 
-using boost::container::set;
 using boost::container::multiset;
+using boost::container::set;
 
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace interprocess
+} // namespace boost
 
 #include <boost/interprocess/detail/config_end.hpp>
 

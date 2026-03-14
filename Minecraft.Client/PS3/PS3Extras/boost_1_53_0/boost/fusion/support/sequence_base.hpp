@@ -10,45 +10,53 @@
 
 #include <boost/mpl/begin_end_fwd.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    namespace detail
+namespace fusion
+{
+namespace detail
+{
+struct from_sequence_convertible_type
+{
+};
+} // namespace detail
+
+template <typename Sequence>
+struct sequence_base
+{
+    Sequence const &
+    derived() const
     {
-        struct from_sequence_convertible_type
-        {};
+        return static_cast<Sequence const &>(*this);
     }
 
-    template <typename Sequence>
-    struct sequence_base
+    Sequence &
+    derived()
     {
-        Sequence const&
-        derived() const
-        {
-            return static_cast<Sequence const&>(*this);
-        }
+        return static_cast<Sequence &>(*this);
+    }
 
-        Sequence&
-        derived()
-        {
-            return static_cast<Sequence&>(*this);
-        }
+    operator detail::from_sequence_convertible_type() const
+    {
+        return detail::from_sequence_convertible_type();
+    }
+};
 
-        operator detail::from_sequence_convertible_type()const
-        {
-            return detail::from_sequence_convertible_type();
-        }
-    };
+struct fusion_sequence_tag;
+} // namespace fusion
+} // namespace boost
 
-    struct fusion_sequence_tag;
-}}
-
-namespace boost { namespace mpl
+namespace boost
 {
-    // Deliberately break mpl::begin, so it doesn't lie that a Fusion sequence
-    // is not an MPL sequence by returning mpl::void_.
-    // In other words: Fusion Sequences are always MPL Sequences, but they can
-    // be incompletely defined.
-    template<> struct begin_impl< boost::fusion::fusion_sequence_tag >;
-}}
+namespace mpl
+{
+// Deliberately break mpl::begin, so it doesn't lie that a Fusion sequence
+// is not an MPL sequence by returning mpl::void_.
+// In other words: Fusion Sequences are always MPL Sequences, but they can
+// be incompletely defined.
+template <>
+struct begin_impl<boost::fusion::fusion_sequence_tag>;
+} // namespace mpl
+} // namespace boost
 
 #endif

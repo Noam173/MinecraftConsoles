@@ -12,26 +12,29 @@
 #define BOOST_ASIO_DETAIL_TIMER_SCHEDULER_FWD_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if defined(BOOST_ASIO_HAS_IOCP)
-# include <boost/asio/detail/win_iocp_io_service_fwd.hpp>
+#include <boost/asio/detail/win_iocp_io_service_fwd.hpp>
 #elif defined(BOOST_ASIO_HAS_EPOLL)
-# include <boost/asio/detail/epoll_reactor_fwd.hpp>
+#include <boost/asio/detail/epoll_reactor_fwd.hpp>
 #elif defined(BOOST_ASIO_HAS_KQUEUE)
-# include <boost/asio/detail/kqueue_reactor_fwd.hpp>
+#include <boost/asio/detail/kqueue_reactor_fwd.hpp>
 #elif defined(BOOST_ASIO_HAS_DEV_POLL)
-# include <boost/asio/detail/dev_poll_reactor_fwd.hpp>
+#include <boost/asio/detail/dev_poll_reactor_fwd.hpp>
 #else
-# include <boost/asio/detail/select_reactor_fwd.hpp>
+#include <boost/asio/detail/select_reactor_fwd.hpp>
 #endif
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 #if defined(BOOST_ASIO_HAS_IOCP)
 typedef win_iocp_io_service timer_scheduler;

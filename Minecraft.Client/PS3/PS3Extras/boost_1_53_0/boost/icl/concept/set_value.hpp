@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------+    
+/*-----------------------------------------------------------------------------+
 Copyright (c) 2010-2010: Joachim Faulhaber
 +------------------------------------------------------------------------------+
    Distributed under the Boost Software License, Version 1.0.
@@ -8,33 +8,33 @@ Copyright (c) 2010-2010: Joachim Faulhaber
 #ifndef BOOST_ICL_CONCEPT_SET_VALUE_HPP_JOFA_100924
 #define BOOST_ICL_CONCEPT_SET_VALUE_HPP_JOFA_100924
 
-#include <boost/icl/type_traits/is_set.hpp>
 #include <boost/icl/type_traits/codomain_type_of.hpp>
+#include <boost/icl/type_traits/is_set.hpp>
 
-namespace boost{ namespace icl
+namespace boost
+{
+namespace icl
 {
 
 //==============================================================================
 //= AlgoUnifiers<Set>
 //==============================================================================
-template<class Type, class Iterator>
-inline typename enable_if<is_set<Type>, const typename Type::key_type>::type&
+template <class Type, class Iterator>
+inline typename enable_if<is_set<Type>, const typename Type::key_type>::type &
 key_value(Iterator it_)
 {
     return *it_;
 }
 
-template<class Type>
+template <class Type>
 inline typename enable_if<is_set<Type>, typename Type::value_type>::type
-make_value(const typename Type::key_type& key_val, 
-           const typename codomain_type_of<Type>::type& )
+make_value(const typename Type::key_type &key_val,
+           const typename codomain_type_of<Type>::type &)
 {
     return typename Type::value_type(key_val);
 }
 
-
-}} // namespace boost icl
+} // namespace icl
+} // namespace boost
 
 #endif
-
-

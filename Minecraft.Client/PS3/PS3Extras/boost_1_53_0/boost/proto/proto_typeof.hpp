@@ -11,9 +11,9 @@
 #define BOOST_XPRESSIVE_PROTO_PROTO_TYPEOF_H
 
 #include <boost/config.hpp>
-#include <boost/typeof/typeof.hpp>
-#include <boost/proto/proto_fwd.hpp>
 #include <boost/proto/deep_copy.hpp>
+#include <boost/proto/proto_fwd.hpp>
+#include <boost/typeof/typeof.hpp>
 #include BOOST_TYPEOF_INCREMENT_REGISTRATION_GROUP()
 
 BOOST_TYPEOF_REGISTER_TYPE(boost::proto::tag::terminal)

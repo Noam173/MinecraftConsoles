@@ -57,7 +57,7 @@
 
 #else
 
-#  error "Pgi compiler not configured - please reconfigure"
+#error "Pgi compiler not configured - please reconfigure"
 
 #endif
 //
@@ -115,4 +115,3 @@
 //
 // version check:
 // probably nothing to do here?
-

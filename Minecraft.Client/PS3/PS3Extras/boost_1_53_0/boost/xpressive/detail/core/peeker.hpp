@@ -10,30 +10,34 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
-#include <string>
-#include <typeinfo>
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
 #include <boost/mpl/assert.hpp>
-#include <boost/mpl/size_t.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/mpl/equal_to.hpp>
+#include <boost/mpl/size_t.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/matchers.hpp>
+#include <boost/xpressive/detail/detail_fwd.hpp>
+#include <boost/xpressive/detail/utility/algorithm.hpp>
 #include <boost/xpressive/detail/utility/hash_peek_bitset.hpp>
 #include <boost/xpressive/detail/utility/never_true.hpp>
-#include <boost/xpressive/detail/utility/algorithm.hpp>
+#include <string>
+#include <typeinfo>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////////
 // peeker_string
 //
-template<typename Char>
+template <typename Char>
 struct peeker_string
 {
     Char const *begin_;
@@ -44,15 +48,15 @@ struct peeker_string
 ///////////////////////////////////////////////////////////////////////////////
 // char_sink
 //
-template<typename Traits, bool ICase>
+template <typename Traits, bool ICase>
 struct char_sink
 {
     typedef typename Traits::char_type char_type;
 
     char_sink(hash_peek_bitset<char_type> &bset, Traits const &tr)
-      : bset_(bset)
-      , traits_(tr)
-    {}
+        : bset_(bset), traits_(tr)
+    {
+    }
 
     void operator()(char_type ch) const
     {
@@ -61,25 +65,20 @@ struct char_sink
 
     hash_peek_bitset<char_type> &bset_;
     Traits const &traits_;
-private:
-    char_sink &operator =(char_sink const &);
+
+  private:
+    char_sink &operator=(char_sink const &);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 // xpression_peeker
 //
-template<typename Char>
+template <typename Char>
 struct xpression_peeker
 {
-    template<typename Traits>
+    template <typename Traits>
     xpression_peeker(hash_peek_bitset<Char> &bset, Traits const &tr, bool has_backrefs = false)
-      : bset_(bset)
-      , str_()
-      , line_start_(false)
-      , traits_(0)
-      , traits_type_(0)
-      , leading_simple_repeat_(0)
-      , has_backrefs_(has_backrefs)
+        : bset_(bset), str_(), line_start_(false), traits_(0), traits_type_(0), leading_simple_repeat_(0), has_backrefs_(has_backrefs)
     {
         this->set_traits(tr);
     }
@@ -113,7 +112,7 @@ struct xpression_peeker
         this->bset_.set_all();
     }
 
-    template<typename Matcher>
+    template <typename Matcher>
     mpl::false_ accept(Matcher const &)
     {
         this->fail();
@@ -122,7 +121,7 @@ struct xpression_peeker
 
     mpl::true_ accept(mark_begin_matcher const &)
     {
-        if(this->has_backrefs_)
+        if (this->has_backrefs_)
         {
             --this->leading_simple_repeat_;
         }
@@ -135,21 +134,21 @@ struct xpression_peeker
         return mpl::true_();
     }
 
-    template<typename Traits>
+    template <typename Traits>
     mpl::true_ accept(assert_bol_matcher<Traits> const &)
     {
         this->line_start_ = true;
         return mpl::true_();
     }
 
-    template<typename Traits, typename ICase>
+    template <typename Traits, typename ICase>
     mpl::false_ accept(literal_matcher<Traits, ICase, mpl::false_> const &xpr)
     {
         this->bset_.set_char(xpr.ch_, ICase(), this->get_traits_<Traits>());
         return mpl::false_();
     }
 
-    template<typename Traits, typename ICase>
+    template <typename Traits, typename ICase>
     mpl::false_ accept(string_matcher<Traits, ICase> const &xpr)
     {
         this->bset_.set_char(xpr.str_[0], ICase(), this->get_traits_<Traits>());
@@ -159,7 +158,7 @@ struct xpression_peeker
         return mpl::false_();
     }
 
-    template<typename Alternates, typename Traits>
+    template <typename Alternates, typename Traits>
     mpl::false_ accept(alternate_matcher<Alternates, Traits> const &xpr)
     {
         BOOST_ASSERT(0 != xpr.bset_.count());
@@ -167,68 +166,68 @@ struct xpression_peeker
         return mpl::false_();
     }
 
-    template<typename Matcher, typename Traits, typename ICase>
+    template <typename Matcher, typename Traits, typename ICase>
     mpl::false_ accept(attr_matcher<Matcher, Traits, ICase> const &xpr)
     {
         xpr.sym_.peek(char_sink<Traits, ICase::value>(this->bset_, this->get_traits_<Traits>()));
         return mpl::false_();
     }
 
-    template<typename Xpr, typename Greedy>
+    template <typename Xpr, typename Greedy>
     mpl::false_ accept(optional_matcher<Xpr, Greedy> const &)
     {
-        this->fail();  // a union of xpr and next
+        this->fail(); // a union of xpr and next
         return mpl::false_();
     }
 
-    template<typename Xpr, typename Greedy>
+    template <typename Xpr, typename Greedy>
     mpl::false_ accept(optional_mark_matcher<Xpr, Greedy> const &)
     {
-        this->fail();  // a union of xpr and next
+        this->fail(); // a union of xpr and next
         return mpl::false_();
     }
 
-    //template<typename Xpr, typename Greedy>
-    //mpl::true_ accept(optional_matcher<Xpr, Greedy> const &xpr)
+    // template<typename Xpr, typename Greedy>
+    // mpl::true_ accept(optional_matcher<Xpr, Greedy> const &xpr)
     //{
-    //    xpr.xpr_.peek(*this);  // a union of xpr and next
-    //    return mpl::true_();
-    //}
+    //     xpr.xpr_.peek(*this);  // a union of xpr and next
+    //     return mpl::true_();
+    // }
 
-    //template<typename Xpr, typename Greedy>
-    //mpl::true_ accept(optional_mark_matcher<Xpr, Greedy> const &xpr)
+    // template<typename Xpr, typename Greedy>
+    // mpl::true_ accept(optional_mark_matcher<Xpr, Greedy> const &xpr)
     //{
-    //    xpr.xpr_.peek(*this);  // a union of xpr and next
-    //    return mpl::true_();
-    //}
+    //     xpr.xpr_.peek(*this);  // a union of xpr and next
+    //     return mpl::true_();
+    // }
 
-    template<typename Traits>
+    template <typename Traits>
     mpl::false_ accept(posix_charset_matcher<Traits> const &xpr)
     {
         this->bset_.set_class(xpr.mask_, xpr.not_, this->get_traits_<Traits>());
         return mpl::false_();
     }
 
-    template<typename ICase, typename Traits>
+    template <typename ICase, typename Traits>
     typename enable_if<is_narrow_char<typename Traits::char_type>, mpl::false_>::type
-    accept(charset_matcher<Traits, ICase, basic_chset<Char> > const &xpr)
+    accept(charset_matcher<Traits, ICase, basic_chset<Char>> const &xpr)
     {
         BOOST_ASSERT(0 != xpr.charset_.base().count());
         this->bset_.set_charset(xpr.charset_, ICase());
         return mpl::false_();
     }
 
-    template<typename Traits, typename ICase>
+    template <typename Traits, typename ICase>
     mpl::false_ accept(range_matcher<Traits, ICase> const &xpr)
     {
         this->bset_.set_range(xpr.ch_min_, xpr.ch_max_, xpr.not_, ICase(), this->get_traits_<Traits>());
         return mpl::false_();
     }
 
-    template<typename Xpr, typename Greedy>
+    template <typename Xpr, typename Greedy>
     mpl::false_ accept(simple_repeat_matcher<Xpr, Greedy> const &xpr)
     {
-        if(Greedy() && 1U == xpr.width_)
+        if (Greedy() && 1U == xpr.width_)
         {
             ++this->leading_simple_repeat_;
             xpr.leading_ = this->leading_simple_repeat();
@@ -237,32 +236,32 @@ struct xpression_peeker
         return mpl::false_();
     }
 
-    template<typename Xpr>
+    template <typename Xpr>
     mpl::false_ accept(keeper_matcher<Xpr> const &xpr)
     {
         xpr.xpr_.peek(*this);
         return mpl::false_();
     }
 
-    template<typename Traits>
+    template <typename Traits>
     void set_traits(Traits const &tr)
     {
-        if(0 == this->traits_)
+        if (0 == this->traits_)
         {
             this->traits_ = &tr;
             this->traits_type_ = &typeid(Traits);
         }
-        else if(*this->traits_type_ != typeid(Traits) || this->get_traits_<Traits>() != tr)
+        else if (*this->traits_type_ != typeid(Traits) || this->get_traits_<Traits>() != tr)
         {
             this->fail(); // traits mis-match! set all and bail
         }
     }
 
-private:
+  private:
     xpression_peeker(xpression_peeker const &);
-    xpression_peeker &operator =(xpression_peeker const &);
+    xpression_peeker &operator=(xpression_peeker const &);
 
-    template<typename Traits>
+    template <typename Traits>
     Traits const &get_traits_() const
     {
         BOOST_ASSERT(!!(*this->traits_type_ == typeid(Traits)));
@@ -279,6 +278,8 @@ private:
     bool has_backrefs_;
 };
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

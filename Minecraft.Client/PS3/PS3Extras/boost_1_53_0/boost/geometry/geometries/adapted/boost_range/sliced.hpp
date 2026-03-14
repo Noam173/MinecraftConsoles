@@ -9,28 +9,28 @@
 #ifndef BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_RANGE_SLICED_HPP
 #define BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_RANGE_SLICED_HPP
 
-
 #include <boost/range/adaptor/sliced.hpp>
 
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace traits
 {
 
-template<typename Geometry>
-struct tag<boost::adaptors::sliced_range<Geometry> >
+template <typename Geometry>
+struct tag<boost::adaptors::sliced_range<Geometry>>
 {
     typedef typename geometry::tag<Geometry>::type type;
 };
 
-}
+} // namespace traits
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_ADAPTED_BOOST_RANGE_SLICED_HPP
-

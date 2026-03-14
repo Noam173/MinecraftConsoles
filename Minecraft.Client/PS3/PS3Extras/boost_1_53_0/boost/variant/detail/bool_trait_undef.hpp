@@ -16,6 +16,5 @@
 // should be the last #include
 #include "boost/type_traits/detail/bool_trait_undef.hpp"
 
-
 #undef BOOST_VARIANT_TT_AUX_BOOL_TRAIT_DEF1
 #undef BOOST_VARIANT_TT_AUX_TRAIT_SUFFIX

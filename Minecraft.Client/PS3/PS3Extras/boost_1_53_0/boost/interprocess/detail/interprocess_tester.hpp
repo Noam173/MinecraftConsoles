@@ -11,21 +11,25 @@
 #ifndef BOOST_INTERPROCESS_DETAIL_INTERPROCESS_TESTER_HPP
 #define BOOST_INTERPROCESS_DETAIL_INTERPROCESS_TESTER_HPP
 
-namespace boost{
-namespace interprocess{
-namespace ipcdetail{
+namespace boost
+{
+namespace interprocess
+{
+namespace ipcdetail
+{
 
 class interprocess_tester
 {
-   public:
-   template<class T>
-   static void dont_close_on_destruction(T &t)
-   {  t.dont_close_on_destruction(); }
+  public:
+    template <class T>
+    static void dont_close_on_destruction(T &t)
+    {
+        t.dont_close_on_destruction();
+    }
 };
 
-}  //namespace ipcdetail{
-}  //namespace interprocess{
-}  //namespace boost{
+} // namespace ipcdetail
+} // namespace interprocess
+} // namespace boost
 
-#endif   //#ifndef BOOST_INTERPROCESS_DETAIL_INTERPROCESS_TESTER_HPP
-
+#endif // #ifndef BOOST_INTERPROCESS_DETAIL_INTERPROCESS_TESTER_HPP

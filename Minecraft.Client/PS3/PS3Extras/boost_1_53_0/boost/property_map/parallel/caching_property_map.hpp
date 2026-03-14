@@ -15,13 +15,17 @@
 
 #include <boost/property_map/property_map.hpp>
 
-namespace boost { 
+namespace boost
+{
 
 // This probably doesn't belong here
-template<typename Key, typename Value>
-inline void local_put(dummy_property_map, const Key&, const Value&) {}
+template <typename Key, typename Value>
+inline void local_put(dummy_property_map, const Key &, const Value &)
+{
+}
 
-namespace parallel {
+namespace parallel
+{
 
 /** Property map that caches values placed in it but does not
  * broadcast values to remote processors.  This class template is
@@ -31,26 +35,39 @@ namespace parallel {
  *
  * @todo Find a better name for @ref caching_property_map
  */
-template<typename PropertyMap>
+template <typename PropertyMap>
 class caching_property_map
 {
-public:
-  typedef typename property_traits<PropertyMap>::key_type   key_type;
-  typedef typename property_traits<PropertyMap>::value_type value_type;
-  typedef typename property_traits<PropertyMap>::reference  reference;
-  typedef typename property_traits<PropertyMap>::category   category;
+  public:
+    typedef typename property_traits<PropertyMap>::key_type key_type;
+    typedef typename property_traits<PropertyMap>::value_type value_type;
+    typedef typename property_traits<PropertyMap>::reference reference;
+    typedef typename property_traits<PropertyMap>::category category;
 
-  explicit caching_property_map(const PropertyMap& property_map)
-    : property_map(property_map) {}
+    explicit caching_property_map(const PropertyMap &property_map)
+        : property_map(property_map)
+    {
+    }
 
-  PropertyMap&        base()       { return property_map; }
-  const PropertyMap&  base() const { return property_map; }
+    PropertyMap &base()
+    {
+        return property_map;
+    }
+    const PropertyMap &base() const
+    {
+        return property_map;
+    }
 
-  template<typename Reduce>
-  void set_reduce(const Reduce& reduce)
-  { property_map.set_reduce(reduce); }
+    template <typename Reduce>
+    void set_reduce(const Reduce &reduce)
+    {
+        property_map.set_reduce(reduce);
+    }
 
-  void reset() { property_map.reset(); }
+    void reset()
+    {
+        property_map.reset();
+    }
 
 #if 0
   reference operator[](const key_type& key) const
@@ -59,38 +76,49 @@ public:
   }
 #endif
 
-private:
-  PropertyMap property_map;
+  private:
+    PropertyMap property_map;
 };
 
-template<typename PropertyMap, typename Key>
+template <typename PropertyMap, typename Key>
 inline typename caching_property_map<PropertyMap>::value_type
-get(const caching_property_map<PropertyMap>& pm, const Key& key)
-{ return get(pm.base(), key); }
+get(const caching_property_map<PropertyMap> &pm, const Key &key)
+{
+    return get(pm.base(), key);
+}
 
-template<typename PropertyMap, typename Key, typename Value>
+template <typename PropertyMap, typename Key, typename Value>
 inline void
-local_put(const caching_property_map<PropertyMap>& pm, const Key& key,
-          const Value& value)
-{ local_put(pm.base(), key, value); }
+local_put(const caching_property_map<PropertyMap> &pm, const Key &key,
+          const Value &value)
+{
+    local_put(pm.base(), key, value);
+}
 
-template<typename PropertyMap, typename Key, typename Value>
+template <typename PropertyMap, typename Key, typename Value>
 inline void
-cache(const caching_property_map<PropertyMap>& pm, const Key& key,
-      const Value& value)
-{ cache(pm.base(), key, value); }
+cache(const caching_property_map<PropertyMap> &pm, const Key &key,
+      const Value &value)
+{
+    cache(pm.base(), key, value);
+}
 
-template<typename PropertyMap, typename Key, typename Value>
+template <typename PropertyMap, typename Key, typename Value>
 inline void
-put(const caching_property_map<PropertyMap>& pm, const Key& key,
-    const Value& value)
-{ local_put(pm.base(), key, value); }
+put(const caching_property_map<PropertyMap> &pm, const Key &key,
+    const Value &value)
+{
+    local_put(pm.base(), key, value);
+}
 
-template<typename PropertyMap>
+template <typename PropertyMap>
 inline caching_property_map<PropertyMap>
-make_caching_property_map(const PropertyMap& pm)
-{ return caching_property_map<PropertyMap>(pm); }
+make_caching_property_map(const PropertyMap &pm)
+{
+    return caching_property_map<PropertyMap>(pm);
+}
 
-} } // end namespace boost::parallel
+} // namespace parallel
+} // namespace boost
 
 #endif // BOOST_PARALLEL_CACHING_PROPERTY_MAP_HPP

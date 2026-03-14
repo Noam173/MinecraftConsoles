@@ -11,10 +11,8 @@
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-
 #ifndef BOOST_GEOMETRY_MULTI_ALGORITHMS_NUM_GEOMETRIES_HPP
 #define BOOST_GEOMETRY_MULTI_ALGORITHMS_NUM_GEOMETRIES_HPP
-
 
 #include <cstddef>
 
@@ -22,10 +20,10 @@
 
 #include <boost/geometry/algorithms/num_geometries.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
@@ -34,18 +32,16 @@ namespace dispatch
 template <typename MultiGeometry>
 struct num_geometries<MultiGeometry, multi_tag>
 {
-    static inline std::size_t apply(MultiGeometry const& multi_geometry)
+    static inline std::size_t apply(MultiGeometry const &multi_geometry)
     {
         return boost::size(multi_geometry);
     }
 };
 
-
 } // namespace dispatch
 #endif
 
-
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_MULTI_ALGORITHMS_NUM_GEOMETRIES_HPP

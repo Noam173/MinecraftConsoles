@@ -8,36 +8,36 @@
 #if !defined(FUSION_LESS_05052005_0432)
 #define FUSION_LESS_05052005_0432
 
+#include <boost/fusion/sequence/comparison/detail/less.hpp>
+#include <boost/fusion/sequence/comparison/enable_comparison.hpp>
 #include <boost/fusion/sequence/intrinsic/begin.hpp>
 #include <boost/fusion/sequence/intrinsic/end.hpp>
 #include <boost/fusion/sequence/intrinsic/size.hpp>
-#include <boost/fusion/sequence/comparison/detail/less.hpp>
-#include <boost/fusion/sequence/comparison/enable_comparison.hpp>
 
-namespace boost { namespace fusion
+namespace boost
 {
-    template <typename Seq1, typename Seq2>
-    inline bool
-    less(Seq1 const& a, Seq2 const& b)
-    {
-        return detail::sequence_less<Seq1 const, Seq2 const>::
-            call(fusion::begin(a), fusion::begin(b));
-    }
+namespace fusion
+{
+template <typename Seq1, typename Seq2>
+inline bool
+less(Seq1 const &a, Seq2 const &b)
+{
+    return detail::sequence_less<Seq1 const, Seq2 const>::
+        call(fusion::begin(a), fusion::begin(b));
+}
 
-    namespace operators
-    {
-        template <typename Seq1, typename Seq2>
-        inline typename
-            boost::enable_if<
-                traits::enable_comparison<Seq1, Seq2>
-              , bool
-            >::type
-        operator<(Seq1 const& a, Seq2 const& b)
-        {
-            return fusion::less(a, b);
-        }
-    }
-    using operators::operator<;
-}}
+namespace operators
+{
+template <typename Seq1, typename Seq2>
+inline typename boost::enable_if<
+    traits::enable_comparison<Seq1, Seq2>, bool>::type
+operator<(Seq1 const &a, Seq2 const &b)
+{
+    return fusion::less(a, b);
+}
+} // namespace operators
+using operators::operator<;
+} // namespace fusion
+} // namespace boost
 
 #endif

@@ -10,14 +10,14 @@
 #include <boost/config.hpp>
 
 #ifdef BOOST_MSVC
-   #ifndef _CRT_SECURE_NO_DEPRECATE
-      #define  BOOST_MOVE_CRT_SECURE_NO_DEPRECATE
-      #define _CRT_SECURE_NO_DEPRECATE
-   #endif
-   #ifndef _SCL_SECURE_NO_WARNINGS
-      #define  BOOST_MOVE_SCL_SECURE_NO_WARNINGS
-      #define _SCL_SECURE_NO_WARNINGS
-   #endif
-   #pragma warning (push)
-   #pragma warning (disable : 4996) // "function": was declared deprecated
+#ifndef _CRT_SECURE_NO_DEPRECATE
+#define BOOST_MOVE_CRT_SECURE_NO_DEPRECATE
+#define _CRT_SECURE_NO_DEPRECATE
+#endif
+#ifndef _SCL_SECURE_NO_WARNINGS
+#define BOOST_MOVE_SCL_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
+#endif
+#pragma warning(push)
+#pragma warning(disable : 4996) // "function": was declared deprecated
 #endif

@@ -21,32 +21,32 @@
 namespace boost
 {
 
-  namespace iterators
-  {
-    //
-    // Base machinery for all kinds of enable if
-    //
-    template<bool>
-    struct enabled
+namespace iterators
+{
+//
+// Base machinery for all kinds of enable if
+//
+template <bool>
+struct enabled
+{
+    template <typename T>
+    struct base
     {
-      template<typename T>
-      struct base
-      {
         typedef T type;
-      };
     };
-    
-    //
-    // For compilers that don't support "Substitution Failure Is Not An Error"
-    // enable_if falls back to always enabled. See comments
-    // on operator implementation for consequences.
-    //
-    template<>
-    struct enabled<false>
+};
+
+//
+// For compilers that don't support "Substitution Failure Is Not An Error"
+// enable_if falls back to always enabled. See comments
+// on operator implementation for consequences.
+//
+template <>
+struct enabled<false>
+{
+    template <typename T>
+    struct base
     {
-      template<typename T>
-      struct base
-      {
 #ifdef BOOST_NO_SFINAE
 
         typedef T type;
@@ -59,25 +59,24 @@ namespace boost
         // typedef invalid_overload type;
         //
 #endif
-      };
     };
+};
 
+template <class Cond,
+          class Return>
+struct enable_if
+#if !defined(BOOST_NO_SFINAE) && !defined(BOOST_NO_IS_CONVERTIBLE)
+    : enabled<(Cond::value)>::template base<Return>
+#else
+    : mpl::identity<Return>
+#endif
+{
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+    typedef Return type;
+#endif
+};
 
-    template <class Cond,
-              class Return>
-    struct enable_if
-# if !defined(BOOST_NO_SFINAE) && !defined(BOOST_NO_IS_CONVERTIBLE)
-      : enabled<(Cond::value)>::template base<Return>
-# else
-      : mpl::identity<Return>
-# endif 
-    {
-# if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-        typedef Return type;
-# endif 
-    };
-
-  } // namespace iterators
+} // namespace iterators
 
 } // namespace boost
 

@@ -14,15 +14,16 @@
 #ifndef BOOST_GEOMETRY_VIEWS_DETAIL_POINTS_VIEW_HPP
 #define BOOST_GEOMETRY_VIEWS_DETAIL_POINTS_VIEW_HPP
 
-
-#include <boost/range.hpp>
 #include <boost/iterator.hpp>
-#include <boost/iterator/iterator_facade.hpp>
 #include <boost/iterator/iterator_categories.hpp>
+#include <boost/iterator/iterator_facade.hpp>
+#include <boost/range.hpp>
 
 #include <boost/geometry/core/exception.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace detail
@@ -37,49 +38,47 @@ class points_view
     // equivalent of this within Boost. If so, TODO: use that one.
     // This used to be "box_iterator" and "segment_iterator".
     struct points_iterator
-        : public boost::iterator_facade
-            <
-                points_iterator,
-                Point const,
-                boost::random_access_traversal_tag
-            >
+        : public boost::iterator_facade<
+              points_iterator,
+              Point const,
+              boost::random_access_traversal_tag>
     {
         // Constructor: Begin iterator
-        inline points_iterator(Point const* p)
-            : m_points(p)
-            , m_index(0) 
-        {}
+        inline points_iterator(Point const *p)
+            : m_points(p), m_index(0)
+        {
+        }
 
         // Constructor: End iterator
-        inline points_iterator(Point const* p, bool)
-            : m_points(p)
-            , m_index(MaxSize) 
-        {}
+        inline points_iterator(Point const *p, bool)
+            : m_points(p), m_index(MaxSize)
+        {
+        }
 
         // Constructor: default (for Range Concept checking).
         inline points_iterator()
-            : m_points(NULL)
-            , m_index(MaxSize) 
-        {}
-        
+            : m_points(NULL), m_index(MaxSize)
+        {
+        }
+
         typedef std::ptrdiff_t difference_type;
 
-    private:
+      private:
         friend class boost::iterator_core_access;
 
-        inline Point const& dereference() const
+        inline Point const &dereference() const
         {
             if (m_index >= 0 && m_index < MaxSize)
             {
                 return m_points[m_index];
             }
-            
+
             // If it index larger (or smaller) return first point
             // (assuming initialized)
             return m_points[0];
         }
 
-        inline bool equal(points_iterator const& other) const
+        inline bool equal(points_iterator const &other) const
         {
             return other.m_index == this->m_index;
         }
@@ -94,48 +93,52 @@ class points_view
             m_index--;
         }
 
-        inline difference_type distance_to(points_iterator const& other) const
+        inline difference_type distance_to(points_iterator const &other) const
         {
             return other.m_index - this->m_index;
         }
-        
+
         inline void advance(difference_type n)
         {
             m_index += n;
         }
 
-        Point const* m_points;
+        Point const *m_points;
         int m_index;
     };
 
-public :
-
+  public:
     typedef points_iterator const_iterator;
     typedef points_iterator iterator; // must be defined
 
-    const_iterator begin() const { return const_iterator(m_points); }
-    const_iterator end() const { return const_iterator(m_points, true); }
+    const_iterator begin() const
+    {
+        return const_iterator(m_points);
+    }
+    const_iterator end() const
+    {
+        return const_iterator(m_points, true);
+    }
 
     // It may NOT be used non-const, so commented:
-    //iterator begin() { return m_begin; }
-    //iterator end() { return m_end; }
+    // iterator begin() { return m_begin; }
+    // iterator end() { return m_end; }
 
-protected :
-
+  protected:
     template <typename CopyPolicy>
-    explicit points_view(CopyPolicy const& copy)
+    explicit points_view(CopyPolicy const &copy)
     {
-       copy.apply(m_points);
+        copy.apply(m_points);
     }
-    
-private :    
+
+  private:
     // Copy points here - box might define them otherwise
     Point m_points[MaxSize];
 };
 
-}
+} // namespace detail
 
-}} // namespace boost::geometry
-
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_VIEWS_DETAIL_POINTS_VIEW_HPP

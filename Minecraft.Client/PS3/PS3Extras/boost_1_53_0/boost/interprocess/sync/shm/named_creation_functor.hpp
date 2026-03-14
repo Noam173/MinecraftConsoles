@@ -12,61 +12,77 @@
 #define BOOST_INTERPROCESS_SYNC_NAMED_CREATION_FUNCTOR_HPP
 
 #include <boost/interprocess/creation_tags.hpp>
-#include <boost/interprocess/detail/type_traits.hpp>
 #include <boost/interprocess/detail/mpl.hpp>
+#include <boost/interprocess/detail/type_traits.hpp>
 
-namespace boost {
-namespace interprocess {
-namespace ipcdetail {
+namespace boost
+{
+namespace interprocess
+{
+namespace ipcdetail
+{
 
-struct named_creation_functor_no_arg{};
+struct named_creation_functor_no_arg
+{
+};
 
 template <class T, class Arg = named_creation_functor_no_arg>
 class named_creation_functor
 {
-   typedef named_creation_functor_no_arg no_arg_t;
-   public:
-   named_creation_functor(create_enum_t type, Arg arg = Arg())
-      :  m_creation_type(type), m_arg(arg){}
+    typedef named_creation_functor_no_arg no_arg_t;
 
-   template<class ArgType>
-   void construct(void *address, typename enable_if_c<is_same<ArgType, no_arg_t>::value>::type * = 0) const
-   {  new(address)T; }
+  public:
+    named_creation_functor(create_enum_t type, Arg arg = Arg())
+        : m_creation_type(type), m_arg(arg)
+    {
+    }
 
-   template<class ArgType>
-   void construct(void *address, typename enable_if_c<!is_same<ArgType, no_arg_t>::value>::type * = 0) const
-   {  new(address)T(m_arg); }
+    template <class ArgType>
+    void construct(void *address, typename enable_if_c<is_same<ArgType, no_arg_t>::value>::type * = 0) const
+    {
+        new (address) T;
+    }
 
-   bool operator()(void *address, std::size_t, bool created) const
-   {
-      switch(m_creation_type){
-         case DoOpen:
+    template <class ArgType>
+    void construct(void *address, typename enable_if_c<!is_same<ArgType, no_arg_t>::value>::type * = 0) const
+    {
+        new (address) T(m_arg);
+    }
+
+    bool operator()(void *address, std::size_t, bool created) const
+    {
+        switch (m_creation_type)
+        {
+        case DoOpen:
             return true;
-         break;
-         case DoCreate:
-         case DoOpenOrCreate:
-            if(created){
-               construct<Arg>(address);
+            break;
+        case DoCreate:
+        case DoOpenOrCreate:
+            if (created)
+            {
+                construct<Arg>(address);
             }
             return true;
-         break;
+            break;
 
-         default:
+        default:
             return false;
-         break;
-      }
-   }
+            break;
+        }
+    }
 
-   std::size_t get_min_size() const
-   {  return sizeof(T);  }
+    std::size_t get_min_size() const
+    {
+        return sizeof(T);
+    }
 
-   private:
-   create_enum_t m_creation_type;
-   Arg m_arg;
+  private:
+    create_enum_t m_creation_type;
+    Arg m_arg;
 };
 
-}  //namespace ipcdetail {
-}  //namespace interprocess {
-}  //namespace boost {
+} // namespace ipcdetail
+} // namespace interprocess
+} // namespace boost
 
-#endif   //BOOST_INTERPROCESS_SYNC_NAMED_CREATION_FUNCTOR_HPP
+#endif // BOOST_INTERPROCESS_SYNC_NAMED_CREATION_FUNCTOR_HPP

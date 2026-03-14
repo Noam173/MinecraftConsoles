@@ -12,30 +12,32 @@
 #ifndef BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_ITERATOR_FACADE_CONVERTERS_HPP
 #define BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_ITERATOR_FACADE_CONVERTERS_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #include <boost/config.hpp>
 
-namespace boost {
-namespace bimaps {
-namespace container_adaptor {
+namespace boost
+{
+namespace bimaps
+{
+namespace container_adaptor
+{
 
 /// \brief Utilities to help in the construction of a container adaptor
 
-namespace support {
+namespace support
+{
 
 /// \brief Converter for Boost.Iterators based iterators.
 /**
 Container adaptor is dessigned to play well with Boost.Iterators. This
 converter can be used if this library is used to adapt the iterators.
                                                                             **/
-template
-<
+template <
     class Iterator,
-    class ConstIterator
->
+    class ConstIterator>
 struct iterator_facade_to_base
 {
     BOOST_DEDUCED_TYPENAME Iterator::base_type operator()(Iterator iter) const
@@ -51,11 +53,9 @@ struct iterator_facade_to_base
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-template
-<
-    class Iterator
->
-struct iterator_facade_to_base<Iterator,Iterator>
+template <
+    class Iterator>
+struct iterator_facade_to_base<Iterator, Iterator>
 {
     BOOST_DEDUCED_TYPENAME Iterator::base_type operator()(Iterator iter) const
     {
@@ -67,11 +67,9 @@ struct iterator_facade_to_base<Iterator,Iterator>
 
 #undef BOOST_BIMAP_CONTAINER_ADAPTOR_IMPLEMENT_CONVERT_FACADE_FUNCTION
 
-
 } // namespace support
 } // namespace container_adaptor
 } // namespace bimaps
 } // namespace boost
-
 
 #endif // BOOST_BIMAP_CONTAINER_ADAPTOR_DETAIL_ITERATOR_FACADE_CONVERTERS_HPP

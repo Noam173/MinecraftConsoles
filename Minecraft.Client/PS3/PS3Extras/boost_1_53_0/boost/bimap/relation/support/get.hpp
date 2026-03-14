@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_RELATION_SUPPORT_GET_HPP
 #define BOOST_BIMAP_RELATION_SUPPORT_GET_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -23,25 +23,28 @@
 #include <boost/bimap/relation/detail/access_builder.hpp>
 
 #include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/is_same.hpp>
 
 #ifdef BOOST_BIMAP_ONLY_DOXYGEN_WILL_PROCESS_THE_FOLLOWING_LINES
 
-
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
 /** \brief Gets a pair view of the relation.
 
 \ingroup relation_group
                                                                         **/
 
-template< class Tag, class SymmetricType >
-BOOST_DEDUCED_TYPENAME result_of::get<Tag,SymmetricType>::type
-    get( SymmetricType & );
+template <class Tag, class SymmetricType>
+BOOST_DEDUCED_TYPENAME result_of::get<Tag, SymmetricType>::type
+get(SymmetricType &);
 
 } // namespace support
 } // namespace relation
@@ -50,14 +53,16 @@ BOOST_DEDUCED_TYPENAME result_of::get<Tag,SymmetricType>::type
 
 #endif // BOOST_BIMAP_ONLY_DOXYGEN_WILL_PROCESS_THE_FOLLOWING_LINES
 
-
-
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace relation {
-namespace support {
+namespace boost
+{
+namespace bimaps
+{
+namespace relation
+{
+namespace support
+{
 
 // Since it is very error-prone to directly write the hole bunch
 // of relation accesor. They are buil from litle macro blocks that
@@ -88,32 +93,27 @@ namespace support {
 
 */
 
-BOOST_BIMAP_SYMMETRIC_ACCESS_RESULT_OF_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_ACCESS_RESULT_OF_BUILDER(
     get,
-    value_type_of
-)
-
-
+    value_type_of)
 
 // Implementation
 // -------------------------------------------------------------------------
 
-BOOST_BIMAP_SYMMETRIC_ACCESS_IMPLEMENTATION_BUILDER
-(
+BOOST_BIMAP_SYMMETRIC_ACCESS_IMPLEMENTATION_BUILDER(
     get,
     SymmetricType,
     st,
     return st.get_left(),
-    return st.get_right()
-)
+    return st.get_right())
 
-namespace detail {
+namespace detail
+{
 
-template< class SymmetricType >
+template <class SymmetricType>
 BOOST_DEDUCED_TYPENAME result_of::get<
-    ::boost::bimaps::relation::member_at::info, SymmetricType >::type
-get(::boost::bimaps::relation::member_at::info, SymmetricType & rel)
+    ::boost::bimaps::relation::member_at::info, SymmetricType>::type
+get(::boost::bimaps::relation::member_at::info, SymmetricType &rel)
 {
     return rel.info;
 }
@@ -123,11 +123,8 @@ get(::boost::bimaps::relation::member_at::info, SymmetricType & rel)
 // Interface
 //----------------------------------------------------------------------------
 
-BOOST_BIMAP_SYMMETRIC_ACCESS_INTERFACE_BUILDER
-(
-    get
-)
-
+BOOST_BIMAP_SYMMETRIC_ACCESS_INTERFACE_BUILDER(
+    get)
 
 } // namespace support
 } // namespace relation
@@ -137,4 +134,3 @@ BOOST_BIMAP_SYMMETRIC_ACCESS_INTERFACE_BUILDER
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_RELATION_SUPPORT_GET_HPP
-

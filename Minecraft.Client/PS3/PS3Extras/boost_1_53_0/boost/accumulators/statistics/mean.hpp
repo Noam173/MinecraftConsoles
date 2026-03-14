@@ -8,72 +8,74 @@
 #ifndef BOOST_ACCUMULATORS_STATISTICS_MEAN_HPP_EAN_28_10_2005
 #define BOOST_ACCUMULATORS_STATISTICS_MEAN_HPP_EAN_28_10_2005
 
-#include <boost/mpl/placeholders.hpp>
 #include <boost/accumulators/framework/accumulator_base.hpp>
-#include <boost/accumulators/framework/extractor.hpp>
-#include <boost/accumulators/numeric/functional.hpp>
-#include <boost/accumulators/framework/parameters/sample.hpp>
 #include <boost/accumulators/framework/depends_on.hpp>
-#include <boost/accumulators/statistics_fwd.hpp>
+#include <boost/accumulators/framework/extractor.hpp>
+#include <boost/accumulators/framework/parameters/sample.hpp>
+#include <boost/accumulators/numeric/functional.hpp>
 #include <boost/accumulators/statistics/count.hpp>
 #include <boost/accumulators/statistics/sum.hpp>
+#include <boost/accumulators/statistics_fwd.hpp>
+#include <boost/mpl/placeholders.hpp>
 
-namespace boost { namespace accumulators
+namespace boost
+{
+namespace accumulators
 {
 
 namespace impl
 {
-    ///////////////////////////////////////////////////////////////////////////////
-    // mean_impl
-    //      lazy, by default
-    template<typename Sample, typename SumFeature>
-    struct mean_impl
-      : accumulator_base
+///////////////////////////////////////////////////////////////////////////////
+// mean_impl
+//      lazy, by default
+template <typename Sample, typename SumFeature>
+struct mean_impl
+    : accumulator_base
+{
+    // for boost::result_of
+    typedef typename numeric::functional::average<Sample, std::size_t>::result_type result_type;
+
+    mean_impl(dont_care)
     {
-        // for boost::result_of
-        typedef typename numeric::functional::average<Sample, std::size_t>::result_type result_type;
+    }
 
-        mean_impl(dont_care) {}
-
-        template<typename Args>
-        result_type result(Args const &args) const
-        {
-            extractor<SumFeature> sum;
-            return numeric::average(sum(args), count(args));
-        }
-    };
-
-    template<typename Sample, typename Tag>
-    struct immediate_mean_impl
-      : accumulator_base
+    template <typename Args>
+    result_type result(Args const &args) const
     {
-        // for boost::result_of
-        typedef typename numeric::functional::average<Sample, std::size_t>::result_type result_type;
+        extractor<SumFeature> sum;
+        return numeric::average(sum(args), count(args));
+    }
+};
 
-        template<typename Args>
-        immediate_mean_impl(Args const &args)
-          : mean(numeric::average(args[sample | Sample()], numeric::one<std::size_t>::value))
-        {
-        }
+template <typename Sample, typename Tag>
+struct immediate_mean_impl
+    : accumulator_base
+{
+    // for boost::result_of
+    typedef typename numeric::functional::average<Sample, std::size_t>::result_type result_type;
 
-        template<typename Args>
-        void operator ()(Args const &args)
-        {
-            std::size_t cnt = count(args);
-            this->mean = numeric::average(
-                (this->mean * (cnt - 1)) + args[parameter::keyword<Tag>::get()]
-              , cnt
-            );
-        }
+    template <typename Args>
+    immediate_mean_impl(Args const &args)
+        : mean(numeric::average(args[sample | Sample()], numeric::one<std::size_t>::value))
+    {
+    }
 
-        result_type result(dont_care) const
-        {
-            return this->mean;
-        }
+    template <typename Args>
+    void operator()(Args const &args)
+    {
+        std::size_t cnt = count(args);
+        this->mean = numeric::average(
+            (this->mean * (cnt - 1)) + args[parameter::keyword<Tag>::get()], cnt);
+    }
 
-    private:
-        result_type mean;
-    };
+    result_type result(dont_care) const
+    {
+        return this->mean;
+    }
+
+  private:
+    result_type mean;
+};
 
 } // namespace impl
 
@@ -87,53 +89,53 @@ namespace impl
 //
 namespace tag
 {
-    struct mean
-      : depends_on<count, sum>
-    {
-        /// INTERNAL ONLY
-        ///
-        typedef accumulators::impl::mean_impl<mpl::_1, sum> impl;
-    };
-    struct immediate_mean
-      : depends_on<count>
-    {
-        /// INTERNAL ONLY
-        ///
-        typedef accumulators::impl::immediate_mean_impl<mpl::_1, tag::sample> impl;
-    };
-    struct mean_of_weights
-      : depends_on<count, sum_of_weights>
-    {
-        typedef mpl::true_ is_weight_accumulator;
-        /// INTERNAL ONLY
-        ///
-        typedef accumulators::impl::mean_impl<mpl::_2, sum_of_weights> impl;
-    };
-    struct immediate_mean_of_weights
-      : depends_on<count>
-    {
-        typedef mpl::true_ is_weight_accumulator;
-        /// INTERNAL ONLY
-        ///
-        typedef accumulators::impl::immediate_mean_impl<mpl::_2, tag::weight> impl;
-    };
-    template<typename VariateType, typename VariateTag>
-    struct mean_of_variates
-      : depends_on<count, sum_of_variates<VariateType, VariateTag> >
-    {
-        /// INTERNAL ONLY
-        ///
-        typedef mpl::always<accumulators::impl::mean_impl<VariateType, sum_of_variates<VariateType, VariateTag> > > impl;
-    };
-    template<typename VariateType, typename VariateTag>
-    struct immediate_mean_of_variates
-      : depends_on<count>
-    {
-        /// INTERNAL ONLY
-        ///
-        typedef mpl::always<accumulators::impl::immediate_mean_impl<VariateType, VariateTag> > impl;
-    };
-}
+struct mean
+    : depends_on<count, sum>
+{
+    /// INTERNAL ONLY
+    ///
+    typedef accumulators::impl::mean_impl<mpl::_1, sum> impl;
+};
+struct immediate_mean
+    : depends_on<count>
+{
+    /// INTERNAL ONLY
+    ///
+    typedef accumulators::impl::immediate_mean_impl<mpl::_1, tag::sample> impl;
+};
+struct mean_of_weights
+    : depends_on<count, sum_of_weights>
+{
+    typedef mpl::true_ is_weight_accumulator;
+    /// INTERNAL ONLY
+    ///
+    typedef accumulators::impl::mean_impl<mpl::_2, sum_of_weights> impl;
+};
+struct immediate_mean_of_weights
+    : depends_on<count>
+{
+    typedef mpl::true_ is_weight_accumulator;
+    /// INTERNAL ONLY
+    ///
+    typedef accumulators::impl::immediate_mean_impl<mpl::_2, tag::weight> impl;
+};
+template <typename VariateType, typename VariateTag>
+struct mean_of_variates
+    : depends_on<count, sum_of_variates<VariateType, VariateTag>>
+{
+    /// INTERNAL ONLY
+    ///
+    typedef mpl::always<accumulators::impl::mean_impl<VariateType, sum_of_variates<VariateType, VariateTag>>> impl;
+};
+template <typename VariateType, typename VariateTag>
+struct immediate_mean_of_variates
+    : depends_on<count>
+{
+    /// INTERNAL ONLY
+    ///
+    typedef mpl::always<accumulators::impl::immediate_mean_impl<VariateType, VariateTag>> impl;
+};
+} // namespace tag
 
 ///////////////////////////////////////////////////////////////////////////////
 // extract::mean
@@ -142,55 +144,55 @@ namespace tag
 //
 namespace extract
 {
-    extractor<tag::mean> const mean = {};
-    extractor<tag::mean_of_weights> const mean_of_weights = {};
-    BOOST_ACCUMULATORS_DEFINE_EXTRACTOR(tag, mean_of_variates, (typename)(typename))
+extractor<tag::mean> const mean = {};
+extractor<tag::mean_of_weights> const mean_of_weights = {};
+BOOST_ACCUMULATORS_DEFINE_EXTRACTOR(tag, mean_of_variates, (typename)(typename))
 
-    BOOST_ACCUMULATORS_IGNORE_GLOBAL(mean)
-    BOOST_ACCUMULATORS_IGNORE_GLOBAL(mean_of_weights)
-}
+BOOST_ACCUMULATORS_IGNORE_GLOBAL(mean)
+BOOST_ACCUMULATORS_IGNORE_GLOBAL(mean_of_weights)
+} // namespace extract
 
 using extract::mean;
-using extract::mean_of_weights;
 using extract::mean_of_variates;
+using extract::mean_of_weights;
 
 // mean(lazy) -> mean
-template<>
+template <>
 struct as_feature<tag::mean(lazy)>
 {
     typedef tag::mean type;
 };
 
 // mean(immediate) -> immediate_mean
-template<>
+template <>
 struct as_feature<tag::mean(immediate)>
 {
     typedef tag::immediate_mean type;
 };
 
 // mean_of_weights(lazy) -> mean_of_weights
-template<>
+template <>
 struct as_feature<tag::mean_of_weights(lazy)>
 {
     typedef tag::mean_of_weights type;
 };
 
 // mean_of_weights(immediate) -> immediate_mean_of_weights
-template<>
+template <>
 struct as_feature<tag::mean_of_weights(immediate)>
 {
     typedef tag::immediate_mean_of_weights type;
 };
 
 // mean_of_variates<VariateType, VariateTag>(lazy) -> mean_of_variates<VariateType, VariateTag>
-template<typename VariateType, typename VariateTag>
+template <typename VariateType, typename VariateTag>
 struct as_feature<tag::mean_of_variates<VariateType, VariateTag>(lazy)>
 {
     typedef tag::mean_of_variates<VariateType, VariateTag> type;
 };
 
 // mean_of_variates<VariateType, VariateTag>(immediate) -> immediate_mean_of_variates<VariateType, VariateTag>
-template<typename VariateType, typename VariateTag>
+template <typename VariateType, typename VariateTag>
 struct as_feature<tag::mean_of_variates<VariateType, VariateTag>(immediate)>
 {
     typedef tag::immediate_mean_of_variates<VariateType, VariateTag> type;
@@ -198,79 +200,81 @@ struct as_feature<tag::mean_of_variates<VariateType, VariateTag>(immediate)>
 
 // for the purposes of feature-based dependency resolution,
 // immediate_mean provides the same feature as mean
-template<>
+template <>
 struct feature_of<tag::immediate_mean>
-  : feature_of<tag::mean>
+    : feature_of<tag::mean>
 {
 };
 
 // for the purposes of feature-based dependency resolution,
 // immediate_mean provides the same feature as mean
-template<>
+template <>
 struct feature_of<tag::immediate_mean_of_weights>
-  : feature_of<tag::mean_of_weights>
+    : feature_of<tag::mean_of_weights>
 {
 };
 
 // for the purposes of feature-based dependency resolution,
 // immediate_mean provides the same feature as mean
-template<typename VariateType, typename VariateTag>
-struct feature_of<tag::immediate_mean_of_variates<VariateType, VariateTag> >
-  : feature_of<tag::mean_of_variates<VariateType, VariateTag> >
+template <typename VariateType, typename VariateTag>
+struct feature_of<tag::immediate_mean_of_variates<VariateType, VariateTag>>
+    : feature_of<tag::mean_of_variates<VariateType, VariateTag>>
 {
 };
 
 // So that mean can be automatically substituted with
 // weighted_mean when the weight parameter is non-void.
-template<>
+template <>
 struct as_weighted_feature<tag::mean>
 {
     typedef tag::weighted_mean type;
 };
 
-template<>
+template <>
 struct feature_of<tag::weighted_mean>
-  : feature_of<tag::mean>
-{};
+    : feature_of<tag::mean>
+{
+};
 
 // So that immediate_mean can be automatically substituted with
 // immediate_weighted_mean when the weight parameter is non-void.
-template<>
+template <>
 struct as_weighted_feature<tag::immediate_mean>
 {
     typedef tag::immediate_weighted_mean type;
 };
 
-template<>
+template <>
 struct feature_of<tag::immediate_weighted_mean>
-  : feature_of<tag::immediate_mean>
-{};
+    : feature_of<tag::immediate_mean>
+{
+};
 
 // So that mean_of_weights<> can be automatically substituted with
 // weighted_mean_of_variates<> when the weight parameter is non-void.
-template<typename VariateType, typename VariateTag>
-struct as_weighted_feature<tag::mean_of_variates<VariateType, VariateTag> >
+template <typename VariateType, typename VariateTag>
+struct as_weighted_feature<tag::mean_of_variates<VariateType, VariateTag>>
 {
     typedef tag::weighted_mean_of_variates<VariateType, VariateTag> type;
 };
 
-template<typename VariateType, typename VariateTag>
-struct feature_of<tag::weighted_mean_of_variates<VariateType, VariateTag> >
-  : feature_of<tag::mean_of_variates<VariateType, VariateTag> >
+template <typename VariateType, typename VariateTag>
+struct feature_of<tag::weighted_mean_of_variates<VariateType, VariateTag>>
+    : feature_of<tag::mean_of_variates<VariateType, VariateTag>>
 {
 };
 
 // So that immediate_mean_of_weights<> can be automatically substituted with
 // immediate_weighted_mean_of_variates<> when the weight parameter is non-void.
-template<typename VariateType, typename VariateTag>
-struct as_weighted_feature<tag::immediate_mean_of_variates<VariateType, VariateTag> >
+template <typename VariateType, typename VariateTag>
+struct as_weighted_feature<tag::immediate_mean_of_variates<VariateType, VariateTag>>
 {
     typedef tag::immediate_weighted_mean_of_variates<VariateType, VariateTag> type;
 };
 
-template<typename VariateType, typename VariateTag>
-struct feature_of<tag::immediate_weighted_mean_of_variates<VariateType, VariateTag> >
-  : feature_of<tag::immediate_mean_of_variates<VariateType, VariateTag> >
+template <typename VariateType, typename VariateTag>
+struct feature_of<tag::immediate_weighted_mean_of_variates<VariateType, VariateTag>>
+    : feature_of<tag::immediate_mean_of_variates<VariateType, VariateTag>>
 {
 };
 
@@ -280,19 +284,20 @@ struct feature_of<tag::immediate_weighted_mean_of_variates<VariateType, VariateT
 ////  point the accumulator is dropped.
 ///// INTERNAL ONLY
 /////
-//template<typename Sample, typename SumFeature>
-//struct droppable_accumulator<impl::mean_impl<Sample, SumFeature> >
-//  : droppable_accumulator_base<
-//        with_cached_result<impl::mean_impl<Sample, SumFeature> >
-//    >
+// template<typename Sample, typename SumFeature>
+// struct droppable_accumulator<impl::mean_impl<Sample, SumFeature> >
+//   : droppable_accumulator_base<
+//         with_cached_result<impl::mean_impl<Sample, SumFeature> >
+//     >
 //{
-//    template<typename Args>
-//    droppable_accumulator(Args const &args)
-//      : droppable_accumulator::base(args)
-//    {
-//    }
-//};
+//     template<typename Args>
+//     droppable_accumulator(Args const &args)
+//       : droppable_accumulator::base(args)
+//     {
+//     }
+// };
 
-}} // namespace boost::accumulators
+} // namespace accumulators
+} // namespace boost
 
 #endif

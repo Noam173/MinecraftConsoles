@@ -13,7 +13,7 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/karma/generate.hpp>
 #include <boost/spirit/home/karma/detail/generate_auto.hpp>
+#include <boost/spirit/home/karma/generate.hpp>
 
 #endif

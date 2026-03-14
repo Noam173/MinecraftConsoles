@@ -21,14 +21,13 @@
 #include <boost/geometry/algorithms/convert.hpp>
 #include <boost/geometry/geometries/concepts/point_concept.hpp>
 
-
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 namespace model
 {
-
 
 /*!
     \brief Class box: defines a box made of two describing points
@@ -43,39 +42,49 @@ namespace model
     The box can also take a latlong point type as template parameter.
  */
 
-template<typename Point>
+template <typename Point>
 class box
 {
-    BOOST_CONCEPT_ASSERT( (concept::Point<Point>) );
+    BOOST_CONCEPT_ASSERT((concept ::Point<Point>));
 
-public:
-
-    inline box() {}
+  public:
+    inline box()
+    {
+    }
 
     /*!
         \brief Constructor taking the minimum corner point and the maximum corner point
     */
-    inline box(Point const& min_corner, Point const& max_corner)
+    inline box(Point const &min_corner, Point const &max_corner)
     {
         geometry::convert(min_corner, m_min_corner);
         geometry::convert(max_corner, m_max_corner);
     }
 
-    inline Point const& min_corner() const { return m_min_corner; }
-    inline Point const& max_corner() const { return m_max_corner; }
+    inline Point const &min_corner() const
+    {
+        return m_min_corner;
+    }
+    inline Point const &max_corner() const
+    {
+        return m_max_corner;
+    }
 
-    inline Point& min_corner() { return m_min_corner; }
-    inline Point& max_corner() { return m_max_corner; }
+    inline Point &min_corner()
+    {
+        return m_min_corner;
+    }
+    inline Point &max_corner()
+    {
+        return m_max_corner;
+    }
 
-private:
-
+  private:
     Point m_min_corner;
     Point m_max_corner;
 };
 
-
 } // namespace model
-
 
 // Traits specializations for box above
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
@@ -83,13 +92,13 @@ namespace traits
 {
 
 template <typename Point>
-struct tag<model::box<Point> >
+struct tag<model::box<Point>>
 {
     typedef box_tag type;
 };
 
 template <typename Point>
-struct point_type<model::box<Point> >
+struct point_type<model::box<Point>>
 {
     typedef Point type;
 };
@@ -99,12 +108,12 @@ struct indexed_access<model::box<Point>, min_corner, Dimension>
 {
     typedef typename geometry::coordinate_type<Point>::type coordinate_type;
 
-    static inline coordinate_type get(model::box<Point> const& b)
+    static inline coordinate_type get(model::box<Point> const &b)
     {
         return geometry::get<Dimension>(b.min_corner());
     }
 
-    static inline void set(model::box<Point>& b, coordinate_type const& value)
+    static inline void set(model::box<Point> &b, coordinate_type const &value)
     {
         geometry::set<Dimension>(b.min_corner(), value);
     }
@@ -115,12 +124,12 @@ struct indexed_access<model::box<Point>, max_corner, Dimension>
 {
     typedef typename geometry::coordinate_type<Point>::type coordinate_type;
 
-    static inline coordinate_type get(model::box<Point> const& b)
+    static inline coordinate_type get(model::box<Point> const &b)
     {
         return geometry::get<Dimension>(b.max_corner());
     }
 
-    static inline void set(model::box<Point>& b, coordinate_type const& value)
+    static inline void set(model::box<Point> &b, coordinate_type const &value)
     {
         geometry::set<Dimension>(b.max_corner(), value);
     }
@@ -129,6 +138,7 @@ struct indexed_access<model::box<Point>, max_corner, Dimension>
 } // namespace traits
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_BOX_HPP

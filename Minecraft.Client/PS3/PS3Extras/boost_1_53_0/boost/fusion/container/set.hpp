@@ -7,9 +7,9 @@
 #if !defined(FUSION_SEQUENCE_CLASS_SET_10022005_0607)
 #define FUSION_SEQUENCE_CLASS_SET_10022005_0607
 
+#include <boost/fusion/container/set/convert.hpp>
 #include <boost/fusion/container/set/limits.hpp>
 #include <boost/fusion/container/set/set.hpp>
 #include <boost/fusion/container/set/set_fwd.hpp>
-#include <boost/fusion/container/set/convert.hpp>
 
 #endif

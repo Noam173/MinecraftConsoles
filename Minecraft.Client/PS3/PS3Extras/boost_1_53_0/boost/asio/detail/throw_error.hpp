@@ -12,7 +12,7 @@
 #define BOOST_ASIO_DETAIL_THROW_ERROR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
@@ -20,26 +20,33 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace boost {
-namespace asio {
-namespace detail {
-
-BOOST_ASIO_DECL void do_throw_error(const boost::system::error_code& err);
-
-BOOST_ASIO_DECL void do_throw_error(const boost::system::error_code& err,
-    const char* location);
-
-inline void throw_error(const boost::system::error_code& err)
+namespace boost
 {
-  if (err)
-    do_throw_error(err);
+namespace asio
+{
+namespace detail
+{
+
+BOOST_ASIO_DECL void do_throw_error(const boost::system::error_code &err);
+
+BOOST_ASIO_DECL void do_throw_error(const boost::system::error_code &err,
+                                    const char *location);
+
+inline void throw_error(const boost::system::error_code &err)
+{
+    if (err)
+    {
+        do_throw_error(err);
+    }
 }
 
-inline void throw_error(const boost::system::error_code& err,
-    const char* location)
+inline void throw_error(const boost::system::error_code &err,
+                        const char *location)
 {
-  if (err)
-    do_throw_error(err, location);
+    if (err)
+    {
+        do_throw_error(err, location);
+    }
 }
 
 } // namespace detail
@@ -49,7 +56,7 @@ inline void throw_error(const boost::system::error_code& err,
 #include <boost/asio/detail/pop_options.hpp>
 
 #if defined(BOOST_ASIO_HEADER_ONLY)
-# include <boost/asio/detail/impl/throw_error.ipp>
+#include <boost/asio/detail/impl/throw_error.ipp>
 #endif // defined(BOOST_ASIO_HEADER_ONLY)
 
 #endif // BOOST_ASIO_DETAIL_THROW_ERROR_HPP

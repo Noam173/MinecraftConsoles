@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_TAGS_SUPPORT_DEFAULT_TAGGED_HPP
 #define BOOST_BIMAP_TAGS_SUPPORT_DEFAULT_TAGGED_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -39,25 +39,28 @@ See also tagged, overwrite_tagged.
 
 #ifndef BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
-namespace boost {
-namespace bimaps {
-namespace tags {
-namespace support {
-
+namespace boost
+{
+namespace bimaps
+{
+namespace tags
+{
+namespace support
+{
 
 // Default Tagging
 // A metafunction that create a tagged type with a default tag value.
 
-template< class Type, class DefaultTag >
+template <class Type, class DefaultTag>
 struct default_tagged
 {
-    typedef tagged<Type,DefaultTag> type;
+    typedef tagged<Type, DefaultTag> type;
 };
 
-template< class Type, class OldTag, class NewTag >
-struct default_tagged< tagged< Type, OldTag >, NewTag >
+template <class Type, class OldTag, class NewTag>
+struct default_tagged<tagged<Type, OldTag>, NewTag>
 {
-    typedef tagged<Type,OldTag> type;
+    typedef tagged<Type, OldTag> type;
 };
 
 } // namespace support
@@ -68,6 +71,3 @@ struct default_tagged< tagged< Type, OldTag >, NewTag >
 #endif // BOOST_BIMAP_DOXYGEN_WILL_NOT_PROCESS_THE_FOLLOWING_LINES
 
 #endif // BOOST_BIMAP_TAGS_SUPPORT_DEFAULT_TAGGED_HPP
-
-
-

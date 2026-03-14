@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "Scale.h"
+#include "stdafx.h"
 
 Scale::Scale(Synth *synth, double xScale, double yScale)
 {
@@ -10,5 +10,5 @@ Scale::Scale(Synth *synth, double xScale, double yScale)
 
 double Scale::getValue(double x, double y)
 {
-	return synth->getValue(x * xScale, y * yScale);
+    return synth->getValue(x * xScale, y * yScale);
 }

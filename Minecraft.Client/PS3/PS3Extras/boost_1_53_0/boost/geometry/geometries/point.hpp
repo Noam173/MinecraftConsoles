@@ -20,14 +20,15 @@
 #include <boost/static_assert.hpp>
 
 #include <boost/geometry/core/access.hpp>
-#include <boost/geometry/core/coordinate_type.hpp>
-#include <boost/geometry/core/coordinate_system.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
+#include <boost/geometry/core/coordinate_system.hpp>
+#include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/util/math.hpp>
 
-namespace boost { namespace geometry
+namespace boost
 {
-
+namespace geometry
+{
 
 namespace model
 {
@@ -50,33 +51,40 @@ namespace model
 
 
 */
-template
-<
+template <
     typename CoordinateType,
     std::size_t DimensionCount,
-    typename CoordinateSystem
->
+    typename CoordinateSystem>
 class point
 {
-public:
-
+  public:
     /// @brief Default constructor, no initialization
     inline point()
-    {}
+    {
+    }
 
     /// @brief Constructor to set one, two or three values
-    inline point(CoordinateType const& v0, CoordinateType const& v1 = 0, CoordinateType const& v2 = 0)
+    inline point(CoordinateType const &v0, CoordinateType const &v1 = 0, CoordinateType const &v2 = 0)
     {
-        if (DimensionCount >= 1) m_values[0] = v0;
-        if (DimensionCount >= 2) m_values[1] = v1;
-        if (DimensionCount >= 3) m_values[2] = v2;
+        if (DimensionCount >= 1)
+        {
+            m_values[0] = v0;
+        }
+        if (DimensionCount >= 2)
+        {
+            m_values[1] = v1;
+        }
+        if (DimensionCount >= 3)
+        {
+            m_values[2] = v2;
+        }
     }
 
     /// @brief Get a coordinate
     /// @tparam K coordinate to get
     /// @return the coordinate
     template <std::size_t K>
-    inline CoordinateType const& get() const
+    inline CoordinateType const &get() const
     {
         BOOST_STATIC_ASSERT(K < DimensionCount);
         return m_values[K];
@@ -86,17 +94,15 @@ public:
     /// @tparam K coordinate to set
     /// @param value value to set
     template <std::size_t K>
-    inline void set(CoordinateType const& value)
+    inline void set(CoordinateType const &value)
     {
         BOOST_STATIC_ASSERT(K < DimensionCount);
         m_values[K] = value;
     }
 
-private:
-
+  private:
     CoordinateType m_values[DimensionCount];
 };
-
 
 } // namespace model
 
@@ -104,67 +110,58 @@ private:
 #ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 namespace traits
 {
-template
-<
+template <
     typename CoordinateType,
     std::size_t DimensionCount,
-    typename CoordinateSystem
->
-struct tag<model::point<CoordinateType, DimensionCount, CoordinateSystem> >
+    typename CoordinateSystem>
+struct tag<model::point<CoordinateType, DimensionCount, CoordinateSystem>>
 {
     typedef point_tag type;
 };
 
-template
-<
+template <
     typename CoordinateType,
     std::size_t DimensionCount,
-    typename CoordinateSystem
->
-struct coordinate_type<model::point<CoordinateType, DimensionCount, CoordinateSystem> >
+    typename CoordinateSystem>
+struct coordinate_type<model::point<CoordinateType, DimensionCount, CoordinateSystem>>
 {
     typedef CoordinateType type;
 };
 
-template
-<
+template <
     typename CoordinateType,
     std::size_t DimensionCount,
-    typename CoordinateSystem
->
-struct coordinate_system<model::point<CoordinateType, DimensionCount, CoordinateSystem> >
+    typename CoordinateSystem>
+struct coordinate_system<model::point<CoordinateType, DimensionCount, CoordinateSystem>>
 {
     typedef CoordinateSystem type;
 };
 
-template
-<
+template <
     typename CoordinateType,
     std::size_t DimensionCount,
-    typename CoordinateSystem
->
-struct dimension<model::point<CoordinateType, DimensionCount, CoordinateSystem> >
+    typename CoordinateSystem>
+struct dimension<model::point<CoordinateType, DimensionCount, CoordinateSystem>>
     : boost::mpl::int_<DimensionCount>
-{};
+{
+};
 
-template
-<
+template <
     typename CoordinateType,
     std::size_t DimensionCount,
     typename CoordinateSystem,
-    std::size_t Dimension
->
+    std::size_t Dimension>
 struct access<model::point<CoordinateType, DimensionCount, CoordinateSystem>, Dimension>
 {
     static inline CoordinateType get(
-        model::point<CoordinateType, DimensionCount, CoordinateSystem> const& p)
+        model::point<CoordinateType, DimensionCount, CoordinateSystem> const &p)
     {
         return p.template get<Dimension>();
     }
 
     static inline void set(
-        model::point<CoordinateType, DimensionCount, CoordinateSystem>& p,
-        CoordinateType const& value)
+        model::point<CoordinateType, DimensionCount, CoordinateSystem> &p,
+        CoordinateType const &value)
     {
         p.template set<Dimension>(value);
     }
@@ -173,6 +170,7 @@ struct access<model::point<CoordinateType, DimensionCount, CoordinateSystem>, Di
 } // namespace traits
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_POINT_HPP

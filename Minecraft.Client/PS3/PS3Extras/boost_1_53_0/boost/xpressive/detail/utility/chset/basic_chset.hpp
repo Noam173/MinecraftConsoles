@@ -15,7 +15,11 @@
 #include <boost/mpl/bool.hpp>
 #include <boost/xpressive/detail/utility/chset/range_run.ipp>
 
-namespace boost { namespace xpressive { namespace detail
+namespace boost
+{
+namespace xpressive
+{
+namespace detail
 {
 
 ///////////////////////////////////////////////////////////////////////////
@@ -23,7 +27,7 @@ namespace boost { namespace xpressive { namespace detail
 //  basic_chset: basic character set implementation using range_run
 //
 ///////////////////////////////////////////////////////////////////////////
-template<typename Char>
+template <typename Char>
 struct basic_chset
 {
     basic_chset();
@@ -31,45 +35,45 @@ struct basic_chset
 
     bool empty() const;
     void set(Char from, Char to);
-    template<typename Traits>
+    template <typename Traits>
     void set(Char from, Char to, Traits const &tr);
     void set(Char c);
-    template<typename Traits>
+    template <typename Traits>
     void set(Char c, Traits const &tr);
 
     void clear(Char from, Char to);
-    template<typename Traits>
+    template <typename Traits>
     void clear(Char from, Char to, Traits const &tr);
     void clear(Char c);
-    template<typename Traits>
+    template <typename Traits>
     void clear(Char c, Traits const &tr);
     void clear();
 
-    template<typename Traits>
+    template <typename Traits>
     bool test(Char v, Traits const &tr, mpl::false_) const; // case-sensitive
-    template<typename Traits>
+    template <typename Traits>
     bool test(Char v, Traits const &tr, mpl::true_) const; // case-insensitive
 
     void inverse();
-    void swap(basic_chset& x);
+    void swap(basic_chset &x);
 
-    basic_chset &operator |=(basic_chset const &x);
-    basic_chset &operator &=(basic_chset const &x);
-    basic_chset &operator -=(basic_chset const &x);
-    basic_chset &operator ^=(basic_chset const &x);
+    basic_chset &operator|=(basic_chset const &x);
+    basic_chset &operator&=(basic_chset const &x);
+    basic_chset &operator-=(basic_chset const &x);
+    basic_chset &operator^=(basic_chset const &x);
 
-private:
+  private:
     range_run<Char> rr_;
 };
 
-#if(CHAR_BIT == 8)
+#if (CHAR_BIT == 8)
 
 ///////////////////////////////////////////////////////////////////////////
 //
 //  basic_chset: specializations for 8 bit chars using std::bitset
 //
 ///////////////////////////////////////////////////////////////////////////
-template<typename Char>
+template <typename Char>
 struct basic_chset_8bit
 {
     basic_chset_8bit();
@@ -78,57 +82,57 @@ struct basic_chset_8bit
     bool empty() const;
 
     void set(Char from, Char to);
-    template<typename Traits>
+    template <typename Traits>
     void set(Char from, Char to, Traits const &tr);
     void set(Char c);
-    template<typename Traits>
+    template <typename Traits>
     void set(Char c, Traits const &tr);
 
     void clear(Char from, Char to);
-    template<typename Traits>
+    template <typename Traits>
     void clear(Char from, Char to, Traits const &tr);
     void clear(Char c);
-    template<typename Traits>
+    template <typename Traits>
     void clear(Char c, Traits const &tr);
     void clear();
 
-    template<typename Traits>
+    template <typename Traits>
     bool test(Char v, Traits const &tr, mpl::false_) const; // case-sensitive
-    template<typename Traits>
+    template <typename Traits>
     bool test(Char v, Traits const &tr, mpl::true_) const; // case-insensitive
 
     void inverse();
-    void swap(basic_chset_8bit& x);
+    void swap(basic_chset_8bit &x);
 
-    basic_chset_8bit &operator |=(basic_chset_8bit const &x);
-    basic_chset_8bit &operator &=(basic_chset_8bit const &x);
-    basic_chset_8bit &operator -=(basic_chset_8bit const &x);
-    basic_chset_8bit &operator ^=(basic_chset_8bit const &x);
+    basic_chset_8bit &operator|=(basic_chset_8bit const &x);
+    basic_chset_8bit &operator&=(basic_chset_8bit const &x);
+    basic_chset_8bit &operator-=(basic_chset_8bit const &x);
+    basic_chset_8bit &operator^=(basic_chset_8bit const &x);
 
     std::bitset<256> const &base() const;
 
-private:
+  private:
     std::bitset<256> bset_; // BUGBUG range-checking slows this down
 };
 
 /////////////////////////////////
-template<>
+template <>
 struct basic_chset<char>
-  : basic_chset_8bit<char>
+    : basic_chset_8bit<char>
 {
 };
 
 /////////////////////////////////
-template<>
+template <>
 struct basic_chset<signed char>
-  : basic_chset_8bit<signed char>
+    : basic_chset_8bit<signed char>
 {
 };
 
 /////////////////////////////////
-template<>
+template <>
 struct basic_chset<unsigned char>
-  : basic_chset_8bit<unsigned char>
+    : basic_chset_8bit<unsigned char>
 {
 };
 
@@ -136,37 +140,43 @@ struct basic_chset<unsigned char>
 
 ///////////////////////////////////////////////////////////////////////////////
 // is_narrow_char
-template<typename Char>
+template <typename Char>
 struct is_narrow_char
-  : mpl::false_
-{};
+    : mpl::false_
+{
+};
 
-template<>
+template <>
 struct is_narrow_char<char>
-  : mpl::true_
-{};
+    : mpl::true_
+{
+};
 
-template<>
+template <>
 struct is_narrow_char<signed char>
-  : mpl::true_
-{};
+    : mpl::true_
+{
+};
 
-template<>
+template <>
 struct is_narrow_char<unsigned char>
-  : mpl::true_
-{};
+    : mpl::true_
+{
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 // helpers
-template<typename Char, typename Traits>
+template <typename Char, typename Traits>
 void set_char(basic_chset<Char> &chset, Char ch, Traits const &tr, bool icase);
 
-template<typename Char, typename Traits>
+template <typename Char, typename Traits>
 void set_range(basic_chset<Char> &chset, Char from, Char to, Traits const &tr, bool icase);
 
-template<typename Char, typename Traits>
+template <typename Char, typename Traits>
 void set_class(basic_chset<Char> &chset, typename Traits::char_class_type char_class, bool no, Traits const &tr);
 
-}}} // namespace boost::xpressive::detail
+} // namespace detail
+} // namespace xpressive
+} // namespace boost
 
 #endif

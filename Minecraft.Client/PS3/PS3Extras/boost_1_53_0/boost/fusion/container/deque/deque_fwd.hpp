@@ -13,23 +13,24 @@
 ///////////////////////////////////////////////////////////////////////////////
 // With no decltype and variadics, we will use the C++03 version
 ///////////////////////////////////////////////////////////////////////////////
-#if (defined(BOOST_NO_DECLTYPE)             \
-  || defined(BOOST_NO_VARIADIC_TEMPLATES)   \
-  || defined(BOOST_NO_RVALUE_REFERENCES))
-# include <boost/fusion/container/deque/detail/pp_deque_fwd.hpp>
+#if (defined(BOOST_NO_DECLTYPE) || defined(BOOST_NO_VARIADIC_TEMPLATES) || defined(BOOST_NO_RVALUE_REFERENCES))
+#include <boost/fusion/container/deque/detail/pp_deque_fwd.hpp>
 #else
-# if !defined(BOOST_FUSION_HAS_VARIADIC_DEQUE)
-#   define BOOST_FUSION_HAS_VARIADIC_DEQUE
-# endif
+#if !defined(BOOST_FUSION_HAS_VARIADIC_DEQUE)
+#define BOOST_FUSION_HAS_VARIADIC_DEQUE
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 // C++11 interface
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace fusion
+namespace boost
 {
-    template <typename ...T>
-    struct deque;
-}}
+namespace fusion
+{
+template <typename... T>
+struct deque;
+}
+} // namespace boost
 
 #endif
 #endif

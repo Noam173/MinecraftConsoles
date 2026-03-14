@@ -7,8 +7,8 @@
 //  See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 
-#include <cstddef>
 #include <boost/cstdint.hpp>
+#include <cstddef>
 
 #include <boost/memory_order.hpp>
 
@@ -21,7 +21,8 @@
 #pragma once
 #endif
 
-namespace boost {
+namespace boost
+{
 
 #ifndef BOOST_ATOMIC_CHAR_LOCK_FREE
 #define BOOST_ATOMIC_CHAR_LOCK_FREE 0
@@ -80,25 +81,30 @@ inline void atomic_signal_fence(memory_order order)
 }
 #endif
 
-template<typename T>
-class atomic :
-    public atomics::detail::base_atomic<T, typename atomics::detail::classify<T>::type, atomics::detail::storage_size_of<T>::value, boost::is_signed<T>::value >
+template <typename T>
+class atomic : public atomics::detail::base_atomic<T, typename atomics::detail::classify<T>::type, atomics::detail::storage_size_of<T>::value, boost::is_signed<T>::value>
 {
-private:
+  private:
     typedef T value_type;
-    typedef atomics::detail::base_atomic<T, typename atomics::detail::classify<T>::type, atomics::detail::storage_size_of<T>::value, boost::is_signed<T>::value > super;
-public:
-    atomic(void) : super() {}
-    explicit atomic(const value_type & v) : super(v) {}
+    typedef atomics::detail::base_atomic<T, typename atomics::detail::classify<T>::type, atomics::detail::storage_size_of<T>::value, boost::is_signed<T>::value> super;
 
-    atomic & operator=(value_type v) volatile
+  public:
+    atomic(void) : super()
+    {
+    }
+    explicit atomic(const value_type &v) : super(v)
+    {
+    }
+
+    atomic &operator=(value_type v) volatile
     {
         super::operator=(v);
         return *const_cast<atomic *>(this);
     }
-private:
-    atomic(const atomic &) /* =delete */ ;
-    atomic & operator=(const atomic &) /* =delete */ ;
+
+  private:
+    atomic(const atomic &) /* =delete */;
+    atomic &operator=(const atomic &) /* =delete */;
 };
 
 typedef atomic<char> atomic_char;
@@ -122,7 +128,7 @@ typedef atomic<int64_t> atomic_int64_t;
 typedef atomic<boost::ulong_long_type> atomic_ullong;
 typedef atomic<boost::long_long_type> atomic_llong;
 #endif
-typedef atomic<void*> atomic_address;
+typedef atomic<void *> atomic_address;
 typedef atomic<bool> atomic_bool;
 typedef atomic<wchar_t> atomic_wchar_t;
 #if !defined(BOOST_NO_CXX11_CHAR16_T)
@@ -157,19 +163,15 @@ typedef atomic<std::ptrdiff_t> atomic_ptrdiff_t;
 // PGI seems to not support intptr_t/uintptr_t properly. BOOST_HAS_STDINT_H is not defined for this compiler by Boost.Config.
 #if !defined(__PGIC__)
 
-#if (defined(BOOST_WINDOWS) && !defined(_WIN32_WCE)) \
-    || (defined(_XOPEN_UNIX) && (_XOPEN_UNIX+0 > 0)) \
-    || defined(__CYGWIN__) \
-    || defined(macintosh) || defined(__APPLE__) || defined(__APPLE_CC__) \
-    || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#if (defined(BOOST_WINDOWS) && !defined(_WIN32_WCE)) || (defined(_XOPEN_UNIX) && (_XOPEN_UNIX + 0 > 0)) || defined(__CYGWIN__) || defined(macintosh) || defined(__APPLE__) || defined(__APPLE_CC__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
 typedef atomic<intptr_t> atomic_intptr_t;
 typedef atomic<uintptr_t> atomic_uintptr_t;
 #elif defined(__GNUC__) || defined(__clang__)
 #if defined(__INTPTR_TYPE__)
-typedef atomic< __INTPTR_TYPE__ > atomic_intptr_t;
+typedef atomic<__INTPTR_TYPE__> atomic_intptr_t;
 #endif
 #if defined(__UINTPTR_TYPE__)
-typedef atomic< __UINTPTR_TYPE__ > atomic_uintptr_t;
+typedef atomic<__UINTPTR_TYPE__> atomic_uintptr_t;
 #endif
 #endif
 
@@ -179,8 +181,10 @@ typedef atomic< __UINTPTR_TYPE__ > atomic_uintptr_t;
 #define BOOST_ATOMIC_FLAG_LOCK_FREE 0
 class atomic_flag
 {
-public:
-    atomic_flag(void) : v_(false) {}
+  public:
+    atomic_flag(void) : v_(false)
+    {
+    }
 
     bool
     test_and_set(memory_order order = memory_order_seq_cst)
@@ -193,13 +197,14 @@ public:
     {
         v_.store(false, order);
     }
-private:
-    atomic_flag(const atomic_flag &) /* = delete */ ;
-    atomic_flag & operator=(const atomic_flag &) /* = delete */ ;
+
+  private:
+    atomic_flag(const atomic_flag &) /* = delete */;
+    atomic_flag &operator=(const atomic_flag &) /* = delete */;
     atomic<bool> v_;
 };
 #endif
 
-}
+} // namespace boost
 
 #endif

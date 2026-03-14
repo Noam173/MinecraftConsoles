@@ -26,12 +26,10 @@
 \brief Streams a geometry as Well-Known Text
 \ingroup wkt
 */
-template<typename Char, typename Traits, typename Geometry>
-inline std::basic_ostream<Char, Traits>& operator<<
-    (
-        std::basic_ostream<Char, Traits> &os,
-        Geometry const& geom
-    )
+template <typename Char, typename Traits, typename Geometry>
+inline std::basic_ostream<Char, Traits> &operator<<(
+    std::basic_ostream<Char, Traits> &os,
+    Geometry const &geom)
 {
     os << boost::geometry::wkt(geom);
     return os;

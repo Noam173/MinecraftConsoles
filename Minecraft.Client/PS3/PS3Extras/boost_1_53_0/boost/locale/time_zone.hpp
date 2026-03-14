@@ -10,44 +10,45 @@
 
 #include <boost/locale/config.hpp>
 #ifdef BOOST_MSVC
-#  pragma warning(push)
-#  pragma warning(disable : 4275 4251 4231 4660)
+#pragma warning(push)
+#pragma warning(disable : 4275 4251 4231 4660)
 #endif
 
 #include <string>
 
+namespace boost
+{
+namespace locale
+{
+///
+/// \addtogroup date_time
+///
+/// @{
 
-namespace boost {
-    namespace locale {
-        ///
-        /// \addtogroup date_time
-        ///
-        /// @{
+///
+/// \brief namespace that holds functions for operating with global
+/// time zone
+///
+namespace time_zone
+{
+///
+/// Get global time zone identifier. If empty, system time zone is used
+///
+BOOST_LOCALE_DECL std::string global();
+///
+/// Set global time zone identifier returning previous one. If empty, system time zone is used
+///
+BOOST_LOCALE_DECL std::string global(std::string const &new_tz);
+} // namespace time_zone
 
-        ///
-        /// \brief namespace that holds functions for operating with global
-        /// time zone
-        ///
-        namespace time_zone {
-            ///
-            /// Get global time zone identifier. If empty, system time zone is used
-            ///
-            BOOST_LOCALE_DECL std::string global();
-            ///
-            /// Set global time zone identifier returning previous one. If empty, system time zone is used
-            ///
-            BOOST_LOCALE_DECL std::string global(std::string const &new_tz);
-        }
+/// @}
 
-        /// @}
-
-    } // locale
-} // boost
+} // namespace locale
+} // namespace boost
 
 #ifdef BOOST_MSVC
 #pragma warning(pop)
 #endif
-
 
 #endif
 

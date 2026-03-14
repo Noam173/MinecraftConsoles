@@ -12,17 +12,17 @@
 #define BOOST_ASIO_SSL_DETAIL_OPENSSL_TYPES_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 #include <openssl/conf.h>
 #include <openssl/ssl.h>
 #if !defined(OPENSSL_NO_ENGINE)
-# include <openssl/engine.h>
+#include <openssl/engine.h>
 #endif // !defined(OPENSSL_NO_ENGINE)
+#include <boost/asio/detail/socket_types.hpp>
 #include <openssl/err.h>
 #include <openssl/x509v3.h>
-#include <boost/asio/detail/socket_types.hpp>
 
 #endif // BOOST_ASIO_SSL_DETAIL_OPENSSL_TYPES_HPP

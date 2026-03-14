@@ -14,38 +14,37 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_COVERED_BY_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_COVERED_BY_HPP
 
-
 #include <cstddef>
 
 #include <boost/geometry/algorithms/not_implemented.hpp>
 #include <boost/geometry/algorithms/within.hpp>
 
-#include <boost/geometry/strategies/cartesian/point_in_box.hpp>
 #include <boost/geometry/strategies/cartesian/box_in_box.hpp>
+#include <boost/geometry/strategies/cartesian/point_in_box.hpp>
 
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DISPATCH
 namespace dispatch
 {
 
-template
-<
+template <
     typename Geometry1,
     typename Geometry2,
     typename Tag1 = typename tag<Geometry1>::type,
-    typename Tag2 = typename tag<Geometry2>::type
->
-struct covered_by: not_implemented<Tag1, Tag2>
-{};
-
+    typename Tag2 = typename tag<Geometry2>::type>
+struct covered_by : not_implemented<Tag1, Tag2>
+{
+};
 
 template <typename Point, typename Box>
 struct covered_by<Point, Box, point_tag, box_tag>
 {
     template <typename Strategy>
-    static inline bool apply(Point const& point, Box const& box, Strategy const& strategy)
+    static inline bool apply(Point const &point, Box const &box, Strategy const &strategy)
     {
         return strategy.apply(point, box);
     }
@@ -55,29 +54,25 @@ template <typename Box1, typename Box2>
 struct covered_by<Box1, Box2, box_tag, box_tag>
 {
     template <typename Strategy>
-    static inline bool apply(Box1 const& box1, Box2 const& box2, Strategy const& strategy)
+    static inline bool apply(Box1 const &box1, Box2 const &box2, Strategy const &strategy)
     {
         assert_dimension_equal<Box1, Box2>();
         return strategy.apply(box1, box2);
     }
 };
 
-
-
 template <typename Point, typename Ring>
 struct covered_by<Point, Ring, point_tag, ring_tag>
 {
     template <typename Strategy>
-    static inline bool apply(Point const& point, Ring const& ring, Strategy const& strategy)
+    static inline bool apply(Point const &point, Ring const &ring, Strategy const &strategy)
     {
-        return detail::within::point_in_ring
-            <
-                Point,
-                Ring,
-                order_as_direction<geometry::point_order<Ring>::value>::value,
-                geometry::closure<Ring>::value,
-                Strategy
-            >::apply(point, ring, strategy) >= 0;
+        return detail::within::point_in_ring<
+                   Point,
+                   Ring,
+                   order_as_direction<geometry::point_order<Ring>::value>::value,
+                   geometry::closure<Ring>::value,
+                   Strategy>::apply(point, ring, strategy) >= 0;
     }
 };
 
@@ -85,22 +80,19 @@ template <typename Point, typename Polygon>
 struct covered_by<Point, Polygon, point_tag, polygon_tag>
 {
     template <typename Strategy>
-    static inline bool apply(Point const& point, Polygon const& polygon, Strategy const& strategy)
+    static inline bool apply(Point const &point, Polygon const &polygon, Strategy const &strategy)
     {
-        return detail::within::point_in_polygon
-        <
-            Point,
-            Polygon,
-            order_as_direction<geometry::point_order<Polygon>::value>::value,
-            geometry::closure<Polygon>::value,
-            Strategy
-        >::apply(point, polygon, strategy) >= 0;
+        return detail::within::point_in_polygon<
+                   Point,
+                   Polygon,
+                   order_as_direction<geometry::point_order<Polygon>::value>::value,
+                   geometry::closure<Polygon>::value,
+                   Strategy>::apply(point, polygon, strategy) >= 0;
     }
 };
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
-
 
 /*!
 \brief \brief_check12{is inside or on border}
@@ -117,39 +109,31 @@ struct covered_by<Point, Polygon, point_tag, polygon_tag>
 \qbk{[include reference/algorithms/covered_by.qbk]}
 
  */
-template<typename Geometry1, typename Geometry2>
-inline bool covered_by(Geometry1 const& geometry1, Geometry2 const& geometry2)
+template <typename Geometry1, typename Geometry2>
+inline bool covered_by(Geometry1 const &geometry1, Geometry2 const &geometry2)
 {
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
     assert_dimension_equal<Geometry1, Geometry2>();
 
     typedef typename point_type<Geometry1>::type point_type1;
     typedef typename point_type<Geometry2>::type point_type2;
 
-    typedef typename strategy::covered_by::services::default_strategy
-        <
-            typename tag<Geometry1>::type,
-            typename tag<Geometry2>::type,
-            typename tag<Geometry1>::type,
-            typename tag_cast<typename tag<Geometry2>::type, areal_tag>::type,
-            typename tag_cast
-                <
-                    typename cs_tag<point_type1>::type, spherical_tag
-                >::type,
-            typename tag_cast
-                <
-                    typename cs_tag<point_type2>::type, spherical_tag
-                >::type,
-            Geometry1,
-            Geometry2
-        >::type strategy_type;
+    typedef typename strategy::covered_by::services::default_strategy<
+        typename tag<Geometry1>::type,
+        typename tag<Geometry2>::type,
+        typename tag<Geometry1>::type,
+        typename tag_cast<typename tag<Geometry2>::type, areal_tag>::type,
+        typename tag_cast<
+            typename cs_tag<point_type1>::type, spherical_tag>::type,
+        typename tag_cast<
+            typename cs_tag<point_type2>::type, spherical_tag>::type,
+        Geometry1,
+        Geometry2>::type strategy_type;
 
-    return dispatch::covered_by
-        <
-            Geometry1,
-            Geometry2
-        >::apply(geometry1, geometry2, strategy_type());
+    return dispatch::covered_by<
+        Geometry1,
+        Geometry2>::apply(geometry1, geometry2, strategy_type());
 }
 
 /*!
@@ -168,28 +152,25 @@ inline bool covered_by(Geometry1 const& geometry1, Geometry2 const& geometry2)
 \qbk{[include reference/algorithms/covered_by.qbk]}
 
 */
-template<typename Geometry1, typename Geometry2, typename Strategy>
-inline bool covered_by(Geometry1 const& geometry1, Geometry2 const& geometry2,
-        Strategy const& strategy)
+template <typename Geometry1, typename Geometry2, typename Strategy>
+inline bool covered_by(Geometry1 const &geometry1, Geometry2 const &geometry2,
+                       Strategy const &strategy)
 {
-    concept::within::check
-        <
-            typename tag<Geometry1>::type, 
-            typename tag<Geometry2>::type, 
-            typename tag_cast<typename tag<Geometry2>::type, areal_tag>::type,
-            Strategy
-        >();
-    concept::check<Geometry1 const>();
-    concept::check<Geometry2 const>();
+    concept ::within::check<
+        typename tag<Geometry1>::type,
+        typename tag<Geometry2>::type,
+        typename tag_cast<typename tag<Geometry2>::type, areal_tag>::type,
+        Strategy>();
+    concept ::check<Geometry1 const>();
+    concept ::check<Geometry2 const>();
     assert_dimension_equal<Geometry1, Geometry2>();
 
-    return dispatch::covered_by
-        <
-            Geometry1,
-            Geometry2
-        >::apply(geometry1, geometry2, strategy);
+    return dispatch::covered_by<
+        Geometry1,
+        Geometry2>::apply(geometry1, geometry2, strategy);
 }
 
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_ALGORITHMS_COVERED_BY_HPP

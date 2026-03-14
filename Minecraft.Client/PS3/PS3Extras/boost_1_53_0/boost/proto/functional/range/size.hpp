@@ -9,37 +9,45 @@
 #ifndef BOOST_PROTO_FUNCTIONAL_RANGE_SIZE_HPP_EAN_27_08_2012
 #define BOOST_PROTO_FUNCTIONAL_RANGE_SIZE_HPP_EAN_27_08_2012
 
-#include <boost/range/size.hpp>
 #include <boost/proto/proto_fwd.hpp>
+#include <boost/range/size.hpp>
 
-namespace boost { namespace proto { namespace functional
+namespace boost
+{
+namespace proto
+{
+namespace functional
 {
 
-    // A PolymorphicFunctionObject that wraps boost::size()
-    struct size
+// A PolymorphicFunctionObject that wraps boost::size()
+struct size
+{
+    BOOST_PROTO_CALLABLE()
+
+    template <typename Sig>
+    struct result;
+
+    template <typename This, typename Rng>
+    struct result<This(Rng)>
+        : boost::range_size<Rng>
     {
-        BOOST_PROTO_CALLABLE()
-
-        template<typename Sig>
-        struct result;
-
-        template<typename This, typename Rng>
-        struct result<This(Rng)>
-          : boost::range_size<Rng>
-        {};
-
-        template<typename This, typename Rng>
-        struct result<This(Rng &)>
-          : boost::range_size<Rng>
-        {};
-
-        template<typename Rng>
-        typename boost::range_size<Rng>::type operator()(Rng const &rng) const
-        {
-            return boost::size(rng);
-        }
     };
 
-}}}
+    template <typename This, typename Rng>
+    struct result<This(Rng &)>
+        : boost::range_size<Rng>
+    {
+    };
+
+    template <typename Rng>
+    typename boost::range_size<Rng>::type operator()(Rng const &rng) const
+    {
+        return boost::size(rng);
+    }
+};
+
+} // namespace functional
+} // namespace proto
+} // namespace boost
 
 #endif

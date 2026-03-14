@@ -14,7 +14,7 @@
 #define BOOST_PHOENIX_FUNCTION_DETAIL_FUNCTION_OPERATOR_HPP
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 2, line: 0, output: "preprocessed/function_operator_" BOOST_PHOENIX_LIMIT_STR ".hpp")
+#pragma wave option(preserve : 2, line : 0, output : "preprocessed/function_operator_" BOOST_PHOENIX_LIMIT_STR ".hpp")
 #endif
 
 /*==============================================================================
@@ -26,32 +26,33 @@
 ==============================================================================*/
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(preserve: 1)
+#pragma wave option(preserve : 1)
 #endif
 
-#define BOOST_PHOENIX_ITERATION_PARAMS                                          \
-    (3, (1, BOOST_PHOENIX_ACTOR_LIMIT,                                          \
-    <boost/phoenix/function/detail/function_operator.hpp>))
+#define BOOST_PHOENIX_ITERATION_PARAMS \
+    (3, (1, BOOST_PHOENIX_ACTOR_LIMIT, \
+         <boost / phoenix / function / detail / function_operator.hpp>))
 #include BOOST_PHOENIX_ITERATE()
 
 #if defined(__WAVE__) && defined(BOOST_PHOENIX_CREATE_PREPROCESSED_FILES)
-#pragma wave option(output: null)
+#pragma wave option(output : null)
 #endif
 
 #endif
 
 #else
-        template <typename This, BOOST_PHOENIX_typename_A>
-        struct result<This(BOOST_PHOENIX_A_const_ref)>
-            : detail::expression::function_eval<F, BOOST_PHOENIX_A>
-        {};
+template <typename This, BOOST_PHOENIX_typename_A>
+struct result<This(BOOST_PHOENIX_A_const_ref)>
+    : detail::expression::function_eval<F, BOOST_PHOENIX_A>
+{
+};
 
-        template <BOOST_PHOENIX_typename_A>
-        typename detail::expression::function_eval<F, BOOST_PHOENIX_A>::type const
-        operator()(BOOST_PHOENIX_A_const_ref_a) const
-        {
-            return detail::expression::function_eval<F, BOOST_PHOENIX_A>::make(f, BOOST_PHOENIX_a);
-        }
+template <BOOST_PHOENIX_typename_A>
+typename detail::expression::function_eval<F, BOOST_PHOENIX_A>::type const
+operator()(BOOST_PHOENIX_A_const_ref_a) const
+{
+    return detail::expression::function_eval<F, BOOST_PHOENIX_A>::make(f, BOOST_PHOENIX_a);
+}
 
 #endif
 

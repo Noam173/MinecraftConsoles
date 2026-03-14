@@ -8,52 +8,68 @@
 #ifndef BOOST_IOSTREAMS_DETAIL_NON_BLOCKING_ADAPTER_HPP_INCLUDED
 #define BOOST_IOSTREAMS_DETAIL_NON_BLOCKING_ADAPTER_HPP_INCLUDED
 
-#include <boost/iostreams/detail/ios.hpp>  // streamsize, seekdir, openmode.
+#include <boost/iostreams/detail/ios.hpp> // streamsize, seekdir, openmode.
 #include <boost/iostreams/read.hpp>
 #include <boost/iostreams/seek.hpp>
 #include <boost/iostreams/traits.hpp>
 #include <boost/iostreams/write.hpp>
 
-namespace boost { namespace iostreams {
+namespace boost
+{
+namespace iostreams
+{
 
-template<typename Device>
-class non_blocking_adapter {
-public:
+template <typename Device>
+class non_blocking_adapter
+{
+  public:
     typedef typename char_type_of<Device>::type char_type;
     struct category
-        : mode_of<Device>::type, device_tag
-        { };
-    explicit non_blocking_adapter(Device& dev) : device_(dev) { }
-    std::streamsize read(char_type* s, std::streamsize n)
-    { 
+        : mode_of<Device>::type,
+          device_tag
+    {
+    };
+    explicit non_blocking_adapter(Device &dev) : device_(dev)
+    {
+    }
+    std::streamsize read(char_type *s, std::streamsize n)
+    {
         std::streamsize result = 0;
-        while (result < n) {
+        while (result < n)
+        {
             std::streamsize amt = iostreams::read(device_, s, n);
             if (amt == -1)
+            {
                 break;
+            }
             result += amt;
         }
         return result != 0 ? result : -1;
     }
-    std::streamsize write(const char_type* s, std::streamsize n)
-    { 
+    std::streamsize write(const char_type *s, std::streamsize n)
+    {
         std::streamsize result = 0;
-        while (result < n) {
-            std::streamsize amt = 
+        while (result < n)
+        {
+            std::streamsize amt =
                 iostreams::write(device_, s + result, n - result);
             result += amt;
         }
-        return result;    
+        return result;
     }
-    std::streampos seek( stream_offset off, BOOST_IOS::seekdir way,
-                         BOOST_IOS::openmode which = 
-                             BOOST_IOS::in | BOOST_IOS::out )
-    { return iostreams::seek(device_, off, way, which); }
-public:
-    non_blocking_adapter& operator=(const non_blocking_adapter&);
-    Device& device_;
+    std::streampos seek(stream_offset off, BOOST_IOS::seekdir way,
+                        BOOST_IOS::openmode which =
+                            BOOST_IOS::in | BOOST_IOS::out)
+    {
+        return iostreams::seek(device_, off, way, which);
+    }
+
+  public:
+    non_blocking_adapter &operator=(const non_blocking_adapter &);
+    Device &device_;
 };
 
-} } // End namespace iostreams.
+} // namespace iostreams
+} // namespace boost
 
 #endif // #ifndef BOOST_IOSTREAMS_DETAIL_NON_BLOCKING_ADAPTER_HPP_INCLUDED

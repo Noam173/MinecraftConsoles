@@ -12,24 +12,27 @@
 #define BOOST_ASIO_DETAIL_SHARED_PTR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
 
 #if defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
-# include <memory>
+#include <memory>
 #else // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
-# include <boost/shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #endif // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
 
-namespace boost {
-namespace asio {
-namespace detail {
+namespace boost
+{
+namespace asio
+{
+namespace detail
+{
 
 #if defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
 using std::shared_ptr;
-#else // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
+#else  // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
 using boost::shared_ptr;
 #endif // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
 

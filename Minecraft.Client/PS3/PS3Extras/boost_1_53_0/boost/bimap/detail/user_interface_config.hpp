@@ -9,16 +9,15 @@
 /// \file detail/user_interface_config.hpp
 /// \brief General configuration directives
 
-
 #ifndef BOOST_BIMAP_DETAIL_USER_INTERFACE_CONFIG_HPP
 #define BOOST_BIMAP_DETAIL_USER_INTERFACE_CONFIG_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 #ifdef BOOST_BIMAP_DISABLE_SERIALIZATION
-    #define BOOST_MULTI_INDEX_DISABLE_SERIALIZATION
+#define BOOST_MULTI_INDEX_DISABLE_SERIALIZATION
 #endif
 
 #endif // BOOST_BIMAP_DETAIL_USER_INTERFACE_CONFIG_HPP

@@ -17,15 +17,17 @@
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits.hpp>
 
-
-namespace boost { namespace geometry
+namespace boost
+{
+namespace geometry
 {
 
 #ifndef DOXYGEN_NO_DETAIL
 
-namespace detail { namespace select_most_precise
+namespace detail
 {
-
+namespace select_most_precise
+{
 
 // At least one of the types is non-fundamental. Take that one.
 // if both are non-fundamental, the type-to-be-selected
@@ -48,7 +50,6 @@ struct select_non_fundamental<false, true, T1, T2>
     typedef T1 type;
 };
 
-
 // Selection of largest type (e.g. int of <short int,int>
 // It defaults takes the first one, if second is larger, take the second one
 template <bool SecondLarger, typename T1, typename T2>
@@ -63,8 +64,6 @@ struct select_largest<true, T1, T2>
     typedef T2 type;
 };
 
-
-
 // Selection of floating point and specializations:
 // both FP or both !FP does never occur...
 template <bool FP1, bool FP2, typename T1, typename T2>
@@ -73,7 +72,6 @@ struct select_floating_point
     typedef char type;
 };
 
-
 // ... so if ONE but not both of these types is floating point, take that one
 template <typename T1, typename T2>
 struct select_floating_point<true, false, T1, T2>
@@ -81,17 +79,15 @@ struct select_floating_point<true, false, T1, T2>
     typedef T1 type;
 };
 
-
 template <typename T1, typename T2>
 struct select_floating_point<false, true, T1, T2>
 {
     typedef T2 type;
 };
 
-
-}} // namespace detail::select_most_precise
+} // namespace select_most_precise
+} // namespace detail
 #endif // DOXYGEN_NO_DETAIL
-
 
 /*!
     \brief Meta-function to select, of two types, the most accurate type for
@@ -117,46 +113,32 @@ template <typename T1, typename T2>
 struct select_most_precise
 {
     static const bool second_larger = sizeof(T2) > sizeof(T1);
-    static const bool one_not_fundamental = !
-        (boost::is_fundamental<T1>::type::value
-          && boost::is_fundamental<T2>::type::value);
+    static const bool one_not_fundamental = !(boost::is_fundamental<T1>::type::value && boost::is_fundamental<T2>::type::value);
 
     static const bool both_same =
-        boost::is_floating_point<T1>::type::value
-        == boost::is_floating_point<T2>::type::value;
+        boost::is_floating_point<T1>::type::value == boost::is_floating_point<T2>::type::value;
 
-    typedef typename boost::mpl::if_c
-        <
-            one_not_fundamental,
-            typename detail::select_most_precise::select_non_fundamental
-            <
-                boost::is_fundamental<T1>::type::value,
-                boost::is_fundamental<T2>::type::value,
+    typedef typename boost::mpl::if_c<
+        one_not_fundamental,
+        typename detail::select_most_precise::select_non_fundamental<
+            boost::is_fundamental<T1>::type::value,
+            boost::is_fundamental<T2>::type::value,
+            T1,
+            T2>::type,
+        typename boost::mpl::if_c<
+            both_same,
+            typename detail::select_most_precise::select_largest<
+                second_larger,
                 T1,
-                T2
-            >::type,
-            typename boost::mpl::if_c
-            <
-                both_same,
-                typename detail::select_most_precise::select_largest
-                <
-                    second_larger,
-                    T1,
-                    T2
-                >::type,
-                typename detail::select_most_precise::select_floating_point
-                <
-                    boost::is_floating_point<T1>::type::value,
-                    boost::is_floating_point<T2>::type::value,
-                    T1,
-                    T2
-                >::type
-            >::type
-        >::type type;
+                T2>::type,
+            typename detail::select_most_precise::select_floating_point<
+                boost::is_floating_point<T1>::type::value,
+                boost::is_floating_point<T2>::type::value,
+                T1,
+                T2>::type>::type>::type type;
 };
 
-
-
-}} // namespace boost::geometry
+} // namespace geometry
+} // namespace boost
 
 #endif // BOOST_GEOMETRY_UTIL_SELECT_MOST_PRECISE_HPP

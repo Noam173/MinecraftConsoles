@@ -3,12 +3,13 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef ITERATOR_TRAITS_DWA200347_HPP
-# define ITERATOR_TRAITS_DWA200347_HPP
+#define ITERATOR_TRAITS_DWA200347_HPP
 
-# include <boost/detail/iterator.hpp>
-# include <boost/detail/workaround.hpp>
+#include <boost/detail/iterator.hpp>
+#include <boost/detail/workaround.hpp>
 
-namespace boost { 
+namespace boost
+{
 
 // Unfortunately, g++ 2.95.x chokes when we define a class template
 // iterator_category which has the same name as its
@@ -17,32 +18,30 @@ namespace boost {
 // BOOST_ITERATOR_CATEGORY to write code that's portable to older
 // GCCs.
 
-# if BOOST_WORKAROUND(__GNUC__, <= 2)
-#  define BOOST_ITERATOR_CATEGORY iterator_category_
-# else
-#  define BOOST_ITERATOR_CATEGORY iterator_category
-# endif
-
+#if BOOST_WORKAROUND(__GNUC__, <= 2)
+#define BOOST_ITERATOR_CATEGORY iterator_category_
+#else
+#define BOOST_ITERATOR_CATEGORY iterator_category
+#endif
 
 template <class Iterator>
 struct iterator_value
 {
     typedef typename boost::detail::iterator_traits<Iterator>::value_type type;
 };
-  
+
 template <class Iterator>
 struct iterator_reference
 {
     typedef typename boost::detail::iterator_traits<Iterator>::reference type;
 };
-  
-  
+
 template <class Iterator>
 struct iterator_pointer
 {
     typedef typename boost::detail::iterator_traits<Iterator>::pointer type;
 };
-  
+
 template <class Iterator>
 struct iterator_difference
 {
@@ -55,13 +54,13 @@ struct BOOST_ITERATOR_CATEGORY
     typedef typename boost::detail::iterator_traits<Iterator>::iterator_category type;
 };
 
-# if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
 template <>
 struct iterator_value<int>
 {
     typedef void type;
 };
-  
+
 template <>
 struct iterator_reference<int>
 {
@@ -73,20 +72,20 @@ struct iterator_pointer<int>
 {
     typedef void type;
 };
-  
+
 template <>
 struct iterator_difference<int>
 {
     typedef void type;
 };
-  
+
 template <>
 struct BOOST_ITERATOR_CATEGORY<int>
 {
     typedef void type;
 };
-# endif
+#endif
 
-} // namespace boost::iterator
+} // namespace boost
 
 #endif // ITERATOR_TRAITS_DWA200347_HPP
